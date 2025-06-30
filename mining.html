@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin mining</title>
+  <title>EANO Coin Mining</title>
+  <link rel="icon" type="image/png" href="logo.png">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -70,13 +71,14 @@
       background-color: #ffc107;
     }
   </style>
-</head> <link rel="icon" type="image/png" href="logo.png">
+</head>
+
 <body>
   <img src="logo.png" alt="EANO Logo" style="width: 100px; margin-bottom: 10px;" />
   <h1>⛏️ EANO Coin Mining</h1>
-  <h1>⛏️ EANO Coin Mining</h1>
   <p>"Freedom is not given. It is mined."</p>
 
+  <!-- Wallet setup -->
   <div class="wallet-setup">
     <p><strong>Your Wallet Address:</strong></p>
     <p id="walletDisplay">Not set</p>
@@ -85,6 +87,7 @@
     <button onclick="saveWallet()">Save Wallet</button>
   </div>
 
+  <!-- Mining section -->
   <div class="mining-box">
     <p>Coins Mined: <span id="coins">0</span></p>
     <p id="timerText">Checking cooldown...</p>
@@ -93,6 +96,7 @@
     <p><button onclick="exportData()">📤 Backup Mined Data</button></p>
   </div>
 
+  <!-- Withdraw section -->
   <div class="wallet-setup" style="margin-top: 40px;">
     <h3>💸 Send to Wallet</h3>
     <input type="number" id="withdrawAmount" placeholder="Amount to withdraw" />
@@ -100,6 +104,29 @@
     <p id="withdrawStatus"></p>
   </div>
 
+  <!-- Support section -->
+  <hr style="margin: 40px 0;" />
+  <div style="text-align: center; font-size: 16px;">
+    <h3>📢 Support & Community</h3>
+    <p>📬 Email: <a href="mailto:eano.support@proton.me">eano.support@proton.me</a></p>
+    <p>💬 Telegram Channel: <a href="https://t.me/eanocoin" target="_blank">@eanocoin</a></p>
+    <p>🛠 GitHub: <a href="https://github.com/eano-santus/eano-coin" target="_blank">github.com/eano-santus/eano-coin</a></p>
+  </div>
+
+  <!-- Final footer -->
+  <div style="margin-top: 40px; font-size: 16px;">
+    <hr style="margin: 30px auto; width: 80%;" />
+    <p>
+      💬 Join our community:  
+      <a href="https://t.me/eanocoin" target="_blank" style="color: #0077cc;">@eanocoin</a>
+    </p>
+    <p>
+      📧 Contact support:  
+      <a href="mailto:eano.support@proton.me" style="color: #0077cc;">eano.support@proton.me</a>
+    </p>
+  </div>
+
+  <!-- JavaScript -->
   <script>
     const cooldown = 24 * 60 * 60 * 1000; // 24 hours
     let minedData = {};
@@ -108,32 +135,6 @@
     const coinsDisplay = document.getElementById('coins');
     const timerText = document.getElementById('timerText');
     const trustScoreDisplay = document.getElementById('trustScore');
-    function exportData() {
-  const wallet = localStorage.getItem("walletAddress");
-  const mined = getWalletMined(wallet);
-  const trust = getTrust();
-
-  if (!wallet) {
-    alert("No wallet address found.");
-    return;
-  }
-
-  const data = {
-    wallet,
-    mined,
-    trust
-  };
-
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `eano_backup_${wallet}.json`;
-  a.click();
-
-  URL.revokeObjectURL(url);
-    }
     const walletInput = document.getElementById('walletInput');
     const walletDisplay = document.getElementById('walletDisplay');
 
@@ -141,7 +142,6 @@
     let waitStart = Date.now();
     let antiBotPassed = false;
 
-    // Wallet and mined data logic
     function loadMinedData() {
       try {
         minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
@@ -193,7 +193,6 @@
       return !!localStorage.getItem("walletAddress");
     }
 
-    // Trust logic
     function getTrust() {
       return parseInt(localStorage.getItem('trustScore') || 0);
     }
@@ -212,7 +211,6 @@
       trustScoreDisplay.textContent = getTrust() + "%";
     }
 
-    // Timer logic
     function getLastMineTime() {
       return parseInt(localStorage.getItem('lastMine') || 0);
     }
@@ -271,7 +269,6 @@
     document.addEventListener('mousemove', markUserMoved);
     document.addEventListener('touchstart', markUserMoved);
 
-    // Backup export
     function exportData() {
       const wallet = localStorage.getItem("walletAddress");
       if (!wallet) {
@@ -296,7 +293,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // Withdrawal logic
     function withdraw() {
       const amount = parseInt(document.getElementById("withdrawAmount").value);
       const wallet = localStorage.getItem("walletAddress");
@@ -317,7 +313,6 @@
         return;
       }
 
-      // Simulate withdrawal
       minedData[wallet] -= amount;
       localStorage.setItem("minedData", JSON.stringify(minedData));
       updateMinedUI(wallet);
@@ -326,38 +321,11 @@
         `✅ ${amount} EANO sent to ${wallet}`;
     }
 
-    // INIT
     loadMinedData();
     loadWallet();
     updateTrustUI();
     updateTimer();
     setInterval(updateTimer, 1000);
   </script>
-  <hr style="margin: 40px 0;" />
-<div style="text-align: center; font-size: 16px;">
-  <h3>📢 Support & Community</h3>
-  <p>📬 Email: <a href="mailto:eano.support@proton.me">eano.support@proton.me</a></p>
-  <p>💬 Telegram Channel: <a href="https://t.me/eanocoin" target="_blank">@eanocoin</a></p>
-  <p>🛠 GitHub: <a href="https://github.com/eano-santus/eano-coin" target="_blank">github.com/eano-santus/eano-coin</a></p>
-</div>
-<body>
-  <img src="logo.png" alt="EANO Coin Logo" style="max-width: 120px; margin: 0 auto; display: block;" />
-  <h1>⛏️ EANO Coin Mining</h1>
-  <p>"Freedom is not given. It is mined."</p>
-
-  <!-- Existing wallet setup, mining box, and withdrawal sections remain unchanged -->
-
-  <!-- Footer with community links -->
-  <div style="margin-top: 40px; font-size: 16px;">
-    <hr style="margin: 30px auto; width: 80%;" />
-    <p>
-      💬 Join our community:  
-      <a href="https://t.me/eanocoin" target="_blank" style="color: #0077cc;">@eanocoin</a>
-    </p>
-    <p>
-      📧 Contact support:  
-      <a href="mailto:eano.support@proton.me" style="color: #0077cc;">eano.support@proton.me</a>
-    </p>
-  </div>
 </body>
 </html>
