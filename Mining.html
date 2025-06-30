@@ -48,11 +48,50 @@
     .trust {
       font-weight: bold;
     }
+
+    .wallet-setup {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .wallet-setup input {
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      margin-bottom: 10px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+    }
+
+    .wallet-setup button {
+      background-color: #ff9800;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .wallet-setup button:hover {
+      background-color: #ffc107;
+    }
   </style>
 </head>
 <body>
   <h1>⛏️ EANO Coin Mining</h1>
   <p>"Freedom is not given. It is mined."</p>
+
+  <div class="wallet-setup">
+    <p><strong>Your Wallet Address:</strong></p>
+    <p id="walletDisplay">Not set</p>
+    <input type="text" id="walletInput" placeholder="Paste your wallet address here" />
+    <br />
+    <button onclick="saveWallet()">Save Wallet</button>
+  </div>
 
   <div class="mining-box">
     <p>Coins Mined: <span id="coins">0</span></p>
@@ -63,16 +102,49 @@
 
   <script>
     let mined = 0;
-    const cooldown = 24 * 60 * 60 * 1000; // 24 hours
+    const cooldown = 24 * 60 * 60 * 1000;
     const mineBtn = document.getElementById('mineButton');
     const coinsDisplay = document.getElementById('coins');
     const timerText = document.getElementById('timerText');
     const trustScoreDisplay = document.getElementById('trustScore');
+    const walletInput = document.getElementById('walletInput');
+    const walletDisplay = document.getElementById('walletDisplay');
 
     let userMoved = false;
     let waitStart = Date.now();
     let antiBotPassed = false;
 
+    // ----------------------------
+    // Wallet logic
+    // ----------------------------
+    function saveWallet() {
+      const address = walletInput.value.trim();
+      if (address.length < 5) {
+        alert("Please enter a valid wallet address.");
+        return;
+      }
+      localStorage.setItem("walletAddress", address);
+      walletDisplay.textContent = address;
+      walletInput.value = '';
+      updateTimer(); // recheck conditions
+    }
+
+    function loadWallet() {
+      const saved = localStorage.getItem("walletAddress");
+      if (saved) {
+        walletDisplay.textContent = saved;
+      } else {
+        walletDisplay.textContent = "Not set";
+      }
+    }
+
+    function hasWallet() {
+      return !!localStorage.getItem("walletAddress");
+    }
+
+    // ----------------------------
+    // Mining logic
+    // ----------------------------
     function getTrust() {
       return parseInt(localStorage.getItem('trustScore') || 0);
     }
@@ -100,6 +172,12 @@
       const lastMine = getLastMineTime();
       const diff = cooldown - (now - lastMine);
 
+      if (!hasWallet()) {
+        mineBtn.disabled = true;
+        timerText.textContent = "⚠️ Please set your wallet address first.";
+        return;
+      }
+
       if (diff > 0) {
         mineBtn.disabled = true;
         const hrs = Math.floor(diff / (1000 * 60 * 60));
@@ -121,8 +199,8 @@
     }
 
     mineBtn.onclick = () => {
-      if (!antiBotPassed) {
-        alert("Bot protection active. Please interact with the page first.");
+      if (!antiBotPassed || !hasWallet()) {
+        alert("Mining not allowed. Make sure anti-bot is passed and wallet is set.");
         return;
       }
       mined += 1;
@@ -143,8 +221,9 @@
     document.addEventListener('touchstart', markUserMoved);
 
     setInterval(updateTimer, 1000);
-    updateTimer();
+    loadWallet();
     updateTrustUI();
+    updateTimer();
   </script>
 </body>
 </html>
