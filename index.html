@@ -18,6 +18,15 @@
       <p><a href="mining.html">⛏️ Start Mining EANO</a></p>
     </section>
 
+    <!-- ✅ Export Button Section -->
+    <section>
+      <h2>My Mined Data</h2>
+      <p>You can export your mined coins and trust score below:</p>
+      <div style="margin-top: 10px;">
+        <button onclick="exportData()">📤 Export My Mined Coins</button>
+      </div>
+    </section>
+
     <section>
       <h2>About EANO</h2>
       <p><a href="EANO_Coin_White_Paper_Updated.pdf" target="_blank">📄 View the EANO White Paper (PDF)</a></p>
@@ -43,5 +52,28 @@
   <footer>
     <p>© 2025 EANO Project. All rights reserved.</p>
   </footer>
+
+  <!-- ✅ Export Script -->
+  <script>
+    function exportData() {
+      const minedData = localStorage.getItem("minedData") || "{}";
+      const trustScore = localStorage.getItem("trustScore") || "0";
+      const wallet = localStorage.getItem("walletAddress") || "Not set";
+
+      const exportContent = `
+Wallet Address: ${wallet}
+Trust Score: ${trustScore}%
+Mined Data: ${minedData}
+      `.trim();
+
+      const blob = new Blob([exportContent], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "eano_mined_data.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
 </body>
 </html>
