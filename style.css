@@ -40,8 +40,7 @@ footer {
   color: #888;
 }
 .logo {
-  max-width: 120px;
-  margin-bottom: 10px;
+<img src="logo.png" alt="EANO Coin Logo" class="logo" style="width: 100px; height: auto;" />
 }
 .whitepaper-link {
   text-align: center;
