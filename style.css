@@ -1,0 +1,41 @@
+body {
+  font-family: sans-serif;
+  background: #000;
+  color: #eee;
+  padding: 20px;
+  text-align: center;
+}
+
+header {
+  background: #111;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.motto {
+  font-style: italic;
+  color: #ffaa00;
+}
+
+main {
+  margin-top: 30px;
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h2 {
+  color: #00ffcc;
+}
+
+ul {
+  text-align: left;
+  max-width: 400px;
+  margin: auto;
+}
+
+footer {
+  margin-top: 40px;
+  font-size: 14px;
+  color: #888;
+}
