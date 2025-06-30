@@ -11,11 +11,9 @@
       text-align: center;
       background-color: #f2f2f2;
     }
-
     h1 {
       color: #333;
     }
-
     .mining-box {
       background: white;
       padding: 20px;
@@ -24,7 +22,6 @@
       display: inline-block;
       margin-top: 30px;
     }
-
     button {
       padding: 10px 20px;
       font-size: 18px;
@@ -34,21 +31,17 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     button:disabled {
       background-color: gray;
       cursor: not-allowed;
     }
-
     p {
       font-size: 18px;
       margin: 10px 0;
     }
-
     .trust {
       font-weight: bold;
     }
-
     .wallet-setup {
       margin-top: 20px;
       padding: 15px;
@@ -56,7 +49,6 @@
       border-radius: 10px;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
-
     .wallet-setup input {
       padding: 10px;
       font-size: 16px;
@@ -65,7 +57,6 @@
       border: 1px solid #aaa;
       border-radius: 6px;
     }
-
     .wallet-setup button {
       background-color: #ff9800;
       color: #000;
@@ -75,7 +66,6 @@
       font-weight: bold;
       cursor: pointer;
     }
-
     .wallet-setup button:hover {
       background-color: #ffc107;
     }
@@ -98,6 +88,14 @@
     <p id="timerText">Checking cooldown...</p>
     <p class="trust">Trust Score: <span id="trustScore">0%</span></p>
     <button id="mineButton" disabled>Mine EANO</button>
+    <p><button onclick="exportData()">📤 Backup Mined Data</button></p>
+  </div>
+
+  <div class="wallet-setup" style="margin-top: 40px;">
+    <h3>💸 Send to Wallet</h3>
+    <input type="number" id="withdrawAmount" placeholder="Amount to withdraw" />
+    <button onclick="withdraw()">Send</button>
+    <p id="withdrawStatus"></p>
   </div>
 
   <script>
@@ -115,7 +113,7 @@
     let waitStart = Date.now();
     let antiBotPassed = false;
 
-    // Load mined data per wallet
+    // Wallet and mined data logic
     function loadMinedData() {
       try {
         minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
@@ -140,7 +138,6 @@
       coinsDisplay.textContent = getWalletMined(wallet);
     }
 
-    // Wallet logic
     function saveWallet() {
       const address = walletInput.value.trim();
       if (address.length < 5) {
@@ -151,7 +148,7 @@
       walletDisplay.textContent = address;
       walletInput.value = '';
       updateMinedUI(address);
-      updateTimer(); // recheck conditions
+      updateTimer();
     }
 
     function loadWallet() {
@@ -168,7 +165,7 @@
       return !!localStorage.getItem("walletAddress");
     }
 
-    // Trust system
+    // Trust logic
     function getTrust() {
       return parseInt(localStorage.getItem('trustScore') || 0);
     }
@@ -187,7 +184,7 @@
       trustScoreDisplay.textContent = getTrust() + "%";
     }
 
-    // Mining timer
+    // Timer logic
     function getLastMineTime() {
       return parseInt(localStorage.getItem('lastMine') || 0);
     }
@@ -245,6 +242,61 @@
 
     document.addEventListener('mousemove', markUserMoved);
     document.addEventListener('touchstart', markUserMoved);
+
+    // Backup export
+    function exportData() {
+      const wallet = localStorage.getItem("walletAddress");
+      if (!wallet) {
+        alert("Set wallet first.");
+        return;
+      }
+
+      const data = {
+        wallet,
+        mined: minedData[wallet] || 0,
+        trust: getTrust(),
+        lastMine: getLastMineTime(),
+        timestamp: new Date().toISOString()
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${wallet}_eano_backup.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Withdrawal logic
+    function withdraw() {
+      const amount = parseInt(document.getElementById("withdrawAmount").value);
+      const wallet = localStorage.getItem("walletAddress");
+      const currentMined = minedData[wallet] || 0;
+
+      if (!wallet) {
+        alert("No wallet set.");
+        return;
+      }
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("Enter a valid amount.");
+        return;
+      }
+
+      if (amount > currentMined) {
+        alert("Not enough mined coins.");
+        return;
+      }
+
+      // Simulate withdrawal
+      minedData[wallet] -= amount;
+      localStorage.setItem("minedData", JSON.stringify(minedData));
+      updateMinedUI(wallet);
+
+      document.getElementById("withdrawStatus").textContent =
+        `✅ ${amount} EANO sent to ${wallet}`;
+    }
 
     // INIT
     loadMinedData();
