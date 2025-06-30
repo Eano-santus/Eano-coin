@@ -106,6 +106,32 @@
     const coinsDisplay = document.getElementById('coins');
     const timerText = document.getElementById('timerText');
     const trustScoreDisplay = document.getElementById('trustScore');
+    function exportData() {
+  const wallet = localStorage.getItem("walletAddress");
+  const mined = getWalletMined(wallet);
+  const trust = getTrust();
+
+  if (!wallet) {
+    alert("No wallet address found.");
+    return;
+  }
+
+  const data = {
+    wallet,
+    mined,
+    trust
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `eano_backup_${wallet}.json`;
+  a.click();
+
+  URL.revokeObjectURL(url);
+    }
     const walletInput = document.getElementById('walletInput');
     const walletDisplay = document.getElementById('walletDisplay');
 
