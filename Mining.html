@@ -1,147 +1,150 @@
-<script>
-  let mined = 0;
-  const cooldown = 24 * 60 * 60 * 1000; // 24 hours
-  const mineBtn = document.getElementById('mineButton');
-  const coinsDisplay = document.getElementById('coins');
-  const timerText = document.getElementById('timerText');
-  const trustScoreDisplay = document.getElementById('trustScore');
-
-  let userMoved = false;
-  let waitStart = Date.now();
-  let antiBotPassed = false;
-
-  // Track trust score in localStorage
-  function getTrust() {
-    return parseInt(localStorage.getItem('trustScore') || 0);
-  }
-
-  function increaseTrust() {
-    let current = getTrust();
-    if (current < 100) {
-      current += 5; // Increase by 5% per successful mine
-      if (current > 100) current = 100;
-      localStorage.setItem('trustScore', current);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EANO Coin Mining</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+      background-color: #f2f2f2;
     }
-    updateTrustUI();
-  }
 
-  function updateTrustUI() {
-    trustScoreDisplay.textContent = getTrust() + "%";
-  }
+    h1 {
+      color: #333;
+    }
 
-  function getLastMineTime() {
-    return parseInt(localStorage.getItem('lastMine') || 0);
-  }
+    .mining-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+      margin-top: 30px;
+    }
 
-  function updateTimer() {
-    const now = Date.now();
-    const lastMine = getLastMineTime();
-    const diff = cooldown - (now - lastMine);
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
 
-    if (diff > 0) {
-      mineBtn.disabled = true;
-      const hrs = Math.floor(diff / (1000 * 60 * 60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((diff % (1000 * 60)) / 1000);
-      timerText.textContent = `Next mine in: ${hrs}h ${mins}m ${secs}s`;
-    } else {
-      const waitElapsed = Date.now() - waitStart;
-      antiBotPassed = userMoved && waitElapsed > 5000;
+    button:disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
 
-      if (antiBotPassed) {
-        mineBtn.disabled = false;
-        timerText.textContent = '';
-      } else {
+    p {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    .trust {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>⛏️ EANO Coin Mining</h1>
+  <p>"Freedom is not given. It is mined."</p>
+
+  <div class="mining-box">
+    <p>Coins Mined: <span id="coins">0</span></p>
+    <p id="timerText">Checking cooldown...</p>
+    <p class="trust">Trust Score: <span id="trustScore">0%</span></p>
+    <button id="mineButton" disabled>Mine EANO</button>
+  </div>
+
+  <script>
+    let mined = 0;
+    const cooldown = 24 * 60 * 60 * 1000; // 24 hours
+    const mineBtn = document.getElementById('mineButton');
+    const coinsDisplay = document.getElementById('coins');
+    const timerText = document.getElementById('timerText');
+    const trustScoreDisplay = document.getElementById('trustScore');
+
+    let userMoved = false;
+    let waitStart = Date.now();
+    let antiBotPassed = false;
+
+    function getTrust() {
+      return parseInt(localStorage.getItem('trustScore') || 0);
+    }
+
+    function increaseTrust() {
+      let current = getTrust();
+      if (current < 100) {
+        current += 5;
+        if (current > 100) current = 100;
+        localStorage.setItem('trustScore', current);
+      }
+      updateTrustUI();
+    }
+
+    function updateTrustUI() {
+      trustScoreDisplay.textContent = getTrust() + "%";
+    }
+
+    function getLastMineTime() {
+      return parseInt(localStorage.getItem('lastMine') || 0);
+    }
+
+    function updateTimer() {
+      const now = Date.now();
+      const lastMine = getLastMineTime();
+      const diff = cooldown - (now - lastMine);
+
+      if (diff > 0) {
         mineBtn.disabled = true;
-        timerText.textContent = 'Move your finger or mouse and wait 5 seconds to enable mining.';
+        const hrs = Math.floor(diff / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+        timerText.textContent = `Next mine in: ${hrs}h ${mins}m ${secs}s`;
+      } else {
+        const waitElapsed = Date.now() - waitStart;
+        antiBotPassed = userMoved && waitElapsed > 5000;
+
+        if (antiBotPassed) {
+          mineBtn.disabled = false;
+          timerText.textContent = '';
+        } else {
+          mineBtn.disabled = true;
+          timerText.textContent = 'Move your finger or touch the screen and wait 5 seconds to enable mining.';
+        }
       }
     }
-  }
 
-  mineBtn.onclick = () => {
-    if (!antiBotPassed) {
-      alert("Bot protection active. Please interact with the page first.");
-      return;
+    mineBtn.onclick = () => {
+      if (!antiBotPassed) {
+        alert("Bot protection active. Please interact with the page first.");
+        return;
+      }
+      mined += 1;
+      coinsDisplay.textContent = mined;
+      localStorage.setItem('lastMine', Date.now());
+      increaseTrust();
+      updateTimer();
+    };
+
+    function markUserMoved() {
+      if (!userMoved) {
+        userMoved = true;
+        waitStart = Date.now();
+      }
     }
-    mined += 1;
-    coinsDisplay.textContent = mined;
-    localStorage.setItem('lastMine', Date.now());
-    increaseTrust();
+
+    document.addEventListener('mousemove', markUserMoved);
+    document.addEventListener('touchstart', markUserMoved);
+
+    setInterval(updateTimer, 1000);
     updateTimer();
-  };
-
-  function markUserMoved() {
-    if (!userMoved) {
-      userMoved = true;
-      waitStart = Date.now();
-    }
-  }
-
-  document.addEventListener('mousemove', markUserMoved);
-  document.addEventListener('touchstart', markUserMoved);
-
-  setInterval(updateTimer, 1000);
-  updateTimer();
-  updateTrustUI();
-</script>
-  const timerText = document.getElementById('timerText');
-<p>Trust Score: <span id="trustScore">0%</span></p>
-  let userMoved = false;
-  let waitStart = Date.now();
-  let antiBotPassed = false;
-
-  // Detect user interaction (mouse or touch)
-  function markUserMoved() {
-    if (!userMoved) {
-      userMoved = true;
-      waitStart = Date.now(); // Reset wait timer when user moves
-    }
-  }
-
-  document.addEventListener('mousemove', markUserMoved);
-  document.addEventListener('touchstart', markUserMoved);
-
-  function getLastMineTime() {
-    return parseInt(localStorage.getItem('lastMine') || 0);
-  }
-
-  function updateTimer() {
-    const now = Date.now();
-    const lastMine = getLastMineTime();
-    const diff = cooldown - (now - lastMine);
-
-    if (diff > 0) {
-      mineBtn.disabled = true;
-      const hrs = Math.floor(diff / (1000 * 60 * 60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((diff % (1000 * 60)) / 1000);
-      timerText.textContent = `Next mine in: ${hrs}h ${mins}m ${secs}s`;
-    } else {
-      // Check anti-bot conditions
-      const waitElapsed = Date.now() - waitStart;
-      antiBotPassed = userMoved && waitElapsed > 5000;
-
-      if (antiBotPassed) {
-        mineBtn.disabled = false;
-        timerText.textContent = '';
-      } else {
-        mineBtn.disabled = true;
-        timerText.textContent = 'Move your finger or mouse and wait 5 seconds to enable mining.';
-      }<p>Trust Score: <span id="trustScore">0%</span></p>
-    }
-  }
-
-  mineBtn.onclick = () => {
-    if (!antiBotPassed) {
-      alert("Bot protection active. Please interact with the page first.");
-      return;
-    }
-    mined += 1;
-    coinsDisplay.textContent = mined;
-    localStorage.setItem('lastMine', Date.now());
-    updateTimer();
-  };
-
-  setInterval(updateTimer, 1000);
-  updateTimer();
-</script>
+    updateTrustUI();
+  </script>
+</body>
+</html>
