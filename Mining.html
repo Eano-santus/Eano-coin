@@ -101,7 +101,32 @@
   </div>
 
   <script>
-    let mined = 0;
+  const cooldown = 24 * 60 * 60 * 1000; // 24 hours
+  let minedData = {};
+
+function loadMinedData() {
+  try {
+    minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
+  } catch (e) {
+    minedData = {};
+  }
+}
+
+function getWalletMined(wallet) {
+  return minedData[wallet] || 0;
+}
+
+function incrementWalletMined(wallet) {
+  if (!minedData[wallet]) {
+    minedData[wallet] = 0;
+  }
+  minedData[wallet]++;
+  localStorage.setItem("minedData", JSON.stringify(minedData));
+}
+
+function updateMinedUI(wallet) {
+  coinsDisplay.textContent = getWalletMined(wallet);
+}
     const cooldown = 24 * 60 * 60 * 1000;
     const mineBtn = document.getElementById('mineButton');
     const coinsDisplay = document.getElementById('coins');
