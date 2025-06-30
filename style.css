@@ -39,3 +39,7 @@ footer {
   font-size: 14px;
   color: #888;
 }
+.logo {
+  max-width: 120px;
+  margin-bottom: 10px;
+}
