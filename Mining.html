@@ -1,72 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mine EANO Coin</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .mining-box {
-      text-align: center;
-      margin: 50px auto;
-      max-width: 400px;
-      padding: 20px;
-      background-color: #f3f3f3;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+<script>
+  let mined = 0;
+  const cooldown = 24 * 60 * 60 * 1000; // 24 hours
+  const mineBtn = document.getElementById('mineButton');
+  const coinsDisplay = document.getElementById('coins');
+  const timerText = document.getElementById('timerText');
+
+  let userMoved = false;
+  let waitStart = Date.now();
+  let antiBotPassed = false;
+
+  // Detect user interaction (mouse or touch)
+  function markUserMoved() {
+    if (!userMoved) {
+      userMoved = true;
+      waitStart = Date.now(); // Reset wait timer when user moves
     }
+  }
 
-    .mine-btn {
-      padding: 12px 24px;
-      font-size: 18px;
-      border: none;
-      background-color: #222;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+  document.addEventListener('mousemove', markUserMoved);
+  document.addEventListener('touchstart', markUserMoved);
 
-    .mine-btn:disabled {
-      background-color: #888;
-      cursor: not-allowed;
-    }
+  function getLastMineTime() {
+    return parseInt(localStorage.getItem('lastMine') || 0);
+  }
 
-    .counter {
-      margin-top: 20px;
-      font-size: 20px;
-      color: #444;
-    }
-  </style>
-</head>
-<body>
-  <div class="mining-box">
-    <h1>⛏️ Mine EANO Coin</h1>
-    <button id="mineButton" class="mine-btn">Start Mining</button>
-    <div class="counter">
-      <p>Mined: <span id="coins">0</span> EANO</p>
-      <p id="timerText"></p>
-    </div>
-  </div>
+  function updateTimer() {
+    const now = Date.now();
+    const lastMine = getLastMineTime();
+    const diff = cooldown - (now - lastMine);
 
-  <script>
-    let mined = 0;
-    const cooldown = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    if (diff > 0) {
+      mineBtn.disabled = true;
+      const hrs = Math.floor(diff / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+      timerText.textContent = `Next mine in: ${hrs}h ${mins}m ${secs}s`;
+    } else {
+      // Check anti-bot conditions
+      const waitElapsed = Date.now() - waitStart;
+      antiBotPassed = userMoved && waitElapsed > 5000;
 
-    const mineBtn = document.getElementById('mineButton');
-    const coinsDisplay = document.getElementById('coins');
-    const timerText = document.getElementById('timerText');
-
-    function getLastMineTime() {
-      return parseInt(localStorage.getItem('lastMine') || 0);
-    }
-
-    function updateTimer() {
-      const now = Date.now();
-      const lastMine = getLastMineTime();
-      const diff = cooldown - (now - lastMine);
-
-      if (diff > 0) {
+      if (antiBotPassed) {
+        mineBtn.disabled = false;
+        timerText.textContent = '';
+      } else {
         mineBtn.disabled = true;
-        const hrs = Math.floor(diff / (1000 * 60 * 60));
-        const mins = Math.floor
+        timerText.textContent = 'Move your finger or mouse and wait 5 seconds to enable mining.';
+      }
+    }
+  }
+
+  mineBtn.onclick = () => {
+    if (!antiBotPassed) {
+      alert("Bot protection active. Please interact with the page first.");
+      return;
+    }
+    mined += 1;
+    coinsDisplay.textContent = mined;
+    localStorage.setItem('lastMine', Date.now());
+    updateTimer();
+  };
+
+  setInterval(updateTimer, 1000);
+  updateTimer();
+</script>
