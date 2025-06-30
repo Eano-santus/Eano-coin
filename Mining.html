@@ -101,33 +101,9 @@
   </div>
 
   <script>
-  const cooldown = 24 * 60 * 60 * 1000; // 24 hours
-  let minedData = {};
+    const cooldown = 24 * 60 * 60 * 1000; // 24 hours
+    let minedData = {};
 
-function loadMinedData() {
-  try {
-    minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
-  } catch (e) {
-    minedData = {};
-  }
-}
-
-function getWalletMined(wallet) {
-  return minedData[wallet] || 0;
-}
-
-function incrementWalletMined(wallet) {
-  if (!minedData[wallet]) {
-    minedData[wallet] = 0;
-  }
-  minedData[wallet]++;
-  localStorage.setItem("minedData", JSON.stringify(minedData));
-}
-
-function updateMinedUI(wallet) {
-  coinsDisplay.textContent = getWalletMined(wallet);
-}
-    const cooldown = 24 * 60 * 60 * 1000;
     const mineBtn = document.getElementById('mineButton');
     const coinsDisplay = document.getElementById('coins');
     const timerText = document.getElementById('timerText');
@@ -139,9 +115,32 @@ function updateMinedUI(wallet) {
     let waitStart = Date.now();
     let antiBotPassed = false;
 
-    // ----------------------------
+    // Load mined data per wallet
+    function loadMinedData() {
+      try {
+        minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
+      } catch (e) {
+        minedData = {};
+      }
+    }
+
+    function getWalletMined(wallet) {
+      return minedData[wallet] || 0;
+    }
+
+    function incrementWalletMined(wallet) {
+      if (!minedData[wallet]) {
+        minedData[wallet] = 0;
+      }
+      minedData[wallet]++;
+      localStorage.setItem("minedData", JSON.stringify(minedData));
+    }
+
+    function updateMinedUI(wallet) {
+      coinsDisplay.textContent = getWalletMined(wallet);
+    }
+
     // Wallet logic
-    // ----------------------------
     function saveWallet() {
       const address = walletInput.value.trim();
       if (address.length < 5) {
@@ -151,6 +150,7 @@ function updateMinedUI(wallet) {
       localStorage.setItem("walletAddress", address);
       walletDisplay.textContent = address;
       walletInput.value = '';
+      updateMinedUI(address);
       updateTimer(); // recheck conditions
     }
 
@@ -158,6 +158,7 @@ function updateMinedUI(wallet) {
       const saved = localStorage.getItem("walletAddress");
       if (saved) {
         walletDisplay.textContent = saved;
+        updateMinedUI(saved);
       } else {
         walletDisplay.textContent = "Not set";
       }
@@ -167,9 +168,7 @@ function updateMinedUI(wallet) {
       return !!localStorage.getItem("walletAddress");
     }
 
-    // ----------------------------
-    // Mining logic
-    // ----------------------------
+    // Trust system
     function getTrust() {
       return parseInt(localStorage.getItem('trustScore') || 0);
     }
@@ -188,6 +187,7 @@ function updateMinedUI(wallet) {
       trustScoreDisplay.textContent = getTrust() + "%";
     }
 
+    // Mining timer
     function getLastMineTime() {
       return parseInt(localStorage.getItem('lastMine') || 0);
     }
@@ -228,8 +228,9 @@ function updateMinedUI(wallet) {
         alert("Mining not allowed. Make sure anti-bot is passed and wallet is set.");
         return;
       }
-      mined += 1;
-      coinsDisplay.textContent = mined;
+      const wallet = localStorage.getItem("walletAddress");
+      incrementWalletMined(wallet);
+      updateMinedUI(wallet);
       localStorage.setItem('lastMine', Date.now());
       increaseTrust();
       updateTimer();
@@ -245,10 +246,12 @@ function updateMinedUI(wallet) {
     document.addEventListener('mousemove', markUserMoved);
     document.addEventListener('touchstart', markUserMoved);
 
-    setInterval(updateTimer, 1000);
+    // INIT
+    loadMinedData();
     loadWallet();
     updateTrustUI();
     updateTimer();
+    setInterval(updateTimer, 1000);
   </script>
 </body>
 </html>
