@@ -1,236 +1,271 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
-      color: #f0f0f0;
-      text-align: center;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EANO Coin Mining</title>
+<link rel="stylesheet" href="style.css" />
+<script type="module" src="firebase.js"></script>
+<style>
+  /* Minimal inline styles for demo */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  header {
+    background: #222;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 {
+    margin: 0;
+    color: gold;
+  }
+  main {
+    flex-grow: 1;
+    padding: 20px 30px;
+    max-width: 500px;
+    margin: auto;
+    text-align: center;
+  }
+  #mineBtn {
+    background: gold;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: background 0.3s ease;
+  }
+  #mineBtn:disabled {
+    background: #888;
+    cursor: not-allowed;
+  }
+  #timer {
+    font-size: 1.2rem;
+    margin-top: 10px;
+  }
+  .info-box {
+    background: #222;
+    padding: 15px 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+    text-align: left;
+  }
+  button#logoutBtn {
+    background: transparent;
+    border: 1px solid gold;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: gold;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+  }
+  button#logoutBtn:hover {
+    background: gold;
+    color: black;
+  }
+  @media (max-width: 600px) {
+    main {
+      padding: 10px 15px;
+      width: 95%;
     }
-    .container {
-      padding: 2rem;
-    }
-    .card {
-      background: rgba(0, 0, 0, 0.6);
-      border-radius: 20px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    }
-    .mine-btn {
-      padding: 1rem 2rem;
-      background: gold;
-      color: black;
-      font-weight: bold;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-    .mine-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    input {
-      padding: 0.5rem;
-      width: 80%;
-      max-width: 300px;
-      border-radius: 8px;
-      border: none;
-    }
-    button {
-      margin: 0.5rem;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 8px;
-      background-color: gold;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <div id="auth-section" class="card">
-    <h2>Login to EANO Miner</h2>
-    <input type="email" id="email" placeholder="Email" required /><br/><br/>
-    <input type="password" id="password" placeholder="Password" required /><br/><br/>
-    <button id="loginBtn">Login</button>
-    <button id="signupBtn">Sign Up</button>
-    <p id="authMessage"></p>
-  </div>  <div id="dashboard" class="container" style="display: none;">
-    <div class="card">
-      <h1>Welcome to EANO Coin</h1>
-      <p id="usernameDisplay">Username: Loading...</p>
-      <p>Your Trust Score: <span id="trustScore">0</span></p>
-      <p>Trust Level: <span id="trustLevel">Loading...</span></p>
-      <p>Upgrade Level: <span id="upgradeLevel">Loading...</span></p>
-    </div>
-    <div class="card">
-      <h2>Mine EANO</h2>
-      <p>Next mining in: <span id="countdown">Loading...</span></p>
-      <button class="mine-btn" id="mineBtn">Mine</button>
-      <p id="output"></p>
-    </div>
-  </div>  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
+<header>
+  <h1>EANO Coin Mining</h1>
+  <button id="logoutBtn">Logout</button>
+</header>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+<main>
+  <div class="info-box">
+    <strong>User:</strong> <span id="userEmail">Loading...</span><br />
+    <strong>Balance:</strong> <span id="balance">0</span> EANO<br />
+    <strong>Referrals:</strong> <span id="referralsCount">0</span>
+  </div>
 
-    const loginBtn = document.getElementById("loginBtn");
-    const signupBtn = document.getElementById("signupBtn");
-    const authMessage = document.getElementById("authMessage");
-    const dashboard = document.getElementById("dashboard");
-    const authSection = document.getElementById("auth-section");
+  <button id="mineBtn">Mine EANO Coin</button>
+  <div id="timer"></div>
 
-    loginBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        authMessage.textContent = "Login successful!";
-      } catch (error) {
-        authMessage.textContent = error.message;
-      }
+  <h2>Leaderboard (Top Miners)</h2>
+  <div id="leaderboard">
+    Loading leaderboard...
+  </div>
+</main>
+
+<script type="module">
+import {
+  auth,
+  db,
+  onAuthStateChanged,
+  signOut,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  collection,
+  query,
+  orderBy,
+  limit,
+  getDocs,
+} from "./firebase.js";
+
+const userEmailEl = document.getElementById("userEmail");
+const balanceEl = document.getElementById("balance");
+const referralsCountEl = document.getElementById("referralsCount");
+const mineBtn = document.getElementById("mineBtn");
+const timerEl = document.getElementById("timer");
+const leaderboardEl = document.getElementById("leaderboard");
+const logoutBtn = document.getElementById("logoutBtn");
+
+let currentUser;
+let cooldownSeconds = 24 * 3600; // 24 hours
+let cooldownTimer;
+
+// Redirect if not logged in & setup user data
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+  currentUser = user;
+  userEmailEl.textContent = user.email;
+
+  // Load user data or create default
+  const userDocRef = doc(db, "users", user.uid);
+  const userDocSnap = await getDoc(userDocRef);
+  if (!userDocSnap.exists()) {
+    // Create user doc with initial data
+    await setDoc(userDocRef, {
+      balance: 0,
+      lastMined: 0,
+      referrals: 0,
     });
+  }
+  updateUserUI();
+  loadLeaderboard();
+});
 
-    signupBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        authMessage.textContent = "Account created! Logging in...";
-        await setDoc(doc(db, "miners", userCredential.user.uid), {
-          username: email.split('@')[0],
-          trustScore: 5,
-          coins: 0,
-          lastMined: new Date()
-        });
-      } catch (error) {
-        authMessage.textContent = error.message;
-      }
-    });
+logoutBtn.addEventListener("click", () => {
+  signOut(auth);
+});
 
-    function getTrust(score) {
-      if (score >= 1000) return 1000;
-      return Math.floor(score);
+// Load user info and update UI & timer
+async function updateUserUI() {
+  const userDocRef = doc(db, "users", currentUser.uid);
+  const userDocSnap = await getDoc(userDocRef);
+  if (!userDocSnap.exists()) return;
+
+  const data = userDocSnap.data();
+  balanceEl.textContent = data.balance ?? 0;
+  referralsCountEl.textContent = data.referrals ?? 0;
+
+  const lastMined = data.lastMined ?? 0;
+  const now = Math.floor(Date.now() / 1000);
+  const secondsPassed = now - lastMined;
+
+  if (secondsPassed >= cooldownSeconds) {
+    // Enable mining
+    mineBtn.disabled = false;
+    timerEl.textContent = "You can mine now!";
+  } else {
+    // Disable mining & start cooldown timer
+    mineBtn.disabled = true;
+    startCooldownTimer(cooldownSeconds - secondsPassed);
+  }
+}
+
+// Cooldown timer countdown
+function startCooldownTimer(secondsLeft) {
+  clearInterval(cooldownTimer);
+  updateTimerDisplay(secondsLeft);
+  cooldownTimer = setInterval(() => {
+    secondsLeft--;
+    if (secondsLeft <= 0) {
+      clearInterval(cooldownTimer);
+      mineBtn.disabled = false;
+      timerEl.textContent = "You can mine now!";
+    } else {
+      updateTimerDisplay(secondsLeft);
     }
+  }, 1000);
+}
 
-    function getTrustLevel(score) {
-      if (score >= 1000) return "Trusted Miner 💎";
-      if (score >= 500) return "Reliable Miner";
-      if (score >= 50) return "New Miner";
-      return "Needs Trust";
-    }
+function updateTimerDisplay(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  timerEl.textContent = `Next mine available in ${h}h ${m}m ${s}s`;
+}
 
-    function getUpgradeLevel(score) {
-      if (score >= 10000) return "Leaders";
-      if (score >= 5000) return "Masters";
-      if (score >= 1000) return "Professionals";
-      if (score >= 500) return "Elites";
-      if (score >= 50) return "Amateurs";
-      if (score >= 5) return "Starter";
-      return "Unranked";
-    }
+// Mining action
+mineBtn.addEventListener("click", async () => {
+  mineBtn.disabled = true;
 
-    function updateUI(data) {
-      document.getElementById("usernameDisplay").textContent = `Username: ${data.username}`;
-      document.getElementById("trustScore").textContent = getTrust(data.trustScore || 0);
-      document.getElementById("trustLevel").textContent = getTrustLevel(data.trustScore || 0);
-      document.getElementById("upgradeLevel").textContent = getUpgradeLevel(data.coins || 0);
-    }
+  const userDocRef = doc(db, "users", currentUser.uid);
+  const userDocSnap = await getDoc(userDocRef);
+  if (!userDocSnap.exists()) return;
 
-    function startCountdown(lastMined) {
-      const countdownEl = document.getElementById("countdown");
-      const nextMineTime = new Date(lastMined.toDate().getTime() + 86400000);
+  const data = userDocSnap.data();
+  const lastMined = data.lastMined ?? 0;
+  const now = Math.floor(Date.now() / 1000);
+  const secondsPassed = now - lastMined;
 
-      function updateCountdown() {
-        const now = new Date();
-        const diff = nextMineTime - now;
+  if (secondsPassed < cooldownSeconds) {
+    alert("Please wait until your cooldown expires.");
+    updateUserUI();
+    return;
+  }
 
-        if (diff <= 0) {
-          countdownEl.textContent = "Now!";
-          document.getElementById("mineBtn").disabled = false;
-          clearInterval(countdownTimer);
-        } else {
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff / (1000 * 60)) % 60);
-          const seconds = Math.floor((diff / 1000) % 60);
-          countdownEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
-        }
-      }
+  // Increment balance by 10 (example mining reward)
+  const newBalance = (data.balance ?? 0) + 10;
+  await updateDoc(userDocRef, {
+    balance: newBalance,
+    lastMined: now,
+  });
 
-      updateCountdown();
-      countdownTimer = setInterval(updateCountdown, 1000);
-    }
+  alert("You mined 10 EANO Coins!");
 
-    let countdownTimer;
+  updateUserUI();
+  loadLeaderboard();
+});
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        authSection.style.display = "none";
-        dashboard.style.display = "block";
+// Load leaderboard top 5 miners sorted by balance descending
+async function loadLeaderboard() {
+  leaderboardEl.textContent = "Loading leaderboard...";
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, orderBy("balance", "desc"), limit(5));
+  const querySnapshot = await getDocs(q);
 
-        const userRef = doc(db, "miners", user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          updateUI(data);
-          startCountdown(data.lastMined);
+  if (querySnapshot.empty) {
+    leaderboardEl.textContent = "No miners found.";
+    return;
+  }
 
-          const mineBtn = document.getElementById("mineBtn");
-          const output = document.getElementById("output");
+  let html = "<ol>";
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const email = data.email || "Unknown";
+    const bal = data.balance ?? 0;
+    html += `<li>${email}: ${bal} EANO</li>`;
+  });
+  html += "</ol>";
+  leaderboardEl.innerHTML = html;
+}
+</script>
 
-          mineBtn.onclick = async () => {
-            const snap = await getDoc(userRef);
-            const data = snap.data();
-            const now = new Date();
-            const last = data.lastMined.toDate();
-            if (now - last < 86400000) {
-              alert("You must wait 24 hours before mining again.");
-              return;
-            }
-
-            const newCoins = (data.coins || 0) + 1;
-            const newTrust = (data.trustScore || 0) + 1;
-
-            await updateDoc(userRef, {
-              coins: newCoins,
-              trustScore: newTrust,
-              lastMined: now
-            });
-
-            output.textContent = `Successfully mined! Total coins: ${newCoins}`;
-            updateUI({ ...data, coins: newCoins, trustScore: newTrust });
-            startCountdown({ toDate: () => now });
-          };
-        }
-      }
-    });
-  </script></body>
+</body>
 </html>
