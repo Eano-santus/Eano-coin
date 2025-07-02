@@ -1,112 +1,161 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EANO Coin Mining</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
-    body { font-family: Arial; padding: 20px; text-align: center; }
-    #mineBtn { padding: 10px 20px; font-size: 18px; }
-    #walletInput { padding: 10px; width: 60%; }
-    #status, #referralInfo { margin-top: 15px; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #facc15;
+    }
+    .container {
+      background: #161b22;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.3);
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+    }
+    input {
+      width: 80%;
+    }
+    button {
+      background-color: #facc15;
+      color: #000;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #fde047;
+    }
+    #status {
+      margin-top: 10px;
+      color: #22c55e;
+    }
   </style>
 </head>
 <body>
   <h1>EANO Coin Mining</h1>
-
-  <input type="text" id="walletInput" placeholder="Enter your EANO Wallet Address">
-  <br><br>
-  <button id="mineBtn">Mine EANO</button>
-  <div id="status">⛏ Mined: <span id="minedDisplay">0</span> EANO</div>
-  <div id="referralInfo"></div>
-
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+  <div class="container">
+    <p>Enter your wallet address:</p>
+    <input type="text" id="walletInput" placeholder="Wallet address" />
+    <p>Trust Score: <span id="trustScore">0</span></p>
+    <p>Total Mined: <span id="minedCount">0</span></p>
+    <p>Referrals: <span id="referralCount">0</span></p>
+    <button onclick="mineCoin()">Mine EANO Coin</button>
+    <button onclick="exportData()">Export Backup</button>
+    <button onclick="goToLeaderboard()">Leaderboard</button>
+    <p id="status"></p>
+  </div>  <script>
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_AUTH_DOMAIN",
       projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_BUCKET",
-      messagingSenderId: "YOUR_SENDER_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    console.log("✅ Firebase connected");
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     const walletInput = document.getElementById("walletInput");
-    const mineBtn = document.getElementById("mineBtn");
-    const minedDisplay = document.getElementById("minedDisplay");
-    const referralInfo = document.getElementById("referralInfo");
+    const minedCountEl = document.getElementById("minedCount");
+    const trustScoreEl = document.getElementById("trustScore");
+    const referralCountEl = document.getElementById("referralCount");
+    const statusEl = document.getElementById("status");
 
-    let minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
+    let mined = 0;
+    let trust = 50;
+    let referrals = 0;
 
-    function getTrust() {
-      return Math.floor(Math.random() * 100); // You can make this smarter
+    function mineCoin() {
+      const wallet = walletInput.value.trim();
+      if (!wallet) {
+        statusEl.textContent = "Please enter a wallet address.";
+        return;
+      }
+
+      mined++;
+      trust += 1;
+      updateUI();
+      saveToFirebase(wallet);
     }
 
-    // Load referrer from ?ref=
+    function updateUI() {
+      minedCountEl.textContent = mined;
+      trustScoreEl.textContent = trust;
+      referralCountEl.textContent = referrals;
+    }
+
+    function saveToFirebase(wallet) {
+      db.collection("miners").doc(wallet).set({
+        wallet,
+        mined,
+        trust,
+        referrals,
+        timestamp: new Date().toISOString(),
+      })
+      .then(() => statusEl.textContent = "Data saved.")
+      .catch((err) => statusEl.textContent = "Error: " + err.message);
+    }
+
+    function exportData() {
+      const wallet = walletInput.value.trim();
+      if (!wallet) {
+        alert("Enter wallet first");
+        return;
+      }
+      const data = {
+        wallet,
+        mined,
+        trust,
+        referrals,
+        timestamp: new Date().toISOString(),
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = wallet + "_EANO_backup.json";
+      a.click();
+    }
+
+    function goToLeaderboard() {
+      window.location.href = "leaderboard.html";
+    }
+
+    // Handle referrals
     const urlParams = new URLSearchParams(window.location.search);
-    const referrer = urlParams.get("ref");
-    if (referrer) {
-      localStorage.setItem("referrer", referrer);
-      referralInfo.innerText = `You were referred by: ${referrer}`;
-    }
-
-    // Update display if user has mined before
-    walletInput.addEventListener("input", () => {
-      const wallet = walletInput.value.trim();
-      if (wallet && minedData[wallet]) {
-        minedDisplay.textContent = minedData[wallet];
-      } else {
-        minedDisplay.textContent = "0";
-      }
-    });
-
-    mineBtn.onclick = async () => {
-      const wallet = walletInput.value.trim();
-      if (!wallet) return alert("Enter a valid wallet address");
-
-      // Update mined data
-      if (!minedData[wallet]) {
-        minedData[wallet] = 0;
-
-        // First-time miner: Give referral credit
-        const storedReferrer = localStorage.getItem("referrer");
-        if (storedReferrer && storedReferrer !== wallet) {
-          try {
-            const refDoc = doc(db, "miners", storedReferrer);
-            await updateDoc(refDoc, { referrals: increment(1) });
-            console.log("✅ Referrer credited:", storedReferrer);
-          } catch (e) {
-            console.log("⚠️ Could not credit referrer:", e.message);
-          }
+    const ref = urlParams.get("ref");
+    if (ref) {
+      // Increase referral count for the referrer in Firebase
+      const refDoc = db.collection("miners").doc(ref);
+      refDoc.get().then(doc => {
+        if (doc.exists) {
+          const current = doc.data();
+          const updated = {
+            ...current,
+            referrals: (current.referrals || 0) + 1,
+            timestamp: new Date().toISOString()
+          };
+          refDoc.set(updated);
         }
-      }
-
-      minedData[wallet]++;
-      localStorage.setItem("minedData", JSON.stringify(minedData));
-      minedDisplay.textContent = minedData[wallet];
-
-      // Save to Firestore
-      try {
-        const minerRef = doc(db, "miners", wallet);
-        await setDoc(minerRef, {
-          wallet,
-          mined: minedData[wallet],
-          trust: getTrust(),
-          referrals: 0,
-          timestamp: new Date().toISOString()
-        }, { merge: true });
-
-        console.log("✅ Synced to Firestore");
-      } catch (err) {
-        console.error("❌ Firestore error:", err);
-      }
-    };
-  </script>
-</body>
+      });
+    }
+  </script></body>
 </html>
