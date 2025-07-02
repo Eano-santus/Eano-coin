@@ -1,21 +1,60 @@
-<!-- signup.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign Up - EANO Coin</title>
+  <meta charset="UTF-8" />
+  <title>Signup – EANO Coin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    .form-box {
+      background: #222;
+      padding: 2rem;
+      border-radius: 15px;
+      display: inline-block;
+      max-width: 400px;
+      margin: auto;
+    }
+    input {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 10px;
+    }
+    button {
+      background: gold;
+      color: black;
+      font-weight: bold;
+      border: none;
+      padding: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h2>Create EANO Account</h2>
-  <form id="signupForm">
+  <h2>Sign Up to EANO Coin</h2>
+  <div class="form-box">
+    <input type="text" id="username" placeholder="Username" required />
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
-    <button type="submit">Sign Up</button>
-  </form>
-  <p id="errorMsg" style="color:red;"></p>
+    <input type="text" id="referral" placeholder="Referral (Optional)" />
+    <button id="signupBtn">Sign Up</button>
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+    <p id="msg"></p>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -28,18 +67,39 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
+    const signupBtn = document.getElementById("signupBtn");
+    const msg = document.getElementById("msg");
+
+    signupBtn.addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
-      const errorMsg = document.getElementById("errorMsg");
+      const username = document.getElementById("username").value.trim();
+      const referral = document.getElementById("referral").value.trim();
+
+      if (!email || !password || !username) {
+        msg.textContent = "Please fill all required fields.";
+        return;
+      }
 
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        window.location.href = "index.html";
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCred.user.uid;
+
+        await setDoc(doc(db, "miners", uid), {
+          email,
+          username,
+          coins: 0,
+          trustScore: 5,
+          lastMined: serverTimestamp(),
+          referral: referral || "",
+        });
+
+        msg.textContent = "Signup successful! Redirecting...";
+        setTimeout(() => window.location.href = "index.html", 1000);
       } catch (error) {
-        errorMsg.textContent = error.message;
+        msg.textContent = "Error: " + error.message;
       }
     });
   </script>
