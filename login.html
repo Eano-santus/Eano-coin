@@ -73,3 +73,18 @@
   </script>
 </body>
 </html>
+<form id="loginForm">
+  <input type="email" id="email" required />
+  <input type="password" id="password" required />
+  <button type="submit">Login</button>
+</form>
+
+<script>
+  const loginForm = document.getElementById("loginForm");
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = loginForm.email.value;
+    const password = loginForm.password.value;
+    login(email, password);
+  });
+</script>
