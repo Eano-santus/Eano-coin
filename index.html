@@ -3,216 +3,162 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin App</title>
+  <title>EANO Coin</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
   <style>
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Roboto', sans-serif;
     }
+
     body {
-      background: #0f0f0f; color: #fff;
-      display: flex; flex-direction: column;
-    }
-
-    .auth-screen {
-      height: 100vh;
-      display: flex; justify-content: center; align-items: center;
-      flex-direction: column; gap: 20px;
-    }
-    .auth-screen input, .auth-screen button {
-      padding: 10px; border-radius: 6px; border: none;
-    }
-    .auth-screen button {
-      background: gold; font-weight: bold;
-      cursor: pointer;
-    }
-
-    .app-container {
-      display: flex;
-      height: 100vh;
-      display: none; /* Hidden until login */
-    }
-
-    .sidebar {
-      width: 220px;
-      background: #1b1b1b;
-      padding: 20px;
+      background: #0f0f0f;
+      color: #fff;
       display: flex;
       flex-direction: column;
-      border-right: 2px solid #333;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
     }
 
-    .sidebar h2 {
-      color: gold;
+    .auth-container {
+      width: 90%;
+      max-width: 400px;
+      background: #1b1b1b;
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
+
+    .auth-container h2 {
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      color: gold;
     }
 
-    .menu-item {
-      padding: 10px;
-      color: #ccc;
-      cursor: pointer;
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
       border-radius: 6px;
-      font-size: 15px;
-    }
-    .menu-item:hover {
-      background: #333;
+      background: #2b2b2b;
       color: #fff;
     }
 
-    .topbar {
-      position: fixed;
-      top: 0; left: 220px; right: 0;
-      height: 60px;
-      background: #222;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      z-index: 10;
-    }
-
-    .topbar .lang {
-      font-size: 14px;
-      color: gold;
-    }
-
-    .balance {
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .main-content {
-      margin-left: 220px;
-      margin-top: 60px;
-      padding: 20px;
+    .btn {
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      text-align: center;
-    }
-
-    .eano-logo {
-      width: 180px; height: 180px;
-      background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center center;
-      background-size: contain;
-    }
-
-    .update-message {
-      font-size: 18px;
-      color: #aaa;
-    }
-
-    .mine-btn {
+      padding: 12px;
       background: gold;
       color: black;
-      padding: 10px 20px;
+      font-weight: bold;
       border: none;
       border-radius: 6px;
-      font-weight: bold;
+      margin-top: 10px;
       cursor: pointer;
     }
 
-    .mine-btn:hover {
+    .btn:hover {
       background: #ffd700;
     }
 
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 100px;
-        font-size: 12px;
+    .switch-auth {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .switch-auth span {
+      color: gold;
+      cursor: pointer;
+    }
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      width: 100px;
+    }
+
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 20px 15px;
       }
-      .topbar {
-        left: 100px;
-      }
-      .main-content {
-        margin-left: 100px;
-      }
-      .mine-btn {
-        width: 90%;
+      input, .btn {
+        padding: 10px;
+        font-size: 15px;
       }
     }
   </style>
 </head>
 <body>
-
-  <!-- Signup/Login Screen -->
-  <div class="auth-screen" id="authScreen">
-    <h2>EANO Login</h2>
-    <input type="text" id="username" placeholder="Enter username"/>
-    <input type="password" id="password" placeholder="Enter password"/>
-    <button onclick="login()">Login</button>
-  </div>
-
-  <!-- App Main Page -->
-  <div class="app-container" id="appContainer">
-    <!-- leftbar -->
-    <div class="menu-item">Mine</div>
-      <div class="menu-item">Invite</div>
-    <!-- leftbar Menu -->
-    <div class="sidebar">
-      <h2>MENU</h2>
-       <div class="menu-item">Leaderboard</div>
-      <div class="menu-item">TrustScore</div>
-      <div class="menu-item">Level Scores</div>
-      <div class="menu-item">Referrals</div>
-      <div class="menu-item">Profile</div>
-      <div class="menu-item">White Paper</div>
-      <div class="menu-item">Team</div>
-      <div class="menu-item">Author</div>
-      <div class="menu-item"><a href="https://t.me/eanocoin" style="color: gold;" target="_blank">Support Portal</a></div>
+  <div class="auth-container" id="auth-box">
+    <div class="logo">
+      <img src="https://eano-santus.github.io/eano-coin/assets/eano-gold.png" alt="EANO Logo"/>
     </div>
+    <h2 id="form-title">Sign Up</h2>
+    <input type="text" placeholder="Username" id="username">
+    <input type="email" placeholder="Email" id="email">
+    <input type="password" placeholder="Password" id="password">
+    <button class="btn" onclick="handleAuth()">Create Account</button>
 
-    <!-- Topbar -->
-    <div class="topbar">
-      <div class="balance">EANO: <span id="balance">0.000</span></div>
-      <div class="balance">Mining: <span id="counting">0.000</span>/24h</div>
-      <div class="lang">🌐 Language</div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-      <div class="eano-logo"></div>
-      <div class="update-message">🚧 New Updates Coming Soon 🚧</div>
-      <button class="mine-btn" onclick="startMining()">Mine Now</button>
+    <div class="switch-auth">
+      Already have an account? <span onclick="toggleForm()">Login</span>
     </div>
   </div>
 
   <script>
-    let balance = 0;
-    let mining = false;
+    let isLogin = false;
 
-    function login() {
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
+    function toggleForm() {
+      const title = document.getElementById('form-title');
+      const button = document.querySelector('.btn');
+      const switchText = document.querySelector('.switch-auth');
+      const emailField = document.getElementById('email');
 
-      if (user && pass) {
-        document.getElementById('authScreen').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'flex';
+      isLogin = !isLogin;
+
+      if (isLogin) {
+        title.innerText = "Login";
+        button.innerText = "Login";
+        switchText.innerHTML = `Don't have an account? <span onclick="toggleForm()">Sign Up</span>`;
+        emailField.style.display = "none";
       } else {
-        alert("Please enter username and password.");
+        title.innerText = "Sign Up";
+        button.innerText = "Create Account";
+        switchText.innerHTML = `Already have an account? <span onclick="toggleForm()">Login</span>`;
+        emailField.style.display = "block";
       }
     }
 
-    function startMining() {
-      if (!mining) {
-        mining = true;
-        let rate = 0.001;
-        let interval = setInterval(() => {
-          if (mining) {
-            balance += rate;
-            document.getElementById("balance").innerText = balance.toFixed(3);
-            document.getElementById("counting").innerText = (24 * rate).toFixed(3);
-          } else {
-            clearInterval(interval);
-          }
-        }, 1000);
+    function handleAuth() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      if (isLogin) {
+        alert("Logging in user: " + username);
+        // Firebase login here
+      } else {
+        const email = document.getElementById('email').value;
+        if (!email) {
+          alert("Email is required");
+          return;
+        }
+        alert("Creating account for: " + username);
+        // Firebase signup here
       }
     }
   </script>
-
 </body>
 </html>
