@@ -5,6 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Mining</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f2f2f2;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    form, .dashboard {
+      max-width: 400px;
+      margin: auto;
+      padding: 15px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    input, button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+    }
+    #dashboard {
+      display: none;
+    }
+  </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
@@ -23,11 +50,6 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    function getTrust(score) {
-      if (score >= 100) return 100;
-      return Math.floor(score);
-    }
-
     function getTrustLevel(score) {
       if (score >= 80) return "Trusted Miner 💎";
       if (score >= 50) return "Reliable Miner";
@@ -45,21 +67,22 @@
       return "Unranked";
     }
 
-    function updateTrustUI(score) {
-      document.getElementById("trustScore").textContent = getTrust(score);
-      document.getElementById("trustLevel").textContent = getTrustLevel(score);
-      document.getElementById("upgradeLevel").textContent = getUpgradeLevel(score);
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
       const signupForm = document.getElementById("signup-form");
       const loginForm = document.getElementById("login-form");
-      const mineButton = document.getElementById("mine-btn");
-      const output = document.getElementById("output");
-      const authSection = document.getElementById("auth-section");
       const dashboard = document.getElementById("dashboard");
-      const userEmailDisplay = document.getElementById("userEmail");
+      const welcome = document.getElementById("welcome");
+      const mineButton = document.getElementById("mine-btn");
       const logoutBtn = document.getElementById("logout-btn");
+
+      const userInfo = {
+        username: document.getElementById("dash-username"),
+        trustScore: document.getElementById("dash-trust"),
+        trustLevel: document.getElementById("dash-trustLevel"),
+        upgradeLevel: document.getElementById("dash-upgradeLevel"),
+        coins: document.getElementById("dash-coins"),
+        status: document.getElementById("mine-status")
+      };
 
       let currentUser = null;
 
@@ -73,32 +96,31 @@
         try {
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
-
           const userDoc = doc(db, "miners", user.uid);
           const initialScore = 5;
 
           await setDoc(userDoc, {
-            email: user.email,
-            username: username,
+            email,
+            username,
             coins: initialScore,
             trustScore: initialScore,
             referredBy: referral || "",
             lastMined: new Date(),
           });
 
+          // Give referral bonus
           if (referral !== "") {
             const refQuery = doc(db, "miners", referral);
             const refSnap = await getDoc(refQuery);
             if (refSnap.exists()) {
-              const refData = refSnap.data();
-              const refScore = (refData.trustScore || 0) + 5;
+              const refScore = (refSnap.data().trustScore || 0) + 5;
               await updateDoc(refQuery, { trustScore: refScore });
             }
           }
 
-          alert("Signup successful! You can now log in and mine.");
-        } catch (error) {
-          alert(error.message);
+          alert("Signup successful! Please log in.");
+        } catch (err) {
+          alert(err.message);
         }
       });
 
@@ -108,103 +130,101 @@
         const password = loginForm["login-password"].value;
         try {
           await signInWithEmailAndPassword(auth, email, password);
-          alert("Login successful!");
-        } catch (error) {
-          alert(error.message);
-        }
-      });
-
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          currentUser = user;
-          authSection.style.display = "none";
-          dashboard.style.display = "block";
-          userEmailDisplay.textContent = user.email;
-
-          const userDoc = doc(db, "miners", user.uid);
-          const userSnap = await getDoc(userDoc);
-          if (userSnap.exists()) {
-            const data = userSnap.data();
-            updateTrustUI(data.coins || 0);
-          }
-        } else {
-          currentUser = null;
-          authSection.style.display = "block";
-          dashboard.style.display = "none";
+        } catch (err) {
+          alert(err.message);
         }
       });
 
       logoutBtn.addEventListener("click", async () => {
         await signOut(auth);
-        alert("Logged out!");
+      });
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          currentUser = user;
+          const docRef = doc(db, "miners", user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            // UI Update
+            signupForm.style.display = "none";
+            loginForm.style.display = "none";
+            dashboard.style.display = "block";
+
+            userInfo.username.textContent = data.username;
+            userInfo.trustScore.textContent = data.trustScore || 0;
+            userInfo.trustLevel.textContent = getTrustLevel(data.trustScore || 0);
+            userInfo.upgradeLevel.textContent = getUpgradeLevel(data.coins || 0);
+            userInfo.coins.textContent = data.coins || 0;
+          }
+        } else {
+          currentUser = null;
+          signupForm.style.display = "block";
+          loginForm.style.display = "block";
+          dashboard.style.display = "none";
+        }
       });
 
       mineButton.addEventListener("click", async () => {
-        if (!currentUser) {
-          alert("Please log in first");
-          return;
+        if (!currentUser) return alert("Please log in first.");
+        const docRef = doc(db, "miners", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const newCoins = (data.coins || 0) + 1;
+          const newTrust = (data.trustScore || 0) + 1;
+          const level = getUpgradeLevel(newCoins);
+
+          await updateDoc(docRef, {
+            coins: newCoins,
+            trustScore: newTrust,
+            lastMined: new Date()
+          });
+
+          // UI Update
+          userInfo.status.textContent = `Mined 1 EANO. Total: ${newCoins}`;
+          userInfo.trustScore.textContent = newTrust;
+          userInfo.trustLevel.textContent = getTrustLevel(newTrust);
+          userInfo.upgradeLevel.textContent = level;
+          userInfo.coins.textContent = newCoins;
         }
-
-        const userDoc = doc(db, "miners", currentUser.uid);
-        const userSnap = await getDoc(userDoc);
-
-        let newCoins = 1;
-        let trustScore = 1;
-
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-          newCoins = (data.coins || 0) + 1;
-          trustScore = (data.trustScore || 0) + 1;
-        }
-
-        const level = getUpgradeLevel(newCoins);
-
-        await setDoc(userDoc, {
-          ...userSnap.data(),
-          coins: newCoins,
-          trustScore: trustScore,
-          level: level,
-          lastMined: new Date()
-        });
-
-        updateTrustUI(newCoins);
-        output.innerText = `Mined 1 EANO! Total: ${newCoins} | Level: ${level}`;
       });
     });
   </script>
 </head>
 <body>
+
   <h1>EANO Coin Mining</h1>
 
-  <!-- Auth Section -->
-  <div id="auth-section">
-    <form id="signup-form">
-      <h2>Create Account</h2>
-      <input type="text" id="signup-username" placeholder="Username" required />
-      <input type="email" id="signup-email" placeholder="Email" required />
-      <input type="password" id="signup-password" placeholder="Password" required />
-      <input type="text" id="signup-referral" placeholder="Referral (optional)" />
-      <button type="submit">Sign Up</button>
-    </form>
+  <form id="signup-form">
+    <h2>Create Account</h2>
+    <input type="text" id="signup-username" placeholder="Username" required />
+    <input type="email" id="signup-email" placeholder="Email" required />
+    <input type="password" id="signup-password" placeholder="Password" required />
+    <input type="text" id="signup-referral" placeholder="Referral (optional)" />
+    <button type="submit">Sign Up</button>
+  </form>
 
-    <form id="login-form">
-      <h2>Login</h2>
-      <input type="email" id="login-email" placeholder="Email" required />
-      <input type="password" id="login-password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-  </div>
+  <form id="login-form">
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email" required />
+    <input type="password" id="login-password" placeholder="Password" required />
+    <button type="submit">Login</button>
+  </form>
 
-  <!-- Dashboard Section -->
-  <div id="dashboard" style="display: none;">
-    <h2>Welcome to EANO Coin!</h2>
-    <p><strong>Logged in as:</strong> <span id="userEmail">...</span></p>
-    <p><strong>Total Coins:</strong> <span id="trustScore">0</span></p>
-    <p><strong>Trust Level:</strong> <span id="trustLevel">Loading...</span></p>
-    <p><strong>Upgrade Level:</strong> <span id="upgradeLevel">Loading...</span></p>
-    <button id="mine-btn">⛏️ Mine Coin</button>
-    <p id="output"></p>
+  <div id="dashboard" class="dashboard">
+    <h2>Welcome to EANO Coin 🎉</h2>
+    <p><strong>Username:</strong> <span id="dash-username">...</span></p>
+    <p><strong>Trust Score:</strong> <span id="dash-trust">0</span></p>
+    <p><strong>Trust Level:</strong> <span id="dash-trustLevel">...</span></p>
+    <p><strong>Upgrade Level:</strong> <span id="dash-upgradeLevel">...</span></p>
+    <p><strong>Total Coins:</strong> <span id="dash-coins">0</span></p>
+    <p id="mine-status">Click mine to start</p>
+    <button id="mine-btn">Mine 1 EANO</button>
     <button id="logout-btn">Logout</button>
   </div>
+
 </body>
 </html>
