@@ -1,100 +1,118 @@
+/* Reset and base styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
 body {
-  font-family: sans-serif;
-  background: #000;
-  color: #eee;
-  padding: 20px;
-  text-align: center;
-}
-
-header {
-  background: #111;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.motto {
-  font-style: italic;
-  color: #ffaa00;
-}
-
-main {
-  margin-top: 30px;
-  background: #1a1a1a;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-h2 {
-  color: #00ffcc;
-}
-
-ul {
-  text-align: left;
-  max-width: 400px;
-  margin: auto;
-}
-
-footer {
-  margin-top: 60px;
-  font-size: 14px;
-  color: #555;
-}
-}
-.logo {
-<img src="logo.png" alt="EANO Coin Logo" class="logo" style="width: 100px; height: auto;" />
-}
-.whitepaper-link {
-  text-align: center;
-  margin: 30px 0;
-}
-
-.whitepaper-button {
-  background-color: #2d2d2d;
+  background: #0f0f0f;
   color: #fff;
-  padding: 12px 20px;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
-  display: inline-block;
-  transition: background-color 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.whitepaper-button:hover {
-  background-color: #444;
+/* Topbar */
+.topbar {
+  height: 60px;
+  background: #222;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 240px;
+  right: 0;
+  z-index: 1000;
 }
-.wallet-setup {
-  background: #111;
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: #1b1b1b;
   padding: 20px;
-  margin-top: 30px;
-  border-radius: 10px;
-  display: inline-block;
-  color: #eee;
-  box-shadow: 0 0 5px rgba(255,255,255,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
 }
 
-.wallet-setup input {
+.sidebar h2 {
+  font-size: 22px;
+  color: gold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.menu-item {
   padding: 10px;
-  font-size: 16px;
-  margin-top: 10px;
-  width: 80%;
-  border: 1px solid #444;
+  color: #ccc;
+  cursor: pointer;
   border-radius: 6px;
-  background-color: #000;
+}
+
+.menu-item:hover {
+  background: #333;
   color: #fff;
 }
 
-.wallet-setup button {
+/* Content Area */
+.content {
+  margin-left: 240px;
+  margin-top: 60px;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.eano-logo {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center center;
+  background-size: contain;
+}
+
+.update-message {
+  font-size: 18px;
+  color: #aaa;
   margin-top: 10px;
+}
+
+/* Mining Button */
+.mine-btn {
+  margin-top: 20px;
+  background: gold;
+  color: black;
   padding: 10px 20px;
-  background-color: #ffaa00;
-  color: #000;
-  font-weight: bold;
   border: none;
   border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.wallet-setup button:hover {
-  background-color: #ffcc33;
+.mine-btn:hover {
+  background: #ffd700;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .topbar {
+    left: 0;
+  }
+
+  .content {
+    margin-left: 0;
+    margin-top: 120px;
+  }
 }
