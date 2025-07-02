@@ -1,9 +1,10 @@
-<!DOCTYPE html><html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Coin Mining</title>
+  <title>EANO Coin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
   <style>
     * {
       margin: 0;
@@ -11,23 +12,24 @@
       box-sizing: border-box;
       font-family: 'Roboto', sans-serif;
     }body {
-  background: #0f0f0f;
-  color: #fff;
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
+  background: #0f0f0f;
+  color: #fff;
 }
 
 .topbar {
   height: 50px;
   background: #222;
-  color: gold;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 0 15px;
-  font-size: 14px;
+}
+
+.topbar .language {
+  color: #ccc;
 }
 
 .main {
@@ -37,90 +39,72 @@
 }
 
 .sidebar {
-  width: 180px;
+  width: 200px;
   background: #1b1b1b;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border-right: 1px solid #333;
-  font-size: 13px;
+  padding: 10px;
+  overflow-y: auto;
 }
 
 .sidebar h2 {
+  font-size: 18px;
   color: gold;
-  font-size: 16px;
   margin-bottom: 10px;
 }
 
 .menu-item {
   padding: 8px;
   color: #ccc;
-  border-radius: 5px;
   cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 .menu-item:hover {
   background: #333;
-  color: #fff;
 }
 
 .content {
   flex: 1;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 10px;
   text-align: center;
 }
 
 .eano-logo {
-  width: 140px;
-  height: 140px;
+  width: 150px;
+  height: 150px;
   background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center center;
   background-size: contain;
+  margin-bottom: 20px;
 }
 
 .update-message {
-  font-size: 15px;
+  font-size: 16px;
   color: #aaa;
 }
 
 .mine-btn {
+  margin-top: 20px;
   background: gold;
   color: black;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: none;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
 }
 
-.mine-btn:hover {
-  background: #ffd700;
-}
-
-.language-select {
-  font-size: 12px;
-  color: white;
-}
-
   </style>
-</head>
-<body>
+</head><body>
   <div class="topbar">
-    <select class="language-select">
-      <option>🌍 English</option>
-      <option>🌍 Igbo</option>
-      <option>🌍 French</option>
-      <option>🌍 Swahili</option>
-      <option>🌍 Auto</option>
-    </select>
-    <div>EANO Balance: <span id="balance">0.000</span></div>
-    <div>Mining: <span id="counting">0.000</span>/24h</div>
-  </div>  <div class="main">
+    <div class="language">🌍 Language</div>
+    <div class="balance">EANO Balance: <span id="balance">0.000</span></div>
+    <div class="balance">Mining: <span id="counting">0.000</span>/24h</div>
+  </div>
+  <div class="main">
     <div class="sidebar">
       <h2>MENU</h2>
       <div class="menu-item">Mine</div>
@@ -133,31 +117,48 @@
       <div class="menu-item">White Paper</div>
       <div class="menu-item">Team</div>
       <div class="menu-item">Author</div>
-      <div class="menu-item" onclick="window.open('https://t.me/eanocoin', '_blank')">Support Portal</div>
-    </div><div class="content">
-  <div class="eano-logo"></div>
-  <div class="update-message">🚧 New Updates Coming Soon 🚧</div>
-  <button class="mine-btn" onclick="startMining()">Mine</button>
-</div>
+      <div class="menu-item"><a href="https://t.me/eanocoin" target="_blank" style="color: inherit; text-decoration: none;">Support Portal</a></div>
+    </div>
+    <div class="content">
+      <div class="eano-logo"></div>
+      <div class="update-message">🚧 New Updates Coming Soon 🚧</div>
+      <button class="mine-btn" onclick="startMining()">Start Mining</button>
+    </div>
+  </div>
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
 
-  </div>  <script>
-    let balance = 0;
-    let mining = false;
-
-    function startMining() {
-      if (!mining) {
-        mining = true;
-        let mineRate = 0.001;
-        let interval = setInterval(() => {
-          if (mining) {
-            balance += mineRate;
-            document.getElementById("balance").innerText = balance.toFixed(3);
-            document.getElementById("counting").innerText = (24 * mineRate).toFixed(3);
-          } else {
-            clearInterval(interval);
-          }
-        }, 1000);
+let balance = 0;
+let mining = false;
+function startMining() {
+  if (!mining) {
+    mining = true;
+    let mineRate = 0.001;
+    let interval = setInterval(() => {
+      if (mining) {
+        balance += mineRate;
+        document.getElementById("balance").innerText = balance.toFixed(3);
+        document.getElementById("counting").innerText = (24 * mineRate).toFixed(3);
+      } else {
+        clearInterval(interval);
       }
-    }
-  </script></body>
-</html>
+    }, 1000);
+  }
+}
+
+  </script>
+</body></html>
