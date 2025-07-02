@@ -8,7 +8,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -24,13 +24,13 @@
     const auth = getAuth(app);
 
     function getTrust(score) {
-      if (score >= 200) return 100;
+      if (score >= 100) return 100;
       return Math.floor(score);
     }
 
     function getTrustLevel(score) {
-      if (score >= 500) return "Trusted Miner 💎";
-      if (score >= 200) return "Reliable Miner";
+      if (score >= 80) return "Trusted Miner 💎";
+      if (score >= 50) return "Reliable Miner";
       if (score >= 30) return "New Miner";
       return "Needs Trust";
     }
@@ -56,6 +56,10 @@
       const loginForm = document.getElementById("login-form");
       const mineButton = document.getElementById("mine-btn");
       const output = document.getElementById("output");
+      const authSection = document.getElementById("auth-section");
+      const dashboard = document.getElementById("dashboard");
+      const userEmailDisplay = document.getElementById("userEmail");
+      const logoutBtn = document.getElementById("logout-btn");
 
       let currentUser = null;
 
@@ -82,7 +86,6 @@
             lastMined: new Date(),
           });
 
-          // Give referrer +5 trustScore
           if (referral !== "") {
             const refQuery = doc(db, "miners", referral);
             const refSnap = await getDoc(refQuery);
@@ -114,6 +117,10 @@
       onAuthStateChanged(auth, async (user) => {
         if (user) {
           currentUser = user;
+          authSection.style.display = "none";
+          dashboard.style.display = "block";
+          userEmailDisplay.textContent = user.email;
+
           const userDoc = doc(db, "miners", user.uid);
           const userSnap = await getDoc(userDoc);
           if (userSnap.exists()) {
@@ -122,7 +129,14 @@
           }
         } else {
           currentUser = null;
+          authSection.style.display = "block";
+          dashboard.style.display = "none";
         }
+      });
+
+      logoutBtn.addEventListener("click", async () => {
+        await signOut(auth);
+        alert("Logged out!");
       });
 
       mineButton.addEventListener("click", async () => {
@@ -162,27 +176,35 @@
 <body>
   <h1>EANO Coin Mining</h1>
 
-  <form id="signup-form">
-    <h2>Create Account</h2>
-    <input type="text" id="signup-username" placeholder="Username" required />
-    <input type="email" id="signup-email" placeholder="Email" required />
-    <input type="password" id="signup-password" placeholder="Password" required />
-    <input type="text" id="signup-referral" placeholder="Referral (optional)" />
-    <button type="submit">Sign Up</button>
-  </form>
+  <!-- Auth Section -->
+  <div id="auth-section">
+    <form id="signup-form">
+      <h2>Create Account</h2>
+      <input type="text" id="signup-username" placeholder="Username" required />
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input type="password" id="signup-password" placeholder="Password" required />
+      <input type="text" id="signup-referral" placeholder="Referral (optional)" />
+      <button type="submit">Sign Up</button>
+    </form>
 
-  <form id="login-form">
-    <h2>Login</h2>
-    <input type="email" id="login-email" placeholder="Email" required />
-    <input type="password" id="login-password" placeholder="Password" required />
-    <button type="submit">Login</button>
-  </form>
+    <form id="login-form">
+      <h2>Login</h2>
+      <input type="email" id="login-email" placeholder="Email" required />
+      <input type="password" id="login-password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
 
-  <button id="mine-btn">Mine Coin</button>
-
-  <p id="output"></p>
-  <p>Your Trust Score: <span id="trustScore">0</span></p>
-  <p>Trust Level: <span id="trustLevel">Loading...</span></p>
-  <p>Upgrade Level: <span id="upgradeLevel">Loading...</span></p>
+  <!-- Dashboard Section -->
+  <div id="dashboard" style="display: none;">
+    <h2>Welcome to EANO Coin!</h2>
+    <p><strong>Logged in as:</strong> <span id="userEmail">...</span></p>
+    <p><strong>Total Coins:</strong> <span id="trustScore">0</span></p>
+    <p><strong>Trust Level:</strong> <span id="trustLevel">Loading...</span></p>
+    <p><strong>Upgrade Level:</strong> <span id="upgradeLevel">Loading...</span></p>
+    <button id="mine-btn">⛏️ Mine Coin</button>
+    <p id="output"></p>
+    <button id="logout-btn">Logout</button>
+  </div>
 </body>
 </html>
