@@ -1,98 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EANO Coin Dashboard</title>
-<link rel="stylesheet" href="style.css" />
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EANO Coin - Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="sidebar">
-  <h2>MENU</h2>
-  <div class="menu-item" id="menu-leaderboard">Leaderboard</div>
-  <div class="menu-item" id="menu-trustscore">TrustScore</div>
-  <div class="menu-item" id="menu-levelscores">Level Scores</div>
-  <div class="menu-item" id="menu-referrals">Referrals</div>
-  <div class="menu-item" id="menu-profile">Profile</div>
-  <div class="menu-item" id="menu-whitepaper">White Paper</div>
-  <div class="menu-item" id="menu-team">Team</div>
-  <div class="menu-item" id="menu-author">Author</div>
-  <div class="menu-item" id="menu-supportportal"><a href="https://t.me/eanocoin" target="_blank" rel="noopener noreferrer" style="color:#ccc; text-decoration:none;">Support Portal</a></div>
-  <button id="logout-btn">Logout</button>
-</div>
+  <div class="dashboard-container" style="display:none;">
+    <header>
+      <h1>Welcome to EANO Coin Dashboard</h1>
+      <button id="logoutBtn">Logout</button>
+    </header>
 
-<div class="topbar">
-  <div class="balance">EANO Balance: <span id="balance">0.000</span></div>
-  <div class="balance">Mining: <span id="counting">0.000</span>/24h</div>
-</div>
+    <section>
+      <p id="welcomeMsg"></p>
+    </section>
+  </div>
 
-<button class="mine-btn" id="mine-btn">Mine</button>
+  <script type="module">
+    import { auth, onAuthStateChanged, signOut } from './firebase.js';
 
-<div class="content">
-  <div class="eano-logo"></div>
-  <div class="update-message">🚧 New Updates Coming Soon 🚧</div>
-</div>
+    const dashboard = document.querySelector('.dashboard-container');
+    const welcomeMsg = document.getElementById('welcomeMsg');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-<script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "50186911438",
-    appId: "1:50186911438:web:YOUR_APP_ID"
-  };
+    onAuthStateChanged(auth, user => {
+      if (user && user.emailVerified) {
+        dashboard.style.display = 'block';
+        welcomeMsg.textContent = `Hello, ${user.email}!`;
+      } else {
+        // No user signed in, redirect to login page
+        window.location.href = 'login.html';
+      }
+    });
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  // Redirect to login if not authenticated
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.href = 'login.html';
-    }
-  });
-
-  // Logout button
-  document.getElementById('logout-btn').addEventListener('click', () => {
-    auth.signOut().then(() => {
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
       window.location.href = 'login.html';
     });
-  });
-
-  // Mining logic
-  let balance = 0;
-  let mining = false;
-
-  function startMining() {
-    if (!mining) {
-      mining = true;
-      const mineRate = 0.001;
-      const interval = setInterval(() => {
-        if (mining) {
-          balance += mineRate;
-          document.getElementById("balance").innerText = balance.toFixed(3);
-          document.getElementById("counting").innerText = (24 * mineRate).toFixed(3);
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
-    }
-  }
-
-  document.getElementById('mine-btn').addEventListener('click', startMining);
-
-  // Menu click handlers (placeholders)
-  document.getElementById('menu-leaderboard').addEventListener('click', () => alert('Leaderboard coming soon!'));
-  document.getElementById('menu-trustscore').addEventListener('click', () => alert('TrustScore coming soon!'));
-  document.getElementById('menu-levelscores').addEventListener('click', () => alert('Level Scores coming soon!'));
-  document.getElementById('menu-referrals').addEventListener('click', () => alert('Referrals coming soon!'));
-  document.getElementById('menu-profile').addEventListener('click', () => alert('Profile coming soon!'));
-  document.getElementById('menu-whitepaper').addEventListener('click', () => alert('White Paper coming soon!'));
-  document.getElementById('menu-team').
-  document.getElementById('menu-team').addEventListener('click', () => alert('Team coming soon!'));
-document.getElementById('menu-author').addEventListener('click', () => alert('Author coming soon!'));
+  </script>
+</body>
+</html>
