@@ -1,112 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Login - EANO Coin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      background-color: #0f0f0f;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: #1b1b1b;
-      padding: 30px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-    }
-    h2 {
-      text-align: center;
-      color: gold;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      background: #2b2b2b;
-      color: #fff;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: gold;
-      color: #000;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #ffd700;
-    }
-    .error {
-      color: red;
-      text-align: center;
-      margin-top: 10px;
-    }
-    .link {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .link a {
-      color: gold;
-      text-decoration: none;
-    }
-  </style>
-</head>
-<body>
+  <title>Login - EANO</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-  <div class="container">
-    <h2>Login to EANO</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button onclick="login()">Login</button>
-    <div class="error" id="error-message"></div>
-    <div class="link">Don't have an account? <a href="signup.html">Sign Up</a></div>
-  </div>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-
-  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:YOUR_APP_ID" // Replace with your real appId from Firebase Console
+      projectId: "eano-miner"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    function login() {
+    window.login = () => {
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      const errorMsg = document.getElementById("error-message");
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          window.location.href = "index.html"; // Redirect after login
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          window.location.href = "index.html";
         })
-        .catch((error) => {
-          errorMsg.innerText = error.message;
-        });
-    }
+        .catch((error) => alert(error.message));
+    };
   </script>
-
+</head>
+<body>
+  <h2>Login</h2>
+  <input id="email" type="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+  <p>New user? <a href="signup.html">Create an account</a></p>
 </body>
 </html>
