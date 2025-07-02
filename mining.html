@@ -1,142 +1,112 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>EANO Coin Mining</title>
-  <link rel="icon" type="image/png" href="logo.png">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
-      background-color: #f2f2f2;
-    }
-    h1 {
-      color: #333;
-    }
-    .mining-box {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: inline-block;
-      margin-top: 30px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background-color: gray;
-      cursor: not-allowed;
-    }
-    p {
-      font-size: 18px;
-      margin: 10px 0;
-    }
-    .trust {
-      font-weight: bold;
-    }
-    .wallet-setup {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-    .wallet-setup input {
-      padding: 10px;
-      font-size: 16px;
-      width: 80%;
-      margin-bottom: 10px;
-      border: 1px solid #aaa;
-      border-radius: 6px;
-    }
-    .wallet-setup button {
-      background-color: #ff9800;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .wallet-setup button:hover {
-      background-color: #ffc107;
-    }
+    body { font-family: Arial; padding: 20px; text-align: center; }
+    #mineBtn { padding: 10px 20px; font-size: 18px; }
+    #walletInput { padding: 10px; width: 60%; }
+    #status, #referralInfo { margin-top: 15px; font-weight: bold; }
   </style>
 </head>
 <body>
-  <img src="logo.png" alt="EANO Logo" style="width: 100px; margin-bottom: 10px;" />
-  <h1>⛏️ EANO Coin Mining</h1>
-  <p>"Freedom is not given. It is mined."</p>  <!-- Referral section -->  <div class="wallet-setup">
-    <h3>🔗 Referral System</h3>
-    <input type="text" id="referralInput" placeholder="Paste your referrer's wallet (optional)" />
-    <button onclick="saveReferral()">Save Referrer</button>
-    <p id="referrerStatus"></p>
-  </div>  <!-- Wallet setup -->  <div class="wallet-setup">
-    <p><strong>Your Wallet Address:</strong></p>
-    <p id="walletDisplay">Not set</p>
-    <input type="text" id="walletInput" placeholder="Paste your wallet address here" />
-    <br />
-    <button onclick="saveWallet()">Save Wallet</button>
-  </div>  <!-- Mining section -->  <div class="mining-box">
-    <p>Coins Mined: <span id="coins">0</span></p>
-    <p id="timerText">Checking cooldown...</p>
-    <p class="trust">Trust Score: <span id="trustScore">0%</span></p>
-    <button id="mineButton" disabled>Mine EANO</button>
-    <p><button onclick="exportData()">📤 Backup Mined Data</button></p>
-  </div>  <!-- Withdraw section -->  <div class="wallet-setup" style="margin-top: 40px;">
-    <h3>💸 Send to Wallet</h3>
-    <input type="number" id="withdrawAmount" placeholder="Amount to withdraw" />
-    <button onclick="withdraw()">Send</button>
-    <p id="withdrawStatus"></p>
-  </div>  <!-- Support section -->  <hr style="margin: 40px 0;" />
-  <div style="text-align: center; font-size: 16px;">
-    <h3>📢 Support & Community</h3>
-    <p>📬 Email: <a href="mailto:eano.support@proton.me">eano.support@proton.me</a></p>
-    <p>💬 Telegram Channel: <a href="https://t.me/eanocoin" target="_blank">@eanocoin</a></p>
-    <p>🛠 GitHub: <a href="https://github.com/eano-santus/eano-coin" target="_blank">github.com/eano-santus/eano-coin</a></p>
-  </div>  <div style="margin-top: 40px; font-size: 16px;">
-    <hr style="margin: 30px auto; width: 80%;" />
-    <p>💬 Join our community: <a href="https://t.me/eanocoin" target="_blank" style="color: #0077cc;">@eanocoin</a></p>
-    <p>📧 Contact support: <a href="mailto:eano.support@proton.me" style="color: #0077cc;">eano.support@proton.me</a></p>
-  </div>  <script>
-    // Existing script logic here...
-    // ADD REFERRAL LOGIC:
-    function saveReferral() {
-      const ref = document.getElementById('referralInput').value.trim();
-      if (ref.length < 5) {
-        document.getElementById('referrerStatus').textContent = "⚠️ Invalid referrer wallet.";
-        return;
-      }
-      localStorage.setItem("referrer", ref);
-      document.getElementById('referrerStatus').textContent = `✅ Referrer saved: ${ref}`;
-    }
+  <h1>EANO Coin Mining</h1>
 
-    function getReferrer() {
-      return localStorage.getItem("referrer") || null;
-    }
-  </script>  <!-- Firebase SDKs -->  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore.js";
+  <input type="text" id="walletInput" placeholder="Enter your EANO Wallet Address">
+  <br><br>
+  <button id="mineBtn">Mine EANO</button>
+  <div id="status">⛏ Mined: <span id="minedDisplay">0</span> EANO</div>
+  <div id="referralInfo"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    console.log("✅ Firebase connected successfully");
-  </script></body>
+    console.log("✅ Firebase connected");
+
+    const walletInput = document.getElementById("walletInput");
+    const mineBtn = document.getElementById("mineBtn");
+    const minedDisplay = document.getElementById("minedDisplay");
+    const referralInfo = document.getElementById("referralInfo");
+
+    let minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
+
+    function getTrust() {
+      return Math.floor(Math.random() * 100); // You can make this smarter
+    }
+
+    // Load referrer from ?ref=
+    const urlParams = new URLSearchParams(window.location.search);
+    const referrer = urlParams.get("ref");
+    if (referrer) {
+      localStorage.setItem("referrer", referrer);
+      referralInfo.innerText = `You were referred by: ${referrer}`;
+    }
+
+    // Update display if user has mined before
+    walletInput.addEventListener("input", () => {
+      const wallet = walletInput.value.trim();
+      if (wallet && minedData[wallet]) {
+        minedDisplay.textContent = minedData[wallet];
+      } else {
+        minedDisplay.textContent = "0";
+      }
+    });
+
+    mineBtn.onclick = async () => {
+      const wallet = walletInput.value.trim();
+      if (!wallet) return alert("Enter a valid wallet address");
+
+      // Update mined data
+      if (!minedData[wallet]) {
+        minedData[wallet] = 0;
+
+        // First-time miner: Give referral credit
+        const storedReferrer = localStorage.getItem("referrer");
+        if (storedReferrer && storedReferrer !== wallet) {
+          try {
+            const refDoc = doc(db, "miners", storedReferrer);
+            await updateDoc(refDoc, { referrals: increment(1) });
+            console.log("✅ Referrer credited:", storedReferrer);
+          } catch (e) {
+            console.log("⚠️ Could not credit referrer:", e.message);
+          }
+        }
+      }
+
+      minedData[wallet]++;
+      localStorage.setItem("minedData", JSON.stringify(minedData));
+      minedDisplay.textContent = minedData[wallet];
+
+      // Save to Firestore
+      try {
+        const minerRef = doc(db, "miners", wallet);
+        await setDoc(minerRef, {
+          wallet,
+          mined: minedData[wallet],
+          trust: getTrust(),
+          referrals: 0,
+          timestamp: new Date().toISOString()
+        }, { merge: true });
+
+        console.log("✅ Synced to Firestore");
+      } catch (err) {
+        console.error("❌ Firestore error:", err);
+      }
+    };
+  </script>
+</body>
 </html>
