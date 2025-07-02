@@ -1,30 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  script type="module" defer src="signup.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sign Up - EANO Coin</title>
-  <link rel="stylesheet" href="style.css" />
-  <script type="module" defer src="signup.js"></script>
+  <title>EANO Coin - Sign Up</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    form {
+      background: #222;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 320px;
+      box-shadow: 0 0 10px #444;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 0.7rem 0;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #d4af37; /* Gold color */
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #121212;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #c49f24;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="auth-container">
-    <h1>Sign Up</h1>
-    <form id="signupForm">
-      <input type="email" id="email" placeholder="Email Address" required />
-      <input type="password" id="password" placeholder="Password" required minlength="6" />
-      <label for="referral">Referral Code (optional)</label>
-<input type="text" id="referral" name="referral" placeholder="Enter referral code" />
-      <!-- New referral code input -->
-      <input type="text" id="referralCode" placeholder="Referral Code (optional)" />
-      
-      <button type="submit">Create Account</button>
-      <p class="error-message" id="errorMsg"></p>
-    </form>
-    <p>
-      Already have an account? <a href="login.html">Log In</a>
-    </p>
-  </div>
+
+  <form id="signup-form">
+    <h2>Sign Up</h2>
+    <input type="email" name="email" placeholder="Email address" required />
+    <input type="password" name="password" placeholder="Password" required minlength="6" />
+    <input type="text" name="referralCode" placeholder="Referral code (optional)" />
+    <button type="submit">Sign Up</button>
+  </form>
+
+  <script type="module" src="./signup.js"></script>
 </body>
 </html>
