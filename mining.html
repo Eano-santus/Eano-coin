@@ -60,7 +60,8 @@
     <button onclick="exportData()">Export Backup</button>
     <button onclick="goToLeaderboard()">Leaderboard</button>
     <p id="status"></p>
-  </div>  <script>
+  </div>
+  <script>
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_AUTH_DOMAIN",
@@ -68,94 +69,92 @@
       storageBucket: "YOUR_STORAGE_BUCKET",
       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
       appId: "YOUR_APP_ID"
-    };
+    };firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+const walletInput = document.getElementById("walletInput");
+const minedCountEl = document.getElementById("minedCount");
+const trustScoreEl = document.getElementById("trustScore");
+const referralCountEl = document.getElementById("referralCount");
+const statusEl = document.getElementById("status");
 
-    const walletInput = document.getElementById("walletInput");
-    const minedCountEl = document.getElementById("minedCount");
-    const trustScoreEl = document.getElementById("trustScore");
-    const referralCountEl = document.getElementById("referralCount");
-    const statusEl = document.getElementById("status");
+let mined = 0;
+let trust = 50;
+let referrals = 0;
 
-    let mined = 0;
-    let trust = 50;
-    let referrals = 0;
+function mineCoin() {
+  const wallet = walletInput.value.trim();
+  if (!wallet) {
+    statusEl.textContent = "Please enter a wallet address.";
+    return;
+  }
 
-    function mineCoin() {
-      const wallet = walletInput.value.trim();
-      if (!wallet) {
-        statusEl.textContent = "Please enter a wallet address.";
-        return;
-      }
+  mined++;
+  trust += 1;
+  updateUI();
+  saveToFirebase(wallet);
+}
 
-      mined++;
-      trust += 1;
-      updateUI();
-      saveToFirebase(wallet);
-    }
+function updateUI() {
+  minedCountEl.textContent = mined;
+  trustScoreEl.textContent = trust;
+  referralCountEl.textContent = referrals;
+}
 
-    function updateUI() {
-      minedCountEl.textContent = mined;
-      trustScoreEl.textContent = trust;
-      referralCountEl.textContent = referrals;
-    }
+function saveToFirebase(wallet) {
+  db.collection("miners").doc(wallet).set({
+    wallet,
+    mined,
+    trust,
+    referrals,
+    timestamp: new Date().toISOString(),
+  })
+  .then(() => statusEl.textContent = "Data saved.")
+  .catch((err) => statusEl.textContent = "Error: " + err.message);
+}
 
-    function saveToFirebase(wallet) {
-      db.collection("miners").doc(wallet).set({
-        wallet,
-        mined,
-        trust,
-        referrals,
-        timestamp: new Date().toISOString(),
-      })
-      .then(() => statusEl.textContent = "Data saved.")
-      .catch((err) => statusEl.textContent = "Error: " + err.message);
-    }
+function exportData() {
+  const wallet = walletInput.value.trim();
+  if (!wallet) {
+    alert("Enter wallet first");
+    return;
+  }
+  const data = {
+    wallet,
+    mined,
+    trust,
+    referrals,
+    timestamp: new Date().toISOString(),
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = wallet + "_EANO_backup.json";
+  a.click();
+}
 
-    function exportData() {
-      const wallet = walletInput.value.trim();
-      if (!wallet) {
-        alert("Enter wallet first");
-        return;
-      }
-      const data = {
-        wallet,
-        mined,
-        trust,
-        referrals,
-        timestamp: new Date().toISOString(),
+function goToLeaderboard() {
+  window.location.href = "leaderboard.html";
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+const ref = urlParams.get("ref");
+if (ref) {
+  const refDoc = db.collection("miners").doc(ref);
+  refDoc.get().then(doc => {
+    if (doc.exists) {
+      const current = doc.data();
+      const updated = {
+        ...current,
+        referrals: (current.referrals || 0) + 1,
+        timestamp: new Date().toISOString()
       };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = wallet + "_EANO_backup.json";
-      a.click();
+      refDoc.set(updated);
     }
+  });
+}
 
-    function goToLeaderboard() {
-      window.location.href = "leaderboard.html";
-    }
-
-    // Handle referrals
-    const urlParams = new URLSearchParams(window.location.search);
-    const ref = urlParams.get("ref");
-    if (ref) {
-      // Increase referral count for the referrer in Firebase
-      const refDoc = db.collection("miners").doc(ref);
-      refDoc.get().then(doc => {
-        if (doc.exists) {
-          const current = doc.data();
-          const updated = {
-            ...current,
-            referrals: (current.referrals || 0) + 1,
-            timestamp: new Date().toISOString()
-          };
-          refDoc.set(updated);
-        }
-      });
-    }
-  </script></body>
+  </script>
+</body>
 </html>
