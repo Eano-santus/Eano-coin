@@ -1,148 +1,218 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Coin Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EANO Coin App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      margin: 0; padding: 0; box-sizing: border-box;
       font-family: 'Roboto', sans-serif;
-    }body {
-  display: flex;
-  min-height: 100vh;
-  background: #0f0f0f;
-  color: #fff;
-}
+    }
+    body {
+      background: #0f0f0f; color: #fff;
+      display: flex; flex-direction: column;
+    }
 
-.sidebar {
-  width: 240px;
-  background: #1b1b1b;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  border-right: 2px solid #333;
-}
+    .auth-screen {
+      height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      flex-direction: column; gap: 20px;
+    }
+    .auth-screen input, .auth-screen button {
+      padding: 10px; border-radius: 6px; border: none;
+    }
+    .auth-screen button {
+      background: gold; font-weight: bold;
+      cursor: pointer;
+    }
 
-.sidebar h2 {
-  font-size: 22px;
-  color: gold;
-  text-align: center;
-  margin-bottom: 20px;
-}
+    .app-container {
+      display: flex;
+      height: 100vh;
+      display: none; /* Hidden until login */
+    }
 
-.menu-item {
-  padding: 10px;
-  color: #ccc;
-  cursor: pointer;
-  border-radius: 6px;
-}
+    .sidebar {
+      width: 220px;
+      background: #1b1b1b;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #333;
+    }
 
-.menu-item:hover {
-  background: #333;
-  color: #fff;
-}
+    .sidebar h2 {
+      color: gold;
+      text-align: center;
+      margin-bottom: 15px;
+    }
 
-.topbar {
-  position: fixed;
-  top: 0;
-  left: 240px;
-  right: 0;
-  height: 60px;
-  background: #222;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  z-index: 10;
-}
+    .menu-item {
+      padding: 10px;
+      color: #ccc;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+    .menu-item:hover {
+      background: #333;
+      color: #fff;
+    }
 
-.balance {
-  font-size: 18px;
-  font-weight: bold;
-}
+    .topbar {
+      position: fixed;
+      top: 0; left: 220px; right: 0;
+      height: 60px;
+      background: #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 10;
+    }
 
-.content {
-  margin-left: 240px;
-  margin-top: 60px;
-  width: 100%;
-  padding: 40px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  text-align: center;
-}
+    .topbar .lang {
+      font-size: 14px;
+      color: gold;
+    }
 
-.eano-logo {
-  width: 200px;
-  height: 200px;
-  background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center center;
-  background-size: contain;
-}
+    .balance {
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-.update-message {
-  font-size: 20px;
-  color: #aaa;
-}
+    .main-content {
+      margin-left: 220px;
+      margin-top: 60px;
+      padding: 20px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
 
-.mine-btn {
-  position: absolute;
-  left: 20px;
-  top: 80px;
-  background: gold;
-  color: black;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .eano-logo {
+      width: 180px; height: 180px;
+      background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center center;
+      background-size: contain;
+    }
 
-.mine-btn:hover {
-  background: #ffd700;
-}
+    .update-message {
+      font-size: 18px;
+      color: #aaa;
+    }
 
+    .mine-btn {
+      background: gold;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .mine-btn:hover {
+      background: #ffd700;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100px;
+        font-size: 12px;
+      }
+      .topbar {
+        left: 100px;
+      }
+      .main-content {
+        margin-left: 100px;
+      }
+      .mine-btn {
+        width: 90%;
+      }
+    }
   </style>
-</head><body>
-  <div class="sidebar">
-    <h2>MENU</h2>
-    <div class="menu-item">Leaderboard</div>
-    <div class="menu-item">TrustScore</div>
-    <div class="menu-item">Level Scores</div>
-    <div class="menu-item">Referrals</div>
-    <div class="menu-item">Profile</div>
-    <div class="menu-item">White-paper</div>
-    <div class="menu-item">Team</div>
-    <div class="menu-item">Author</div>
-  </div>  <div class="topbar">
-    <div class="balance">EANO Balance: <span id="balance">0.000</span></div>
-    <div class="balance">Mining: <span id="counting">0.000</span>/24h</div>
-  </div><button class="mine-btn" onclick="startMining()">Mine</button>
+</head>
+<body>
 
-  <div class="content">
-    <div class="eano-logo"></div>
-    <div class="update-message">🚧 New Updates Coming Soon 🚧</div>
-  </div>  <script>
+  <!-- Signup/Login Screen -->
+  <div class="auth-screen" id="authScreen">
+    <h2>EANO Login</h2>
+    <input type="text" id="username" placeholder="Enter username"/>
+    <input type="password" id="password" placeholder="Enter password"/>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- App Main Page -->
+  <div class="app-container" id="appContainer">
+    <!-- leftbar -->
+    <div class="menu-item">Mine</div>
+      <div class="menu-item">Invite</div>
+    <!-- leftbar Menu -->
+    <div class="sidebar">
+      <h2>MENU</h2>
+       <div class="menu-item">Leaderboard</div>
+      <div class="menu-item">TrustScore</div>
+      <div class="menu-item">Level Scores</div>
+      <div class="menu-item">Referrals</div>
+      <div class="menu-item">Profile</div>
+      <div class="menu-item">White Paper</div>
+      <div class="menu-item">Team</div>
+      <div class="menu-item">Author</div>
+      <div class="menu-item"><a href="https://t.me/eanocoin" style="color: gold;" target="_blank">Support Portal</a></div>
+    </div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="balance">EANO: <span id="balance">0.000</span></div>
+      <div class="balance">Mining: <span id="counting">0.000</span>/24h</div>
+      <div class="lang">🌐 Language</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="eano-logo"></div>
+      <div class="update-message">🚧 New Updates Coming Soon 🚧</div>
+      <button class="mine-btn" onclick="startMining()">Mine Now</button>
+    </div>
+  </div>
+
+  <script>
     let balance = 0;
     let mining = false;
+
+    function login() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+
+      if (user && pass) {
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'flex';
+      } else {
+        alert("Please enter username and password.");
+      }
+    }
 
     function startMining() {
       if (!mining) {
         mining = true;
-        let mineRate = 0.001;
+        let rate = 0.001;
         let interval = setInterval(() => {
           if (mining) {
-            balance += mineRate;
+            balance += rate;
             document.getElementById("balance").innerText = balance.toFixed(3);
-            document.getElementById("counting").innerText = (24 * mineRate).toFixed(3);
+            document.getElementById("counting").innerText = (24 * rate).toFixed(3);
           } else {
             clearInterval(interval);
           }
         }, 1000);
       }
     }
-  </script></body></html>
+  </script>
+
+</body>
+</html>
