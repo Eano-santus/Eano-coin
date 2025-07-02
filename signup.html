@@ -1,7 +1,42 @@
+<!-- signup.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign Up - EANO</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signup - EANO Miner</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 6px;
+      border: none;
+      width: 250px;
+    }
+    button {
+      background: gold;
+      color: black;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Sign Up for EANO Miner</h2>
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <button onclick="signup()">Sign Up</button>
+  <p>Already have an account? <a href="login.html">Login here</a></p>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -9,29 +44,30 @@
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner"
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:YOUR_APP_ID" // Optional: add real App ID if needed
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    window.signup = () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    function signup() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
+          alert("Signup successful!");
           window.location.href = "index.html";
         })
-        .catch((error) => alert(error.message));
-    };
+        .catch(error => {
+          alert("Signup failed: " + error.message);
+        });
+    }
+
+    window.signup = signup;
   </script>
-</head>
-<body>
-  <h2>Create Account</h2>
-  <input id="email" type="email" placeholder="Email" />
-  <input id="password" type="password" placeholder="Password" />
-  <button onclick="signup()">Sign Up</button>
-  <p>Already have an account? <a href="login.html">Login</a></p>
 </body>
 </html>
