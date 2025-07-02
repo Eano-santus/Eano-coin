@@ -1,230 +1,251 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EANO Coin Mining</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f2f2f2;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    form, .dashboard {
-      max-width: 400px;
-      margin: auto;
-      padding: 15px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    input, button {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-    }
-    #dashboard {
-      display: none;
-    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }body {
+  background: url("assets/eano-bg.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 400px;
+  margin: auto;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #b993f7;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: gold;
+}
+
+form input {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+}
+
+button {
+  padding: 12px;
+  width: 100%;
+  background-color: gold;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ffcc00;
+}
+
+.hidden {
+  display: none;
+}
+
+#dashboard {
+  margin-top: 20px;
+}
+
+.section {
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";const firebaseConfig = {
+  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+  authDomain: "eano-miner.firebaseapp.com",
+  projectId: "eano-miner",
+  storageBucket: "eano-miner.appspot.com",
+  messagingSenderId: "50186911438",
+  appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+function getTrustLevel(score) {
+  if (score >= 1000) return "Trusted Miner 💎";
+  if (score >= 500) return "Reliable Miner";
+  if (score >= 100) return "New Miner";
+  return "Needs Trust";
+}
 
-    function getTrustLevel(score) {
-      if (score >= 80) return "Trusted Miner 💎";
-      if (score >= 50) return "Reliable Miner";
-      if (score >= 30) return "New Miner";
-      return "Needs Trust";
+function getUpgradeLevel(score) {
+  if (score >= 10000) return "Leaders";
+  if (score >= 5000) return "Masters";
+  if (score >= 1000) return "Professionals";
+  if (score >= 500) return "Elites";
+  if (score >= 50) return "Amateurs";
+  if (score >= 5) return "Starter";
+  return "Unranked";
+}
+
+function updateDashboard(data) {
+  document.getElementById("usernameDisplay").textContent = data.username;
+  document.getElementById("trustDisplay").textContent = data.trustScore;
+  document.getElementById("trustLevel").textContent = getTrustLevel(data.trustScore);
+  document.getElementById("upgradeLevel").textContent = getUpgradeLevel(data.trustScore);
+  document.getElementById("coinTotal").textContent = data.coins;
+}
+
+async function handleMining(user) {
+  const userDoc = doc(db, "miners", user.uid);
+  const snap = await getDoc(userDoc);
+  const data = snap.data();
+  const now = new Date();
+  const lastMined = new Date(data.lastMined?.seconds * 1000);
+  const hoursPassed = (now - lastMined) / 3600000;
+
+  if (hoursPassed < 24) {
+    const remaining = 24 - hoursPassed;
+    alert(`You can mine again in ${remaining.toFixed(1)} hours.`);
+    return;
+  }
+
+  await updateDoc(userDoc, {
+    coins: data.coins + 1,
+    trustScore: data.trustScore + 1,
+    lastMined: new Date(),
+  });
+
+  updateDashboard({ ...data, coins: data.coins + 1, trustScore: data.trustScore + 1 });
+  alert("Mined 1 EANO coin successfully!");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const signupForm = document.getElementById("signup-form");
+  const loginForm = document.getElementById("login-form");
+  const dashboard = document.getElementById("dashboard");
+  const welcomeScreen = document.getElementById("welcome-screen");
+  const mineBtn = document.getElementById("mine-btn");
+
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = signupForm["signup-email"].value;
+    const password = signupForm["signup-password"].value;
+    const username = signupForm["signup-username"].value;
+    const referral = signupForm["signup-referral"].value.trim();
+
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCred.user;
+
+      const userDoc = doc(db, "miners", user.uid);
+      await setDoc(userDoc, {
+        email,
+        username,
+        coins: 5,
+        trustScore: 5,
+        referredBy: referral || "",
+        lastMined: new Date()
+      });
+
+      alert("Signup successful! Please log in.");
+    } catch (err) {
+      alert(err.message);
     }
+  });
 
-    function getUpgradeLevel(score) {
-      if (score >= 10000) return "Leaders";
-      if (score >= 5000) return "Masters";
-      if (score >= 1000) return "Professionals";
-      if (score >= 500) return "Elites";
-      if (score >= 50) return "Amateurs";
-      if (score >= 5) return "Starter";
-      return "Unranked";
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = loginForm["login-email"].value;
+    const password = loginForm["login-password"].value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      alert(err.message);
     }
+  });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const signupForm = document.getElementById("signup-form");
-      const loginForm = document.getElementById("login-form");
-      const dashboard = document.getElementById("dashboard");
-      const welcome = document.getElementById("welcome");
-      const mineButton = document.getElementById("mine-btn");
-      const logoutBtn = document.getElementById("logout-btn");
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const docRef = doc(db, "miners", user.uid);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        updateDashboard(snap.data());
+        document.getElementById("signup-form").classList.add("hidden");
+        document.getElementById("login-form").classList.add("hidden");
+        welcomeScreen.classList.remove("hidden");
+        setTimeout(() => {
+          welcomeScreen.classList.add("hidden");
+          dashboard.classList.remove("hidden");
+        }, 3000);
+      }
+    }
+  });
 
-      const userInfo = {
-        username: document.getElementById("dash-username"),
-        trustScore: document.getElementById("dash-trust"),
-        trustLevel: document.getElementById("dash-trustLevel"),
-        upgradeLevel: document.getElementById("dash-upgradeLevel"),
-        coins: document.getElementById("dash-coins"),
-        status: document.getElementById("mine-status")
-      };
+  mineBtn.addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if (!user) return alert("Login first");
+    await handleMining(user);
+  });
+});
 
-      let currentUser = null;
-
-      signupForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = signupForm["signup-email"].value;
-        const password = signupForm["signup-password"].value;
-        const username = signupForm["signup-username"].value;
-        const referral = signupForm["signup-referral"].value.trim();
-
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-          const userDoc = doc(db, "miners", user.uid);
-          const initialScore = 5;
-
-          await setDoc(userDoc, {
-            email,
-            username,
-            coins: initialScore,
-            trustScore: initialScore,
-            referredBy: referral || "",
-            lastMined: new Date(),
-          });
-
-          // Give referral bonus
-          if (referral !== "") {
-            const refQuery = doc(db, "miners", referral);
-            const refSnap = await getDoc(refQuery);
-            if (refSnap.exists()) {
-              const refScore = (refSnap.data().trustScore || 0) + 5;
-              await updateDoc(refQuery, { trustScore: refScore });
-            }
-          }
-
-          alert("Signup successful! Please log in.");
-        } catch (err) {
-          alert(err.message);
-        }
-      });
-
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = loginForm["login-email"].value;
-        const password = loginForm["login-password"].value;
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-        } catch (err) {
-          alert(err.message);
-        }
-      });
-
-      logoutBtn.addEventListener("click", async () => {
-        await signOut(auth);
-      });
-
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          currentUser = user;
-          const docRef = doc(db, "miners", user.uid);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            // UI Update
-            signupForm.style.display = "none";
-            loginForm.style.display = "none";
-            dashboard.style.display = "block";
-
-            userInfo.username.textContent = data.username;
-            userInfo.trustScore.textContent = data.trustScore || 0;
-            userInfo.trustLevel.textContent = getTrustLevel(data.trustScore || 0);
-            userInfo.upgradeLevel.textContent = getUpgradeLevel(data.coins || 0);
-            userInfo.coins.textContent = data.coins || 0;
-          }
-        } else {
-          currentUser = null;
-          signupForm.style.display = "block";
-          loginForm.style.display = "block";
-          dashboard.style.display = "none";
-        }
-      });
-
-      mineButton.addEventListener("click", async () => {
-        if (!currentUser) return alert("Please log in first.");
-        const docRef = doc(db, "miners", currentUser.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const newCoins = (data.coins || 0) + 1;
-          const newTrust = (data.trustScore || 0) + 1;
-          const level = getUpgradeLevel(newCoins);
-
-          await updateDoc(docRef, {
-            coins: newCoins,
-            trustScore: newTrust,
-            lastMined: new Date()
-          });
-
-          // UI Update
-          userInfo.status.textContent = `Mined 1 EANO. Total: ${newCoins}`;
-          userInfo.trustScore.textContent = newTrust;
-          userInfo.trustLevel.textContent = getTrustLevel(newTrust);
-          userInfo.upgradeLevel.textContent = level;
-          userInfo.coins.textContent = newCoins;
-        }
-      });
-    });
   </script>
 </head>
 <body>
+  <div class="container">
+    <h1>EANO Coin Mining</h1><form id="signup-form">
+  <h2>Create Account</h2>
+  <input type="text" id="signup-username" placeholder="Username" required />
+  <input type="email" id="signup-email" placeholder="Email" required />
+  <input type="password" id="signup-password" placeholder="Password" required />
+  <input type="text" id="signup-referral" placeholder="Referral (optional)" />
+  <button type="submit">Sign Up</button>
+</form>
 
-  <h1>EANO Coin Mining</h1>
+<form id="login-form">
+  <h2>Login</h2>
+  <input type="email" id="login-email" placeholder="Email" required />
+  <input type="password" id="login-password" placeholder="Password" required />
+  <button type="submit">Login</button>
+</form>
 
-  <form id="signup-form">
-    <h2>Create Account</h2>
-    <input type="text" id="signup-username" placeholder="Username" required />
-    <input type="email" id="signup-email" placeholder="Email" required />
-    <input type="password" id="signup-password" placeholder="Password" required />
-    <input type="text" id="signup-referral" placeholder="Referral (optional)" />
-    <button type="submit">Sign Up</button>
-  </form>
+<div id="welcome-screen" class="hidden">
+  <h2>Welcome to EANO Coin</h2>
+</div>
 
-  <form id="login-form">
-    <h2>Login</h2>
-    <input type="email" id="login-email" placeholder="Email" required />
-    <input type="password" id="login-password" placeholder="Password" required />
-    <button type="submit">Login</button>
-  </form>
-
-  <div id="dashboard" class="dashboard">
-    <h2>Welcome to EANO Coin 🎉</h2>
-    <p><strong>Username:</strong> <span id="dash-username">...</span></p>
-    <p><strong>Trust Score:</strong> <span id="dash-trust">0</span></p>
-    <p><strong>Trust Level:</strong> <span id="dash-trustLevel">...</span></p>
-    <p><strong>Upgrade Level:</strong> <span id="dash-upgradeLevel">...</span></p>
-    <p><strong>Total Coins:</strong> <span id="dash-coins">0</span></p>
-    <p id="mine-status">Click mine to start</p>
-    <button id="mine-btn">Mine 1 EANO</button>
-    <button id="logout-btn">Logout</button>
+<div id="dashboard" class="hidden">
+  <div class="section">
+    <h2>Profile</h2>
+    <p>Username: <strong id="usernameDisplay"></strong></p>
+    <p>Trust Score: <strong id="trustDisplay"></strong></p>
+    <p>Trust Level: <strong id="trustLevel"></strong></p>
+    <p>Upgrade Level: <strong id="upgradeLevel"></strong></p>
   </div>
 
+  <div class="section">
+    <h2>Mine Coins</h2>
+    <p>Total Coins: <strong id="coinTotal">0</strong></p>
+    <button id="mine-btn">Mine Now</button>
+  </div>
+</div>
+
+  </div>
 </body>
 </html>
