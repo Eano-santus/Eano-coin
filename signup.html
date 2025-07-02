@@ -1,107 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Signup – EANO Coin</title>
+  <meta charset="UTF-8">
+  <title>Signup - EANO Coin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      background: #111;
+      background-color: #0f0f0f;
       color: #fff;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    .form-box {
-      background: #222;
-      padding: 2rem;
-      border-radius: 15px;
-      display: inline-block;
+    .container {
+      background: #1b1b1b;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
       max-width: 400px;
-      margin: auto;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
+    h2 {
+      text-align: center;
+      color: gold;
     }
     input {
-      display: block;
       width: 100%;
-      padding: 1rem;
-      margin-bottom: 1rem;
+      padding: 10px;
+      margin: 10px 0;
       border: none;
-      border-radius: 10px;
+      border-radius: 6px;
+      background: #2b2b2b;
+      color: #fff;
     }
     button {
-      background: gold;
-      color: black;
-      font-weight: bold;
+      width: 100%;
+      padding: 10px;
+      background-color: gold;
+      color: #000;
       border: none;
-      padding: 1rem;
-      border-radius: 10px;
+      border-radius: 6px;
+      font-weight: bold;
       cursor: pointer;
+    }
+    button:hover {
+      background-color: #ffd700;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .link a {
+      color: gold;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <h2>Sign Up to EANO Coin</h2>
-  <div class="form-box">
-    <input type="text" id="username" placeholder="Username" required />
+
+  <div class="container">
+    <h2>Create EANO Account</h2>
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
-    <input type="text" id="referral" placeholder="Referral (Optional)" />
-    <button id="signupBtn">Sign Up</button>
-    <p>Already have an account? <a href="login.html">Login here</a></p>
-    <p id="msg"></p>
+    <button onclick="signup()">Sign Up</button>
+    <div class="error" id="error-message"></div>
+    <div class="link">Already have an account? <a href="login.html">Login</a></div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  <!-- Firebase JS SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
 
+  <script>
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    const signupBtn = document.getElementById("signupBtn");
-    const msg = document.getElementById("msg");
-
-    signupBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
+    // Signup function
+    function signup() {
+      const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
-      const username = document.getElementById("username").value.trim();
-      const referral = document.getElementById("referral").value.trim();
+      const errorMsg = document.getElementById("error-message");
 
-      if (!email || !password || !username) {
-        msg.textContent = "Please fill all required fields.";
-        return;
-      }
-
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        const uid = userCred.user.uid;
-
-        await setDoc(doc(db, "miners", uid), {
-          email,
-          username,
-          coins: 0,
-          trustScore: 5,
-          lastMined: serverTimestamp(),
-          referral: referral || "",
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          window.location.href = "index.html"; // Redirect after signup
+        })
+        .catch((error) => {
+          errorMsg.innerText = error.message;
         });
-
-        msg.textContent = "Signup successful! Redirecting...";
-        setTimeout(() => window.location.href = "index.html", 1000);
-      } catch (error) {
-        msg.textContent = "Error: " + error.message;
-      }
-    });
+    }
   </script>
+
 </body>
 </html>
