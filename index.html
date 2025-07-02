@@ -1,47 +1,279 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to EANO Coin</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EANO Coin Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
       background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
+      color: #f0f0f0;
       text-align: center;
-      color: #fff;
-      font-family: Arial, sans-serif;
     }
-    .welcome-container {
-      margin-top: 100px;
-      animation: fadeZoom 2s ease-in-out;
+
+    .container {
+      padding: 2rem;
     }
-    .welcome-title {
-      font-size: 2.5rem;
-      font-weight: bold;
+
+    .card {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 20px;
+      padding: 2rem;
       margin-bottom: 2rem;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
-    .btn {
+
+    .mine-btn {
+      padding: 1rem 2rem;
       background: gold;
       color: black;
-      padding: 1rem 2rem;
-      margin: 1rem;
+      font-weight: bold;
       border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
+      border-radius: 12px;
       cursor: pointer;
+      margin-top: 1rem;
     }
+
+    .mine-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: rgba(255, 215, 0, 0.2);
+      padding: 1rem;
+      margin: 0.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .tab:hover, .tab.active {
+      background: gold;
+      color: black;
+      font-weight: bold;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .welcome {
+      font-size: 2rem;
+      animation: fadeZoom 2s ease-in-out;
+    }
+
     @keyframes fadeZoom {
       0% { opacity: 0; transform: scale(0.9); }
       100% { opacity: 1; transform: scale(1); }
     }
+
+    #logoutBtn {
+      background: crimson;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
-  <div class="welcome-container">
-    <h1 class="welcome-title">Welcome to EANO Coin</h1>
-    <button class="btn" onclick="location.href='login.html'">Login</button>
-    <button class="btn" onclick="location.href='signup.html'">Sign Up</button>
+  <div class="container">
+    <h1 class="welcome">Welcome to EANO Coin</h1>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="home">Home</div>
+      <div class="tab" data-tab="profile">Profile</div>
+      <div class="tab" data-tab="referrals">Referrals</div>
+      <div class="tab" data-tab="leaderboard">Leaderboard</div>
+    </div>
+
+    <div id="home" class="tab-content active">
+      <div class="card">
+        <h2>Mine EANO</h2>
+        <p>Next mining in: <span id="countdown">Loading...</span></p>
+        <button class="mine-btn" id="mineBtn">Mine</button>
+        <p id="output"></p>
+      </div>
+    </div>
+
+    <div id="profile" class="tab-content">
+      <div class="card">
+        <p id="usernameDisplay">Username: Loading...</p>
+        <p>Your Trust Score: <span id="trustScore">0</span></p>
+        <p>Trust Level: <span id="trustLevel">Loading...</span></p>
+        <p>Upgrade Level: <span id="upgradeLevel">Loading...</span></p>
+      </div>
+      <button id="logoutBtn">Logout</button>
+    </div>
+
+    <div id="referrals" class="tab-content">
+      <div class="card">
+        <p>Referral system coming soon...</p>
+      </div>
+    </div>
+
+    <div id="leaderboard" class="tab-content">
+      <div class="card">
+        <p>Leaderboard will be available soon...</p>
+      </div>
+    </div>
   </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const mineBtn = document.getElementById("mineBtn");
+    const output = document.getElementById("output");
+    const logoutBtn = document.getElementById("logoutBtn");
+    let countdownTimer;
+
+    function getTrust(score) {
+      if (score >= 1000) return 1000;
+      return Math.floor(score);
+    }
+
+    function getTrustLevel(score) {
+      if (score >= 500) return "Trusted Miner 💎";
+      if (score >= 200) return "Reliable Miner";
+      if (score >= 50) return "New Miner";
+      return "Needs Trust";
+    }
+
+    function getUpgradeLevel(score) {
+      if (score >= 10000) return "Leaders";
+      if (score >= 5000) return "Masters";
+      if (score >= 1000) return "Professionals";
+      if (score >= 500) return "Elites";
+      if (score >= 50) return "Amateurs";
+      if (score >= 5) return "Starter";
+      return "Unranked";
+    }
+
+    function updateUI(data) {
+      document.getElementById("usernameDisplay").textContent = `Username: ${data.username}`;
+      document.getElementById("trustScore").textContent = getTrust(data.trustScore || 0);
+      document.getElementById("trustLevel").textContent = getTrustLevel(data.trustScore || 0);
+      document.getElementById("upgradeLevel").textContent = getUpgradeLevel(data.coins || 0);
+    }
+
+    function startCountdown(lastMined) {
+      const countdownEl = document.getElementById("countdown");
+      const nextMineTime = new Date(lastMined.toDate().getTime() + 86400000);
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = nextMineTime - now;
+
+        if (diff <= 0) {
+          countdownEl.textContent = "Now!";
+          mineBtn.disabled = false;
+          clearInterval(countdownTimer);
+        } else {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff / (1000 * 60)) % 60);
+          const seconds = Math.floor((diff / 1000) % 60);
+          countdownEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
+        }
+      }
+
+      updateCountdown();
+      countdownTimer = setInterval(updateCountdown, 1000);
+    }
+
+    // Auth check
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const userRef = doc(db, "miners", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        updateUI(data);
+        startCountdown(data.lastMined);
+
+        mineBtn.onclick = async () => {
+          const snap = await getDoc(userRef);
+          const data = snap.data();
+          const now = new Date();
+          const last = data.lastMined.toDate();
+
+          if (now - last < 86400000) {
+            alert("You must wait 24 hours before mining again.");
+            return;
+          }
+
+          const newCoins = (data.coins || 0) + 1;
+          const newTrust = (data.trustScore || 0) + 1;
+
+          await updateDoc(userRef, {
+            coins: newCoins,
+            trustScore: newTrust,
+            lastMined: now
+          });
+
+          output.textContent = `Successfully mined! Total coins: ${newCoins}`;
+          updateUI({ ...data, coins: newCoins, trustScore: newTrust });
+          startCountdown({ toDate: () => now });
+        };
+      }
+    });
+
+    // Logout
+    logoutBtn.onclick = async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    };
+
+    // Tabs
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        const tabId = tab.getAttribute("data-tab");
+        document.querySelectorAll(".tab-content").forEach(tc => {
+          tc.classList.remove("active");
+          if (tc.id === tabId) tc.classList.add("active");
+        });
+      });
+    });
+  </script>
 </body>
 </html>
