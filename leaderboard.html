@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EANO Coin Leaderboard</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #facc15;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+    th {
+      background-color: #161b22;
+      color: #facc15;
+    }
+    tr:nth-child(even) {
+      background-color: #1e293b;
+    }
+    tr:hover {
+      background-color: #2d3748;
+    }
+    .back-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #facc15;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>EANO Coin Leaderboard</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Wallet</th>
+        <th>Mined</th>
+        <th>Trust</th>
+        <th>Referrals</th>
+      </tr>
+    </thead>
+    <tbody id="leaderboardTable"></tbody>
+  </table>
+  <button class="back-button" onclick="window.location.href='mining.html'">← Back to Mining</button>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const tableBody = document.getElementById("leaderboardTable");
+
+    db.collection("miners").orderBy("mined", "desc").limit(100).get().then(snapshot => {
+      let rank = 1;
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${rank++}</td>
+          <td>${data.wallet}</td>
+          <td>${data.mined || 0}</td>
+          <td>${data.trust || 0}</td>
+          <td>${data.referrals || 0}</td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }).catch(err => {
+      tableBody.innerHTML = `<tr><td colspan="5">Error loading leaderboard: ${err.message}</td></tr>`;
+    });
+  </script>
+</body>
+</html>
