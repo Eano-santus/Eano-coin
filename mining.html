@@ -1,105 +1,158 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Mining</title>
   <link rel="stylesheet" href="style.css" />
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "eano-miner.firebaseapp.com",
-  projectId: "eano-miner",
-  storageBucket: "eano-miner.appspot.com",
-  messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-};
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+    };
 
-document.addEventListener("DOMContentLoaded", () => {
-  const signupForm = document.getElementById("signup-form");
-  const loginForm = document.getElementById("login-form");
-  const mineButton = document.getElementById("mine-btn");
-  const output = document.getElementById("output");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-  let currentUser = null;
-
-  signupForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = signupForm["signup-email"].value;
-    const password = signupForm["signup-password"].value;
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Signup successful! You can now mine.");
-    } catch (error) {
-      alert(error.message);
-    }
-  });
-
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = loginForm["login-email"].value;
-    const password = loginForm["login-password"].value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful");
-    } catch (error) {
-      alert(error.message);
-    }
-  });
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUser = user;
-    } else {
-      currentUser = null;
-    }
-  });
-
-  mineButton.addEventListener("click", async () => {
-    if (!currentUser) {
-      alert("Please log in first");
-      return;
-    }
-    const userDoc = doc(db, "miners", currentUser.uid);
-    const userSnap = await getDoc(userDoc);
-    let newCount = 1;
-
-    if (userSnap.exists()) {
-      const data = userSnap.data();
-      newCount = (data.coins || 0) + 1;
+    function getTrust(score) {
+      if (score >= 100) return 100;
+      return Math.floor(score);
     }
 
-    await setDoc(userDoc, {
-      email: currentUser.email,
-      coins: newCount,
-      lastMined: new Date()
+    function getTrustLevel(score) {
+      if (score >= 80) return "Trusted Miner 💎";
+      if (score >= 50) return "Reliable Miner";
+      if (score >= 30) return "New Miner";
+      return "Needs Trust";
+    }
+
+    function getUpgradeLevel(score) {
+      if (score >= 10000 && score <= 20000) return "Leaders";
+      if (score >= 5000) return "Masters";
+      if (score >= 1000) return "Professionals";
+      if (score >= 500) return "Elites";
+      if (score >= 50) return "Amateurs";
+      if (score >= 5) return "Starter";
+      return "Unranked";
+    }
+
+    function updateTrustUI(score) {
+      document.getElementById("trustScore").textContent = getTrust(score);
+      document.getElementById("trustLevel").textContent = getTrustLevel(score);
+      document.getElementById("upgradeLevel").textContent = getUpgradeLevel(score);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const signupForm = document.getElementById("signup-form");
+      const loginForm = document.getElementById("login-form");
+      const mineButton = document.getElementById("mine-btn");
+      const output = document.getElementById("output");
+      const trustScoreEl = document.getElementById("trustScore");
+      const trustLevelEl = document.getElementById("trustLevel");
+      const upgradeLevelEl = document.getElementById("upgradeLevel");
+
+      let currentUser = null;
+
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = signupForm["signup-email"].value;
+        const password = signupForm["signup-password"].value;
+        try {
+          await createUserWithEmailAndPassword(auth, email, password);
+          alert("Signup successful! You can now mine.");
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = loginForm["login-email"].value;
+        const password = loginForm["login-password"].value;
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          alert("Login successful");
+        } catch (error) {
+          alert(error.message);
+        }
+      });
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          currentUser = user;
+          const userDoc = doc(db, "miners", currentUser.uid);
+          const userSnap = await getDoc(userDoc);
+          let coins = 0;
+          if (userSnap.exists()) {
+            coins = userSnap.data().coins || 0;
+          }
+          updateTrustUI(coins);
+        } else {
+          currentUser = null;
+        }
+      });
+
+      mineButton.addEventListener("click", async () => {
+        if (!currentUser) {
+          alert("Please log in first");
+          return;
+        }
+
+        const userDoc = doc(db, "miners", currentUser.uid);
+        const userSnap = await getDoc(userDoc);
+        let newCount = 1;
+
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          newCount = (data.coins || 0) + 1;
+        }
+
+        const upgradeLevel = getUpgradeLevel(newCount);
+
+        await setDoc(userDoc, {
+          email: currentUser.email,
+          coins: newCount,
+          level: upgradeLevel,
+          lastMined: new Date()
+        });
+
+        output.innerText = `Mined successfully! Total coins: ${newCount} | Level: ${upgradeLevel}`;
+        updateTrustUI(newCount);
+      });
     });
-
-    output.innerText = `Mined successfully! Total coins: ${newCount}`;
-  });
-});
-
   </script>
 </head>
 <body>
   <h1>EANO Coin Mining</h1>
+
   <form id="signup-form">
     <h2>Create Account</h2>
     <input type="email" id="signup-email" placeholder="Email" required />
     <input type="password" id="signup-password" placeholder="Password" required />
     <button type="submit">Sign Up</button>
-  </form>  <form id="login-form">
+  </form>
+
+  <form id="login-form">
     <h2>Login</h2>
     <input type="email" id="login-email" placeholder="Email" required />
     <input type="password" id="login-password" placeholder="Password" required />
     <button type="submit">Login</button>
-  </form><button id="mine-btn">Mine Coin</button>
+  </form>
+
+  <button id="mine-btn">Mine Coin</button>
 
   <p id="output"></p>
+  <p>Your Trust Score: <span id="trustScore">0</span></p>
+  <p>Trust Level: <span id="trustLevel">Loading...</span></p>
+  <p>Upgrade Level: <span id="upgradeLevel">Loading...</span></p>
 </body>
 </html>
