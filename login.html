@@ -1,85 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Login – EANO Coin</title>
+  <meta charset="UTF-8">
+  <title>Login - EANO Coin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      background: #111;
+      background-color: #0f0f0f;
       color: #fff;
       font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    .form-box {
-      background: #222;
-      padding: 2rem;
-      border-radius: 15px;
-      display: inline-block;
+    .container {
+      background: #1b1b1b;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
       max-width: 400px;
-      margin: auto;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
+    h2 {
+      text-align: center;
+      color: gold;
     }
     input {
-      display: block;
       width: 100%;
-      padding: 1rem;
-      margin-bottom: 1rem;
+      padding: 10px;
+      margin: 10px 0;
       border: none;
-      border-radius: 10px;
+      border-radius: 6px;
+      background: #2b2b2b;
+      color: #fff;
     }
     button {
-      background: gold;
-      color: black;
-      font-weight: bold;
+      width: 100%;
+      padding: 10px;
+      background-color: gold;
+      color: #000;
       border: none;
-      padding: 1rem;
-      border-radius: 10px;
+      border-radius: 6px;
+      font-weight: bold;
       cursor: pointer;
+    }
+    button:hover {
+      background-color: #ffd700;
+    }
+    .error {
+      color: red;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .link a {
+      color: gold;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <h2>Login to EANO Coin</h2>
-  <div class="form-box">
+
+  <div class="container">
+    <h2>Login to EANO</h2>
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
-    <button id="loginBtn">Login</button>
-    <p>New here? <a href="signup.html">Sign up</a></p>
-    <p id="msg"></p>
+    <button onclick="login()">Login</button>
+    <div class="error" id="error-message"></div>
+    <div class="link">Don't have an account? <a href="signup.html">Sign Up</a></div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
 
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
       projectId: "eano-miner",
       storageBucket: "eano-miner.appspot.com",
       messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+      appId: "1:50186911438:web:YOUR_APP_ID" // Replace with your real appId from Firebase Console
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    const loginBtn = document.getElementById("loginBtn");
-    const msg = document.getElementById("msg");
-
-    loginBtn.addEventListener("click", async () => {
-      const email = document.getElementById("email").value.trim();
+    function login() {
+      const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
+      const errorMsg = document.getElementById("error-message");
 
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        msg.textContent = "Login successful! Redirecting...";
-        setTimeout(() => window.location.href = "index.html", 1000);
-      } catch (error) {
-        msg.textContent = "Login failed: " + error.message;
-      }
-    });
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          window.location.href = "index.html"; // Redirect after login
+        })
+        .catch((error) => {
+          errorMsg.innerText = error.message;
+        });
+    }
   </script>
+
 </body>
 </html>
