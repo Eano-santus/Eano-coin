@@ -1,290 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin Mining</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to EANO Coin</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: url('https://i.imgur.com/XfQZLdn.png') no-repeat center center fixed;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
-      color: #ffffff;
-    }
-    .container {
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      margin-top: 60px;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    input, button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-    }
-    button {
-      background-color: #ff9900;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0,0,0,0.9);
+      color: #f0f0f0;
       display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-    }
-    nav button {
-      flex: 1;
-      margin: 0 5px;
-    }
-    .section {
-      display: none;
-    }
-    .active {
-      display: block;
-    }
-    #welcome {
-      font-size: 20px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       text-align: center;
-      padding: 30px 0;
+    }
+    .welcome {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+    .welcome h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .welcome p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .start-btn {
+      padding: 1rem 2rem;
+      background: gold;
+      color: black;
+      font-weight: bold;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .start-btn:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
 <body>
-  <div class="container" id="auth-section">
-    <h1>EANO Coin</h1>
-    <form id="signup-form">
-      <h2>Create Account</h2>
-      <input type="text" id="signup-username" placeholder="Username" required />
-      <input type="email" id="signup-email" placeholder="Email" required />
-      <input type="password" id="signup-password" placeholder="Password" required />
-      <input type="text" id="signup-referral" placeholder="Referral (optional)" />
-      <button type="submit">Sign Up</button>
-    </form>
-
-    <form id="login-form">
-      <h2>Login</h2>
-      <input type="email" id="login-email" placeholder="Email" required />
-      <input type="password" id="login-password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
+  <div class="welcome">
+    <h1>Welcome to EANO Coin</h1>
+    <p>The future of African-powered cryptocurrency. Begin your journey to mine and grow with EANO.</p>
+    <a href="mining.html"><button class="start-btn">Start Mining</button></a>
   </div>
-
-  <div class="container section" id="main-section">
-    <div id="welcome">Welcome to EANO Coin</div>
-
-    <div id="home-tab" class="tab-section active">
-      <h2>Dashboard</h2>
-      <p>Total Coins: <span id="totalCoins">0</span></p>
-      <p>Trust Score: <span id="trustScore">0</span></p>
-      <p>Trust Level: <span id="trustLevel">Loading...</span></p>
-      <p>Upgrade Level: <span id="upgradeLevel">Loading...</span></p>
-    </div>
-
-    <div id="mine-tab" class="tab-section">
-      <h2>Mine EANO</h2>
-      <button id="mine-btn">Mine Now</button>
-      <p id="output"></p>
-      <p>Next mining in: <span id="countdown">--:--:--</span></p>
-    </div>
-
-    <div id="profile-tab" class="tab-section">
-      <h2>Profile</h2>
-      <p>Username: <span id="userName">-</span></p>
-      <p>Email: <span id="userEmail">-</span></p>
-      <p>Referred By: <span id="referredBy">-</span></p>
-    </div>
-  </div>
-
-  <nav id="nav" class="section">
-    <button onclick="switchTab('home-tab')">Home</button>
-    <button onclick="switchTab('mine-tab')">Mine</button>
-    <button onclick="switchTab('profile-tab')">Profile</button>
-  </nav>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    function getTrust(score) {
-      if (score >= 100) return 100;
-      return Math.floor(score);
-    }
-    function getTrustLevel(score) {
-      if (score >= 80) return "Trusted Miner 💎";
-      if (score >= 50) return "Reliable Miner";
-      if (score >= 30) return "New Miner";
-      return "Needs Trust";
-    }
-    function getUpgradeLevel(score) {
-      if (score >= 10000) return "Leaders";
-      if (score >= 5000) return "Masters";
-      if (score >= 1000) return "Professionals";
-      if (score >= 500) return "Elites";
-      if (score >= 50) return "Amateurs";
-      if (score >= 5) return "Starter";
-      return "Unranked";
-    }
-
-    function updateTrustUI(score) {
-      document.getElementById("trustScore").textContent = getTrust(score);
-      document.getElementById("trustLevel").textContent = getTrustLevel(score);
-      document.getElementById("upgradeLevel").textContent = getUpgradeLevel(score);
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll(".tab-section").forEach(tab => tab.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-    }
-
-    function formatCountdown(ms) {
-      const totalSec = Math.floor(ms / 1000);
-      const hrs = String(Math.floor(totalSec / 3600)).padStart(2, '0');
-      const mins = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
-      const secs = String(totalSec % 60).padStart(2, '0');
-      return `${hrs}:${mins}:${secs}`;
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const signupForm = document.getElementById("signup-form");
-      const loginForm = document.getElementById("login-form");
-      const mineButton = document.getElementById("mine-btn");
-      const output = document.getElementById("output");
-
-      let currentUser = null;
-      let lastMined = null;
-
-      signupForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = signupForm["signup-email"].value;
-        const password = signupForm["signup-password"].value;
-        const username = signupForm["signup-username"].value;
-        const referral = signupForm["signup-referral"].value.trim();
-
-        try {
-          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-          const userDoc = doc(db, "miners", user.uid);
-          const initialScore = 5;
-
-          await setDoc(userDoc, {
-            email: user.email,
-            username: username,
-            coins: initialScore,
-            trustScore: initialScore,
-            referredBy: referral || "",
-            lastMined: new Date(0),
-          });
-
-          if (referral !== "") {
-            const refQuery = doc(db, "miners", referral);
-            const refSnap = await getDoc(refQuery);
-            if (refSnap.exists()) {
-              const refData = refSnap.data();
-              const refScore = (refData.trustScore || 0) + 5;
-              await updateDoc(refQuery, { trustScore: refScore });
-            }
-          }
-
-          alert("Signup successful! You can now log in.");
-        } catch (error) {
-          alert(error.message);
-        }
-      });
-
-      loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = loginForm["login-email"].value;
-        const password = loginForm["login-password"].value;
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          document.getElementById("auth-section").style.display = "none";
-          document.getElementById("main-section").classList.add("active");
-          document.getElementById("nav").classList.add("section");
-        } catch (error) {
-          alert(error.message);
-        }
-      });
-
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          currentUser = user;
-          const userDoc = doc(db, "miners", user.uid);
-          const userSnap = await getDoc(userDoc);
-          if (userSnap.exists()) {
-            const data = userSnap.data();
-            document.getElementById("userName").textContent = data.username;
-            document.getElementById("userEmail").textContent = data.email;
-            document.getElementById("referredBy").textContent = data.referredBy || "-";
-            document.getElementById("totalCoins").textContent = data.coins || 0;
-            updateTrustUI(data.trustScore || 0);
-            lastMined = new Date(data.lastMined.seconds * 1000);
-          }
-        }
-      });
-
-      mineButton.addEventListener("click", async () => {
-        if (!currentUser) return alert("Log in first");
-
-        const now = new Date();
-        if (lastMined && now - lastMined < 86400000) {
-          const wait = 86400000 - (now - lastMined);
-          return alert(`Please wait ${formatCountdown(wait)} before mining again.`);
-        }
-
-        const userDoc = doc(db, "miners", currentUser.uid);
-        const userSnap = await getDoc(userDoc);
-        let data = userSnap.data();
-        const newCoins = (data.coins || 0) + 1;
-        const newTrust = (data.trustScore || 0) + 1;
-
-        await updateDoc(userDoc, {
-          coins: newCoins,
-          trustScore: newTrust,
-          lastMined: now,
-        });
-
-        document.getElementById("totalCoins").textContent = newCoins;
-        updateTrustUI(newTrust);
-        lastMined = now;
-        output.textContent = `Mined 1 EANO. Total: ${newCoins}`;
-      });
-
-      setInterval(() => {
-        if (!lastMined) return;
-        const diff = 86400000 - (new Date() - lastMined);
-        document.getElementById("countdown").textContent = diff > 0 ? formatCountdown(diff) : "Ready!";
-      }, 1000);
-    });
-  </script>
 </body>
 </html>
