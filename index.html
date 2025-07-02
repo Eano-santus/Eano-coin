@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>script src="main.js"></script>,
+  import { auth, onAuthStateChanged } from "./firebase.js";
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    // User is signed in
+    setupDashboard(user); // your function to show main content
+  } else {
+    // User is not signed in
+    showLoginForm(); // your function to show login form
+  }
+});
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EANO Coin - Dashboard</title>
