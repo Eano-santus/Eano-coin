@@ -160,4 +160,36 @@ function startMining() {
 }
 
   </script>
+<!-- Firebase Authentication Check -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+    authDomain: "eano-miner.firebaseapp.com",
+    projectId: "eano-miner",
+    storageBucket: "eano-miner.appspot.com",
+    messagingSenderId: "50186911438",
+    appId: "1:50186911438:web:YOUR_APP_ID" // Replace with your actual App ID from Firebase
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  auth.onAuthStateChanged((user) => {
+    if (!user) {
+      // If no user is signed in, redirect to login
+      window.location.href = "login.html";
+    }
+  });
+</script>
 </body></html>
+<button onclick="logout()" style="position: fixed; top: 10px; right: 10px; background: red; color: white;">Logout</button>
+
+<script>
+  function logout() {
+    firebase.auth().signOut().then(() => {
+      window.location.href = "login.html";
+    });
+  }
+</script>
