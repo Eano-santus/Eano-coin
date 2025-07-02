@@ -28,7 +28,19 @@
       sendPasswordResetEmail,
       onAuthStateChanged
     } from './firebase.js';
+import { auth, signInWithEmailAndPassword } from "./firebase.js";
 
+async function login(email, password) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("Logged in as:", user.email);
+    setupDashboard(user); // show dashboard after login success
+  } catch (error) {
+    console.error("Login error:", error.message);
+    showError(error.message); // show error to user
+  }
+}
     const errorEl = document.getElementById("error");
 
     const handleLogin = async () => {
