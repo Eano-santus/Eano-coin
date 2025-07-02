@@ -2,59 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Coin - Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up - EANO Coin</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="module" defer src="signup.js"></script>
 </head>
 <body>
   <div class="auth-container">
-    <h2>Create Account</h2>
-
-    <input type="email" id="email" placeholder="Email address" required />
-    <input type="password" id="password" placeholder="Password" required />
-
-    <button onclick="handleSignup()">Sign Up</button>
-
-    <p>Already have an account? <a href="login.html">Login</a></p>
-    <p><a href="#" onclick="resetPassword()">Forgot Password?</a></p>
-
-    <p class="error-message" id="error"></p>
+    <h1>Sign Up</h1>
+    <form id="signupForm">
+      <input type="email" id="email" placeholder="Email Address" required />
+      <input type="password" id="password" placeholder="Password" required minlength="6" />
+      
+      <!-- New referral code input -->
+      <input type="text" id="referralCode" placeholder="Referral Code (optional)" />
+      
+      <button type="submit">Create Account</button>
+      <p class="error-message" id="errorMsg"></p>
+    </form>
+    <p>
+      Already have an account? <a href="login.html">Log In</a>
+    </p>
   </div>
-
-  <!-- Firebase & logic -->
-  <script type="module">
-    import {
-      auth,
-      createUserWithEmailAndPassword,
-      sendEmailVerification
-    } from './firebase.js';
-
-    const handleSignup = async () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorEl = document.getElementById("error");
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await sendEmailVerification(userCredential.user);
-        alert("Signup successful! Verification email sent. Please check your inbox.");
-        window.location.href = "login.html";
-      } catch (error) {
-        errorEl.textContent = error.message;
-      }
-    };
-
-    const resetPassword = async () => {
-      const email = prompt("Enter your email to receive a reset link:");
-      if (!email) return;
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Reset link sent. Check your inbox.");
-      } catch (error) {
-        alert(error.message);
-      }
-    };
-  </script>
 </body>
 </html>
