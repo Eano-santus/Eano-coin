@@ -1,62 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EANO Coin Signup</title>
-<link rel="stylesheet" href="style.css" />
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Coin - Sign Up</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="auth-container">
-    <h2>Sign Up</h2>
-    <form id="signup-form">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required minlength="6" />
-      <button type="submit">Sign Up</button>
-    </form>
-    <p>Already have an account? <a href="login.html">Login here</a></p>
-    <p id="signup-error" class="error-message"></p>
+    <h2>Create Account</h2>
+
+    <input type="email" id="email" placeholder="Email address" required />
+    <input type="password" id="password" placeholder="Password" required />
+
+    <button onclick="handleSignup()">Sign Up</button>
+
+    <p>Already have an account? <a href="login.html">Login</a></p>
+    <p><a href="#" onclick="resetPassword()">Forgot Password?</a></p>
+
+    <p class="error-message" id="error"></p>
   </div>
 
-<script>
-  // Your Firebase config here
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "50186911438",
-    appId: "1:50186911438:web:YOUR_APP_ID"
-  };
+  <!-- Firebase & logic -->
+  <script type="module">
+    import {
+      auth,
+      createUserWithEmailAndPassword,
+      sendEmailVerification
+    } from './firebase.js';
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+    const handleSignup = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorEl = document.getElementById("error");
 
-  // Signup form submit handler
-  document.getElementById('signup-form').addEventListener('submit', e => {
-    e.preventDefault();
-    const email = e.target.email.value.trim();
-    const password = e.target.password.value.trim();
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
+        alert("Signup successful! Verification email sent. Please check your inbox.");
+        window.location.href = "login.html";
+      } catch (error) {
+        errorEl.textContent = error.message;
+      }
+    };
 
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        // Redirect to homepage after signup
-        window.location.href = 'index.html';
-      })
-      .catch(error => {
-        document.getElementById('signup-error').innerText = error.message;
-      });
-  });
+    const resetPassword = async () => {
+      const email = prompt("Enter your email to receive a reset link:");
+      if (!email) return;
 
-  // Redirect to homepage if already logged in
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      window.location.href = 'index.html';
-    }
-  });
-</script>
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert("Reset link sent. Check your inbox.");
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+  </script>
 </body>
 </html>
