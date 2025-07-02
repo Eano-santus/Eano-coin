@@ -1,55 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EANO Coin Signup</title>
 <link rel="stylesheet" href="style.css" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up - EANO Miner</title>
-  <link rel="stylesheet" href="style.css" />
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
-<body class="auth-body">
-
+<body>
   <div class="auth-container">
-    <h2>Create Account</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="signUp()">Sign Up</button>
-    <p>Already have an account? <a href="login.html">Login</a></p>
-    <p id="error-message" class="error-text"></p>
+    <h2>Sign Up</h2>
+    <form id="signup-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required minlength="6" />
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+    <p id="signup-error" class="error-message"></p>
   </div>
 
-  <script type="module">
-    // Firebase Setup
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<script>
+  // Your Firebase config here
+  const firebaseConfig = {
+    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+    authDomain: "eano-miner.firebaseapp.com",
+    projectId: "eano-miner",
+    storageBucket: "eano-miner.appspot.com",
+    messagingSenderId: "50186911438",
+    appId: "1:50186911438:web:YOUR_APP_ID"
+  };
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:xxxxxxxxxxxxxxxx"
-    };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  // Signup form submit handler
+  document.getElementById('signup-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const email = e.target.email.value.trim();
+    const password = e.target.password.value.trim();
 
-    window.signUp = async () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorMessage = document.getElementById("error-message");
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        // Redirect to homepage after signup
+        window.location.href = 'index.html';
+      })
+      .catch(error => {
+        document.getElementById('signup-error').innerText = error.message;
+      });
+  });
 
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        window.location.href = "index.html";
-      } catch (error) {
-        errorMessage.textContent = error.message;
-      }
-    };
-  </script>
+  // Redirect to homepage if already logged in
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      window.location.href = 'index.html';
+    }
+  });
+</script>
 </body>
 </html>
-<form id="signup-form"> … </form>
