@@ -1,47 +1,72 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="EANO Coin Mining App - Earn EANO Coin daily by tapping and building trust." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EANO Coin Mining</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    input {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #logoutBtn {
+      background-color: #dc3545;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>EANO Coin Mining</h1><div id="auth-section">
-  <div id="signup-form">
-    <h2>Create Your Account</h2>
-    <input type="text" id="signup-username" placeholder="Username or Email" required />
-    <input type="password" id="signup-password" placeholder="Password" required />
-    <button onclick="signUp()">Sign Up</button>
-  </div>
-
-  <div id="login-form">
-    <h2>Login</h2>
-    <input type="text" id="login-username" placeholder="Username or Email" required />
-    <input type="password" id="login-password" placeholder="Password" required />
-    <button onclick="logIn()">Log In</button>
-  </div>
-</div>
-
-<div id="mining-section" style="display: none;">
-  <h2>Welcome, <span id="display-name"></span>!</h2>
-  <p>Start mining your daily EANO Coin</p>
-  <button onclick="mineCoin()">Mine</button>
-  <p>Coins mined: <span id="coin-count">0</span></p>
-  <button onclick="logOut()">Log Out</button>
-</div>
-
-  </div>  <!-- Firebase App (modular CDN SDK) -->  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    <h2>EANO Coin Miner</h2>
+    <div id="auth">
+      <input type="text" id="email" placeholder="Username or Email">
+      <input type="password" id="password" placeholder="Password">
+      <input type="text" id="referral" placeholder="Referral Username (optional)">
+      <button onclick="signup()">Create Account</button>
+      <button onclick="login()">Login</button>
+    </div>
+    <div id="miner" style="display:none;">
+      <p>Welcome, <span id="userEmail"></span></p>
+      <p>Mined Coins: <span id="coinCount">0</span></p>
+      <button onclick="mineCoin()">Mine Coin</button>
+      <button id="logoutBtn" onclick="logout()">Logout</button>
+    </div>
+  </div>  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
       projectId: "eano-miner",
-      storageBucket: "eano-miner.firebasestorage.app",
+      storageBucket: "eano-miner.appspot.com",
       messagingSenderId: "50186911438",
       appId: "1:50186911438:web:85410fccc7c5933d761a9f"
     };
@@ -50,65 +75,74 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    window.auth = auth;
-    window.db = db;
+    let currentUser = null;
 
-    // Sign up
-    window.signUp = async function() {
-      const email = document.getElementById("signup-username").value;
-      const password = document.getElementById("signup-password").value;
+    async function signup() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const ref = document.getElementById('referral').value;
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        await setDoc(doc(db, "users", user.uid), { coins: 0 });
-        alert("Account created successfully!");
+        currentUser = userCredential.user;
+        await setDoc(doc(db, "users", currentUser.uid), { coins: 0, email, referral: ref });
+        alert("Signup successful!");
       } catch (error) {
-        alert(error.message);
+        alert("Signup failed: " + error.message);
       }
     }
 
-    // Log in
-    window.logIn = async function() {
-      const email = document.getElementById("login-username").value;
-      const password = document.getElementById("login-password").value;
+    async function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        currentUser = userCredential.user;
+        document.getElementById('auth').style.display = 'none';
+        document.getElementById('miner').style.display = 'block';
+        document.getElementById('userEmail').textContent = email;
+        loadCoins();
+        alert("Login successful!");
       } catch (error) {
-        alert(error.message);
+        alert("Login failed: " + error.message);
       }
     }
 
-    // Log out
-    window.logOut = async function() {
-      await signOut(auth);
-    }
-
-    // Mine coin
-    window.mineCoin = async function() {
-      const user = auth.currentUser;
-      if (user) {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        let currentCoins = userSnap.data().coins || 0;
-        currentCoins += 1;
-        await updateDoc(userRef, { coins: currentCoins });
-        document.getElementById("coin-count").textContent = currentCoins;
+    async function loadCoins() {
+      const docRef = doc(db, "users", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        document.getElementById("coinCount").textContent = docSnap.data().coins || 0;
       }
     }
 
-    // Auth state listener
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        document.getElementById("auth-section").style.display = "none";
-        document.getElementById("mining-section").style.display = "block";
-        document.getElementById("display-name").textContent = user.email;
+    async function mineCoin() {
+      const docRef = doc(db, "users", currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        let coins = docSnap.data().coins || 0;
+        coins++;
+        await updateDoc(docRef, { coins });
+        document.getElementById("coinCount").textContent = coins;
+        alert("Coin mined!");
+      }
+    }
 
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        document.getElementById("coin-count").textContent = userSnap.data().coins || 0;
-      } else {
-        document.getElementById("auth-section").style.display = "block";
-        document.getElementById("mining-section").style.display = "none";
+    function logout() {
+      signOut(auth).then(() => {
+        document.getElementById('auth').style.display = 'block';
+        document.getElementById('miner').style.display = 'none';
+        currentUser = null;
+        alert("Logged out successfully.");
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        document.getElementById('auth').style.display = 'none';
+        document.getElementById('miner').style.display = 'block';
+        document.getElementById('userEmail').textContent = user.email;
+        loadCoins();
       }
     });
   </script></body>
