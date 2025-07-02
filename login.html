@@ -1,5 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"><form id="loginForm">
+  <input type="email" id="email" required />
+  <input type="password" id="password" required />
+  <button type="submit">Login</button>
+</form>
+
+<script type="module">
+  import { login } from "./login.js"; // or wherever your login function is
+
+  const loginForm = document.getElementById("loginForm");
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = loginForm.email.value;
+    const password = loginForm.password.value;
+    login(email, password);
+  });
+</script>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
