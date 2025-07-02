@@ -1,9 +1,10 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Mining</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <style>
     body {
@@ -13,9 +14,7 @@
       text-align: center;
       padding: 20px;
     }
-    h1 {
-      color: #facc15;
-    }
+    h1 { color: #facc15; }
     .container {
       background: #161b22;
       padding: 20px;
@@ -30,8 +29,6 @@
       border: none;
       border-radius: 8px;
       font-size: 1em;
-    }
-    input {
       width: 80%;
     }
     button {
@@ -39,29 +36,40 @@
       color: #000;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #fde047;
-    }
-    #status {
-      margin-top: 10px;
-      color: #22c55e;
+    button:hover { background-color: #fde047; }
+    #status { margin-top: 10px; color: #22c55e; }
+    .hidden { display: none; }
+    .link-btn {
+      color: #60a5fa;
+      text-decoration: underline;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <h1>EANO Coin Mining</h1>
   <div class="container">
-    <p>Enter your wallet address:</p>
-    <input type="text" id="walletInput" placeholder="Wallet address" />
-    <p>Trust Score: <span id="trustScore">0</span></p>
-    <p>Total Mined: <span id="minedCount">0</span></p>
-    <p>Referrals: <span id="referralCount">0</span></p>
-    <button onclick="mineCoin()">Mine EANO Coin</button>
-    <button onclick="exportData()">Export Backup</button>
-    <button onclick="goToLeaderboard()">Leaderboard</button>
-    <p id="status"></p>
-  </div>
-  <script>
+    <div id="authSection">
+      <h3>Login or Create Account</h3>
+      <input type="text" id="username" placeholder="Username or Email" /><br/>
+      <input type="password" id="password" placeholder="Password" /><br/>
+      <button onclick="signUp()">Create Account</button>
+      <button onclick="login()">Login</button>
+      <p class="link-btn" onclick="resetPassword()">Forgot Password?</p>
+      <p id="authStatus"></p>
+    </div><div id="miningSection" class="hidden">
+  <p>Welcome, <span id="userEmail"></span></p>
+  <p>Trust Score: <span id="trustScore">0</span></p>
+  <p>Total Mined: <span id="minedCount">0</span></p>
+  <p>Referrals: <span id="referralCount">0</span></p>
+  <button onclick="mineCoin()">Mine EANO Coin</button>
+  <button onclick="exportData()">Export Backup</button>
+  <button onclick="goToLeaderboard()">Leaderboard</button>
+  <button onclick="logout()">Logout</button>
+  <p id="status"></p>
+</div>
+
+  </div>  <script>
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_AUTH_DOMAIN",
@@ -69,92 +77,165 @@
       storageBucket: "YOUR_STORAGE_BUCKET",
       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
       appId: "YOUR_APP_ID"
-    };firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    };
 
-const walletInput = document.getElementById("walletInput");
-const minedCountEl = document.getElementById("minedCount");
-const trustScoreEl = document.getElementById("trustScore");
-const referralCountEl = document.getElementById("referralCount");
-const statusEl = document.getElementById("status");
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-let mined = 0;
-let trust = 50;
-let referrals = 0;
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const authSection = document.getElementById("authSection");
+    const miningSection = document.getElementById("miningSection");
 
-function mineCoin() {
-  const wallet = walletInput.value.trim();
-  if (!wallet) {
-    statusEl.textContent = "Please enter a wallet address.";
-    return;
-  }
+    const trustScoreEl = document.getElementById("trustScore");
+    const minedCountEl = document.getElementById("minedCount");
+    const referralCountEl = document.getElementById("referralCount");
+    const statusEl = document.getElementById("status");
+    const authStatusEl = document.getElementById("authStatus");
+    const userEmailEl = document.getElementById("userEmail");
 
-  mined++;
-  trust += 1;
-  updateUI();
-  saveToFirebase(wallet);
-}
+    let mined = 0;
+    let trust = 50;
+    let referrals = 0;
+    let currentUser = null;
 
-function updateUI() {
-  minedCountEl.textContent = mined;
-  trustScoreEl.textContent = trust;
-  referralCountEl.textContent = referrals;
-}
-
-function saveToFirebase(wallet) {
-  db.collection("miners").doc(wallet).set({
-    wallet,
-    mined,
-    trust,
-    referrals,
-    timestamp: new Date().toISOString(),
-  })
-  .then(() => statusEl.textContent = "Data saved.")
-  .catch((err) => statusEl.textContent = "Error: " + err.message);
-}
-
-function exportData() {
-  const wallet = walletInput.value.trim();
-  if (!wallet) {
-    alert("Enter wallet first");
-    return;
-  }
-  const data = {
-    wallet,
-    mined,
-    trust,
-    referrals,
-    timestamp: new Date().toISOString(),
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = wallet + "_EANO_backup.json";
-  a.click();
-}
-
-function goToLeaderboard() {
-  window.location.href = "leaderboard.html";
-}
-
-const urlParams = new URLSearchParams(window.location.search);
-const ref = urlParams.get("ref");
-if (ref) {
-  const refDoc = db.collection("miners").doc(ref);
-  refDoc.get().then(doc => {
-    if (doc.exists) {
-      const current = doc.data();
-      const updated = {
-        ...current,
-        referrals: (current.referrals || 0) + 1,
-        timestamp: new Date().toISOString()
-      };
-      refDoc.set(updated);
+    function signUp() {
+      const email = usernameInput.value.trim();
+      const password = passwordInput.value;
+      if (!email || !password) return alert("Fill in all fields");
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          userCredential.user.sendEmailVerification();
+          authStatusEl.textContent = "Account created. Please check your email to verify.";
+        })
+        .catch(err => authStatusEl.textContent = "Error: " + err.message);
     }
-  });
-}
 
-  </script>
-</body>
+    function login() {
+      const email = usernameInput.value.trim();
+      const password = passwordInput.value;
+      if (!email || !password) return alert("Fill in all fields");
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          if (!userCredential.user.emailVerified) {
+            authStatusEl.textContent = "Please verify your email before logging in.";
+            auth.signOut();
+            return;
+          }
+          currentUser = userCredential.user;
+          showMining();
+          loadData();
+        })
+        .catch(err => authStatusEl.textContent = "Login failed: " + err.message);
+    }
+
+    function resetPassword() {
+      const email = usernameInput.value.trim();
+      if (!email) return alert("Enter your email to reset password.");
+      auth.sendPasswordResetEmail(email)
+        .then(() => alert("Password reset link sent."))
+        .catch(err => alert("Error: " + err.message));
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        currentUser = null;
+        authSection.classList.remove("hidden");
+        miningSection.classList.add("hidden");
+      });
+    }
+
+    function showMining() {
+      authSection.classList.add("hidden");
+      miningSection.classList.remove("hidden");
+      userEmailEl.textContent = currentUser.email;
+    }
+
+    function mineCoin() {
+      if (!currentUser) return alert("Login first.");
+      mined++;
+      trust++;
+      updateUI();
+      saveToFirebase();
+    }
+
+    function updateUI() {
+      minedCountEl.textContent = mined;
+      trustScoreEl.textContent = trust;
+      referralCountEl.textContent = referrals;
+    }
+
+    function saveToFirebase() {
+      const uid = currentUser.uid;
+      db.collection("miners").doc(uid).set({
+        email: currentUser.email,
+        mined,
+        trust,
+        referrals,
+        timestamp: new Date().toISOString(),
+      }).then(() => {
+        statusEl.textContent = "Data saved.";
+      }).catch(err => {
+        statusEl.textContent = "Save failed: " + err.message;
+      });
+    }
+
+    function exportData() {
+      const data = {
+        email: currentUser.email,
+        mined,
+        trust,
+        referrals,
+        timestamp: new Date().toISOString(),
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "EANO_Backup.json";
+      a.click();
+    }
+
+    function goToLeaderboard() {
+      window.location.href = "leaderboard.html";
+    }
+
+    function loadData() {
+      const uid = currentUser.uid;
+      db.collection("miners").doc(uid).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          mined = data.mined || 0;
+          trust = data.trust || 50;
+          referrals = data.referrals || 0;
+          updateUI();
+        }
+      });
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) {
+      db.collection("miners").doc(ref).get().then(doc => {
+        if (doc.exists) {
+          const current = doc.data();
+          const updated = {
+            ...current,
+            referrals: (current.referrals || 0) + 1,
+            timestamp: new Date().toISOString()
+          };
+          db.collection("miners").doc(ref).set(updated);
+        }
+      });
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user && user.emailVerified) {
+        currentUser = user;
+        showMining();
+        loadData();
+      }
+    });
+  </script></body>
 </html>
