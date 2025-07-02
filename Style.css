@@ -1,4 +1,4 @@
-/* General reset */
+/* Reset and base styling */
 * {
   margin: 0;
   padding: 0;
@@ -7,122 +7,112 @@
 }
 
 body {
-  background-color: #0f0f0f;
-  color: #f5f5f5;
+  background: #0f0f0f;
+  color: #fff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-a {
-  color: gold;
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-/* Top bar */
+/* Topbar */
 .topbar {
+  height: 60px;
+  background: #222;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1a1a1a;
-  padding: 10px 20px;
-  color: #fff;
-}
-
-.logout-btn {
-  background-color: crimson;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
+  padding: 0 16px;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 240px;
+  right: 0;
+  z-index: 1000;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 220px;
+  width: 240px;
   background: #1b1b1b;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
 }
 
 .sidebar h2 {
+  font-size: 22px;
   color: gold;
-  font-size: 18px;
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .menu-item {
   padding: 10px;
-  border-radius: 6px;
-  transition: 0.2s ease;
   color: #ccc;
   cursor: pointer;
+  border-radius: 6px;
 }
+
 .menu-item:hover {
-  background-color: #333;
+  background: #333;
   color: #fff;
 }
 
-/* Content */
+/* Content Area */
 .content {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin-left: 240px;
+  margin-top: 60px;
+  padding: 30px 20px;
+  text-align: center;
 }
 
 .eano-logo {
-  width: 160px;
-  height: 160px;
-  background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center center;
   background-size: contain;
-  margin-bottom: 20px;
 }
 
 .update-message {
-  color: #ccc;
   font-size: 18px;
+  color: #aaa;
   margin-top: 10px;
 }
 
+/* Mining Button */
 .mine-btn {
-  margin-top: 25px;
-  padding: 12px 24px;
-  background-color: gold;
+  margin-top: 20px;
+  background: gold;
   color: black;
-  font-weight: bold;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
 }
 
+.mine-btn:hover {
+  background: #ffd700;
+}
+
+/* Responsive for mobile */
 @media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
   .sidebar {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
     width: 100%;
-  }
-
-  .menu-item {
-    flex: 1 1 40%;
-    text-align: center;
+    height: auto;
+    position: relative;
   }
 
   .topbar {
-    flex-direction: column;
-    gap: 10px;
+    left: 0;
+  }
+
+  .content {
+    margin-left: 0;
+    margin-top: 120px;
   }
 }
