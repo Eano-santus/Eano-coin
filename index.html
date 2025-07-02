@@ -1,226 +1,172 @@
-<!DOCTYPE html><html lang="en">
-  <head><script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "50186911438",
-    appId: "1:50186911438:web:your-app-id" // optional
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // Protect the page
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "login.html";
-    }
-  });
-
-  // Logout function
-  window.logout = () => {
-    signOut(auth).then(() => {
-      window.location.href = "login.html";
-    });
-  };
-  </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EANO Coin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Roboto', sans-serif;
-    }body {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: #0f0f0f;
-  color: #fff;
-}
+    }
 
-.topbar {
-  height: 50px;
-  background: #222;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 15px;
-}
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: #0f0f0f;
+      color: #fff;
+    }
 
-.topbar .language {
-  color: #ccc;
-}
+    .topbar {
+      height: 60px;
+      background: #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
 
-.main {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
+    .balance {
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-.sidebar {
-  width: 200px;
-  background: #1b1b1b;
-  padding: 10px;
-  overflow-y: auto;
-}
+    .logout-btn {
+      background: crimson;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-.sidebar h2 {
-  font-size: 18px;
-  color: gold;
-  margin-bottom: 10px;
-}
+    .container {
+      display: flex;
+      flex: 1;
+    }
 
-.menu-item {
-  padding: 8px;
-  color: #ccc;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 14px;
-}
+    .sidebar {
+      width: 220px;
+      background: #1b1b1b;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-right: 2px solid #333;
+    }
 
-.menu-item:hover {
-  background: #333;
-}
+    .sidebar h2 {
+      color: gold;
+      font-size: 20px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
 
-.content {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
+    .menu-item {
+      padding: 10px;
+      color: #ccc;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-.eano-logo {
-  width: 150px;
-  height: 150px;
-  background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center center;
-  background-size: contain;
-  margin-bottom: 20px;
-}
+    .menu-item:hover {
+      background: #333;
+      color: white;
+    }
 
-.update-message {
-  font-size: 16px;
-  color: #aaa;
-}
+    .content {
+      flex: 1;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
 
-.mine-btn {
-  margin-top: 20px;
-  background: gold;
-  color: black;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .eano-logo {
+      width: 180px;
+      height: 180px;
+      background: url('https://eano-santus.github.io/eano-coin/assets/eano-gold.png') no-repeat center;
+      background-size: contain;
+      margin-bottom: 20px;
+    }
 
+    .update-message {
+      font-size: 18px;
+      color: #aaa;
+    }
+
+    .mine-btn {
+      background: gold;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        border-right: none;
+        border-bottom: 2px solid #333;
+      }
+
+      .menu-item {
+        flex: 1 1 40%;
+        text-align: center;
+      }
+
+      .topbar {
+        flex-direction: column;
+        gap: 10px;
+        height: auto;
+        padding: 10px;
+      }
+    }
   </style>
-</head><body>
+</head>
+<body>
   <div class="topbar">
-    <div class="language">🌍 Language</div>
-    <div class="balance">EANO Balance: <span id="balance">0.000</span></div>
-  </div class="sidebarleft">
-    <div class="balance">Mining: <span id="counting">0.000</span>/24h</div>
-  
-  <div class="main">
+    <div class="balance">Balance: <span id="balance">0.000</span> EANO</div>
+    <div class="balance">User: <span id="userEmail">Loading...</span></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
     <div class="sidebar">
       <h2>MENU</h2>
-      <div class="menu-item">Mine</div>
-      <div class="menu-item">Invite</div>
       <div class="menu-item">Leaderboard</div>
       <div class="menu-item">TrustScore</div>
       <div class="menu-item">Level Scores</div>
       <div class="menu-item">Referrals</div>
       <div class="menu-item">Profile</div>
-      <div class="menu-item">White Paper</div>
+      <div class="menu-item">White-paper</div>
       <div class="menu-item">Team</div>
       <div class="menu-item">Author</div>
-      <div class="menu-item"><a href="https://t.me/eanocoin" target="_blank" style="color: inherit; text-decoration: none;">Support Portal</a></div>
     </div>
+
     <div class="content">
       <div class="eano-logo"></div>
       <div class="update-message">🚧 New Updates Coming Soon 🚧</div>
       <button class="mine-btn" onclick="startMining()">Start Mining</button>
     </div>
   </div>
-  <script>
-    const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "eano-miner.firebaseapp.com",
-  projectId: "eano-miner",
-  storageBucket: "eano-miner.appspot.com",
-  messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();auth.onAuthStateChanged((user) => {
-  if (!user) {
-    window.location.href = "login.html";
-  }
-});
 
-let balance = 0;
-let mining = false;
-function startMining() {
-  if (!mining) {
-    mining = true;
-    let mineRate = 0.001;
-    let interval = setInterval(() => {
-      if (mining) {
-        balance += mineRate;
-        document.getElementById("balance").innerText = balance.toFixed(3);
-        document.getElementById("counting").innerText = (24 * mineRate).toFixed(3);
-      } else {
-        clearInterval(interval);
-      }
-    }, 1000);
-  }
-}
-
-  </script>
-<!-- Firebase Authentication Check -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "50186911438",
-    appId: "1:50186911438:web:YOUR_APP_ID" // Replace with your actual App ID from Firebase
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-
-  auth.onAuthStateChanged((user) => {
-    if (!user) {
-      // If no user is signed in, redirect to login
-      window.location.href = "login.html";
-    }
-  });
-</script>
-</body></html>
-<button onclick="logout()" style="position: fixed; top: 10px; right: 10px; background: red; color: white;">Logout</button>
-
-<script>
-  function logout() {
-    firebase.auth().signOut().then(() => {
-      window.location.href = "login.html";
-    });
-  }
-</script>
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com
