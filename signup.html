@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-script type="module" defer src="signup.js"></script>
+  script type="module" defer src="signup.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign Up - EANO Coin</title>
@@ -14,7 +14,8 @@ script type="module" defer src="signup.js"></script>
     <form id="signupForm">
       <input type="email" id="email" placeholder="Email Address" required />
       <input type="password" id="password" placeholder="Password" required minlength="6" />
-      
+      <label for="referral">Referral Code (optional)</label>
+<input type="text" id="referral" name="referral" placeholder="Enter referral code" />
       <!-- New referral code input -->
       <input type="text" id="referralCode" placeholder="Referral Code (optional)" />
       
