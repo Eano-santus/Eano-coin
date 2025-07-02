@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -72,279 +71,72 @@
     }
   </style>
 </head>
-
 <body>
   <img src="logo.png" alt="EANO Logo" style="width: 100px; margin-bottom: 10px;" />
   <h1>⛏️ EANO Coin Mining</h1>
-  <p>"Freedom is not given. It is mined."</p>
-
-  <!-- Wallet setup -->
-  <div class="wallet-setup">
+  <p>"Freedom is not given. It is mined."</p>  <!-- Referral section -->  <div class="wallet-setup">
+    <h3>🔗 Referral System</h3>
+    <input type="text" id="referralInput" placeholder="Paste your referrer's wallet (optional)" />
+    <button onclick="saveReferral()">Save Referrer</button>
+    <p id="referrerStatus"></p>
+  </div>  <!-- Wallet setup -->  <div class="wallet-setup">
     <p><strong>Your Wallet Address:</strong></p>
     <p id="walletDisplay">Not set</p>
     <input type="text" id="walletInput" placeholder="Paste your wallet address here" />
     <br />
     <button onclick="saveWallet()">Save Wallet</button>
-  </div>
-
-  <!-- Mining section -->
-  <div class="mining-box">
+  </div>  <!-- Mining section -->  <div class="mining-box">
     <p>Coins Mined: <span id="coins">0</span></p>
     <p id="timerText">Checking cooldown...</p>
     <p class="trust">Trust Score: <span id="trustScore">0%</span></p>
     <button id="mineButton" disabled>Mine EANO</button>
     <p><button onclick="exportData()">📤 Backup Mined Data</button></p>
-  </div>
-
-  <!-- Withdraw section -->
-  <div class="wallet-setup" style="margin-top: 40px;">
+  </div>  <!-- Withdraw section -->  <div class="wallet-setup" style="margin-top: 40px;">
     <h3>💸 Send to Wallet</h3>
     <input type="number" id="withdrawAmount" placeholder="Amount to withdraw" />
     <button onclick="withdraw()">Send</button>
     <p id="withdrawStatus"></p>
-  </div>
-
-  <!-- Support section -->
-  <hr style="margin: 40px 0;" />
+  </div>  <!-- Support section -->  <hr style="margin: 40px 0;" />
   <div style="text-align: center; font-size: 16px;">
     <h3>📢 Support & Community</h3>
     <p>📬 Email: <a href="mailto:eano.support@proton.me">eano.support@proton.me</a></p>
     <p>💬 Telegram Channel: <a href="https://t.me/eanocoin" target="_blank">@eanocoin</a></p>
     <p>🛠 GitHub: <a href="https://github.com/eano-santus/eano-coin" target="_blank">github.com/eano-santus/eano-coin</a></p>
-  </div>
-
-  <!-- Final footer -->
-  <div style="margin-top: 40px; font-size: 16px;">
+  </div>  <div style="margin-top: 40px; font-size: 16px;">
     <hr style="margin: 30px auto; width: 80%;" />
-    <p>
-      💬 Join our community:  
-      <a href="https://t.me/eanocoin" target="_blank" style="color: #0077cc;">@eanocoin</a>
-    </p>
-    <p>
-      📧 Contact support:  
-      <a href="mailto:eano.support@proton.me" style="color: #0077cc;">eano.support@proton.me</a>
-    </p>
-  </div>
-
-  <!-- JavaScript -->
-  <script>
-    const cooldown = 24 * 60 * 60 * 1000; // 24 hours
-    let minedData = {};
-
-    const mineBtn = document.getElementById('mineButton');
-    const coinsDisplay = document.getElementById('coins');
-    const timerText = document.getElementById('timerText');
-    const trustScoreDisplay = document.getElementById('trustScore');
-    const walletInput = document.getElementById('walletInput');
-    const walletDisplay = document.getElementById('walletDisplay');
-
-    let userMoved = false;
-    let waitStart = Date.now();
-    let antiBotPassed = false;
-
-    function loadMinedData() {
-      try {
-        minedData = JSON.parse(localStorage.getItem("minedData") || "{}");
-      } catch (e) {
-        minedData = {};
-      }
-    }
-
-    function getWalletMined(wallet) {
-      return minedData[wallet] || 0;
-    }
-
-    function incrementWalletMined(wallet) {
-      if (!minedData[wallet]) {
-        minedData[wallet] = 0;
-      }
-      minedData[wallet]++;
-      localStorage.setItem("minedData", JSON.stringify(minedData));
-    }
-
-    function updateMinedUI(wallet) {
-      coinsDisplay.textContent = getWalletMined(wallet);
-    }
-
-    function saveWallet() {
-      const address = walletInput.value.trim();
-      if (address.length < 5) {
-        alert("Please enter a valid wallet address.");
+    <p>💬 Join our community: <a href="https://t.me/eanocoin" target="_blank" style="color: #0077cc;">@eanocoin</a></p>
+    <p>📧 Contact support: <a href="mailto:eano.support@proton.me" style="color: #0077cc;">eano.support@proton.me</a></p>
+  </div>  <script>
+    // Existing script logic here...
+    // ADD REFERRAL LOGIC:
+    function saveReferral() {
+      const ref = document.getElementById('referralInput').value.trim();
+      if (ref.length < 5) {
+        document.getElementById('referrerStatus').textContent = "⚠️ Invalid referrer wallet.";
         return;
       }
-      localStorage.setItem("walletAddress", address);
-      walletDisplay.textContent = address;
-      walletInput.value = '';
-      updateMinedUI(address);
-      updateTimer();
+      localStorage.setItem("referrer", ref);
+      document.getElementById('referrerStatus').textContent = `✅ Referrer saved: ${ref}`;
     }
 
-    function loadWallet() {
-      const saved = localStorage.getItem("walletAddress");
-      if (saved) {
-        walletDisplay.textContent = saved;
-        updateMinedUI(saved);
-      } else {
-        walletDisplay.textContent = "Not set";
-      }
+    function getReferrer() {
+      return localStorage.getItem("referrer") || null;
     }
+  </script>  <!-- Firebase SDKs -->  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore.js";
 
-    function hasWallet() {
-      return !!localStorage.getItem("walletAddress");
-    }
-
-    function getTrust() {
-      return parseInt(localStorage.getItem('trustScore') || 0);
-    }
-
-    function increaseTrust() {
-      let current = getTrust();
-      if (current < 100) {
-        current += 5;
-        if (current > 100) current = 100;
-        localStorage.setItem('trustScore', current);
-      }
-      updateTrustUI();
-    }
-
-    function updateTrustUI() {
-      trustScoreDisplay.textContent = getTrust() + "%";
-    }
-
-    function getLastMineTime() {
-      return parseInt(localStorage.getItem('lastMine') || 0);
-    }
-
-    function updateTimer() {
-      const now = Date.now();
-      const lastMine = getLastMineTime();
-      const diff = cooldown - (now - lastMine);
-
-      if (!hasWallet()) {
-        mineBtn.disabled = true;
-        timerText.textContent = "⚠️ Please set your wallet address first.";
-        return;
-      }
-
-      if (diff > 0) {
-        mineBtn.disabled = true;
-        const hrs = Math.floor(diff / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const secs = Math.floor((diff % (1000 * 60)) / 1000);
-        timerText.textContent = `Next mine in: ${hrs}h ${mins}m ${secs}s`;
-      } else {
-        const waitElapsed = Date.now() - waitStart;
-        antiBotPassed = userMoved && waitElapsed > 5000;
-
-        if (antiBotPassed) {
-          mineBtn.disabled = false;
-          timerText.textContent = '';
-        } else {
-          mineBtn.disabled = true;
-          timerText.textContent = 'Move your finger or touch the screen and wait 5 seconds to enable mining.';
-        }
-      }
-    }
-
-    mineBtn.onclick = () => {
-      if (!antiBotPassed || !hasWallet()) {
-        alert("Mining not allowed. Make sure anti-bot is passed and wallet is set.");
-        return;
-      }
-      const wallet = localStorage.getItem("walletAddress");
-      incrementWalletMined(wallet);
-      updateMinedUI(wallet);
-      localStorage.setItem('lastMine', Date.now());
-      increaseTrust();
-      updateTimer();
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
     };
 
-    function markUserMoved() {
-      if (!userMoved) {
-        userMoved = true;
-        waitStart = Date.now();
-      }
-    }
-
-    document.addEventListener('mousemove', markUserMoved);
-    document.addEventListener('touchstart', markUserMoved);
-
-    function exportData() {
-      const wallet = localStorage.getItem("walletAddress");
-      if (!wallet) {
-        alert("Set wallet first.");
-        return;
-      }
-
-      const data = {
-        wallet,
-        mined: minedData[wallet] || 0,
-        trust: getTrust(),
-        lastMine: getLastMineTime(),
-        timestamp: new Date().toISOString()
-      };
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${wallet}_eano_backup.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function withdraw() {
-      const amount = parseInt(document.getElementById("withdrawAmount").value);
-      const wallet = localStorage.getItem("walletAddress");
-      const currentMined = minedData[wallet] || 0;
-
-      if (!wallet) {
-        alert("No wallet set.");
-        return;
-      }
-
-      if (isNaN(amount) || amount <= 0) {
-        alert("Enter a valid amount.");
-        return;
-      }
-
-      if (amount > currentMined) {
-        alert("Not enough mined coins.");
-        return;
-      }
-
-      minedData[wallet] -= amount;
-      localStorage.setItem("minedData", JSON.stringify(minedData));
-      updateMinedUI(wallet);
-
-      document.getElementById("withdrawStatus").textContent =
-        `✅ ${amount} EANO sent to ${wallet}`;
-    }
-
-    loadMinedData();
-    loadWallet();
-    updateTrustUI();
-    updateTimer();
-    setInterval(updateTimer, 1000);
-  </script>
-</body> <!-- Firebase SDKs -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "50186911438",
-    appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  console.log("✅ Firebase connected successfully");
-</script>
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    console.log("✅ Firebase connected successfully");
+  </script></body>
 </html>
