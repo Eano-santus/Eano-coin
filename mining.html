@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -24,19 +24,19 @@
     const auth = getAuth(app);
 
     function getTrust(score) {
-      if (score >= 100) return 100;
+      if (score >= 200) return 100;
       return Math.floor(score);
     }
 
     function getTrustLevel(score) {
-      if (score >= 80) return "Trusted Miner 💎";
-      if (score >= 50) return "Reliable Miner";
+      if (score >= 500) return "Trusted Miner 💎";
+      if (score >= 200) return "Reliable Miner";
       if (score >= 30) return "New Miner";
       return "Needs Trust";
     }
 
     function getUpgradeLevel(score) {
-      if (score >= 10000 && score <= 20000) return "Leaders";
+      if (score >= 10000) return "Leaders";
       if (score >= 5000) return "Masters";
       if (score >= 1000) return "Professionals";
       if (score >= 500) return "Elites";
@@ -56,9 +56,6 @@
       const loginForm = document.getElementById("login-form");
       const mineButton = document.getElementById("mine-btn");
       const output = document.getElementById("output");
-      const trustScoreEl = document.getElementById("trustScore");
-      const trustLevelEl = document.getElementById("trustLevel");
-      const upgradeLevelEl = document.getElementById("upgradeLevel");
 
       let currentUser = null;
 
@@ -66,9 +63,37 @@
         e.preventDefault();
         const email = signupForm["signup-email"].value;
         const password = signupForm["signup-password"].value;
+        const username = signupForm["signup-username"].value;
+        const referral = signupForm["signup-referral"].value.trim();
+
         try {
-          await createUserWithEmailAndPassword(auth, email, password);
-          alert("Signup successful! You can now mine.");
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          const userDoc = doc(db, "miners", user.uid);
+          const initialScore = 5;
+
+          await setDoc(userDoc, {
+            email: user.email,
+            username: username,
+            coins: initialScore,
+            trustScore: initialScore,
+            referredBy: referral || "",
+            lastMined: new Date(),
+          });
+
+          // Give referrer +5 trustScore
+          if (referral !== "") {
+            const refQuery = doc(db, "miners", referral);
+            const refSnap = await getDoc(refQuery);
+            if (refSnap.exists()) {
+              const refData = refSnap.data();
+              const refScore = (refData.trustScore || 0) + 5;
+              await updateDoc(refQuery, { trustScore: refScore });
+            }
+          }
+
+          alert("Signup successful! You can now log in and mine.");
         } catch (error) {
           alert(error.message);
         }
@@ -80,7 +105,7 @@
         const password = loginForm["login-password"].value;
         try {
           await signInWithEmailAndPassword(auth, email, password);
-          alert("Login successful");
+          alert("Login successful!");
         } catch (error) {
           alert(error.message);
         }
@@ -89,13 +114,12 @@
       onAuthStateChanged(auth, async (user) => {
         if (user) {
           currentUser = user;
-          const userDoc = doc(db, "miners", currentUser.uid);
+          const userDoc = doc(db, "miners", user.uid);
           const userSnap = await getDoc(userDoc);
-          let coins = 0;
           if (userSnap.exists()) {
-            coins = userSnap.data().coins || 0;
+            const data = userSnap.data();
+            updateTrustUI(data.coins || 0);
           }
-          updateTrustUI(coins);
         } else {
           currentUser = null;
         }
@@ -109,24 +133,28 @@
 
         const userDoc = doc(db, "miners", currentUser.uid);
         const userSnap = await getDoc(userDoc);
-        let newCount = 1;
+
+        let newCoins = 1;
+        let trustScore = 1;
 
         if (userSnap.exists()) {
           const data = userSnap.data();
-          newCount = (data.coins || 0) + 1;
+          newCoins = (data.coins || 0) + 1;
+          trustScore = (data.trustScore || 0) + 1;
         }
 
-        const upgradeLevel = getUpgradeLevel(newCount);
+        const level = getUpgradeLevel(newCoins);
 
         await setDoc(userDoc, {
-          email: currentUser.email,
-          coins: newCount,
-          level: upgradeLevel,
+          ...userSnap.data(),
+          coins: newCoins,
+          trustScore: trustScore,
+          level: level,
           lastMined: new Date()
         });
 
-        output.innerText = `Mined successfully! Total coins: ${newCount} | Level: ${upgradeLevel}`;
-        updateTrustUI(newCount);
+        updateTrustUI(newCoins);
+        output.innerText = `Mined 1 EANO! Total: ${newCoins} | Level: ${level}`;
       });
     });
   </script>
@@ -136,8 +164,10 @@
 
   <form id="signup-form">
     <h2>Create Account</h2>
+    <input type="text" id="signup-username" placeholder="Username" required />
     <input type="email" id="signup-email" placeholder="Email" required />
     <input type="password" id="signup-password" placeholder="Password" required />
+    <input type="text" id="signup-referral" placeholder="Referral (optional)" />
     <button type="submit">Sign Up</button>
   </form>
 
