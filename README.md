@@ -1,4 +1,4 @@
-EANO Coin
+Welcome to EANO Coin Project 
 
 EANO Coin is a decentralized cryptocurrency built for African empowerment and indigenous resilience. It represents economic liberation through indigenous values and community-driven technology. EANO stands for the four Igbo market days: Eke, Afor, Nkwo, Orie — a symbol of time, trade, and tradition.
 
