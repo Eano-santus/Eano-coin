@@ -51,6 +51,4 @@ signupForm.addEventListener("submit", async (e) => {
     console.error("Signup error:", error);
     alert("Signup failed: " + error.message);
   }
-});<script type="module">
-  import('./signup.js');
-</script>
+})
