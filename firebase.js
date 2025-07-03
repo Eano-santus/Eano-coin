@@ -9,7 +9,8 @@ const firebaseConfig = {
   projectId: "eano-miner",
   storageBucket: "eano-miner.appspot.com",
   messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fcc7c593d76" // Replace with your actual appId
+  appId: "1:50186911438:web:85410fcc7c593d76",
+  measurementId: "G-NS0W6QSS"
 };
 
 const app = initializeApp(firebaseConfig);
