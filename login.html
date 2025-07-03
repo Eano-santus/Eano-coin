@@ -22,7 +22,7 @@
 
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          window.location.href = "/welcome.html"; // Redirect to welcome page
+          window.location.href = "/welcome.html";
         })
         .catch((error) => {
           document.getElementById('message').innerText = error.message;
