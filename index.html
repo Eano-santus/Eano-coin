@@ -3,42 +3,49 @@
 <html>
 <head>
   <title>Eano Coin</title>
-  <script type="module" src="firebase.js"></script>
-</head>
-<body>
-  <h1>Eano Coin Homepage</h1>
-  <p>Welcome to your dashboard!</p>
-
   <script type="module">
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { auth } from './firebase.js';
+    // Import Firebase modules via CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fcc7c593d76" // Replace with your actual appId
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    function mineCoins() {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "miners", user.uid);
+        getDoc(userRef).then((docSnap) => {
+          const coins = docSnap.exists() ? (docSnap.data().coins || 0) : 0;
+          setDoc(userRef, { coins: coins + 1 }, { merge: true })
+            .catch((error) => console.error("Mining error:", error));
+        }).catch((error) => console.error("Error fetching doc:", error));
+      } else {
+        alert("Please log in to mine coins.");
+      }
+    }
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "/login.html";
       }
     });
-    onAuthStateChanged(auth, user => {
-      if (user && user.emailVerified) {
-        dashboard.style.display = 'block';
-        welcomeMsg.textContent = `Hello, ${user.email}!`;
-      } else {
-        // No user signed in, redirect to login page
-        window.location.href = 'login.html';
-      }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-      await signOut(auth);
-      window.location.href = 'login.html';
-    });
   </script>
-</body>
-</html>
-<section id="leaderboard">
-  <h3>Top Referrers</h3>
-  <ul id="leaderboard-list"></ul>
-</section>
-  </script>
+</head>
+<body>
+  <h1>Eano Coin Homepage</h1>
+  <p>Welcome to your dashboard!</p>
+  <button onclick="mineCoins()">Mine Coins</button>
 </body>
 </html>
