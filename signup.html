@@ -1,21 +1,55 @@
-<!-- signup.html -->
 <!DOCTYPE html>
 <html>
 <head>
   <title>Sign Up - EANO Coin</title>
+  <style>
+    body {
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <form id="signupForm">
-    <input type="text" id="username" placeholder="Username" required /><br>
-    <input type="email" id="email" placeholder="Email" required /><br>
-    <input type="password" id="password" placeholder="Password" required /><br>
-    <input type="text" id="referralCode" placeholder="Referral Code (optional)" /><br>
+    <h2 style="text-align:center;">EANO Signup</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <input type="text" id="referralCode" placeholder="Referral Code (optional)" />
     <button type="submit">Sign Up</button>
+    <p style="text-align:center;"><a href="login.html">Already have an account? Login</a></p>
   </form>
-
-  <!-- Firebase config -->
-  <script type="module">
-  import('./signup.js');
-  </script>
+  <script type="module" src="signup.js"></script>
 </body>
 </html>
