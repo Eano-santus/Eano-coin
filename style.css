@@ -5,7 +5,7 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  height: 100vh;
+  min-height: 100vh; /* Changed from height to min-height for flexibility */
 }
 
 .auth-container {
@@ -107,4 +107,21 @@ body {
   margin-top: 20px;
   font-size: 20px;
   font-weight: bold;
+}
+
+/* Mobile optimization */
+@media (max-width: 600px) {
+  .auth-container {
+    width: 95%;
+    padding: 1.5rem;
+  }
+  .mine-btn {
+    bottom: 15px;
+    right: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  .content {
+    padding: 20px;
+  }
 }
