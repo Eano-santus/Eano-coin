@@ -1,57 +1,58 @@
 // signup.js
-import { auth, db } from "./firebase.js";
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("signupForm");
+// ✅ Replace this with your Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+  authDomain: "eano-miner.firebaseapp.com",
+  projectId: "eano-miner",
+  storageBucket: "eano-miner.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-  if (!form) {
-    alert("Signup form not found!");
-    return;
+// ✅ Init Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ✅ Signup handler
+const signupForm = document.getElementById("signupForm");
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const referralCode = document.getElementById("referralCode").value.trim();
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Save user data in Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      username,
+      email,
+      referralCode,
+      createdAt: new Date().toISOString()
+    });
+
+    console.log("Signup successful:", user.uid);
+    alert("Account created! You can now log in.");
+    window.location.href = "login.html"; // go to login page
+
+  } catch (error) {
+    console.error("Signup error:", error.message);
+    alert("Signup failed: " + error.message);
   }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const username = document.getElementById("username").value;
-    const referralCode = document.getElementById("referralCode").value || null;
-
-    if (!email || !password || !username) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
-
-      const userData = {
-        email,
-        username,
-        referralCode,
-        referredBy: referralCode || null,
-        createdAt: serverTimestamp(),
-      };
-
-      const minerData = {
-        coins: 0,
-        trustScore: 5,
-        level: "New Miner",
-        lastMine: null,
-        referralCount: 0,
-      };
-
-      await setDoc(doc(db, "users", uid), userData);
-      await setDoc(doc(db, "miners", uid), minerData);
-
-      alert("Signup successful! Redirecting...");
-      window.location.href = "index.html";
-    } catch (error) {
-      alert("Signup failed: " + error.message);
-      console.error(error);
-    }
-  });
 });
