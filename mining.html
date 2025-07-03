@@ -1,111 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EANO Coin Mining</title>
-<link rel="stylesheet" href="style.css" />
-<script type="module" src="firebase.js"></script>
-<style>
-  /* Minimal inline styles for demo */
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #121212;
-    color: #eee;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  header {
-    background: #222;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  header h1 {
-    margin: 0;
-    color: gold;
-  }
-  main {
-    flex-grow: 1;
-    padding: 20px 30px;
-    max-width: 500px;
-    margin: auto;
-    text-align: center;
-  }
-  #mineBtn {
-    background: gold;
-    border: none;
-    padding: 15px 40px;
-    border-radius: 50px;
-    font-weight: bold;
-    font-size: 1.3rem;
-    cursor: pointer;
-    margin: 20px 0;
-    transition: background 0.3s ease;
-  }
-  #mineBtn:disabled {
-    background: #888;
-    cursor: not-allowed;
-  }
-  #timer {
-    font-size: 1.2rem;
-    margin-top: 10px;
-  }
-  .info-box {
-    background: #222;
-    padding: 15px 20px;
-    margin: 15px 0;
-    border-radius: 10px;
-    text-align: left;
-  }
-  button#logoutBtn {
-    background: transparent;
-    border: 1px solid gold;
-    padding: 8px 16px;
-    border-radius: 6px;
-    color: gold;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s ease;
-  }
-  button#logoutBtn:hover {
-    background: gold;
-    color: black;
-  }
-  @media (max-width: 600px) {
-    main {
-      padding: 10px 15px;
-      width: 95%;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EANO Coin Mining</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="firebase.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
-  }
-</style>
+    header {
+      background: #222;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      color: gold;
+    }
+    main {
+      flex-grow: 1;
+      padding: 20px 30px;
+      max-width: 500px;
+      margin: auto;
+      text-align: center;
+    }
+    #mineBtn {
+      background: gold;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1.3rem;
+      cursor: pointer;
+      margin: 20px 0;
+      transition: background 0.3s ease;
+    }
+    #mineBtn:disabled {
+      background: #888;
+      cursor: not-allowed;
+    }
+    #timer {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+    .info-box {
+      background: #222;
+      padding: 15px 20px;
+      margin: 15px 0;
+      border-radius: 10px;
+      text-align: left;
+    }
+    button#logoutBtn {
+      background: transparent;
+      border: 1px solid gold;
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: gold;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    button#logoutBtn:hover {
+      background: gold;
+      color: black;
+    }
+    #profileBtn {
+      background: transparent;
+      border: 1px solid gold;
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: gold;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    #profileBtn:hover {
+      background: gold;
+      color: black;
+    }
+    @media (max-width: 600px) {
+      main {
+        padding: 10px 15px;
+        width: 95%;
+      }
+    }
+  </style>
 </head>
 <body>
-
 <header>
   <h1>EANO Coin Mining</h1>
-  <button id="logoutBtn">Logout</button>
+  <div>
+    <button id="profileBtn">Profile</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
 </header>
-
 <main>
   <div class="info-box">
     <strong>User:</strong> <span id="userEmail">Loading...</span><br />
     <strong>Balance:</strong> <span id="balance">0</span> EANO<br />
     <strong>Referrals:</strong> <span id="referralsCount">0</span>
   </div>
-
   <button id="mineBtn">Mine EANO Coin</button>
   <div id="timer"></div>
-
   <h2>Leaderboard (Top Miners)</h2>
   <div id="leaderboard">
     Loading leaderboard...
   </div>
 </main>
-
 <script type="module">
 import {
   auth,
@@ -121,7 +132,7 @@ import {
   orderBy,
   limit,
   getDocs,
-} from "./firebase.js";
+} from "firebase.js"; // Adjust path if needed
 
 const userEmailEl = document.getElementById("userEmail");
 const balanceEl = document.getElementById("balance");
@@ -130,6 +141,7 @@ const mineBtn = document.getElementById("mineBtn");
 const timerEl = document.getElementById("timer");
 const leaderboardEl = document.getElementById("leaderboard");
 const logoutBtn = document.getElementById("logoutBtn");
+const profileBtn = document.getElementById("profileBtn");
 
 let currentUser;
 let cooldownSeconds = 24 * 3600; // 24 hours
@@ -138,17 +150,15 @@ let cooldownTimer;
 // Redirect if not logged in & setup user data
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "login.html";
+    window.location.href = "/login.html";
     return;
   }
   currentUser = user;
   userEmailEl.textContent = user.email;
 
-  // Load user data or create default
-  const userDocRef = doc(db, "users", user.uid);
+  const userDocRef = doc(db, "miners", user.uid); // Changed to miners
   const userDocSnap = await getDoc(userDocRef);
   if (!userDocSnap.exists()) {
-    // Create user doc with initial data
     await setDoc(userDocRef, {
       balance: 0,
       lastMined: 0,
@@ -159,13 +169,11 @@ onAuthStateChanged(auth, async (user) => {
   loadLeaderboard();
 });
 
-logoutBtn.addEventListener("click", () => {
-  signOut(auth);
-});
+logoutBtn.addEventListener("click", () => signOut(auth).then(() => window.location.href = "/login.html"));
+profileBtn.addEventListener("click", () => window.location.href = "/profile.html");
 
-// Load user info and update UI & timer
 async function updateUserUI() {
-  const userDocRef = doc(db, "users", currentUser.uid);
+  const userDocRef = doc(db, "miners", currentUser.uid); // Changed to miners
   const userDocSnap = await getDoc(userDocRef);
   if (!userDocSnap.exists()) return;
 
@@ -178,17 +186,14 @@ async function updateUserUI() {
   const secondsPassed = now - lastMined;
 
   if (secondsPassed >= cooldownSeconds) {
-    // Enable mining
     mineBtn.disabled = false;
     timerEl.textContent = "You can mine now!";
   } else {
-    // Disable mining & start cooldown timer
     mineBtn.disabled = true;
     startCooldownTimer(cooldownSeconds - secondsPassed);
   }
 }
 
-// Cooldown timer countdown
 function startCooldownTimer(secondsLeft) {
   clearInterval(cooldownTimer);
   updateTimerDisplay(secondsLeft);
@@ -211,11 +216,10 @@ function updateTimerDisplay(seconds) {
   timerEl.textContent = `Next mine available in ${h}h ${m}m ${s}s`;
 }
 
-// Mining action
 mineBtn.addEventListener("click", async () => {
   mineBtn.disabled = true;
 
-  const userDocRef = doc(db, "users", currentUser.uid);
+  const userDocRef = doc(db, "miners", currentUser.uid); // Changed to miners
   const userDocSnap = await getDoc(userDocRef);
   if (!userDocSnap.exists()) return;
 
@@ -230,7 +234,6 @@ mineBtn.addEventListener("click", async () => {
     return;
   }
 
-  // Increment balance by 10 (example mining reward)
   const newBalance = (data.balance ?? 0) + 10;
   await updateDoc(userDocRef, {
     balance: newBalance,
@@ -238,15 +241,13 @@ mineBtn.addEventListener("click", async () => {
   });
 
   alert("You mined 10 EANO Coins!");
-
   updateUserUI();
   loadLeaderboard();
 });
 
-// Load leaderboard top 5 miners sorted by balance descending
 async function loadLeaderboard() {
   leaderboardEl.textContent = "Loading leaderboard...";
-  const usersRef = collection(db, "users");
+  const usersRef = collection(db, "miners"); // Changed to miners
   const q = query(usersRef, orderBy("balance", "desc"), limit(5));
   const querySnapshot = await getDocs(q);
 
@@ -266,6 +267,5 @@ async function loadLeaderboard() {
   leaderboardEl.innerHTML = html;
 }
 </script>
-
 </body>
 </html>
