@@ -1,67 +1,15 @@
+<!-- signup.html -->
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EANO Coin - Sign Up</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #121212;
-      color: #eee;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    form {
-      background: #222;
-      padding: 2rem;
-      border-radius: 8px;
-      width: 320px;
-      box-shadow: 0 0 10px #444;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 0.7rem 0;
-      border: none;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #d4af37;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #121212;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #c49f24;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    #message {
-      text-align: center;
-      margin-top: 1rem;
-    }
-  </style>
-</head>
+<html>
+<head><title>Sign Up - EANO Coin</title></head>
 <body>
-  <form id="signup-form">
-    <h2>Sign Up</h2>
-    <input type="email" id="email" placeholder="Email address" required />
-    <input type="password" id="password" placeholder="Password" required minlength="6" />
-    <input type="text" id="referralCode" placeholder="Referral code (optional)" />
+  <form id="signupForm">
+    <input type="text" id="username" placeholder="Username" required /><br>
+    <input type="email" id="email" placeholder="Email" required /><br>
+    <input type="password" id="password" placeholder="Password" required /><br>
+    <input type="text" id="referralCode" placeholder="Referral Code (optional)" /><br>
     <button type="submit">Sign Up</button>
-    <p id="message"></p>
   </form>
-  <script type="module" src="signup.js"></script> <!-- Adjust path if needed -->
+  <script type="module" src="signup.js"></script>
 </body>
 </html>
