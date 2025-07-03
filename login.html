@@ -1,118 +1,41 @@
+<!-- login.html -->
 <!DOCTYPE html>
-<html lang="en"><form id="loginForm">
-  <input type="email" id="email" required />
-  <input type="password" id="password" required />
-  <button type="submit">Login</button>
-</form>
-
-<script type="module">
-  import { login } from "./login.js"; // or wherever your login function is
-
-  const loginForm = document.getElementById("loginForm");
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = loginForm.email.value;
-    const password = loginForm.password.value;
-    login(email, password);
-  });
-</script>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EANO Coin - Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Login - Eano Coin</title>
+  <script type="module" src="firebase.js"></script>
 </head>
 <body>
-  <div class="auth-container">
-    <h2>Login</h2>
-
-    <input type="email" id="email" placeholder="Email address" required />
-    <input type="password" id="password" placeholder="Password" required />
-
-    <button onclick="handleLogin()">Login</button>
-
-    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
-    <p><a href="#" onclick="resetPassword()">Forgot Password?</a></p>
-
-    <p class="error-message" id="error"></p>
-  </div>
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <button onclick="login()">Login</button>
+  <p id="message"></p>
 
   <script type="module">
-    import {
-      auth,
-      signInWithEmailAndPassword,
-      sendPasswordResetEmail,
-      onAuthStateChanged
-    } from './firebase.js';
-import { auth, signInWithEmailAndPassword } from "./firebase.js";
+    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { auth } from './firebase.js';
 
-async function login(email, password) {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    console.log("Logged in as:", user.email);
-    setupDashboard(user); // show dashboard after login success
-  } catch (error) {
-    console.error("Login error:", error.message);
-    showError(error.message); // show error to user
-  }
-}
-    const errorEl = document.getElementById("error");
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-    const handleLogin = async () => {
-      errorEl.textContent = "";
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          window.location.href = "/welcome.html"; // Redirect to welcome page
+        })
+        .catch((error) => {
+          document.getElementById('message').innerText = error.message;
+        });
+    }
 
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        if (user.emailVerified) {
-          // Redirect to homepage (index.html)
-          window.location.href = "index.html";
-        } else {
-          errorEl.textContent = "Please verify your email before logging in.";
-          await auth.signOut();
-        }
-      } catch (error) {
-        errorEl.textContent = error.message;
-      }
-    };
-
-    const resetPassword = async () => {
-      const email = prompt("Enter your email to receive a reset link:");
-      if (!email) return;
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Reset link sent. Check your inbox.");
-      } catch (error) {
-        alert(error.message);
-      }
-    };
-
-    // If user already logged in, redirect to homepage
-    onAuthStateChanged(auth, user => {
-      if (user && user.emailVerified) {
-        window.location.href = "index.html";
+    onAuthStateChanged(auth, (user) => {
+      if (user && window.location.pathname !== "/welcome.html" && window.location.pathname !== "/") {
+        window.location.href = "/welcome.html";
+      } else if (!user && window.location.pathname !== "/login.html") {
+        window.location.href = "/login.html";
       }
     });
   </script>
 </body>
 </html>
-<form id="loginForm">
-  <input type="email" id="email" required />
-  <input type="password" id="password" required />
-  <button type="submit">Login</button>
-</form>
-
-<script>
-  const loginForm = document.getElementById("loginForm");
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = loginForm.email.value;
-    const password = loginForm.password.value;
-    login(email, password);
-  });
-</script>
