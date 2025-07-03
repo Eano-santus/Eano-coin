@@ -1,3 +1,4 @@
+// profile.js
 import { auth, db, onAuthStateChanged, signOut, doc, getDoc, updateDoc } from "./firebase.js";
 
 const profileForm = document.getElementById("profile-form");
@@ -9,51 +10,42 @@ let currentUserUid = null;
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUserUid = user.uid;
-    // Load profile data
-    const docRef = doc(db, "users", currentUserUid);
+    const docRef = doc(db, "miners", currentUserUid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
-      document.getElementById("firstName").value = data.firstName || "";
+      document.getElementById("firstName").value = data.firstname || "";
       document.getElementById("lastName").value = data.lastName || "";
       document.getElementById("username").value = data.username || "";
     }
   } else {
-    // Not logged in, redirect to login
-    window.location.href = "login.html";
+    window.location.href = "/login.html";
   }
 });
 
 profileForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const firstName = document.getElementById("firstName").value.trim();
   const lastName = document.getElementById("lastName").value.trim();
   const username = document.getElementById("username").value.trim();
 
   if (!firstName || !lastName || !username) {
-    message.textContent = "Please fill in all fields.";
+    message.textContent = "Please fill all fields.";
     message.style.color = "red";
     return;
   }
 
   try {
-    const userDocRef = doc(db, "users", currentUserUid);
-    await updateDoc(userDocRef, {
-      firstName,
-      lastName,
-      username,
-    });
-    message.textContent = "Profile updated successfully!";
+    const userDocRef = doc(db, "miners", currentUserUid);
+    await updateDoc(userDocRef, { firstname: firstName, lastName, username });
+    message.textContent = "Profile updated!";
     message.style.color = "green";
   } catch (error) {
-    message.textContent = "Error updating profile: " + error.message;
+    message.textContent = "Error: " + error.message;
     message.style.color = "red";
   }
 });
 
 logoutBtn.addEventListener("click", () => {
-  signOut(auth).then(() => {
-    window.location.href = "login.html";
-  });
+  signOut(auth).then(() => window.location.href = "/login.html");
 });
