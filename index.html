@@ -1,42 +1,23 @@
+<!-- index.html -->
 <!DOCTYPE html>
-<html lang="en">
-<div class="menu-item" onclick="window.location.href='profile.html'">Profile</div>
-<head>script src="main.js"></script>,
-  import { auth, onAuthStateChanged } from "./firebase.js";
-
-onAuthStateChanged(auth, user => {
-  if (user) {
-    // User is signed in
-    setupDashboard(user); // your function to show main content
-  } else {
-    // User is not signed in
-    showLoginForm(); // your function to show login form
-  }
-});
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EANO Coin - Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+<html>
+<head>
+  <title>Eano Coin</title>
+  <script type="module" src="firebase.js"></script>
 </head>
 <body>
-  <div class="dashboard-container" style="display:none;">
-    <header>
-      <h1>Welcome to EANO Coin Dashboard</h1>
-      <button id="logoutBtn">Logout</button>
-    </header>
-
-    <section>
-      <p id="welcomeMsg"></p>
-    </section>
-  </div>
+  <h1>Eano Coin Homepage</h1>
+  <p>Welcome to your dashboard!</p>
 
   <script type="module">
-    import { auth, onAuthStateChanged, signOut } from './firebase.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { auth } from './firebase.js';
 
-    const dashboard = document.querySelector('.dashboard-container');
-    const welcomeMsg = document.getElementById('welcomeMsg');
-    const logoutBtn = document.getElementById('logoutBtn');
-
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "/login.html";
+      }
+    });
     onAuthStateChanged(auth, user => {
       if (user && user.emailVerified) {
         dashboard.style.display = 'block';
@@ -58,3 +39,6 @@ onAuthStateChanged(auth, user => {
   <h3>Top Referrers</h3>
   <ul id="leaderboard-list"></ul>
 </section>
+  </script>
+</body>
+</html>
