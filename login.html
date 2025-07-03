@@ -30,10 +30,10 @@
     }
 
     onAuthStateChanged(auth, (user) => {
-      if (user && window.location.pathname !== "/welcome.html" && window.location.pathname !== "/") {
-        window.location.href = "/welcome.html";
-      } else if (!user && window.location.pathname !== "/login.html") {
-        window.location.href = "/login.html";
+      if (user) {
+        window.location.href = "/welcome.html"; // Redirect if logged in
+      } else {
+        // Stay on login page if not logged in
       }
     });
   </script>
