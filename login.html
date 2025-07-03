@@ -1,41 +1,13 @@
 <!-- login.html -->
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Login - Eano Coin</title>
-  <script type="module" src="firebase.js"></script>
-</head>
+<head><title>Login - EANO Coin</title></head>
 <body>
-  <h2>Login</h2>
-  <input type="email" id="email" placeholder="Email" required>
-  <input type="password" id="password" placeholder="Password" required>
-  <button onclick="login()">Login</button>
-  <p id="message"></p>
-
-  <script type="module">
-    import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { auth } from './firebase.js';
-
-    function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          window.location.href = "/welcome.html";
-        })
-        .catch((error) => {
-          document.getElementById('message').innerText = error.message;
-        });
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        window.location.href = "/welcome.html"; // Redirect if logged in
-      } else {
-        // Stay on login page if not logged in
-      }
-    });
-  </script>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required /><br>
+    <input type="password" id="loginPassword" placeholder="Password" required /><br>
+    <button type="submit">Login</button>
+  </form>
+  <script type="module" src="login.js"></script>
 </body>
 </html>
