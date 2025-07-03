@@ -1,60 +1,19 @@
 <!-- signup.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign Up - EANO Coin</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    form {
-      background: #222;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #000;
-    }
-    input, button {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-    }
-    input {
-      background: #333;
-      color: #fff;
-    }
-    button {
-      background-color: #FFD700;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #e6c200;
-    }
-  </style>
 </head>
 <body>
   <form id="signupForm">
-    <h2>Create Your EANO Account</h2>
-    <input type="text" id="username" placeholder="Username" required />
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <input type="text" id="referralCode" placeholder="Referral Code (optional)" />
+    <input type="text" id="username" placeholder="Username" required /><br>
+    <input type="email" id="email" placeholder="Email" required /><br>
+    <input type="password" id="password" placeholder="Password" required /><br>
+    <input type="text" id="referralCode" placeholder="Referral Code (optional)" /><br>
     <button type="submit">Sign Up</button>
   </form>
 
-  <!-- Firebase logic for signup -->
+  <!-- Firebase config -->
   <script type="module" src="signup.js"></script>
 </body>
 </html>
