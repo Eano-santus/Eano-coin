@@ -1,0 +1,38 @@
+<!-- welcome.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome - Eano Coin</title>
+  <script type="module" src="firebase.js"></script>
+</head>
+<body>
+  <h1 id="welcomeMessage">Welcome EANO COIN</h1>
+  <p>You are now logged in!</p>
+  <button onclick="goToHomepage()">Go to Homepage</button>
+
+  <script type="module">
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { auth } from './firebase.js';
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { db } from './firebase.js';
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userDoc = doc(db, "miners", user.uid);
+        getDoc(userDoc).then((docSnap) => {
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            document.getElementById('welcomeMessage').innerText = `Welcome ${userData.firstname || 'User'} to EANO COIN`;
+          }
+        });
+      } else {
+        window.location.href = "/login.html";
+      }
+    });
+
+    function goToHomepage() {
+      window.location.href = "/"; // Redirect to homepage (index.html)
+    }
+  </script>
+</body>
+</html>
