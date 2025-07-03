@@ -10,9 +10,9 @@ import {
   updateDoc,
   collection,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { db, auth } from "./firebase.js"; // adjust path if needed
+import { db, auth } from "../firebase.js"; // Adjust path based on file location
 
-// Generate random referral code for new users
+// Generate random referral code
 function generateReferralCode(length = 6) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let code = "";
@@ -22,34 +22,29 @@ function generateReferralCode(length = 6) {
   return code;
 }
 
-// Handle referral code logic: increment referrer count and link new user
+// Handle referral logic
 async function handleReferral(referralCodeInput, newUserUid) {
   if (!referralCodeInput) return;
 
   try {
-    const usersRef = collection(db, "users");
+    const usersRef = collection(db, "miners"); // Changed to miners
     const q = query(usersRef, where("referralCode", "==", referralCodeInput));
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
       const referrerDoc = querySnapshot.docs[0];
       const referrerData = referrerDoc.data();
-
       await updateDoc(referrerDoc.ref, {
         referralCount: (referrerData.referralCount || 0) + 1,
       });
-
-      const newUserDocRef = doc(db, "users", newUserUid);
-      await updateDoc(newUserDocRef, {
-        referredBy: referralCodeInput,
-      });
-
+      const newUserDocRef = doc(db, "miners", newUserUid);
+      await updateDoc(newUserDocRef, { referredBy: referralCodeInput });
       console.log(`Referral recorded: ${referralCodeInput} referred ${newUserUid}`);
     } else {
       console.log("Invalid referral code.");
     }
   } catch (error) {
-    console.error("Referral handling error:", error);
+    console.error("Referral error:", error);
   }
 }
 
@@ -62,20 +57,17 @@ export async function signup(email, password, referralCodeInput) {
     await sendEmailVerification(user);
 
     const newUserReferralCode = generateReferralCode();
-
-    await setDoc(doc(db, "users", user.uid), {
+    await setDoc(doc(db, "miners", user.uid), { // Changed to miners
       email: user.email,
       referralCode: newUserReferralCode,
       referralCount: 0,
       createdAt: new Date(),
-      referredBy: null,
+      referredBy: referralCodeInput || null,
     });
 
-    if (referralCodeInput) {
-      await handleReferral(referralCodeInput, user.uid);
-    }
+    if (referralCodeInput) await handleReferral(referralCodeInput, user.uid);
 
-    return { success: true, message: "Signup successful! Please check your email to verify your account." };
+    return { success: true, message: "Signup successful! Verify your email before logging in." };
   } catch (error) {
     return { success: false, message: error.message };
   }
@@ -83,20 +75,15 @@ export async function signup(email, password, referralCodeInput) {
 
 // Form submission handler
 const signupForm = document.getElementById("signup-form");
+if (signupForm) {
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const referralCode = document.getElementById("referralCode").value.trim();
 
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = signupForm.email.value.trim();
-  const password = signupForm.password.value.trim();
-  const referralCode = signupForm.referralCode.value.trim();
-
-  const result = await signup(email, password, referralCode);
-
-  if (result.success) {
+    const result = await signup(email, password, referralCode);
     alert(result.message);
-    window.location.href = "login.html"; // redirect to login page
-  } else {
-    alert("Error: " + result.message);
-  }
-});
+    if (result.success) window.location.href = "login.html";
+  });
+}
