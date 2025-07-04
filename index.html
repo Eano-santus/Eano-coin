@@ -147,7 +147,9 @@
       <p>Time Left: <span id="countdown">24:00:00</span></p>
       <button onclick="startMining()">Start Mining</button>
       <p id="trustWarning"></p>
-    </div>
+    </div>(userData.score < 80) {
+  document.getElementById("trustWarning").innerText = "You are currently in 'Needs Trust' status. Invite friends or mine regularly to grow your trust!";
+}
 
     <div id="leaderboard" class="section">
       <h1>Leaderboard</h1>
