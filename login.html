@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -9,115 +8,126 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-    }
+    }body {
+  background: url('eano-bg.png') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    body {
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+.container {
+  background: rgba(0, 0, 0, 0.75);
+  padding: 30px 25px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+  color: white;
+  text-align: center;
+  position: relative;
+}
 
-    .container {
-      background: rgba(0, 0, 0, 0.75);
-      padding: 30px 25px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
-      color: white;
-      text-align: center;
-    }
+.logo-container {
+  margin-bottom: 20px;
+}
 
-    .logo-container {
-      margin-bottom: 20px;
-    }
+.logo-container img {
+  height: 60px;
+}
 
-    .logo-container img {
-      height: 60px;
-    }
+.container h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: bold;
+}
 
-    .container h2 {
-      margin-bottom: 15px;
-      font-size: 24px;
-      font-weight: bold;
-    }
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
 
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
+.toggle-password {
+  float: right;
+  margin-right: 10px;
+  margin-top: -32px;
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 14px;
+}
 
-    .toggle-password {
-      float: right;
-      margin-right: 10px;
-      margin-top: -32px;
-      position: relative;
-      z-index: 2;
-      cursor: pointer;
-      color: #ccc;
-      font-size: 14px;
-    }
+.error-message {
+  color: #ff8080;
+  font-size: 14px;
+  margin-top: 10px;
+}
 
-    .error-message {
-      color: #ff8080;
-      font-size: 14px;
-      margin-top: 10px;
-    }
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background-color: gold;
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background-color: gold;
-      color: black;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
+button:hover {
+  background-color: #ffc107;
+}
 
-    button:hover {
-      background-color: #ffc107;
-    }
+.signup-link {
+  margin-top: 15px;
+  font-size: 14px;
+}
 
-    .signup-link {
-      margin-top: 15px;
-      font-size: 14px;
-    }
+.signup-link a {
+  color: gold;
+  text-decoration: none;
+}
 
-    .signup-link a {
-      color: gold;
-      text-decoration: none;
-    }
+.signup-link a:hover {
+  text-decoration: underline;
+}
 
-    .signup-link a:hover {
-      text-decoration: underline;
-    }
+.tagline {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ccc;
+}
 
-    .tagline {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #ccc;
-    }
-  </style>
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  color: gold;
+  font-size: 18px;
+  border-radius: 16px;
+}
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-</head>
+  </style>  <!-- Firebase SDKs -->  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script></head>
 <body>
   <div class="container">
+    <div class="loading-overlay" id="loading-overlay">Logging in...</div>
     <div class="logo-container">
       <img src="assets/eano-logo.png" alt="EANO Logo" />
     </div>
@@ -131,9 +141,7 @@
     <div id="error-message" class="error-message"></div>
     <div class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
     <div class="tagline">Secure Access – Powered by EANO</div>
-  </div>
-
-  <script>
+  </div>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -144,6 +152,9 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const loadingOverlay = document.getElementById("loading-overlay");
 
     document.getElementById("login-form").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -152,11 +163,30 @@
       const errorDiv = document.getElementById("error-message");
       errorDiv.textContent = "";
 
+      loadingOverlay.style.display = "flex";
+
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          window.location.href = "index.html";
+          const uid = userCredential.user.uid;
+          return db.collection("users").doc(uid).get();
+        })
+        .then((doc) => {
+          loadingOverlay.style.display = "none";
+          if (doc.exists) {
+            const score = doc.data().score || 0;
+            if (score >= 5) {
+              window.location.href = "index.html";
+            } else {
+              document.getElementById("error-message").textContent = "You need more Trust Score to access mining.";
+              firebase.auth().signOut();
+            }
+          } else {
+            document.getElementById("error-message").textContent = "User profile not found.";
+            firebase.auth().signOut();
+          }
         })
         .catch((error) => {
+          loadingOverlay.style.display = "none";
           errorDiv.textContent = error.message;
         });
     });
@@ -172,6 +202,5 @@
         toggle.textContent = "Show";
       }
     }
-  </script>
-</body>
+  </script></body>
 </html>
