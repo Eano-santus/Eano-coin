@@ -148,7 +148,6 @@
       <button onclick="startMining()">Start Mining</button>
       <p id="trustWarning"></p>
     </div>
-}
 
     <div id="leaderboard" class="section">
       <h1>Leaderboard</h1>
@@ -157,9 +156,7 @@
 
     <div id="trustscore" class="section">
       <h1>Trust Score</h1>
-      <p>Your Trust Rank: <span id="trust-rank">userData.score < 80 {
-  document.getElementById("trustWarning").innerText = "You are currently in 'Needs Trust' status. Invite friends or mine regularly to grow your trust!";
-}</span></p>
+      <p>Your Trust Rank: <span id="trust-rank">Loading...</span></p>
     </div>
 
     <div id="level" class="section">
@@ -221,11 +218,20 @@
             const userData = doc.data();
             const score = userData.score || 0;
 
-            // Show trust warning if score is below 80
+            // Trust Rank & Warning Display
+            let trustRank = "Unknown";
+            if (score < 80) trustRank = "Needs Trust";
+            else if (score < 200) trustRank = "New Miner";
+            else if (score < 500) trustRank = "Reliable Miner";
+            else trustRank = "Trusted Miner";
+
+            document.getElementById("trust-rank").textContent = trustRank;
+
             if (score < 80) {
               document.getElementById("trustWarning").innerText =
-                "You are currently in 'Needs Trust' status. Invite friends or mine regularly to grow your trust!";
+                "⚠️ You are currently in 'Needs Trust' status. Invite friends or mine daily to grow your trust!";
             }
+
           }
         });
       }
