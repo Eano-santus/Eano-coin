@@ -60,7 +60,7 @@
       border-radius: 10px;
       text-align: left;
     }
-    button#logoutBtn {
+    button#logoutBtn, #profileBtn {
       background: transparent;
       border: 1px solid gold;
       padding: 8px 16px;
@@ -70,21 +70,7 @@
       font-weight: bold;
       transition: background 0.3s ease;
     }
-    button#logoutBtn:hover {
-      background: gold;
-      color: black;
-    }
-    #profileBtn {
-      background: transparent;
-      border: 1px solid gold;
-      padding: 8px 16px;
-      border-radius: 6px;
-      color: gold;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s ease;
-    }
-    #profileBtn:hover {
+    button#logoutBtn:hover, #profileBtn:hover {
       background: gold;
       color: black;
     }
@@ -132,7 +118,7 @@ import {
   orderBy,
   limit,
   getDocs,
-} from "firebase.js"; // Adjust path if needed
+} from "firebase.js";
 
 const userEmailEl = document.getElementById("userEmail");
 const balanceEl = document.getElementById("balance");
@@ -144,10 +130,10 @@ const logoutBtn = document.getElementById("logoutBtn");
 const profileBtn = document.getElementById("profileBtn");
 
 let currentUser;
-let cooldownSeconds = 24 * 3600; // 24 hours
+let cooldownSeconds = 24 * 3600;
 let cooldownTimer;
+let trustScore = 0;
 
-// Redirect if not logged in & setup user data
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "/login.html";
@@ -156,16 +142,18 @@ onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   userEmailEl.textContent = user.email;
 
-  const userDocRef = doc(db, "miners", user.uid); // Changed to miners
+  const userDocRef = doc(db, "miners", user.uid);
   const userDocSnap = await getDoc(userDocRef);
   if (!userDocSnap.exists()) {
     await setDoc(userDocRef, {
       balance: 0,
       lastMined: 0,
       referrals: 0,
+      trustScore: 5
     });
   }
-  updateUserUI();
+
+  await updateUserUI();
   loadLeaderboard();
 });
 
@@ -173,13 +161,19 @@ logoutBtn.addEventListener("click", () => signOut(auth).then(() => window.locati
 profileBtn.addEventListener("click", () => window.location.href = "/profile.html");
 
 async function updateUserUI() {
-  const userDocRef = doc(db, "miners", currentUser.uid); // Changed to miners
+  const userDocRef = doc(db, "miners", currentUser.uid);
   const userDocSnap = await getDoc(userDocRef);
   if (!userDocSnap.exists()) return;
 
   const data = userDocSnap.data();
+  trustScore = data.trustScore ?? 0;
   balanceEl.textContent = data.balance ?? 0;
   referralsCountEl.textContent = data.referrals ?? 0;
+
+  if (trustScore < 80) {
+    showMessage("⚠️ You can mine, but your Trust Score is low. Invite others or mine daily to increase your score.");
+    // No return — allow mining to continue
+  }
 
   const lastMined = data.lastMined ?? 0;
   const now = Math.floor(Date.now() / 1000);
@@ -217,9 +211,14 @@ function updateTimerDisplay(seconds) {
 }
 
 mineBtn.addEventListener("click", async () => {
+  if (trustScore < 80) {
+    alert("Mining is restricted. Your trust score is below the required threshold.");
+    return;
+  }
+
   mineBtn.disabled = true;
 
-  const userDocRef = doc(db, "miners", currentUser.uid); // Changed to miners
+  const userDocRef = doc(db, "miners", currentUser.uid);
   const userDocSnap = await getDoc(userDocRef);
   if (!userDocSnap.exists()) return;
 
@@ -247,7 +246,7 @@ mineBtn.addEventListener("click", async () => {
 
 async function loadLeaderboard() {
   leaderboardEl.textContent = "Loading leaderboard...";
-  const usersRef = collection(db, "miners"); // Changed to miners
+  const usersRef = collection(db, "miners");
   const q = query(usersRef, orderBy("balance", "desc"), limit(5));
   const querySnapshot = await getDocs(q);
 
