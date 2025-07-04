@@ -1,19 +1,22 @@
 /* background.css */
 body {
-  background: url('backgrounds/eano-bg.png') no-repeat center center fixed;
+  background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   color: white;
-  min-height: 100vh;
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', sans-serif';
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Optional overlay for readability */
+/* Optional overlay */
 body::before {
   content: "";
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* dark transparent overlay */
+  background: rgba(0, 0, 0, 0.6);
   z-index: -1;
 }
