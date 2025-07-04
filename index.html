@@ -67,14 +67,25 @@
         margin: 10px;
       }
     }
+
+    /* ✅ Welcome Screen Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
   </style>
+
+  <!-- ✅ Firebase Setup -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    // ✅ Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -85,7 +96,6 @@
       measurementId: "G-NS0W6QSS69"
     };
 
-    // ✅ Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
@@ -111,7 +121,6 @@
       setInterval(updateCountdown, 1000);
     }
 
-    // ✅ Auth Check & Data Fetch
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "login.html";
@@ -138,9 +147,40 @@
         console.error("Error fetching user data:", error);
       }
     });
+
+    // ✅ Welcome Animation Logic
+    window.addEventListener("load", () => {
+      const welcomeScreen = document.getElementById("welcome-screen");
+      setTimeout(() => {
+        welcomeScreen.style.animation = "fadeOut 1s forwards";
+        setTimeout(() => {
+          welcomeScreen.style.display = "none";
+        }, 1000);
+      }, 3000);
+    });
   </script>
 </head>
 <body>
+  <!-- ✅ Welcome Screen -->
+  <div id="welcome-screen" style="
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: gold;
+    font-size: 24px;
+    font-family: 'Segoe UI', sans-serif;
+    animation: fadeIn 1.5s ease-in-out;
+  ">
+    <div>
+      <img src="eano-logo.png" alt="EANO Logo" style="width: 100px; height: 100px; display: block; margin: 0 auto;" />
+      <p style="text-align:center; margin-top: 10px;">Welcome to EANO</p>
+    </div>
+  </div>
+
   <!-- ✅ Left Dashboard Sidebar -->
   <div class="sidebar">
     <h2>🪙 EANO Miner</h2>
