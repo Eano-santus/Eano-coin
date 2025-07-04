@@ -1,15 +1,11 @@
-/* background.css */
 body {
-  background: url('eano-bg.png') no-repeat center center fixed;
+  background: url('backgrounds/eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   color: white;
   min-height: 100vh;
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  overflow-x: hidden;
 }
-
-/* Dark overlay for readability */
 body::before {
   content: "";
   position: fixed;
@@ -17,4 +13,18 @@ body::before {
   width: 100%; height: 100%;
   background: rgba(0, 0, 0, 0.6);
   z-index: -1;
+}
+.signup-container, .login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+form {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  color: white;purple 
 }
