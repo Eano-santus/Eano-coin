@@ -3,15 +3,13 @@ body {
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   color: white;
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif';
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  overflow-x: hidden;
 }
 
-/* Optional overlay */
+/* Dark overlay for readability */
 body::before {
   content: "";
   position: fixed;
