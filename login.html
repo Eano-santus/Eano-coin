@@ -1,23 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>EANO Login</title>
-  <link rel="stylesheet" href="background.css">
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EANO Coin Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.75);
+      padding: 2rem;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo img {
+      width: 80px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: #FFD700;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #FFD700;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .signup-link a {
+      color: #FFD700;
+      text-decoration: none;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <div class="login-container">
+  <div class="container">
+    <div class="logo">
+      <img src="eano-logo.png" alt="EANO Coin Logo" />
+    </div>
+    <h2>Login to EANO Coin</h2>
     <form id="login-form">
-      <h2>Login to EANO</h2>
-      <input type="email" id="login-email" required placeholder="Email"><br>
-      <input type="password" id="login-password" required placeholder="Password"><br>
+      <input type="email" id="login-email" placeholder="Email" required />
+      <input type="password" id="login-password" placeholder="Password" required />
       <button type="submit">Login</button>
-      <p>Don't have an account? <a href="signup.html">Signup</a></p>
     </form>
+    <div class="signup-link">
+      Don’t have an account? <a href="signup.html">Sign up</a>
+    </div>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <!-- Firebase Config & Login Script -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -36,10 +121,10 @@
 
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          window.location.href = "index.html";
+          window.location.href = "index.html"; // Redirect to main page
         })
         .catch((error) => {
-          alert(error.message);
+          alert("Login failed: " + error.message);
         });
     });
   </script>
