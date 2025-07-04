@@ -84,6 +84,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -129,6 +130,8 @@
         const userDocRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userDocRef);
 
+        document.getElementById("profileBox").innerText = `👤 Logged in as: ${user.email}`;
+
         if (userSnap.exists()) {
           const userData = userSnap.data();
           const trustScore = userData.trustScore || 0;
@@ -155,12 +158,22 @@
       }, 3000);
 
       document.getElementById("mineBtn").addEventListener("click", () => {
+        const main = document.querySelector(".main");
+        main.innerHTML = `
+          <h1>⛏️ Mine EANO Coin</h1>
+          <div class="box">⚡ Mining Rate: 0.0400 EANO/hr</div>
+          <div class="box" id="countdown">⏳ Next mining in: ...</div>
+          <div class="box warning" id="warning" style="display: none;">
+            ⚠️ Your Trust Score is low. Invite and mine daily to increase it!
+          </div>
+        `;
         startCountdown();
       });
     });
   </script>
 </head>
 <body>
+  <!-- Welcome Splash -->
   <div id="welcome-screen" style="
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -180,26 +193,26 @@
     </div>
   </div>
 
+  <!-- Sidebar -->
   <div class="sidebar">
     <h2>🪙 EANO Miner</h2>
-    <a href="#">🏠 Home</a>
+    <a href="#" onclick="location.reload()">🏠 Home</a>
     <a href="#" id="mineBtn">⛏️ Mine</a>
     <a href="#">🏆 Leaderboard</a>
     <a href="#">🔰 Trust Score</a>
     <a href="#">🎖️ Level Score</a>
-    </div>
+    <a href="#">👥 Referrals</a>
     <a href="#">🛠️ Team</a>
+    <a href="#">📃 White Paper</a>
+    <a href="#">📧 Support Portal</a>
   </div>
 
+  <!-- Main Content -->
   <div class="main">
     <h1>Welcome to EANO Coin Mining</h1>
     <p>Mine EANO Coin and build your trust and level!</p>
+    <div class="box" id="profileBox">👤 Logged in as: ...</div>
     <div class="box" id="trustScore">🛡️ Trust Score: ...</div>
-    <div class="box" id="miningRate">⛏️ Mining Rate: 0.0400 EANO/hr</div>
-    <div class="box" id="countdown">⏳ Next mining in: ...</div>
-    <div class="box warning" id="warning" style="display: none;">
-      ⚠️ Your Trust Score is low. You can still mine at full speed. Invite and mine daily to increase it!
-    </div>
   </div>
 </body>
 </html>
