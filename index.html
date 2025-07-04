@@ -1,5 +1,4 @@
-<!DOCTYPE html><html>
-<head>
+<!DOCTYPE html><html><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EANO Coin Mining</title>
@@ -24,6 +23,12 @@
       border-radius: 5px;
       margin-bottom: 15px;
     }
+    .trust-info, .mining-rate, .countdown {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
@@ -41,6 +46,26 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth();
 
+function startCountdown() {
+  const countdownElement = document.getElementById("countdown");
+  const now = new Date().getTime();
+  const nextDay = new Date(now + 24 * 60 * 60 * 1000);
+
+  function updateCountdown() {
+    const currentTime = new Date().getTime();
+    const remaining = nextDay - currentTime;
+
+    const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+    const seconds = Math.floor((remaining / 1000) % 60);
+
+    countdownElement.innerText = `Next mining available in: ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const userDocRef = doc(db, "users", user.uid);
@@ -49,19 +74,30 @@ onAuthStateChanged(auth, async (user) => {
       const userData = userDocSnap.data();
       const trustScore = userData.trustScore || 0;
 
-      // Allow users to mine if trustScore is below 80
-        warningDiv.innerText = "⚠️ if (trustScore < 80) {
-    showMessage("⚠️ You can mine, but your Trust Score is low. Invite others or mine daily to increase your score.");
-    // No return — allow mining to continue
-      }
+      const trustInfo = document.createElement("div");
+      trustInfo.className = "trust-info";
+      trustInfo.innerText = "🛡️ Trust Score: " + trustScore;
+      document.body.prepend(trustInfo);
+
+      if (trustScore < 80) {
+        const warningDiv = document.createElement("div");
+        warningDiv.className = "warning";
+        warningDiv.innerText = "⚠️ Your Trust Score is low. You can still mine at full speed. Invite and mine daily to increase it!";
         document.body.prepend(warningDiv);
       }
 
-      // Display trust score
-      const trustInfo = document.createElement("div");
-      trustInfo.innerText = "Your Trust Score: " + trustScore;
-      trustInfo.style.marginBottom = "10px";
-      document.body.prepend(trustInfo);
+      const miningRateInfo = document.createElement("div");
+      miningRateInfo.className = "mining-rate";
+      miningRateInfo.innerText = "⛏️ Current Mining Rate: 0.0400 EANO/hr";
+      document.body.prepend(miningRateInfo);
+
+      const countdownDiv = document.createElement("div");
+      countdownDiv.id = "countdown";
+      countdownDiv.className = "countdown";
+      document.body.prepend(countdownDiv);
+
+      startCountdown();
+
     } else {
       console.error("No user document found.");
     }
