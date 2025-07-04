@@ -1,6 +1,9 @@
 body {
+  margin: 0;
+  padding: 0;
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
+  font-family: Arial, sans-serif;
 }
   color: white;
   min-height: 100vh;
