@@ -7,61 +7,74 @@
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #000;
-      background-image: url('eano-background.jpg');
+      font-family: Arial, sans-serif;
+      background: url('eano-background.jpg') no-repeat center center fixed;
       background-size: cover;
-      background-position: center;
-      color: #fff;
+      color: white;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      height: 100vh;
     }
-
-    .container {
-      background-color: rgba(0, 0, 0, 0.75);
-      padding: 30px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 0 15px gold;
+    .sidebar {
+      width: 220px;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.5);
     }
-
-    h1 {
-      font-size: 1.8em;
-      margin-bottom: 10px;
-      color: gold;
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
     }
-
-    .info-box {
-      background-color: rgba(255, 255, 255, 0.08);
-      border-left: 4px solid gold;
+    .sidebar a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      margin: 10px 0;
+      font-size: 15px;
+    }
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .box {
+      background-color: rgba(0, 0, 0, 0.6);
       padding: 15px;
-      margin: 15px 0;
+      margin-bottom: 15px;
       border-radius: 10px;
-      text-align: left;
     }
-
     .warning {
-      background-color: rgba(255, 0, 0, 0.75);
-      border-left: 4px solid red;
+      background-color: rgba(255, 0, 0, 0.7);
     }
-
-    #countdown {
-      font-size: 0.9em;
-      color: #ccc;
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        box-shadow: none;
+      }
+      .sidebar a {
+        margin: 10px;
+      }
     }
   </style>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    // ✅ Your Firebase Config
+    // ✅ Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -75,10 +88,9 @@
     // ✅ Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
-    const db = getFirestore(app);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Countdown function ⏳
     function startCountdown() {
       const countdownElement = document.getElementById("countdown");
       const now = new Date().getTime();
@@ -87,57 +99,75 @@
       function updateCountdown() {
         const currentTime = new Date().getTime();
         const remaining = nextDay - currentTime;
+
         const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
         const minutes = Math.floor((remaining / (1000 * 60)) % 60);
         const seconds = Math.floor((remaining / 1000) % 60);
-        countdownElement.innerText = `⏳ Next mining available in: ${hours}h ${minutes}m ${seconds}s`;
+
+        countdownElement.innerText = `⏳ Next mining in: ${hours}h ${minutes}m ${seconds}s`;
       }
 
       updateCountdown();
       setInterval(updateCountdown, 1000);
     }
 
-    // 🔒 Auth Check
+    // ✅ Auth Check & Data Fetch
     onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
 
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userDocRef);
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
           const trustScore = userData.trustScore || 0;
 
           document.getElementById("trustScore").innerText = `🛡️ Trust Score: ${trustScore}`;
-
           if (trustScore < 80) {
-            const warningBox = document.getElementById("trustWarning");
-            warningBox.style.display = topbar 
+            document.getElementById("warning").style.display = "topbar left";
           }
-
-          document.getElementById("miningRate").innerText = "⛏️ Mining Rate: 0.0400 EANO/hr";
-
           startCountdown();
-
         } else {
-          console.error("No user document found.");
+          console.error("No user data found.");
         }
-      } else {
-        window.location.href = "login.html";
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
     });
   </script>
 </head>
-
 <body>
-  <div class="container">
-    <h1>EANO Coin Mining</h1>
-    <div id="trustWarning" class="info-box warning" style="display: none;">
+  <!-- ✅ Left Dashboard Sidebar -->
+  <div class="sidebar">
+    <h2>🪙 EANO Miner</h2>
+    <a href="#">🏠 Home</a>
+    <a href="#">⛏️ Mine</a>
+    <a href="#">👥 Invite</a>
+    <a href="#">🏆 Leaderboard</a>
+    <a href="#">🔰 Trust Score</a>
+    <a href="#">🎖️ Level Score</a>
+    <a href="#">📄 White Paper</a>
+    <a href="#">👤 Profile</a>
+    <a href="#">🛠️ Team</a>
+    <a href="https://t.me/eanocoin" target="_blank">📬 Support Portal</a>
+    <a href="#">👨‍💼 Author</a>
+  </div>
+
+  <!-- ✅ Main Content Area -->
+  <div class="main">
+    <h1>Welcome to EANO Coin Mining</h1>
+    <p>Mine EANO Coin and build your trust and level!</p>
+
+    <div class="box" id="trustScore">🛡️ Trust Score: ...</div>
+    <div class="box" id="miningRate">⛏️ Mining Rate: 0.0400 EANO/hr</div>
+    <div class="box" id="countdown">⏳ Next mining in: ...</div>
+    <div class="box warning" id="warning" style="display: none;">
       ⚠️ Your Trust Score is low. You can still mine at full speed. Invite and mine daily to increase it!
     </div>
-    <div id="trustScore" class="info-box">🛡️ Trust Score: ...</div>
-    <div id="miningRate" class="info-box">⛏️ Mining Rate: ...</div>
-    <div id="countdown" class="info-box">⏳ Countdown: ...</div>
-    <p style="font-size: 0.85em; color: #bbb; margin-top: 15px;">Keep mining daily to grow your trust!</p>
   </div>
 </body>
 </html>
