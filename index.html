@@ -1,117 +1,143 @@
-<!DOCTYPE html><html><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Mining</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #000;
-      color: #fff;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #000;
       background-image: url('eano-background.jpg');
       background-size: cover;
       background-position: center;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
+
     .container {
-      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.75);
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 15px gold;
     }
-    .warning {
-      background-color: rgba(255, 0, 0, 0.7);
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-    }
-    .trust-info, .mining-rate, .countdown {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 10px;
-      border-radius: 5px;
+
+    h1 {
+      font-size: 1.8em;
       margin-bottom: 10px;
+      color: gold;
+    }
+
+    .info-box {
+      background-color: rgba(255, 255, 255, 0.08);
+      border-left: 4px solid gold;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .warning {
+      background-color: rgba(255, 0, 0, 0.75);
+      border-left: 4px solid red;
+    }
+
+    #countdown {
+      font-size: 0.9em;
+      color: #ccc;
     }
   </style>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth();
+    // ✅ Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f",
+      measurementId: "G-NS0W6QSS69"
+    };
 
-function startCountdown() {
-  const countdownElement = document.getElementById("countdown");
-  const now = new Date().getTime();
-  const nextDay = new Date(now + 24 * 60 * 60 * 1000);
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-  function updateCountdown() {
-    const currentTime = new Date().getTime();
-    const remaining = nextDay - currentTime;
+    // Countdown function ⏳
+    function startCountdown() {
+      const countdownElement = document.getElementById("countdown");
+      const now = new Date().getTime();
+      const nextDay = new Date(now + 24 * 60 * 60 * 1000);
 
-    const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((remaining / (1000 * 60)) % 60);
-    const seconds = Math.floor((remaining / 1000) % 60);
-
-    countdownElement.innerText = `Next mining available in: ${hours}h ${minutes}m ${seconds}s`;
-  }
-
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-}
-
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const userDocRef = doc(db, "users", user.uid);
-    const userDocSnap = await getDoc(userDocRef);
-    if (userDocSnap.exists()) {
-      const userData = userDocSnap.data();
-      const trustScore = userData.trustScore || 0;
-
-      const trustInfo = document.createElement("div");
-      trustInfo.className = "trust-info";
-      trustInfo.innerText = "🛡️ Trust Score: " + trustScore;
-      document.body.prepend(trustInfo);
-
-      if (trustScore < 80) {
-        const warningDiv = document.createElement("div");
-        warningDiv.className = "warning";
-        warningDiv.innerText = "⚠️ Your Trust Score is low. You can still mine at full speed. Invite and mine daily to increase it!";
-        document.body.prepend(warningDiv);
+      function updateCountdown() {
+        const currentTime = new Date().getTime();
+        const remaining = nextDay - currentTime;
+        const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+        const seconds = Math.floor((remaining / 1000) % 60);
+        countdownElement.innerText = `⏳ Next mining available in: ${hours}h ${minutes}m ${seconds}s`;
       }
 
-      const miningRateInfo = document.createElement("div");
-      miningRateInfo.className = "mining-rate";
-      miningRateInfo.innerText = "⛏️ Current Mining Rate: 0.0400 EANO/hr";
-      document.body.prepend(miningRateInfo);
-
-      const countdownDiv = document.createElement("div");
-      countdownDiv.id = "countdown";
-      countdownDiv.className = "countdown";
-      document.body.prepend(countdownDiv);
-
-      startCountdown();
-
-    } else {
-      console.error("No user document found.");
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
     }
-  } else {
-    window.location.href = "login.html";
-  }
-});
 
+    // 🔒 Auth Check
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          const trustScore = userData.trustScore || 0;
+
+          document.getElementById("trustScore").innerText = `🛡️ Trust Score: ${trustScore}`;
+
+          if (trustScore < 80) {
+            const warningBox = document.getElementById("trustWarning");
+            warningBox.style.display = topbar 
+          }
+
+          document.getElementById("miningRate").innerText = "⛏️ Mining Rate: 0.0400 EANO/hr";
+
+          startCountdown();
+
+        } else {
+          console.error("No user document found.");
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
   </script>
 </head>
+
 <body>
   <div class="container">
-    <h1>Welcome to EANO Coin Mining</h1>
-    <p>Mine EANO Coin and build your trust!</p>
+    <h1>EANO Coin Mining</h1>
+    <div id="trustWarning" class="info-box warning" style="display: none;">
+      ⚠️ Your Trust Score is low. You can still mine at full speed. Invite and mine daily to increase it!
+    </div>
+    <div id="trustScore" class="info-box">🛡️ Trust Score: ...</div>
+    <div id="miningRate" class="info-box">⛏️ Mining Rate: ...</div>
+    <div id="countdown" class="info-box">⏳ Countdown: ...</div>
+    <p style="font-size: 0.85em; color: #bbb; margin-top: 15px;">Keep mining daily to grow your trust!</p>
   </div>
 </body>
 </html>
