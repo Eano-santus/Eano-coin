@@ -1,94 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><link rel="stylesheet" href="background.css">
+<head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EANO Coin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="background.css">
   <style>
-    body {
+    body, html {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('./backgrounds/eano-gold-black.png') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
+      padding: 0;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: space-between;
     }
 
-    .dashboard {
-      background-color: rgba(0, 0, 0, 0.85);
-      padding: 30px 40px;
-      border-radius: 15px;
+    .sidebar h2 {
       text-align: center;
-      box-shadow: 0 0 15px gold;
-    }
-
-    h1 {
-      color: gold;
-      margin-bottom: 10px;
-    }
-
-    .username {
-      font-size: 1.2rem;
       margin-bottom: 20px;
     }
 
-    button {
-      background-color: gold;
-      color: black;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
+    .menu a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 10px 0;
       font-weight: bold;
     }
 
-    button:hover {
-      background-color: #ffd700;
+    .menu a:hover {
+      color: gold;
+    }
+
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .top-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .coin-balance {
+      font-size: 1.2rem;
+      color: #ffd700;
+    }
+
+    .countdown {
+      font-size: 1rem;
+      background: #222;
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .center-content {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .logout {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .logout button {
+      padding: 10px 20px;
+      background: crimson;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout button:hover {
+      background: darkred;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        justify-content: center;
+      }
+
+      .sidebar h2 {
+        display: none;
+      }
+
+      .menu {
+        display: flex;
+        gap: 15px;
+      }
+
+      .main {
+        padding: 10px;
+        align-items: center;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="sidebar">
+      <h2>EANO</h2>
+      <div class="menu">
+        <a href="#">Mine</a>
+        <a href="#">Invite</a>
+        <a href="#">Trust Score</a>
+        <a href="#">Leaderboard</a>
+        <a href="#">Profile</a>
+        <a href="#">Level Score</a>
+        <a href="#">White Paper</a>
+        <a href="#">Team</a>
+        <a href="#">Author</a>
+        <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
+      </div>
+    </div>
 
-  <div class="dashboard">
-    <h1>Welcome to EANO Coin</h1>
-    <p class="username" id="userInfo">Loading your data...</p>
-    <button id="logoutBtn">Logout</button>
+    <div class="main">
+      <div class="top-bar">
+        <div class="logo">EANO Coin</div>
+        <div class="coin-balance">Balance: <span id="coinBalance">0.00</span> EANO</div>
+      </div>
+
+      <div class="countdown">
+        Next mine in: <span id="countdownTimer">24:00:00</span>
+      </div>
+
+      <div class="center-content">
+        <img src="logo.png" alt="EANO Logo" width="100">
+        <h1>Welcome to EANO Dashboard</h1>
+        <p>Mine coins, check your scores, and build Africa’s future.</p>
+      </div>
+
+      <div class="logout">
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </div>
   </div>
 
   <script type="module">
-    import { auth, db } from './firebase.js';
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { auth } from './firebase.js';
+    import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const userInfo = document.getElementById("userInfo");
     const logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    });
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+    // Countdown logic (optional - replace with real timer)
+    let hours = 24;
+    function updateCountdown() {
+      hours -= 1;
+      document.getElementById("countdownTimer").innerText = `${hours}:00:00`;
+    }
+    setInterval(updateCountdown, 3600000); // 1 hour
 
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          userInfo.textContent = `Hello, ${userData.username} (${userData.email})`;
-        } else {
-          userInfo.textContent = "User data not found.";
-        }
-      } else {
-        // Not logged in
+    // Auth guard (optional)
+    onAuthStateChanged(auth, user => {
+      if (!user) {
         window.location.href = "login.html";
       }
     });
-
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "login.html";
-    });
   </script>
-
 </body>
 </html>
