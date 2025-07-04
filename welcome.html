@@ -1,38 +1,82 @@
-<!-- welcome.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Welcome - Eano Coin</title>
-  <script type="module" src="firebase.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome EANO</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .welcome-container {
+      text-align: center;
+      color: gold;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .welcome-container img {
+      height: 100px;
+      margin-bottom: 20px;
+      animation: zoomIn 2s ease-in-out;
+    }
+
+    .welcome-container h1 {
+      font-size: 32px;
+      animation: fadeInUp 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes zoomIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1 id="welcomeMessage">Welcome EANO COIN</h1>
-  <p>You are now logged in!</p>
-  <button onclick="goToHomepage()">Go to Homepage</button>
+  <div class="welcome-container">
+    <img src="assets/eano-logo.png" alt="EANO Logo" />
+    <h1>Welcome to EANO</h1>
+  </div>
 
-  <script type="module">
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { auth } from './firebase.js';
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { db } from './firebase.js';
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userDoc = doc(db, "miners", user.uid);
-        getDoc(userDoc).then((docSnap) => {
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            document.getElementById('welcomeMessage').innerText = `Welcome ${userData.firstname || 'User'} to EANO COIN`;
-          }
-        });
-      } else {
-        window.location.href = "/login.html"; // Redirect if not logged in
-      }
-    });
-
-    function goToHomepage() {
-      window.location.href = "/";
-    }
+  <script>
+    // Redirect to homepage after 3 seconds
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
   </script>
 </body>
 </html>
