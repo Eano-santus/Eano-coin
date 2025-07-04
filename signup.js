@@ -7,7 +7,7 @@ const firebaseConfig = {
   projectId: "eano-coin",
   storageBucket: "eano-coin.appspot.com",
   messagingSenderId: "98972385091",
-  appId: "1:98972385091:web:xxxxxx"
+  appId: "1:98972385091:web:85410fccc7c5933d761a9f"
 };
 
 // Initialize Firebase
