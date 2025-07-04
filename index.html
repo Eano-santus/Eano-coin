@@ -1,9 +1,17 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Dashboard</title>
-  <link rel="stylesheet" href="style.css" />  <!-- Firebase SDKs -->  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>  <style>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <style>
     body {
       background-image: url('eano-bg.png');
       background-size: cover;
@@ -92,8 +100,15 @@
       cursor: pointer;
       font-weight: bold;
     }
-  </style></head>
-<body><button class="logout-btn" onclick="logout()">Logout</button>
+    #trustWarning {
+      color: gold;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <button class="logout-btn" onclick="logout()">Logout</button>
 
   <div class="top-bar">
     <div class="coin-balance">Balance: <span id="coin-balance">0</span> EANO</div>
@@ -102,7 +117,9 @@
       <option>IG</option>
       <option>FR</option>
     </select>
-  </div>  <div class="menu">
+  </div>
+
+  <div class="menu">
     <img src="eano-logo.png" alt="EANO Logo" width="150" style="margin-bottom: 20px;" />
     <h2>Menu</h2>
     <a href="#" onclick="showSection('mine')">Mine</a>
@@ -122,38 +139,50 @@
         <a href="#" onclick="logout()">Logout</a>
       </div>
     </div>
-  </div>  <div class="main-content">
+  </div>
+
+  <div class="main-content">
     <div id="mine" class="section active-section">
       <h1>Mine EANO Coin</h1>
       <p>Time Left: <span id="countdown">24:00:00</span></p>
       <button onclick="startMining()">Start Mining</button>
+      <p id="trustWarning"></p>
     </div>
+
     <div id="leaderboard" class="section">
       <h1>Leaderboard</h1>
       <p>Top miners will appear here.</p>
     </div>
+
     <div id="trustscore" class="section">
       <h1>Trust Score</h1>
       <p>Your Trust Rank: <span id="trust-rank">New Miner</span></p>
     </div>
+
     <div id="level" class="section">
       <h1>Level Scores</h1>
       <p>Your Level: <span id="user-level">Amateur</span></p>
     </div>
+
     <div id="whitepaper" class="section">
       <h1>White Paper</h1>
       <p><a href="whitepaper.pdf" target="_blank">Download PDF</a></p>
     </div>
+
     <div id="team" class="section">
       <h1>Our Team</h1>
       <p>Meet the creators and developers behind EANO Coin.</p>
     </div>
+
     <div id="author" class="section">
       <h1>Author</h1>
       <p>Pseudonym: Santus Santorum</p>
     </div>
+
     <input type="text" id="referral-link" value="" readonly style="opacity: 0; position: absolute; left: -9999px;" />
-  </div>  <script>
+  </div>
+
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -166,6 +195,8 @@
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
+
+    const db = firebase.firestore();
 
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
@@ -180,6 +211,20 @@
 
         const referralLink = `${window.location.origin}/signup.html?ref=${uid}`;
         document.getElementById("referral-link").value = referralLink;
+
+        // Fetch user data
+        db.collection("users").doc(uid).get().then((doc) => {
+          if (doc.exists) {
+            const userData = doc.data();
+            const score = userData.score || 0;
+
+            // Show trust warning if score is below 80
+            if (score < 80) {
+              document.getElementById("trustWarning").innerText =
+                "You are currently in 'Needs Trust' status. Invite friends or mine regularly to grow your trust!";
+            }
+          }
+        });
       }
     });
 
@@ -205,5 +250,6 @@
     function startMining() {
       alert("Mining started! Logic to be implemented.");
     }
-  </script></body>
+  </script>
+</body>
 </html>
