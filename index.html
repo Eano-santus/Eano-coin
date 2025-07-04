@@ -97,7 +97,7 @@
       <div class="profile-dropdown">
         <span id="user-name">User Name</span><br/>
         <span id="user-email">User Email</span>
-        <a href="#invite">Invite Friends</a>
+        <a href="#" onclick="copyReferralLink()">Invite Friends</a>
         <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
         <a href="#" onclick="logout()">Logout</a>
       </div>
@@ -107,7 +107,9 @@
   <div class="main-content">
     <h1>Welcome to EANO Coin</h1>
     <p>This is your miner dashboard.</p>
-    <!-- Add your mining content here -->
+
+    <!-- Hidden referral input -->
+    <input type="text" id="referral-link" value="" readonly style="opacity: 0; position: absolute; left: -9999px;" />
   </div>
 
   <script>
@@ -121,24 +123,42 @@
       appId: "1:946263168182:web:5bca3676f1fcac09893098"
     };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase (only once)
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
 
-    // Auth state check
+    // Check Auth State
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
-        window.location.href = "login.html"; // Redirect if not logged in
+        window.location.href = "login.html";
       } else {
-        document.getElementById("user-name").textContent = user.displayName || "No Name";
-        document.getElementById("user-email").textContent = user.email;
+        const name = user.displayName || "No Name";
+        const email = user.email;
+        const uid = user.uid;
+
+        document.getElementById("user-name").textContent = name;
+        document.getElementById("user-email").textContent = email;
+
+        const referralLink = `${window.location.origin}/signup.html?ref=${uid}`;
+        document.getElementById("referral-link").value = referralLink;
       }
     });
 
-    // Logout function
+    // Logout
     function logout() {
       firebase.auth().signOut().then(() => {
         window.location.href = "login.html";
       });
+    }
+
+    // Copy Referral Link
+    function copyReferralLink() {
+      const input = document.getElementById("referral-link");
+      input.select();
+      input.setSelectionRange(0, 99999); // mobile
+      document.execCommand("copy");
+      alert("Your referral link has been copied!");
     }
   </script>
 
