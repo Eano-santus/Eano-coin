@@ -1,23 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>EANO Signup</title>
   <link rel="stylesheet" href="background.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <div class="form-container">
-    <h1>Sign Up to EANO</h1>
-    <form id="signupForm">
-      <input type="text" id="username" placeholder="Username" required><br>
-      <input type="email" id="email" placeholder="Email" required><br>
-      <input type="password" id="password" placeholder="Password" required><br>
-      <input type="text" id="referralCode" placeholder="Referral Code (optional)"><br>
+  <div class="signup-container">
+    <form id="signup-form">
+      <h2>Signup to EANO</h2>
+      <input type="email" id="signup-email" required placeholder="Email"><br>
+      <input type="password" id="signup-password" required placeholder="Password"><br>
+      <input type="text" id="referral" placeholder="Referral Code (Optional)"><br>
       <button type="submit">Sign Up</button>
+      <p>Already have an account? <a href="login.html">Login</a></p>
     </form>
-    <p>Already have an account? <a href="login.html">Login here</a></p>
   </div>
 
-  <script type="module" src="signup.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "946263168182",
+      appId: "1:946263168182:web:5bca3676f1fcac09893098"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    document.getElementById("signup-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          window.location.href = "index.html";
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    });
+  </script>
 </body>
 </html>
