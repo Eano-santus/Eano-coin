@@ -1,54 +1,87 @@
 // signup.js
-import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const signupForm = document.getElementById("signupForm");
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+  authDomain: "eano-coin.firebaseapp.com",
+  projectId: "eano-coin",
+  storageBucket: "eano-coin.appspot.com",
+  messagingSenderId: "98972385091",
+  appId: "1:98972385091:web:xxxxxx"
+};
 
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  const username = document.getElementById("username").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const referralCode = document.getElementById("referralCode").value.trim();
+// Generate random referral code
+function generateReferralCode(length = 8) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "";
+  for (let i = 0; i < length; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+// Main signup function (called on button click)
+async function signup() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const referralInput = document.getElementById('referral').value.trim();
+
+  if (!email || !password) {
+    alert("Please fill in all required fields.");
+    return;
+  }
 
   try {
-    // Step 1: Create the user in Firebase Auth
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    // Create user
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
+    const uid = user.uid;
+    const referralCode = generateReferralCode();
 
-    // Step 2: Prepare user object
+    // User data
     const userData = {
-      username: username,
+      uid: uid,
       email: email,
-      referralCode: referralCode || null,
-      trustScore: 5,
       score: 5,
-      level: "Amateur",
-      uid: user.uid,
-      createdAt: new Date().toISOString()
+      trust: "New Miner",
+      level: "Amateurs",
+      referralCode: referralCode,
+      referredBy: referralInput || null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    // Step 3: Save user to Firestore
-    await setDoc(doc(db, "users", user.uid), userData);
+    // Handle referral
+    if (referralInput !== "") {
+      const querySnapshot = await db.collection("users")
+        .where("referralCode", "==", referralInput)
+        .get();
 
-    // Step 4: If referralCode is used, find referrer and reward
-    if (referralCode) {
-      const refQuery = await getDoc(doc(db, "users", referralCode));
-      if (refQuery.exists()) {
-        const refData = refQuery.data();
-        const refScore = (refData.trustScore || 0) + 5;
-        await updateDoc(doc(db, "users", referralCode), {
-          trustScore: refScore
+      if (!querySnapshot.empty) {
+        const referrerDoc = querySnapshot.docs[0];
+        const referrerId = referrerDoc.id;
+
+        await db.collection("users").doc(referrerId).update({
+          score: firebase.firestore.FieldValue.increment(5)
         });
+      } else {
+        alert("Invalid referral code entered.");
+        return;
       }
     }
 
+    // Save user data
+    await db.collection("users").doc(uid).set(userData);
+
     alert("Signup successful!");
-    window.location.href = "index.html"; // Redirect after signup
+    window.location.href = "index.html";
+
   } catch (error) {
-    console.error("Signup error:", error);
     alert("Signup failed: " + error.message);
+    console.error(error);
   }
-})
+}
