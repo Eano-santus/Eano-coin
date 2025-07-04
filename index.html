@@ -131,7 +131,7 @@
     // Check Auth State
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
-        window.location.href = "login.html";
+        window.location.href = "welcome.html";
       } else {
         const name = user.displayName || "No Name";
         const email = user.email;
