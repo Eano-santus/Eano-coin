@@ -147,8 +147,7 @@
       <p>Time Left: <span id="countdown">24:00:00</span></p>
       <button onclick="startMining()">Start Mining</button>
       <p id="trustWarning"></p>
-    </div>(userData.score < 80) {
-  document.getElementById("trustWarning").innerText = "You are currently in 'Needs Trust' status. Invite friends or mine regularly to grow your trust!";
+    </div>
 }
 
     <div id="leaderboard" class="section">
@@ -158,7 +157,9 @@
 
     <div id="trustscore" class="section">
       <h1>Trust Score</h1>
-      <p>Your Trust Rank: <span id="trust-rank">New Miner</span></p>
+      <p>Your Trust Rank: <span id="trust-rank">userData.score < 80 {
+  document.getElementById("trustWarning").innerText = "You are currently in 'Needs Trust' status. Invite friends or mine regularly to grow your trust!";
+}</span></p>
     </div>
 
     <div id="level" class="section">
