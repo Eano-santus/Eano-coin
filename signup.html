@@ -153,6 +153,61 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    <script>
+  // Get referral UID from URL, e.g. ?ref=UID
+  const urlParams = new URLSearchParams(window.location.search);
+  const referrerUid = urlParams.get('ref') || null;
+
+  document.getElementById('signup-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value;
+    const errorDiv = document.getElementById("error-message");
+    errorDiv.textContent = "";
+
+    try {
+      const result = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const user = result.user;
+      const db = firebase.firestore();
+
+      // Create new user document with default scores
+      await db.collection('miners').doc(user.uid).set({
+        email: user.email,
+        balance: 0,
+        trustScore: 0,
+        level: 'Amateur',
+        referrals: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // If referred by somebody, reward both
+      if (referrerUid && referrerUid !== user.uid) {
+        const refDoc = db.collection('miners').doc(referrerUid);
+        await db.runTransaction(async (tx) => {
+          const docSnap = await tx.get(refDoc);
+          if (docSnap.exists) {
+            const prevReferrals = docSnap.data().referrals || 0;
+            tx.update(refDoc, {
+              referrals: prevReferrals + 1,
+              trustScore: firebase.firestore.FieldValue.increment(5), // increase trustScore
+              balance: firebase.firestore.FieldValue.increment(10)    // referral bonus
+            });
+          }
+        });
+
+        // Reward the new user too
+        await db.collection('miners').doc(user.uid).update({
+          trustScore: 5,
+          balance: 10
+        });
+      }
+
+      window.location.href = "splash.html";
+    } catch (error) {
+      errorDiv.textContent = error.message;
+    }
+  });
+</script>
 
     document.getElementById("signup-form").addEventListener("submit", function(e) {
       e.preventDefault();
