@@ -6,16 +6,14 @@ const loginForm = document.getElementById("loginForm");
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    alert("Login successful!");
-    window.location.href = "index.html"; // Change to dashboard if needed
+    // Redirect to full homepage/dashboard
+    window.location.href = "index.html";
   } catch (error) {
-    console.error("Login error:", error);
     alert("Login failed: " + error.message);
   }
 });
