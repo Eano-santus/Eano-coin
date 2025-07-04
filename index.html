@@ -49,11 +49,14 @@ onAuthStateChanged(auth, async (user) => {
       const userData = userDocSnap.data();
       const trustScore = userData.trustScore || 0;
 
-      // Display trust warning if trustScore is below 80
+      // Allow users to mine if trustScore is below 80
       if (trustScore < 80) {
         const warningDiv = document.createElement("div");
         warningDiv.className = "warning";
-        warningDiv.innerText = "⚠️ Your trust score is low (" + trustScore + "). Mining may be limited. Build your trust to gain full access.";
+        warningDiv.innerText = "⚠️ if (trustScore < 80) {
+    showMessage("⚠️ You can mine, but your Trust Score is low. Invite others or mine daily to increase your score.");
+    // No return — allow mining to continue
+      }
         document.body.prepend(warningDiv);
       }
 
