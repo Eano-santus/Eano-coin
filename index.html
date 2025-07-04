@@ -1,11 +1,15 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
   <style>
     body {
       background-image: url('eano-bg.png');
@@ -59,9 +63,25 @@
     #profile:hover .profile-dropdown {
       display: block;
     }
+    .logout-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: gold;
+      color: #000;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Logout Button -->
+  <button class="logout-btn" onclick="logout()">Logout</button>
+
   <div class="menu">
     <img src="eano-logo.png" alt="EANO Logo" width="150" style="margin-bottom: 20px;" />
     <h2>Menu</h2>
@@ -75,7 +95,7 @@
     <div id="profile">
       <a href="#">👤 Profile</a>
       <div class="profile-dropdown">
-        <span id="user-name">User Name</span>
+        <span id="user-name">User Name</span><br/>
         <span id="user-email">User Email</span>
         <a href="#invite">Invite Friends</a>
         <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
@@ -83,11 +103,15 @@
       </div>
     </div>
   </div>
+
   <div class="main-content">
     <h1>Welcome to EANO Coin</h1>
     <p>This is your miner dashboard.</p>
     <!-- Add your mining content here -->
-  </div>  <script>
+  </div>
+
+  <script>
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -96,61 +120,27 @@
       messagingSenderId: "946263168182",
       appId: "1:946263168182:web:5bca3676f1fcac09893098"
     };
+
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
+    // Auth state check
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
+      if (!user) {
+        window.location.href = "login.html"; // Redirect if not logged in
+      } else {
         document.getElementById("user-name").textContent = user.displayName || "No Name";
         document.getElementById("user-email").textContent = user.email;
-      } else {
-        window.location.href = "login.html";
       }
     });
 
+    // Logout function
     function logout() {
       firebase.auth().signOut().then(() => {
         window.location.href = "login.html";
       });
     }
   </script>
-  <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "946263168182",
-    appId: "1:946263168182:web:5bca3676f1fcac09893098"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  firebase.auth().onAuthStateChanged((user) => {
-    if (!user) {
-      // Not logged in
-      window.location.href = "login.html";
-    } else {
-      // Optional: Show user email or UID
-      console.log("Logged in:", user.email);
-      const userEmail = document.getElementById("user-email");
-      if (userEmail) {
-        userEmail.textContent = user.email;
-        <button onclick="logout()" style="position:absolute; top:10px; right:10px; background:gold; padding:8px 14px; border:none; border-radius:8px; cursor:pointer;">
-  Logout
-</button>
-      }
-    }<p id="user-email" style="color:white; font-size:14px;"></p>
-  });
-
-  function logout() {
-    firebase.auth().signOut().then(() => {
-      window.location.href = "login.html";
-    });
-  }
-</script>
 </body>
 </html>
