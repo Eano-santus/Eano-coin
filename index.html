@@ -1,203 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>EANO Coin Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EANO Dashboard</title>
   <link rel="stylesheet" href="background.css">
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    .container {
-      display: flex;
-      height: 100vh;
-      width: 100%;
-    }
-
-    .sidebar {
-      width: 250px;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .sidebar h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .menu a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin: 10px 0;
-      font-weight: bold;
-    }
-
-    .menu a:hover {
-      color: gold;
-    }
-
-    .main {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-    }
-
-    .top-bar {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .logo {
-      font-size: 2rem;
-      font-weight: bold;
-    }
-
-    .coin-balance {
-      font-size: 1.2rem;
-      color: #ffd700;
-    }
-
-    .countdown {
-      font-size: 1rem;
-      background: #222;
-      padding: 10px 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
-    .center-content {
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    .logout {
-      text-align: center;
-      margin-top: 40px;
-    }
-
-    .logout button {
-      padding: 10px 20px;
-      background: crimson;
-      border: none;
-      color: white;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .logout button:hover {
-      background: darkred;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        flex-direction: row;
-        overflow-x: auto;
-        justify-content: center;
-      }
-
-      .sidebar h2 {
-        display: none;
-      }
-
-      .menu {
-        display: flex;
-        gap: 15px;
-      }
-
-      .main {
-        padding: 10px;
-        align-items: center;
-      }
-    }
-  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <div class="container">
-    <div class="sidebar">
-      <h2>EANO</h2>
-      <div class="menu">
-        <a href="#">Mine</a>
-        <a href="#">Invite</a>
-        <a href="#">Trust Score</a>
-        <a href="#">Leaderboard</a>
-        <a href="#">Profile</a>
-        <a href="#">Level Score</a>
-        <a href="#">White Paper</a>
-        <a href="#">Team</a>
-        <a href="#">Author</a>
-        <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
-      </div>
-    </div>
-
-    <div class="main">
-      <div class="top-bar">
-        <div class="logo">EANO Coin</div>
-        <div class="coin-balance">Balance: <span id="coinBalance">0.00</span> EANO</div>
-      </div>
-
-      <div class="countdown">
-        Next mine in: <span id="countdownTimer">24:00:00</span>
-      </div>
-
-      <div class="center-content">
-        <img src="logo.png" alt="EANO Logo" width="100">
-        <h1>Welcome to EANO Dashboard</h1>
-        <p>Mine coins, check your scores, and build Africa’s future.</p>
-      </div>
-
-      <div class="logout">
-        <button id="logoutBtn">Logout</button>
-      </div>
-    </div>
+  <div id="dashboard">
+    <aside>
+      <ul>
+        <li><a href="#mine">Mine</a></li>
+        <li><a href="#invite">Invite</a></li>
+        <li><a href="#trust">Trust Score</a></li>
+        <li><a href="#levels">Level Scores</a></li>
+        <li><a href="#profile">Profile</a></li>
+      </ul>
+    </aside>
+    <main>
+      <section id="mine">Mining Area - coming soon</section>
+      <section id="invite">Invite Friends - coming soon</section>
+      <section id="trust">Trust Score - coming soon</section>
+      <section id="levels">Level Scores - coming soon</section>
+      <section id="profile">
+        <h3>Your Profile</h3>
+        <p><strong>Email:</strong> <span id="user-email"></span></p>
+        <a href="whitepaper.html">Whitepaper</a><br>
+        <a href="#">KYC (Coming Soon)</a><br>
+        <a href="https://t.me/eanocoin" target="_blank">Support Portal</a><br>
+        <button onclick="logout()">Logout</button>
+      </section>
+    </main>
   </div>
 
-  <script type="module">
-    import { auth } from './firebase.js';
-    import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "946263168182",
+      appId: "1:946263168182:web:5bca3676f1fcac09893098"
+    };
+    firebase.initializeApp(firebaseConfig);
 
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn.addEventListener("click", () => {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
-    });
-
-    // Countdown logic (optional - replace with real timer)
-    let hours = 24;
-    function updateCountdown() {
-      hours -= 1;
-      document.getElementById("countdownTimer").innerText = `${hours}:00:00`;
-    }
-    setInterval(updateCountdown, 3600000); // 1 hour
-
-    // Auth guard (optional)
-    onAuthStateChanged(auth, user => {
+    firebase.auth().onAuthStateChanged(user => {
       if (!user) {
         window.location.href = "login.html";
+      } else {
+        document.getElementById("user-email").innerText = user.email;
       }
     });
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "login.html";
+      });
+    }
   </script>
 </body>
 </html>
