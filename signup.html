@@ -45,7 +45,7 @@
 
     input[type="email"],
     input[type="password"] {
-      width: 120%;
+      width: 100%;
       padding: 12px;
       margin: 10px 0;
       border-radius: 10px;
@@ -76,6 +76,12 @@
       font-size: 14px;
       color: #ccc;
     }
+
+    #error-message {
+      margin-top: 10px;
+      color: red;
+      font-size: 14px;
+    }
   </style>
 
   <!-- Firebase SDKs -->
@@ -84,18 +90,20 @@
 </head>
 <body>
   <div class="container">
-    <img src="eano-logo.png" alt="EANO Logo" class="logo" />
+    <img src="assets/eano-logo.png" alt="EANO Logo" class="logo" />
     <h2>Join EANO Coin</h2>
     <form id="signup-form">
       <input type="email" id="signup-email" placeholder="Email" required />
       <input type="password" id="signup-password" placeholder="Password" required />
       <button type="submit">Sign Up</button>
+      <p id="error-message"></p>
     </form>
-    <div class="tagline">Secure and Private – Powered by EANO</div>
+    <div class="tagline">
+      Secure and Private – Powered by EANO<br>
+      Already have an account? <a href="login.html" style="color: gold;">Login</a>
+    </div>
   </div>
-<p style="margin-top: 15px;">
-  Already have an account? <a href="login.html" style="color: gold;">Login</a>
-</p>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -118,7 +126,7 @@
           window.location.href = "index.html"; // Redirect on success
         })
         .catch((error) => {
-          alert(error.message);
+          document.getElementById("error-message").innerText = error.message;
         });
     });
   </script>
