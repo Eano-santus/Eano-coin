@@ -1,40 +1,93 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-  <title>EANO Dashboard</title>
-  <link rel="stylesheet" href="background.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Coin Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-image: url('eano-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      padding: 20px;
+    }
+    .menu {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      width: 200px;
+      float: left;
+      min-height: 100vh;
+    }
+    .menu h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .menu a {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      margin: 10px 0;
+    }
+    .main-content {
+      margin-left: 220px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      min-height: 100vh;
+    }
+    .profile-dropdown {
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      display: none;
+      margin-top: 10px;
+    }
+    .profile-dropdown a {
+      display: block;
+      color: #fff;
+      padding: 5px 0;
+      text-decoration: none;
+    }
+    #profile:hover .profile-dropdown {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <div id="dashboard">
-    <aside>
-      <ul>
-        <li><a href="#mine">Mine</a></li>
-        <li><a href="#invite">Invite</a></li>
-        <li><a href="#trust">Trust Score</a></li>
-        <li><a href="#levels">Level Scores</a></li>
-        <li><a href="#profile">Profile</a></li>
-      </ul>
-    </aside>
-    <main>
-      <section id="mine">Mining Area - coming soon</section>
-      <section id="invite">Invite Friends - coming soon</section>
-      <section id="trust">Trust Score - coming soon</section>
-      <section id="levels">Level Scores - coming soon</section>
-      <section id="profile">
-        <h3>Your Profile</h3>
-        <p><strong>Email:</strong> <span id="user-email"></span></p>
-        <a href="whitepaper.html">Whitepaper</a><br>
-        <a href="#">KYC (Coming Soon)</a><br>
-        <a href="https://t.me/eanocoin" target="_blank">Support Portal</a><br>
-        <button onclick="logout()">Logout</button>
-      </section>
-    </main>
+  <div class="menu">
+    <img src="eano-logo.png" alt="EANO Logo" width="150" style="margin-bottom: 20px;" />
+    <h2>Menu</h2>
+    <a href="#mine">Mine</a>
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#trustscore">Trust Score</a>
+    <a href="#level">Level Scores</a>
+    <a href="#whitepaper">White Paper</a>
+    <a href="#team">Team</a>
+    <a href="#author">Author</a>
+    <div id="profile">
+      <a href="#">👤 Profile</a>
+      <div class="profile-dropdown">
+        <span id="user-name">User Name</span>
+        <span id="user-email">User Email</span>
+        <a href="#invite">Invite Friends</a>
+        <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+    </div>
   </div>
-
-  <script>
+  <div class="main-content">
+    <h1>Welcome to EANO Coin</h1>
+    <p>This is your miner dashboard.</p>
+    <!-- Add your mining content here -->
+  </div>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -45,11 +98,12 @@
     };
     firebase.initializeApp(firebaseConfig);
 
-    firebase.auth().onAuthStateChanged(user => {
-      if (!user) {
-        window.location.href = "login.html";
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById("user-name").textContent = user.displayName || "No Name";
+        document.getElementById("user-email").textContent = user.email;
       } else {
-        document.getElementById("user-email").innerText = user.email;
+        window.location.href = "login.html";
       }
     });
 
@@ -58,6 +112,5 @@
         window.location.href = "login.html";
       });
     }
-  </script>
-</body>
+  </script></body>
 </html>
