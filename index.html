@@ -112,5 +112,45 @@
         window.location.href = "login.html";
       });
     }
-  </script></body>
+  </script>
+  <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+    authDomain: "eano-miner.firebaseapp.com",
+    projectId: "eano-miner",
+    storageBucket: "eano-miner.appspot.com",
+    messagingSenderId: "946263168182",
+    appId: "1:946263168182:web:5bca3676f1fcac09893098"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      // Not logged in
+      window.location.href = "login.html";
+    } else {
+      // Optional: Show user email or UID
+      console.log("Logged in:", user.email);
+      const userEmail = document.getElementById("user-email");
+      if (userEmail) {
+        userEmail.textContent = user.email;
+        <button onclick="logout()" style="position:absolute; top:10px; right:10px; background:gold; padding:8px 14px; border:none; border-radius:8px; cursor:pointer;">
+  Logout
+</button>
+      }
+    }<p id="user-email" style="color:white; font-size:14px;"></p>
+  });
+
+  function logout() {
+    firebase.auth().signOut().then(() => {
+      window.location.href = "login.html";
+    });
+  }
+</script>
+</body>
 </html>
