@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin Login</title>
+  <title>EANO Login</title>
   <style>
     * {
       margin: 0;
@@ -12,97 +12,127 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: white;
     }
 
     .container {
       background: rgba(0, 0, 0, 0.75);
-      padding: 2rem;
-      border-radius: 15px;
+      padding: 30px 25px;
+      border-radius: 16px;
       width: 90%;
       max-width: 400px;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-    }
-
-    .logo {
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+      color: white;
       text-align: center;
-      margin-bottom: 1.5rem;
     }
 
-    .logo img {
-      width: 80px;
+    .logo-container {
+      margin-bottom: 20px;
     }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      color: #FFD700;
+    .logo-container img {
+      height: 60px;
     }
 
-    input {
+    .container h2 {
+      margin-bottom: 15px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border: none;
+      padding: 12px;
+      margin: 10px 0;
       border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
+
+    .toggle-password {
+      float: right;
+      margin-right: 10px;
+      margin-top: -32px;
+      position: relative;
+      z-index: 2;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .error-message {
+      color: #ff8080;
+      font-size: 14px;
+      margin-top: 10px;
     }
 
     button {
       width: 100%;
-      padding: 0.75rem;
-      background-color: #FFD700;
-      color: black;
-      font-weight: bold;
+      padding: 12px;
       border: none;
       border-radius: 10px;
-      margin-top: 1rem;
+      background-color: gold;
+      color: black;
+      font-weight: bold;
+      font-size: 16px;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ffc107;
     }
 
     .signup-link {
-      text-align: center;
-      margin-top: 1rem;
+      margin-top: 15px;
+      font-size: 14px;
     }
 
     .signup-link a {
-      color: #FFD700;
+      color: gold;
       text-decoration: none;
     }
 
     .signup-link a:hover {
       text-decoration: underline;
     }
+
+    .tagline {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
   </style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
   <div class="container">
-    <div class="logo">
-      <img src="eano-logo.png" alt="EANO Coin Logo" />
+    <div class="logo-container">
+      <img src="assets/eano-logo.png" alt="EANO Logo" />
     </div>
-    <h2>Login to EANO Coin</h2>
+    <h2>Login to EANO</h2>
     <form id="login-form">
       <input type="email" id="login-email" placeholder="Email" required />
       <input type="password" id="login-password" placeholder="Password" required />
+      <span class="toggle-password" onclick="togglePassword()">Show</span>
       <button type="submit">Login</button>
     </form>
-    <div class="signup-link">
-      Don’t have an account? <a href="signup.html">Sign up</a>
-    </div>
+    <div id="error-message" class="error-message"></div>
+    <div class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
+    <div class="tagline">Secure Access – Powered by EANO</div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
-  <!-- Firebase Config & Login Script -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -112,21 +142,36 @@
       messagingSenderId: "946263168182",
       appId: "1:946263168182:web:5bca3676f1fcac09893098"
     };
+
     firebase.initializeApp(firebaseConfig);
 
     document.getElementById("login-form").addEventListener("submit", function(e) {
       e.preventDefault();
       const email = document.getElementById("login-email").value;
       const password = document.getElementById("login-password").value;
+      const errorDiv = document.getElementById("error-message");
+      errorDiv.textContent = "";
 
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          window.location.href = "index.html"; // Redirect to main page
+          window.location.href = "index.html";
         })
         .catch((error) => {
-          alert("Login failed: " + error.message);
+          errorDiv.textContent = error.message;
         });
     });
+
+    function togglePassword() {
+      const passwordInput = document.getElementById("login-password");
+      const toggle = document.querySelector(".toggle-password");
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggle.textContent = "Hide";
+      } else {
+        passwordInput.type = "password";
+        toggle.textContent = "Show";
+      }
+    }
   </script>
 </body>
 </html>
