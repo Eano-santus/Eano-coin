@@ -1,18 +1,11 @@
 /* ===== Base Styling ===== */
-{body {
+body {
   margin: 0;
   padding: 0;
-  background: url("eano-bg.png-gold-black.jpg") no-repeat center center fixed;
-  background-size: cover;
   font-family: 'Poppins', sans-serif;
-  color: white; /* Optional: For better visibility */
-}
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: url('eano-bg.png') no-repeat center top fixed, #121212;
-  background-size: cover;
   color: #eee;
-  margin: 0;
-  padding: 0;
+  background: url("eano-bg.png-gold-black.jpg") no-repeat center top fixed, #121212;
+  background-size: cover;
   display: flex;
   min-height: 100vh;
   position: relative;
@@ -149,6 +142,95 @@ body::before {
   font-weight: bold;
 }
 
+/* ===== Profile Section ===== */
+.profile-info {
+  margin-top: 20px;
+  padding: 15px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.profile-info p {
+  margin: 10px 0;
+}
+
+/* ===== Language Dropdown ===== */
+.language-switcher {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 10;
+}
+
+.language-switcher select {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  background: #444;
+  color: #fff;
+}
+
+/* ===== Logout Button ===== */
+.logout-btn {
+  background: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #e60000;
+}
+
+/* ===== Leaderboard Table ===== */
+.leaderboard {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  background: #1f1f1f;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.leaderboard th,
+.leaderboard td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+
+.leaderboard th {
+  background: #333;
+  color: gold;
+}
+
+.leaderboard tr:hover {
+  background: #2a2a2a;
+}
+
+/* ===== Progress Bars ===== */
+.progress-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  background: #1c1c1c;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 20px;
+  background: gold;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
 /* ===== Mobile Optimization ===== */
 @media (max-width: 600px) {
   .auth-container {
@@ -175,10 +257,20 @@ body::before {
     padding: 10px;
   }
 
+  .menu-item {
+    min-width: 120px;
+    text-align: center;
+  }
+
   .topbar {
     flex-direction: column;
     align-items: flex-start;
     padding: 10px;
     gap: 10px;
+  }
+
+  .language-switcher {
+    position: relative;
+    margin-bottom: 10px;
   }
 }
