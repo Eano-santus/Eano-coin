@@ -168,5 +168,14 @@ async function loadLeaderboard() {
     const li = document.createElement("li");
     li.textContent = `${index + 1}. ${data.email || "Anonymous"} — ${data.coinBalance?.toFixed(2)} EANO`;
     leaderboardEl.appendChild(li);
+    document.getElementById("logoutButton").addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      window.location.href = "signup.html"; // redirect to login/signup
+    })
+    .catch((error) => {
+      console.error("Logout error:", error);
+    });
+});
   });
 }
