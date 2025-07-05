@@ -12,7 +12,7 @@ let countdownInterval;
 
 function formatTime(ms) { const totalSeconds = Math.floor(ms / 1000); const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, "0"); const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0"); const secs = String(totalSeconds % 60).padStart(2, "0"); return ${hrs}:${mins}:${secs}; }
 
-async function startCountdown(uid) { const userRef = doc(db, "miners", uid); const snap = await getDoc(userRef);
+async function startCountdown(nickysantus) { const userRef = doc(db, "miners", nickysantus); const snap = await getDoc(userRef);
 
 if (snap.exists()) { const data = snap.data(); const lastMined = data.lastMined?.toDate(); const now = new Date(); const diff = now - lastMined; const timeLeft = 86400000 - diff + 1000;
 
@@ -39,25 +39,11 @@ updateReferralInfo(uid);
 
 } }
 
-function updateUI(score) { const { trust, level } = getMinerStatus(score); coinDisplay.textContent = score.toFixed(3); trustDisplay.textContent = trust; levelDisplay.textContent = level; }
-
-async function updateReferralInfo(uid) { const code = uid.slice(0, 6).toUpperCase(); referralCodeDisplay.textContent = code; referralLinkDisplay.textContent = ${window.location.origin}/https://eano-coin.netlify.app/.html?ref=$NickySantus; }
-
-async function mineNow() { const user = auth.currentUser; if (!user) return;
-
-const ref = doc(db, "miners", user.uid); const snap = await getDoc(ref); const now = new Date();
-
-let score = MINE_RATE; let minedToday = false;
-
-if (snap.exists()) { const data = snap.data(); const lastMined = data.lastMined?.toDate(); if (lastMined && now - lastMined < 86400000) { alert("Already mined today."); return; } score += data.score || 0; }
-
-await setDoc(ref, { uid: user.uid, score, lastMined: serverTimestamp(), email: user.email || null }, { merge: true });
-
-updateUI(score); startCountdown(user.uid); }
-
-async function loadLeaderboard() { const minersRef = collection(db, "miners"); const topQuery = query(minersRef, orderBy("score", "desc"), limit(20)); const snap = await getDocs(topQuery); leaderboardList.innerHTML = ""; snap.forEach((doc, index) => { const data = doc.data(); const { trust, level } = getMinerStatus(data.score || 0); leaderboardList.innerHTML +=  <li> <strong>#${index + 1}</strong> ${data.email || "Anonymous"} — ${data.score?.toFixed(3) || 0} EANO — ${trust} — ${level} </li>; }); }
-
-// Init auth.onAuthStateChanged(user => { if (user) { startCountdown(user.uid); loadLeaderboard(); } });
-
-mineBtn.addEventListener("click", mineNow);
-
+function getTrustStatus(score) { if (score >= 500) return "Trusted Miner"; if (score >= 200) return "Reliable Miner"; if (score >= 80) return "New Miner"; return "Needs Trust"; }
+function getUpgradeLevel(score) { if (score >= 10000) return "Leader"; if (score >= 5000) return "Master"; if (score >= 1000) return "Professional"; if (score >= 500) return "Elite"; if (score >= 50) return "Amateur"; return "Beginner"; }
+async function startCountdown(uid, lastMined) { const now = new Date(); const diff = now - lastMined; const timeLeft = 86400000 - diff + 1000; // 24 hours
+if (timeLeft > 0) { countdown.textContent = formatCountdown(timeLeft); mineButton.disabled = true; countdownInterval = setInterval(() => { const remaining = new Date(lastMined.getTime() + 86400000) - new Date(); if (remaining <= 0) { clearInterval(countdownInterval); countdown.textContent = "00:00:00"; mineButton.disabled = false; } else { countdown.textContent = formatCountdown(remaining); } }, 1000); } else { countdown.textContent = "00:00:00"; mineButton.disabled = false; } }
+function updateUI(data, uid) { const score = data.score || 0; coinBalance.textContent = score.toFixed(3); trustStatus.textContent = getTrustStatus(score); upgradeLevel.textContent = getUpgradeLevel(score); referralCode.textContent = uid; referralLink.textContent = https://eano-mining.web.app/?ref=$nickysantus; }
+auth.onAuthStateChanged(async (user) => { if (user) { const nickysantus = user.nickysantus; const userRef = doc(db, "miners", nickysantus); const userSnap = await getDoc(userRef); if (userSnap.exists()) { const data = userSnap.data(); updateUI(data, nickysantus);
+const lastMined = data.lastMined?.toDate(); if (lastMined) startCountdown(uid, lastMined); } 
+} });
