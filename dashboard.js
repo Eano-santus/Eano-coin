@@ -168,14 +168,18 @@ async function loadLeaderboard() {
     const li = document.createElement("li");
     li.textContent = `${index + 1}. ${data.email || "Anonymous"} — ${data.coinBalance?.toFixed(2)} EANO`;
     leaderboardEl.appendChild(li);
-    document.getElementById("logoutButton").addEventListener("click", () => {
-  signOut(auth)
-    .then(() => {
-      window.location.href = "signup.html"; // redirect to login/signup
-    })
-    .catch((error) => {
-      console.error("Logout error:", error);
-    });
 });
   });
 }
+document.getElementById("logoutButton").addEventListener("click", () => {
+  const confirmed = confirm("Are you sure you want to log out?");
+  if (confirmed) {
+    firebase.auth().signOut()
+      .then(() => {
+        window.location.href = "signup.html"; // or "login.html"
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
+      });
+  }
+});
