@@ -1,192 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="auth.js"></script> <!-- Only on protected pages -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Mining</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDK (Latest v10.12.2 Only) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Configuration -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-coin.firebaseapp.com",
+      projectId: "eano-coin",
+      storageBucket: "eano-coin.appspot.com",
+      messagingSenderId: "663007844943",
+      appId: "1:663007844943:web:6d5cfa9a31eb252f8853c8"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Inline styles (optional cleanup) -->
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-image: url('eano-bg.jpg');
+      background-image: url('eano_background_gold_black.jpg');
       background-size: cover;
       background-position: center;
-      background-attachment: fixed;
       color: #f0f0f0;
+      font-family: Arial, sans-serif;
     }
+
     .container {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 500px;
+      max-width: 800px;
       margin: auto;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      margin-top: 40px;
     }
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      cursor: pointer;
-      background-color: #ffd700;
+
+    h1, h2 {
+      text-align: center;
+      color: gold;
+    }
+
+    #mineButton {
+      display: block;
+      margin: 20px auto;
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: gold;
+      color: black;
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
     }
-    .leaderboard {
-      margin-top: 20px;
+
+    #mineButton:disabled {
+      background-color: grey;
+      cursor: not-allowed;
+    }
+
+    #countdown, #score, #referralCode, #referralLink, #trustScore, #minerLevel {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 15px;
+    }
+
+    a {
+      color: #00f0ff;
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        width: 90%;
+        padding: 15px;
+      }
+
+      #mineButton {
+        font-size: 16px;
+        padding: 12px 20px;
+      }
+
+      #countdown, #score, #referralCode, #referralLink, #trustScore, #minerLevel {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
+
 <body>
-<div class="container">
-  <h2>Welcome to EANO Coin Mining</h2>
-  <p><strong>User:</strong> <span id="userEmail"></span></p>
-  <p><strong>Balance:</strong> <span id="balance">0</span> EANO</p>
-  <p><strong>Trust Score:</strong> <span id="trustScore">0</span> - <span id="trustLevel"></span></p>
-  <p><strong>Level:</strong> <span id="userLevel"></span></p>
-  <p><strong>Referrals:</strong> <span id="referrals">0</span></p>
-  <p><strong>Countdown:</strong> <span id="countdown">Loading...</span></p>
-  <button onclick="mine()">Mine 0.0400 EANO</button>
-  <button onclick="copyInvite()">Invite</button>
-  <div class="leaderboard">
-    <h3>Top Miners</h3>
-    <ul id="leaderboard"></ul>
+  <div class="container">
+    <h1>EANO Coin Mining</h1>
+    <h2>Mine every 24 hours</h2>
+    <button id="mineButton">Mine</button>
+    <p id="countdown">Next mine available in: --:--:--</p>
+    <p id="score">Your Score: 0</p>
+    <p id="trustScore">Trust Status: Unknown</p>
+    <p id="minerLevel">Miner Level: Unknown</p>
+    <p id="referralCode">Your Referral Code: <span id="codeDisplay">Loading...</span></p>
+    <p id="referralLink">Referral Link: <a href="#" id="linkDisplay">Loading...</a></p>
   </div>
-</div>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-coin.firebaseapp.com",
-    projectId: "eano-coin",
-    storageBucket: "eano-coin.appspot.com",
-    messagingSenderId: "999477910664",
-    appId: "1:999477910664:web:42fddc0e33dcee0e8c9e0b"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+  <!-- App Logic Script -->
+  <script src="app.js"></script>
 
-  const miningReward = 0.0400;
-  const miningCooldown = 24 * 60 * 60 * 1000;
-  let currentUser;
-
-  function getTrustLevel(score) {
-    if (score >= 500) return "🔰 Trusted Miner";
-    if (score >= 200) return "✅ Reliable Miner";
-    if (score >= 80) return "🟡 New Miner";
-    return "⚠️ Needs Trust";
-  }
-
-  function getLevelName(score) {
-    if (score >= 10000) return "👑 Leader";
-    if (score >= 5000) return "💠 Master";
-    if (score >= 1000) return "📘 Professional";
-    if (score >= 500) return "⭐ Elite";
-    if (score >= 50) return "🔹 Amateur";
-    return "🔸 Beginner";
-  }
-
-  function copyInvite() {
-    const inviteLink = `${window.location.origin}/signup.html?ref=${currentUser.uid}`;
-    navigator.clipboard.writeText(inviteLink).then(() => {
-      alert("Invite link copied!");
-    });
-  }
-
-  function updateCountdown(lastMined) {
-    const now = Date.now();
-    const nextMineTime = lastMined + miningCooldown;
-    const timeLeft = Math.max(0, nextMineTime - now);
-
-    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-    document.getElementById("countdown").textContent = `${hours}h ${minutes}m ${seconds}s`;
-
-    if (timeLeft <= 0) {
-      document.getElementById("countdown").textContent = "You can mine now!";
-    } else {
-      setTimeout(() => updateCountdown(lastMined), 1000);
-    }
-  }
-
-  function mine() {
-    const userDocRef = db.collection("miners").doc(currentUser.uid);
-    userDocRef.get().then(doc => {
-      const data = doc.data();
-      const now = Date.now();
-      if (now - data.lastMined >= miningCooldown) {
-        userDocRef.set({
-          wallet: currentUser.email,
-          mined: firebase.firestore.FieldValue.increment(10),
-          balance: firebase.firestore.FieldValue.increment(miningReward),
-          lastMined: now,
-          trustScore: (data.trustScore || 0) + 1,
-          referrals: data.referrals || 0
-        }, { merge: true }).then(() => {
-          alert("Successfully mined 0.0400 EANO!");
-          location.reload();
-        });
-      } else {
-        alert("You must wait 24 hours before mining again.");
-      }
-    });
-  }
-
-  auth.onAuthStateChanged(user => {
-    if (!user) return location.href = "/login.html";
-    currentUser = user;
-    document.getElementById("userEmail").textContent = user.email;
-
-    const userDocRef = db.collection("miners").doc(user.uid);
-    userDocRef.get().then(doc => {
-      if (!doc.exists) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const referrerId = urlParams.get("ref") || null;
-        db.collection("miners").doc(user.uid).set({
-          balance: 0,
-          lastMined: 0,
-          referrals: 0,
-          trustScore: 5,
-          email: user.email,
-          referrer: referrerId
-        });
-        if (referrerId) {
-          db.collection("miners").doc(referrerId).update({
-            trustScore: firebase.firestore.FieldValue.increment(5),
-            referrals: firebase.firestore.FieldValue.increment(1)
-          });
-        }
-      } else {
-        const data = doc.data();
-        document.getElementById("balance").textContent = (data.balance || 0).toFixed(4);
-        document.getElementById("trustScore").textContent = data.trustScore || 0;
-        document.getElementById("referrals").textContent = data.referrals || 0;
-        document.getElementById("trustLevel").textContent = getTrustLevel(data.trustScore || 0);
-        document.getElementById("userLevel").textContent = getLevelName(data.balance || 0);
-        updateCountdown(data.lastMined || 0);
-      }
-    });
-
-    db.collection("miners").orderBy("balance", "desc").limit(5).get().then(snapshot => {
-      const leaderboard = document.getElementById("leaderboard");
-      leaderboard.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const email = data.email || "Unknown";
-        const balance = data.balance || 0;
-        leaderboard.innerHTML += `<li>${email}: ${balance.toFixed(4)} EANO</li>`;
-      });
-    });
-  });
-</script>
+  <!-- Auth Protection Script (after Firebase init) -->
+  <script src="auth.js"></script>
 </body>
 </html>
