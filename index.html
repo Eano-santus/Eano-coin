@@ -1,302 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EANO Coin Mining</title>
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('eano-background.jpg') no-repeat center center fixed;
-      background-image: url('eano-bg.png');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      background-size: cover;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-
-    .topbar {
-      background: rgba(0, 0, 0, 0.85);
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      position: fixed;
-      top: 0;
-      left: 220px;
-      right: 0;
-      z-index: 99;
-    }
-
-    .language-selector {
-      margin-left: auto;
-    }
-
-    .sidebar {
-      width: 220px;
-      background-color: rgba(0, 0, 0, 0.85);
-      padding: 20px;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      overflow-y: auto;
-    }
-
-    .sidebar h2 {
-      font-size: 20px;
-      margin-top: 40px;
-    }
-
-    .sidebar a {
-      display: block;
-      color: #fff;
-      text-decoration: none;
-      margin: 10px 0;
-      font-size: 15px;
-    }
-
-    .sidebar a:hover {
-      text-decoration: underline;
-    }
-
-    .main {
-      margin-left: 220px;
-      margin-top: 60px;
-      padding: 20px;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .box {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-      }
-      .topbar {
-        left: 0;
-      }
-      .main {
-        margin-left: 0;
-        margin-top: 140px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="sidebar">
-    <h2>EANO Menu</h2>
-    <a href="#" id="mineBtn">⛏️ Mine</a>
-    <a href="#" id="leaderboardBtn">🏆 Leaderboard</a>
-    <a href="#" id="trustBtn">🔰 Trust Score</a>
-    <a href="#" id="levelBtn">🎖️ Level Score</a>
-    <a href="#" id="inviteBtn">👥 Invite</a>
-    <a href="#" id="teamBtn">🛠️ Team</a>
-    <a href="#" id="whitePaperBtn">📃 White Paper</a>
-    <a href="https://t.me/eanocoin" target="_blank" id="supportBtn">📧 Support Portal</a>
-    <a href="#" id="authorBtn">✍️ About Author</a>
-  </div>
+  <div class="app-container">
+    <header class="top-bar">
+      <div class="logo">EANO</div>
+      <div class="balance">
+        <span id="coinBalance">0.000</span> EANO
+      </div>
+    </header><div class="main-section">
+  <nav class="side-menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mainnet.html">Mainnet</a></li>
+      <li><a href="profile.html">Profile</a></li>
+      <li><a href="author.html">Author</a></li>
+      <li><a href="https://t.me/eanocoin" target="_blank">Support Portal</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+    </ul>
+  </nav>
 
-  <div class="topbar">
-    <div>
-      💰 <strong>Balance:</strong> <span id="coinBalance">0</span> EANO |
-      ⏳ <strong>Next Mine:</strong> <span id="countdown">Loading...</span>
-    </div>
-    <select class="language-selector">
-      <option value="en">🌐 English</option>
-      <option value="ig">🗣️ Igbo</option>
-      <option value="fr">🇫🇷 French</option>
-      <option value="sw">🌍 Swahili</option>
-    </select>
-  </div>
+  <main class="dashboard">
+    <section class="status">
+      <p><strong>Trust Status:</strong> <span id="trustStatus">Unknown</span></p>
+      <p><strong>Level:</strong> <span id="upgradeLevel">Unknown</span></p>
+      <p><strong>Referral Code:</strong> <span id="referralCode">NickySantus</span></p>
+      <p><strong>Referral Link:</strong> <span id="referralLink">https://eano-coin.netlify.app/nickysantus</span></p>
+    </section>
 
-  <div class="main" id="mainContent">
-    <h1>Loading...</h1>
-  </div>
+    <section class="mining-area">
+      <h2>Mine EANO</h2>
+      <button id="mineButton">Start Mining</button>
+      <p>Next Mine In: <span id="countdown">00:00:00</span></p>
+      <p>Mining Rate: <strong>0.100 EANO / Day</strong></p>
+    </section>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <section class="invite">
+      <h3>Invite Others</h3>
+      <p>Share your referral link to gain extra trust scores.</p>
+    </section>
+  </main>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-mining.firebaseapp.com",
-      projectId: "eano-mining",
-      storageBucket: "eano-mining.appspot.com",
-      messagingSenderId: "175857632609",
-      appId: "1:175857632609:web:1447322a8438dacf4560d2"
-    };
+<footer class="bottom-bar">
+  <p>&copy; 2025 EANO Coin. All rights reserved.</p>
+</footer>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    let miningTimeLeft = 86400;
-
-    function updateCountdown() {
-      const countdownEl = document.getElementById("countdown");
-      const inline = document.getElementById("countdown-inline");
-      const format = (s) => {
-        const h = Math.floor(s / 3600);
-        const m = Math.floor((s % 3600) / 60);
-        const sec = s % 60;
-        return `${h}h ${m}m ${sec}s`;
-      };
-      if (miningTimeLeft <= 0) {
-        countdownEl.innerText = "✅ Ready!";
-        if (inline) inline.innerText = "✅ Ready!";
-      } else {
-        const formatted = format(miningTimeLeft);
-        countdownEl.innerText = formatted;
-        if (inline) inline.innerText = formatted;
-        miningTimeLeft--;
-      }
-    }
-
-    setInterval(updateCountdown, 1000);
-
-    function renderPage(contentHTML) {
-      document.getElementById("mainContent").innerHTML = contentHTML;
-    }
-
-    const pages = {
-      mineBtn: `
-        <h2>⛏️ Mine EANO</h2>
-        <div class="box">
-          <p>Current Mining Rate: <strong>0.100 EANO/hour</strong></p>
-          <button id="mine-btn">Start Mining</button>
-          <p id="mine-status"></p>
-          <div class="timer">Next mine available in: <span id="countdown-inline">...</span></div>
-        </div>`,
-      leaderboardBtn: `
-    <h2>🏆 Leaderboard</h2>
-    <div class="box">
-      <ul id="leaderboard-list" class="leaderboard"></ul>
-    </div>`,
-     trustBtn: `
-    <h2>🔰 Trust Score</h2>
-    <div class="box">
-      <p>Your trust rank is based on your current score.</p>
-      <ul>
-        <li>👶 Needs Trust: 0–79</li>
-        <li>🟡 New Miner: 80–199</li>
-        <li>🟢 Reliable Miner: 200–499</li>
-        <li>🔵 Trusted Miner: 500+</li>
-      </ul>
-      <p>Your current trust score: <span id="trust-score">+5</span></p>
-    </div>`,
-      levelBtn: `
-    <h2>🎖️ Level Score</h2>
-    <div class="box">
-      <ul>
-        <li>🥉 Amateurs: 50–499</li>
-        <li>🥈 Elites: 500–999</li>
-        <li>🥇 Professionals: 1,000–4,999</li>
-        <li>🏅 Masters: 5,000–9,999</li>
-        <li>🎖️ Leaders: 10,000–20,000</li>
-      </ul>
-      <p>Your current level: <span id="level-score">+5</span></p>
-    </div>`,
-      inviteBtn: `
-    <h2>👥 Invite Friends</h2>
-    <div class="box">
-      <p>Your referral code: <span id="referral-code">NickySantus</span></p>
-      <input type="text" id="referral-input" NickySantus="Enter referral code">https://eano-coin.netlify.app/
-      <button id="submit-referral">Submit</button>
-      <p id="referral-status"></p>
-    </div>`,
-      teamBtn: `
-    <h2>🛠️ Team</h2>
-    <div class="box">
-      <p>Meet the EANO team:</p>
-      <ul>
-        <li>Santus Santorum – Founder</li>
-        <li>More team members referralTeam</li>
-      </ul>
-    </div>`,
-      whitePaperBtn: `
-    <h2>📃 White Paper</h2>
-    <div class="box">
-      <iframe src="whitepaper.pdf" width="100%" height="500px" style="border:none;"></iframe>
-    </div>`,
-      authorBtn: `
-    <h2>✍️ About the Author</h2>
-    <div class="box">
-      <p>This app was built by <strong>Santus Santorum</strong>, founder of EANO Coin. Dedicated to Igbo survival and African empowerment.</p>
-      <p>Join the official channel: <a href="https://t.me/eanocoin" target="_blank">https://t.me/eanocoin</a></p>
-    </div>`
-    };
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "signup.html";
-        return;
-      }
-
-      const uid = user.uid;
-      const docSnap = await getDoc(doc(db, "users", uid));
-      const userData = docSnap.exists() ? docSnap.data() : {};
-      const score = userData.score || 0;
-      const coins = userData.coins || 0;
-      const username = userData.username || user.email;
-
-      document.getElementById("coinBalance").innerText = coins;
-
-      let trust = "❌ Needs Trust";
-      if (score >= 500) trust = "✅ Trusted Miner";
-      else if (score >= 200) trust = "🔒 Reliable Miner";
-      else if (score >= 80) trust = "🆕 New Miner";
-
-      let level = "🔰 Beginner";
-      if (score >= 10000) level = "🌟 Leaders";
-      else if (score >= 5000) level = "🏅 Masters";
-      else if (score >= 1000) level = "🎯 Professionals";
-      else if (score >= 500) level = "⚡ Elites";
-      else if (score >= 50) level = "🎓 Amateurs";
-
-      renderPage(`
-        <h1>🌟 Welcome to EANO Coin</h1>
-        <div class="box">
-          <p>Greetings, <strong>${username}</strong></p>
-          <p>🚀 Trust Status: <strong>${trust}</strong></p>
-          <p>🎖️ Upgrade Level: <strong>${level}</strong></p>
-          <p>📊 Score: <strong>${score}</strong></p>
-          <p>💰 Coins: <strong>${coins} EANO</strong></p>
-          <p>⏳ Next mining session in: <span id="countdown-inline">...</span></p>
-        </div>
-      `);
-    });
-
-    window.addEventListener("DOMContentLoaded", () => {
-      ["mineBtn", "inviteBtn"].forEach(id => {
-        document.getElementById(id).addEventListener("click", e => {
-          e.preventDefault();
-          renderPage(pages[id]);
-        });
-      });
-    });
-  </script>
-</body>
+  </div>  <script type="module" src="firebase.js"></script>  <script type="module" src="dashboard.js"></script></body>
 </html>
