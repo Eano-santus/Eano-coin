@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Invite & Earn – EANO Coin</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #161b22;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+    h1 {
+      text-align: center;
+      color: #facc15;
+    }
+    .label {
+      font-weight: bold;
+      color: #facc15;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #1e293b;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #facc15;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #eab308;
+    }
+    .back-btn {
+      margin-top: 20px;
+      background-color: #374151;
+      color: #facc15;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Invite & Earn</h1>
+    <p>Your referral code:</p>
+    <input type="text" id="referralCode" readonly />
+    <p>Your referral link:</p>
+    <input type="text" id="referralLink" readonly />
+    <p>You have referred:</p>
+    <input type="text" id="referralCount" readonly />
+
+    <button onclick="copyLink()">📋 Copy Referral Link</button>
+    <button onclick="shareWhatsApp()">📲 Share via WhatsApp</button>
+    <button class="back-btn" onclick="window.location.href='mining.html'">← Back to Mining</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(async user => {
+      if (user) {
+        const uid = user.uid;
+        const doc = await db.collection("miners").doc(uid).get();
+        const data = doc.data();
+        const refCode = data.referralCode || uid.slice(0, 8);
+        const refCount = data.referrals || 0;
+
+        document.getElementById("referralCode").value = refCode;
+        document.getElementById("referralLink").value = `${window.location.origin}/signup.html?ref=${refCode}`;
+        document.getElementById("referralCount").value = `${refCount} people`;
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    function copyLink() {
+      const link = document.getElementById("referralLink").value;
+      navigator.clipboard.writeText(link).then(() => alert("Referral link copied!"));
+    }
+
+    function shareWhatsApp() {
+      const link = document.getElementById("referralLink").value;
+      const text = `Join me and earn EANO Coin! Use this link to sign up: ${link}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    }
+  </script>
+</body>
+</html>
