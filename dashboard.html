@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EANO Coin Mining Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="dashboard.js" defer></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <h2 class="logo">EANO</h2>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#mine">Mine</a></li>
+        <li><a href="#invite">Invite</a></li>
+        <li><a href="#mainnet">Mainnet</a></li>
+        <li><a href="#profile">Profile</a></li>
+        <li><a href="#author">Author</a></li>
+        <li><a href="https://t.me/eanocoin" target="_blank">Support Portal</a></li>
+        <li><a href="#leaderboard">Leaderboard</a></li>
+      </ul>
+    </nav><!-- Main Content -->
+<main class="main-content">
+  <!-- Home -->
+  <section id="home" class="page active">
+    <h1>Welcome to EANO Coin</h1>
+    <p>Mine and earn EANO every 24 hours. Invite others to earn more.</p>
+  </section>
+
+  <!-- Mine -->
+  <section id="mine" class="page">
+    <h1>Mine EANO</h1>
+    <p>Mining Rate: <strong>0.100 EANO/hr</strong></p>
+    <button id="mineButton">Start Mining</button>
+    <p>Countdown: <span id="countdown">00:00:00</span></p>
+    <p>Your Balance: <span id="coinBalance">0</span> EANO</p>
+  </section>
+
+  <!-- Invite -->
+  <section id="invite" class="page">
+    <h1>Invite & Earn</h1>
+    <p>Your Referral Code: <span id="referralCode">Loading...</span></p>
+    <p>Your Referral Link: <span id="referralLink">Loading...</span></p>
+  </section>
+
+  <!-- Mainnet -->
+  <section id="mainnet" class="page">
+    <h1>Mainnet Migration</h1>
+    <ul>
+      <li>KYC Verification: <span id="kycStatus">Pending</span></li>
+      <li>Profile Completed: <span id="profileStatus">Yes</span></li>
+      <li>Trust Score: <span id="trustStatusMainnet">Loading...</span></li>
+    </ul>
+  </section>
+
+  <!-- Profile -->
+  <section id="profile" class="page">
+    <h1>Your Profile</h1>
+    <p>Email: <span id="userEmail">Loading...</span></p>
+    <p>Score: <span id="profileScore">0</span></p>
+    <p>Trust Level: <span id="trustStatus">Unknown</span></p>
+    <p>Upgrade Level: <span id="upgradeLevel">Unknown</span></p>
+  </section>
+
+  <!-- Author -->
+  <section id="author" class="page">
+    <h1>Founder</h1>
+    <p>Developed by: <strong>Santus Santorum</strong></p>
+    <p>Vision: Empower Igbo survival and African digital sovereignty</p>
+  </section>
+
+  <!-- Leaderboard -->
+  <section id="leaderboard" class="page">
+    <h1>Leaderboard</h1>
+    <ol id="leaderboardList">
+      <!-- Populated by JS -->
+    </ol>
+    <div>
+      <p>Your Score: <span id="yourScore">0</span></p>
+      <p>Your Trust Level: <span id="yourTrust">Unknown</span></p>
+      <p>Your Level: <span id="yourLevel">Unknown</span></p>
+    </div>
+  </section>
+</main>
+
+  </div>
+</body>
+</html>
