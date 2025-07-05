@@ -1,92 +1,115 @@
-<!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EANO Coin Mining Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
-  <script type="module" src="dashboard.js" defer></script>
-</head>
-<body>
-  <div class="app-container">
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Coin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-mining.firebaseapp.com",
+      projectId: "eano-mining",
+      storageBucket: "eano-mining.appspot.com",
+      messagingSenderId: "175857632609",
+      appId: "1:175857632609:web:1447322a8438dacf4560d2"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .active {
+      font-weight: 800;
+    }
+  </style>
+</head><body class="bg-gray-100 text-gray-800">
+  <div class="flex min-h-screen">
     <!-- Sidebar -->
-    <nav class="sidebar">
-      <h2 class="logo">EANO</h2>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#mine">Mine</a></li>
-        <li><a href="#invite">Invite</a></li>
-        <li><a href="#mainnet">Mainnet</a></li>
-        <li><a href="#profile">Profile</a></li>
-        <li><a href="#author">Author</a></li>
-        <li><a href="https://t.me/eanocoin" target="_blank">Support Portal</a></li>
-        <li><a href="#leaderboard">Leaderboard</a></li>
-      </ul>
-    </nav><!-- Main Content -->
-<main class="main-content">
-  <!-- Home -->
-  <section id="home" class="page active">
-    <h1>Welcome to EANO Coin</h1>
-    <p>Mine and earn EANO every 24 hours. Invite others to earn more.</p>
+    <aside class="w-64 bg-black text-white p-4 space-y-4">
+      <div class="text-2xl font-bold text-yellow-400">EANO COIN</div>
+      <nav class="space-y-2">
+        <a href="#home" class="block hover:text-yellow-400">Home</a>
+        <a href="#mine" class="block hover:text-yellow-400">Mine</a>
+        <a href="#invite" class="block hover:text-yellow-400">Invite</a>
+        <a href="#mainnet" class="block hover:text-yellow-400">Mainnet</a>
+        <a href="#profile" class="block hover:text-yellow-400">Profile</a>
+        <a href="#author" class="block hover:text-yellow-400">Author</a>
+        <a href="https://t.me/eanocoin" target="_blank" class="block hover:text-yellow-400">Support Portal</a>
+        <a href="#leaderboard" class="block hover:text-yellow-400">Leaderboard</a>
+      </nav>
+    </aside><!-- Main content -->
+<main class="flex-1 p-6 space-y-6">
+  <!-- Dashboard -->
+  <section id="home" class="space-y-2">
+    <h1 class="text-3xl font-bold">Welcome to EANO Coin</h1>
+    <p class="text-gray-600">Your gateway to community-driven mining and empowerment.</p>
   </section>
 
-  <!-- Mine -->
-  <section id="mine" class="page">
-    <h1>Mine EANO</h1>
-    <p>Mining Rate: <strong>0.100 EANO/hr</strong></p>
-    <button id="mineButton">Start Mining</button>
-    <p>Countdown: <span id="countdown">00:00:00</span></p>
-    <p>Your Balance: <span id="coinBalance">0</span> EANO</p>
+  <!-- Mining -->
+  <section id="mine" class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">Mine</h2>
+    <p class="text-gray-600">Mining Rate: <strong>0.100 EANO/hour</strong></p>
+    <button id="mineButton" class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded font-bold">Start Mining</button>
+    <p class="mt-2 text-sm">Countdown: <span id="countdown">00:00:00</span></p>
+    <p class="text-sm">Your Score: <span id="coinBalance">0</span></p>
+    <p class="text-sm">Trust Level: <span id="trustStatus">Unknown</span></p>
+    <p class="text-sm">Level: <span id="upgradeLevel">Unknown</span></p>
   </section>
 
   <!-- Invite -->
-  <section id="invite" class="page">
-    <h1>Invite & Earn</h1>
-    <p>Your Referral Code: <span id="referralCode">Loading...</span></p>
-    <p>Your Referral Link: <span id="referralLink">Loading...</span></p>
+  <section id="invite" class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">Invite</h2>
+    <p class="text-sm">Referral Code: <span id="referralCode">Loading...</span></p>
+    <p class="text-sm">Referral Link: <span id="referralLink">Loading...</span></p>
   </section>
 
-  <!-- Mainnet -->
-  <section id="mainnet" class="page">
-    <h1>Mainnet Migration</h1>
-    <ul>
-      <li>KYC Verification: <span id="kycStatus">Pending</span></li>
-      <li>Profile Completed: <span id="profileStatus">Yes</span></li>
-      <li>Trust Score: <span id="trustStatusMainnet">Loading...</span></li>
-    </ul>
+  <!-- Mainnet (KYC) -->
+  <section id="mainnet" class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">Mainnet & KYC</h2>
+    <p>Complete necessary procedures to qualify for migration to EANO Mainnet.Coming soon</p>
+    <button class="mt-2 bg-black text-white px-4 py-2 rounded">Begin KYC</button>
   </section>
 
   <!-- Profile -->
-  <section id="profile" class="page">
-    <h1>Your Profile</h1>
-    <p>Email: <span id="userEmail">Loading...</span></p>
-    <p>Score: <span id="profileScore">0</span></p>
-    <p>Trust Level: <span id="trustStatus">Unknown</span></p>
-    <p>Upgrade Level: <span id="upgradeLevel">Unknown</span></p>
+  <section id="profile" class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
+    <p>Email: <span id="userEmail">Santusnicky8@gmail.com</span></p>
+    <p>User ID: <span id="userUID">NickySantus</span></p>
   </section>
 
   <!-- Author -->
-  <section id="author" class="page">
-    <h1>Founder</h1>
-    <p>Developed by: <strong>Santus Santorum</strong></p>
-    <p>Vision: EANO Coin Project
+  <section id="author" class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">Author</h2>
+    <p class="text-sm">Founded by <strong>Santus Santorum</strong> Welcome to EANO Coin Project
 
-EANO Coin is a decentralized cryptocurrency built for African empowerment and indigenous resilience. It represents economic liberation through indigenous values and community-driven technology. EANO stands for the four market days: Eke, Afor, Nkwo, Orie — a symbol of time, trade, and tradition.</p>
+EANO Coin is a decentralized cryptocurrency built for empowerment and indigenous resilience. It represents economic liberation through indigenous values and community-driven technology. EANO stands for the four great market days: Eke, Afor, Nkwo, Orie — a symbol of time, trade, and tradition.</p>
   </section>
 
   <!-- Leaderboard -->
-  <section id="leaderboard" class="page">
-    <h1>Leaderboard</h1>
-    <ol id="leaderboardList">
-      <!-- Populated by JS -->
-    </ol>
-    <div>
-      <p>Your Score: <span id="yourScore">0</span></p>
-      <p>Your Trust Level: <span id="yourTrust">Unknown</span></p>
-      <p>Your Level: <span id="yourLevel">Unknown</span></p>
+  <section id="leaderboard" class="bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">Leaderboard</h2>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <p class="font-bold">Your Trust Score:</p>
+        <span id="trustStatus">Loading...</span>
+      </div>
+      <div>
+        <p class="font-bold">Your Level:</p>
+        <span id="upgradeLevel">Loading...</span>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h3 class="font-semibold">Top 20 Miners</h3>
+      <ul id="topMiners" class="list-disc pl-6 text-sm">
+        <li>Loading...</li>
+      </ul>
     </div>
   </section>
 </main>
 
-  </div>
-</body>
-</html>
+  </div>  <script type="module" src="./dashboard.js"></script></body></html>
