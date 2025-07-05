@@ -105,7 +105,32 @@
       const uid = user.uid;
       const userDoc = await getDoc(doc(db, "users", uid));
       const userData = userDoc.exists() ? userDoc.data() : {};
+     const score = userData.score || 0;
 
+    // Trust Status
+    let trustStatus = "❌ Needs Trust";
+    if (score >= 500) trustStatus = "✅ Trusted Miner";
+    else if (score >= 200) trustStatus = "🔒 Reliable Miner";
+    else if (score >= 80) trustStatus = "🆕 New Miner";
+
+    // Upgrade Level
+    let upgradeLevel =
+    if (score >= 10000) upgradeLevel = "🌟 Leaders";
+    else if (score >= 5000) upgradeLevel = "🏅 Masters";
+    else if (score >= 1000) upgradeLevel = "🎯 Professionals";
+    else if (score >= 500) upgradeLevel = "⚡ Elites";
+    else if (score >= 50) upgradeLevel = "🎓 Amateurs";
+
+    document.querySelector(".main").innerHTML = `
+      <h1>Welcome back, ${userData.username || user.email}!</h1>
+      <div class="box">
+        <p>🌍 You're ready to mine EANO Coins.</p>
+        <p><strong>Trust Status:</strong> ${trustStatus}</p>
+        <p><strong>Upgrade Level:</strong> ${upgradeLevel}</p>
+        <p><strong>Total Score:</strong> ${score}</p>
+        <p>Click the "⛏️ Mine" button to begin.</p>
+      </div>
+    `;
       document.querySelector(".main").innerHTML = `
         <h1>Welcome back, ${userData.username || user.email}!</h1>
         <div class="box">
