@@ -81,139 +81,135 @@
     }
   </style>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+  // Import Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-      measurementId: "G-NS0W6QSS69"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+    authDomain: "eano-mining.firebaseapp.com",
+    projectId: "eano-mining",
+    storageBucket: "eano-mining.appspot.com",
+    messagingSenderId: "175857632609",
+    appId: "1:175857632609:web:1447322a8438dacf4560d2",
+    measurementId: "G-5T91SHWYPD"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    function startCountdown() {
-      const countdownElement = document.getElementById("countdown");
-      const now = new Date().getTime();
-      const nextDay = new Date(now + 24 * 60 * 60 * 1000);
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const uid = user.uid;
+      const userDoc = await getDoc(doc(db, "users", uid));
+      const userData = userDoc.exists() ? userDoc.data() : {};
 
-      function updateCountdown() {
-        const currentTime = new Date().getTime();
-        const remaining = nextDay - currentTime;
-
-        const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((remaining / (1000 * 60)) % 60);
-        const seconds = Math.floor((remaining / 1000) % 60);
-
-        countdownElement.innerText = `⏳ Next mining in: ${hours}h ${minutes}m ${seconds}s`;
-      }
-
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
+      document.querySelector(".main").innerHTML = `
+        <h1>Welcome back, ${userData.username || user.email}!</h1>
+        <div class="box">
+          <p>🌍 You're ready to mine EANO Coins.</p>
+          <p>Click the "⛏️ Mine" button to begin.</p>
+        </div>
+      `;
+    } else {
+      window.location.href = "signup.html";
     }
+  });
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
+  // Sidebar Navigation Event Listeners
 
-      try {
-        const userDocRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userDocRef);
+  // ⛏️ Mine
+  document.getElementById("mineBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>⛏️ Start Mining</h1>
+      <div class="box">
+        <p>Mining page coming soon.</p>
+      </div>
+    `;
+  });
 
-        document.getElementById("profileBox").innerText = `👤 Logged in as: ${user.email}`;
+  // 🏆 Leaderboard
+  document.getElementById("leaderboardBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>🏆 Leaderboard</h1>
+      <div class="box"><p>Leaderboard coming soon.</p></div>
+    `;
+  });
 
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          const trustScore = userData.trustScore || 0;
+  // 🔰 Trust Score
+  document.getElementById("trustBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>🔰 Trust Score</h1>
+      <div class="box"><p>Trust score system will appear here.</p></div>
+    `;
+  });
 
-          document.getElementById("trustScore").innerText = `🛡️ Trust Score: ${trustScore}`;
-          if (trustScore < 80) {
-            document.getElementById("warning").style.display = "block";
-          }
-        } else {
-          console.error("No user data found.");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    });
+  // 🎖️ Level Score
+  document.getElementById("levelBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>🎖️ Level Score</h1>
+      <div class="box"><p>Your mining level and ranks will display here.</p></div>
+    `;
+  });
 
-    window.addEventListener("load", () => {
-      const welcomeScreen = document.getElementById("welcome-screen");
-      setTimeout(() => {
-        welcomeScreen.style.animation = "fadeOut 1s forwards";
-        setTimeout(() => {
-          welcomeScreen.style.display = "none";
-        }, 1000);
-      }, 3000);
+  // 👥 Referrals
+  document.getElementById("inviteBtn").addEventListener("click", () => {
+    const user = auth.currentUser;
+    const referralLink = `https://yourdomain.com/signup.html?ref=${user.uid}`;
+    document.querySelector(".main").innerHTML = `
+      <h1>👥 Invite & Earn</h1>
+      <div class="box">
+        <p>Share this link to invite others:</p>
+        <input type="text" value="${referralLink}" id="refLink" readonly style="width:100%; padding:8px;"/>
+        <button onclick="navigator.clipboard.writeText('${referralLink}')">📋 Copy Link</button>
+        <p>You'll earn bonus Trust Scores when they sign up!</p>
+      </div>
+    `;
+  });
 
-      document.getElementById("mineBtn").addEventListener("click", () => {
-        const main = document.querySelector(".main");
-        main.innerHTML = `
-          <h1>⛏️ Mine EANO Coin</h1>
-          <div class="box">⚡ Mining Rate: 0.0400 EANO/hr</div>
-          <div class="box" id="countdown">⏳ Next mining in: ...</div>
-          <div class="box warning" id="warning" style="display: none;">
-            ⚠️ Your Trust Score is low. Invite and mine daily to increase it!
-          </div>
-        `;
-        startCountdown();
-      });
-    });
+  // 🛠️ Team
+  document.getElementById("teamBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>🛠️ Our Team</h1>
+      <div class="box">
+        <p>This section will list core team members and contributors to the EANO project.</p>
+      </div>
+    `;
+  });
+
+  // 📃 White Paper
+  document.getElementById("whitePaperBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>📃 White Paper</h1>
+      <div class="box">
+        <iframe src="whitepaper.pdf" width="100%" height="500px" style="border:none;"></iframe>
+      </div>
+    `;
+  });
+
+  // 📧 Support Portal
+  document.getElementById("supportBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>📧 Support Portal</h1>
+      <div class="box">
+        <p>Need help? Join our official Telegram group:</p>
+        <a href="https://t.me/eanocoin" target="_blank" style="color:lightblue; font-weight:bold;">👉 Join @EanoCoin</a>
+      </div>
+    `;
+  });
+
+  // ✍️ About Author
+  document.getElementById("authorBtn").addEventListener("click", () => {
+    document.querySelector(".main").innerHTML = `
+      <h1>✍️ About the Author</h1>
+      <div class="box">
+        <p><strong>Santus Santorum</strong></p>
+        <p>Founder of EANO Coin — a project dedicated to the economic survival and freedom of the Igbo people and the broader African community.</p>
+        <p>This decentralized platform is built on heritage, trust, and technology to ensure a future where we thrive independently.</p>
+      </div>
+    `;
+  });
+
   </script>
-</head>
-<body>
-  <!-- Welcome Splash -->
-  <div id="welcome-screen" style="
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    color: gold;
-    font-size: 24px;
-    font-family: 'Segoe UI', sans-serif;
-    animation: fadeIn 1.5s ease-in-out;
-  ">
-    <div>
-      <img src="eano-logo.png" alt="EANO Logo" style="width: 100px; height: 100px; display: block; margin: 0 auto;" />
-      <p style="text-align:center; margin-top: 10px;">Welcome to EANO</p>
-    </div>
-  </div>
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>🪙 EANO Miner</h2>
-    <a href="#" onclick="location.reload()">🏠 Home</a>
-    <a href="#" id="mineBtn">⛏️ Mine</a>
-    <a href="#">🏆 Leaderboard</a>
-    <a href="#">🔰 Trust Score</a>
-    <a href="#">🎖️ Level Score</a>
-    <a href="#">👥 Referrals</a>
-    <a href="#">🛠️ Team</a>
-    <a href="#">📃 White Paper</a>
-    <a href="#">📧 Support Portal</a>
-  </div>
-
-  <!-- Main Content -->
-  <div class="main">
-    <h1>Welcome to EANO Coin Mining</h1>
-    <p>Mine EANO Coin and build your trust and level!</p>
-    <div class="box" id="profileBox">👤 Logged in as: ...</div>
-    <div class="box" id="trustScore">🛡️ Trust Score: ...</div>
-  </div>
-</body>
-</html>
