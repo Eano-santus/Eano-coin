@@ -1,5 +1,12 @@
 /* ===== Base Styling ===== */
-body {
+{body {
+  margin: 0;
+  padding: 0;
+  background: url("assets/bg-gold-black.jpg") no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Poppins', sans-serif;
+  color: white; /* Optional: For better visibility */
+}
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: url('eano-bg.png') no-repeat center top fixed, #121212;
   background-size: cover;
