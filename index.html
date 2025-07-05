@@ -101,11 +101,11 @@
   const db = getFirestore(app);
 
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const uid = user.uid;
-      const userDoc = await getDoc(doc(db, "users", uid));
-      const userData = userDoc.exists() ? userDoc.data() : {};
-     const score = userData.score || 0;
+  if (user) {
+    const uid = user.uid;
+    const userDoc = await getDoc(doc(db, "users", uid));
+    const userData = userDoc.exists() ? userDoc.data() : {};
+    const score = userData.score || 0;
 
     // Trust Status
     let trustStatus = "❌ Needs Trust";
@@ -131,18 +131,10 @@
         <p>Click the "⛏️ Mine" button to begin.</p>
       </div>
     `;
-      document.querySelector(".main").innerHTML = `
-        <h1>Welcome back, ${userData.username || user.email}!</h1>
-        <div class="box">
-          <p>🌍 You're ready to mine EANO Coins.</p>
-          <p>Click the "⛏️ Mine" button to begin.</p>
-        </div>
-      `;
-    } else {
-      window.location.href = "signup.html";
-    }
-  });
-
+  } else {
+    window.location.href = "signup.html";
+  }
+});
   // Sidebar Navigation Event Listeners
 
   // ⛏️ Mine
