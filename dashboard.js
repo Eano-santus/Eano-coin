@@ -16,7 +16,12 @@ import {
   orderBy,
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js";
-
+const userRef = doc(db, "users", user.uid);
+getDoc(userRef).then((docSnap) => {
+  if (docSnap.exists() && docSnap.data().isAdmin === true) {
+    document.getElementById("adminLink").style.display = "block";
+  }
+});
 const auth = getAuth();
 const db = getFirestore();
 
