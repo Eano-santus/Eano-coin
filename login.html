@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -130,15 +129,34 @@
       border-radius: 16px;
       z-index: 5;
     }
-  </style>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-</head>
+    .language-select {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+    }
+    .language-select select {
+      padding: 4px 8px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      background-color: #222;
+      color: gold;
+    }
+  </style>  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script></head>
 <body>
-  <div class="container">
+  <div class="language-select">
+    <select id="language">
+      <option value="en">English</option>
+      <option value="ig">Igbo</option>
+      <option value="ha">Hausa</option>
+      <option value="yo">Yoruba</option>
+      <option value="fn">French</option>
+      <option value="ch">Chinese</option>
+      <option value="ru">Russian</option>
+      <option value="gn">Germany</option>
+   <!-- more languages can be added -->
+    </select>
+  </div>  <div class="container">
     <div class="loading-overlay" id="loading-overlay">Logging in...</div>
     <div class="logo-container">
       <img src="assets/eano-logo.png" alt="EANO Logo" />
@@ -147,28 +165,24 @@
     <form id="login-form">
       <input type="email" id="login-email" placeholder="Email" required />
       <input type="password" id="login-password" placeholder="Password" required />
-      <span class="toggle-password" onclick="togglePassword()">Show</span>
-
-      <div class="remember-me">
-        <input type="checkbox" id="remember-email" />
-        <label for="remember-email">Remember me</label>
-      </div>
-
-      <div class="forgot-password">
-        <a href="#" onclick="resetPassword(event)">Forgot Password?</a>
-      </div>
-
-      <button type="submit">Login</button>
-    </form>
-
-    <div id="error-message" class="error-message"></div>
-
-    <div class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
-    <div class="tagline">Secure Access – Powered by EANO</div>
+      <span class="toggle-password" onclick="togglePassword()">Show</span><div class="remember-me">
+    <input type="checkbox" id="remember-email" />
+    <label for="remember-email">Remember me</label>
   </div>
 
-  <script>
-    // Firebase Config
+  <div class="forgot-password">
+    <a href="#" onclick="resetPassword(event)">Forgot Password?</a>
+  </div>
+
+  <button type="submit">Login</button>
+</form>
+
+<div id="error-message" class="error-message"></div>
+
+<div class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
+<div class="tagline">Secure Access – Powered by EANO</div>
+
+  </div>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -183,7 +197,6 @@
 
     const loadingOverlay = document.getElementById("loading-overlay");
 
-    // Load remembered email
     window.addEventListener("DOMContentLoaded", () => {
       const savedEmail = localStorage.getItem("savedEmail");
       if (savedEmail) {
@@ -192,7 +205,6 @@
       }
     });
 
-    // Toggle password visibility
     function togglePassword() {
       const input = document.getElementById("login-password");
       const toggle = document.querySelector(".toggle-password");
@@ -205,7 +217,6 @@
       }
     }
 
-    // Handle login
     document.getElementById("login-form").addEventListener("submit", function(e) {
       e.preventDefault();
       const email = document.getElementById("login-email").value;
@@ -245,7 +256,6 @@
         });
     });
 
-    // Reset password
     function resetPassword(e) {
       e.preventDefault();
       const email = document.getElementById("login-email").value;
@@ -261,6 +271,5 @@
           alert("Error: " + error.message);
         });
     }
-  </script>
-</body>
+  </script></body>
 </html>
