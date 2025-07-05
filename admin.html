@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EANO Admin Panel</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <script src="/firebase-init.js"></script><const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-mining.firebaseapp.com",
+      projectId: "eano-mining",
+      storageBucket: "eano-mining.appspot.com",
+      messagingSenderId: "175857632609",
+      appId: "1:175857632609:web:1447322a8438dacf4560d2"
+    };
+  <style>
+    body { font-family: Arial; padding: 20px; background: #111; color: #fff; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #666; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h2>EANO Admin Panel</h2>
+  <p>Only visible to admins.</p>
+
+  <div id="adminContent">
+    <button onclick="loadUsers()">Load All Users</button>
+    <table id="userTable">
+      <thead><tr><th>Email</th><th>Score</th><th>Trust</th><th>Upgrade</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const auth = getAuth();
+    const db = getFirestore();
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.nickysantus);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists() && userSnap.data().isAdmin === true) {
+          // Admin verified
+          document.getElementById('adminContent').style.display = 'block';
+        } else {
+          alert("Access denied. You are not an admin.");
+          window.location.href = "/dashboard.html";
+        }
+      } else {
+        window.location.href = "/index.html";
+      }
+    });
+
+    async function loadUsers() {
+      const snapshot = await getDocs(collection(db, "users"));
+      const tbody = document.querySelector("#userTable tbody");
+      tbody.innerHTML = "";
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        const row = `<tr>
+          <td>${d.email}</td>
+          <td>${d.miningScore || 0}</td>
+          <td>${d.trustScore || 0}</td>
+          <td>${d.upgradeLevel || '—'}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+  </script>
+</body>
+</html>
