@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="styles.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Mining</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
     body {
       margin: 0;
@@ -50,9 +50,6 @@
       padding: 15px;
       margin-bottom: 15px;
       border-radius: 10px;
-    }
-    .warning {
-      background-color: rgba(255, 0, 0, 0.7);
     }
     h1 {
       font-size: 24px;
@@ -143,7 +140,6 @@
       }
     });
 
-    // Make sure DOM is loaded before attaching listeners
     window.addEventListener("DOMContentLoaded", () => {
       document.getElementById("mineBtn").addEventListener("click", () => {
         document.querySelector(".main").innerHTML = `
@@ -177,12 +173,12 @@
 
       document.getElementById("inviteBtn").addEventListener("click", () => {
         const user = auth.currentUser;
-        const referralLink = `https://yourdomain.com/signup.html?ref=${user.uid}`;
+        const referralLink = \`https://yourdomain.com/signup.html?ref=\${user.uid}\`;
         document.querySelector(".main").innerHTML = `
           <h1>👥 Invite & Earn</h1>
           <div class="box">
             <p>Share this link to invite others:</p>
-            <input type="text" value="${referralLink}" id="refLink" readonly style="width:100%; padding:8px;"/>
+            <input type="text" value="${referralLink}" readonly style="width:100%; padding:8px;" />
             <button onclick="navigator.clipboard.writeText('${referralLink}')">📋 Copy Link</button>
             <p>You'll earn bonus Trust Scores when they sign up!</p>
           </div>
@@ -223,7 +219,7 @@
           <div class="box">
             <p><strong>Santus Santorum</strong></p>
             <p>Founder of EANO Coin — a project dedicated to the economic survival and freedom of the Igbo people and the broader African community.</p>
-            <p>This decentralized platform is built on heritage, trust, and technology to ensure a future where we thrive independently.</p>
+            <p>This decentralized platform is built on heritage, trust, and technology to ensure a future where we own our economy.</p>
           </div>
         `;
       });
