@@ -41,7 +41,7 @@ updateReferralInfo(uid);
 
 function updateUI(score) { const { trust, level } = getMinerStatus(score); coinDisplay.textContent = score.toFixed(3); trustDisplay.textContent = trust; levelDisplay.textContent = level; }
 
-async function updateReferralInfo(uid) { const code = uid.slice(0, 6).toUpperCase(); referralCodeDisplay.textContent = code; referralLinkDisplay.textContent = ${window.location.origin}/signup.html?ref=${code}; }
+async function updateReferralInfo(uid) { const code = uid.slice(0, 6).toUpperCase(); referralCodeDisplay.textContent = code; referralLinkDisplay.textContent = ${window.location.origin}/https://eano-coin.netlify.app/.html?ref=$NickySantus; }
 
 async function mineNow() { const user = auth.currentUser; if (!user) return;
 
