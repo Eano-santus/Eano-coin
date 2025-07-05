@@ -1,54 +1,60 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Coin Mining</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EANO Coin - Login / Signup</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-container">
-    <header class="top-bar">
-      <div class="logo">EANO</div>
-      <div class="balance">
-        <span id="coinBalance">0.000</span> EANO
-      </div>
-    </header><div class="main-section">
-  <nav class="side-menu">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="mainnet.html">Mainnet</a></li>
-      <li><a href="profile.html">Profile</a></li>
-      <li><a href="author.html">Author</a></li>
-      <li><a href="https://t.me/eanocoin" target="_blank">Support Portal</a></li>
-      <li><a href="leaderboard.html">Leaderboard</a></li>
-    </ul>
-  </nav>
+  <div class="auth-container">
+    <div class="auth-box">
+      <h1>EANO COIN</h1>
+      <h2>Sign In / Register</h2><input type="email" id="email" placeholder="Email" required>
+  <input type="password" id="password" placeholder="Password" required>
 
-  <main class="dashboard">
-    <section class="status">
-      <p><strong>Trust Status:</strong> <span id="trustStatus">Unknown</span></p>
-      <p><strong>Level:</strong> <span id="upgradeLevel">Unknown</span></p>
-      <p><strong>Referral Code:</strong> <span id="referralCode">NickySantus</span></p>
-      <p><strong>Referral Link:</strong> <span id="referralLink">https://eano-coin.netlify.app/nickysantus</span></p>
-    </section>
+  <button id="loginBtn">Login</button>
+  <button id="registerBtn">Register</button>
 
-    <section class="mining-area">
-      <h2>Mine EANO</h2>
-      <button id="mineButton">Start Mining</button>
-      <p>Next Mine In: <span id="countdown">00:00:00</span></p>
-      <p>Mining Rate: <strong>0.100 EANO / Day</strong></p>
-    </section>
-
-    <section class="invite">
-      <h3>Invite Others</h3>
-      <p>Share your referral link to gain extra trust scores.</p>
-    </section>
-  </main>
+  <p id="authMessage"></p>
 </div>
 
-<footer class="bottom-bar">
-  <p>&copy; 2025 EANO Coin. All rights reserved.</p>
-</footer>
+  </div>  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <!-- Firebase Config -->  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-mining.firebaseapp.com",
+      projectId: "eano-mining",
+      storageBucket: "eano-mining.appspot.com",
+      messagingSenderId: "175857632609",
+      appId: "1:175857632609:web:1447322a8438dacf4560d2"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>  <!-- Auth Logic -->  <script>
+    const loginBtn = document.getElementById("loginBtn");
+    const registerBtn = document.getElementById("registerBtn");
+    const message = document.getElementById("authMessage");
 
-  </div>  <script type="module" src="firebase.js"></script>  <script type="module" src="dashboard.js"></script></body>
+    loginBtn.onclick = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    };
+
+    registerBtn.onclick = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    };
+  </script></body>
 </html>
