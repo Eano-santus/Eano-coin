@@ -1,73 +1,57 @@
+<!-- admin.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <title>EANO Admin Panel</title>
+  <title>Admin Announcement Panel</title>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script src="/firebase-init.js"></script><const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-mining.firebaseapp.com",
-      projectId: "eano-mining",
-      storageBucket: "eano-mining.appspot.com",
-      messagingSenderId: "175857632609",
-      appId: "1:175857632609:web:1447322a8438dacf4560d2"
-    };
-  <style>
-    body { font-family: Arial; padding: 20px; background: #111; color: #fff; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #666; padding: 8px; }
-  </style>
+  <script src="firebase-config.js"></script> <!-- your config -->
 </head>
 <body>
-  <h2>EANO Admin Panel</h2>
-  <p>Only visible to admins.</p>
+  <h2>📢 Post Announcement (Admin Only)</h2>
+  <textarea id="announcementInput" rows="4" cols="50" placeholder="Write your announcement..."></textarea><br>
+  <button onclick="postAnnouncement()">Post</button>
 
-  <div id="adminContent">
-    <button onclick="loadUsers()">Load All Users</button>
-    <table id="userTable">
-      <thead><tr><th>Email</th><th>Score</th><th>Trust</th><th>Upgrade</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <h3>📜 Latest Announcement</h3>
+  <p id="latestAnnouncement">Loading...</p>
 
-  <script type="module">
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script>
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    const auth = getAuth();
-    const db = getFirestore();
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        alert("You must be logged in as admin!");
+        window.location.href = "index.html";
+        return;
+      }
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userRef = doc(db, "users", user.nickysantus);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists() && userSnap.data().isAdmin === true) {
-          // Admin verified
-          document.getElementById('adminContent').style.display = 'block';
-        } else {
-          alert("Access denied. You are not an admin.");
-          window.location.href = "/dashboard.html";
-        }
-      } else {
-        window.location.href = "/index.html";
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      if (!userDoc.exists || userDoc.data().isAdmin !== true) {
+        alert("Access denied. Not an admin.");
+        window.location.href = "index.html";
+      }
+
+      // Load latest announcement
+      const doc = await db.collection("announcements").doc("latest").get();
+      if (doc.exists) {
+        document.getElementById("latestAnnouncement").innerText = doc.data().message;
       }
     });
 
-    async function loadUsers() {
-      const snapshot = await getDocs(collection(db, "users"));
-      const tbody = document.querySelector("#userTable tbody");
-      tbody.innerHTML = "";
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        const row = `<tr>
-          <td>${d.email}</td>
-          <td>${d.miningScore || 0}</td>
-          <td>${d.trustScore || 0}</td>
-          <td>${d.upgradeLevel || '—'}</td>
-        </tr>`;
-        tbody.innerHTML += row;
+    async function postAnnouncement() {
+      const text = document.getElementById("announcementInput").value.trim();
+      if (!text) return alert("Announcement cannot be empty.");
+
+      await db.collection("announcements").doc("latest").set({
+        message: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
+
+      alert("Announcement posted!");
+      document.getElementById("latestAnnouncement").innerText = text;
+      document.getElementById("announcementInput").value = "";
     }
   </script>
 </body>
