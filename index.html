@@ -235,15 +235,88 @@
 </section>
     window.addEventListener("DOMContentLoaded", () => {
       const pages = {
-        mineBtn: `<h1>⛏️ Mining</h1><div class="box"><p>Click to start mining.
-        leaderboardBtn: `<h1>🏆 Leaderboard</h1><div class="box"><p>Leaderboard coming soon.</p></div>`,
-        trustBtn: `<h1>🔰 Trust Score</h1><div class="box"><p>Your trust rank based on score.</p></div>`,
-        levelBtn: `<h1>🎖️ Level Score</h1><div class="box"><p>Your upgrade level breakdown.</p></div>`,
-        inviteBtn: `<h1>👥 Referral</h1><div class="box"><p>Invite friends to earn +5 trust score.</p></div>`,
-        teamBtn: `<h1>🛠️ Team</h1><div class="box"><p>Meet the EANO team (coming soon)</p></div>`,
-        whitePaperBtn: `<h1>📃 White Paper</h1><div class="box"><iframe src="whitepaper.pdf" width="100%" height="500px" style="border:none;"></iframe></div>`,
-        authorBtn: `<h1>✍️ About the Author</h1><div class="box"><p>This app was built by Santus Santorum, founder of EANO Coin.</p></div>`,
-      };
+  mineBtn: `
+    <h2>Mine EANO</h2>
+    <div class="box">
+      <p>Current Mining Rate: <strong>0.100 EANO/hour</strong></p>
+      <button id="mine-btn">Start Mining</button>
+      <p id="mine-status"></p>
+      <div class="timer">Next mine available in: <span id="countdown-timer">24:00:00</span></div>
+      <div class="balance">Your Balance: <span id="coin-balance">0</span> EANO</div>
+    </div>
+  `,
+
+  leaderboardBtn: `
+    <h2>🏆 Leaderboard</h2>
+    <div class="box">
+      <ul id="leaderboard-list" class="leaderboard"></ul>
+    </div>
+  `,
+
+  trustBtn: `
+    <h2>🔰 Trust Score</h2>
+    <div class="box">
+      <p>Your trust rank is based on your current score.</p>
+      <ul>
+        <li>👶 Needs Trust: 0–79</li>
+        <li>🟡 New Miner: 80–199</li>
+        <li>🟢 Reliable Miner: 200–499</li>
+        <li>🔵 Trusted Miner: 500+</li>
+      </ul>
+      <p>Your current trust score: <span id="trust-score">Loading...</span></p>
+    </div>
+  `,
+
+  levelBtn: `
+    <h2>🎖️ Level Score</h2>
+    <div class="box">
+      <ul>
+        <li>🥉 Amateurs: 50–499</li>
+        <li>🥈 Elites: 500–999</li>
+        <li>🥇 Professionals: 1,000–4,999</li>
+        <li>🏅 Masters: 5,000–9,999</li>
+        <li>🎖️ Leaders: 10,000–20,000</li>
+      </ul>
+      <p>Your current level: <span id="level-score">Loading...</span></p>
+    </div>
+  `,
+
+  inviteBtn: `
+    <h2>👥 Invite Friends</h2>
+    <div class="box">
+      <p>Your referral code: <span id="referral-code">Loading...</span></p>
+      <input type="text" id="referral-input" placeholder="Enter referral code">
+      <button id="submit-referral">Submit</button>
+      <p id="referral-status"></p>
+    </div>
+  `,
+
+  teamBtn: `
+    <h2>🛠️ Team</h2>
+    <div class="box">
+      <p>Meet the EANO team:</p>
+      <ul>
+        <li>Santus Santorum – Founder</li>
+        <li>More team members coming soon...</li>
+      </ul>
+    </div>
+  `,
+
+  whitePaperBtn: `
+    <h2>📃 White Paper</h2>
+    <div class="box">
+      <iframe src="whitepaper.pdf" width="100%" height="500px" style="border:none;"></iframe>
+    </div>
+  `,
+
+  authorBtn: `
+    <h2>✍️ About the Author</h2>
+    <div class="box">
+      <p>This app was built by <strong>Santus Santorum</strong>, founder of EANO Coin. Dedicated to Igbo survival and African empowerment.</p>
+      <p>Join the official channel: <a href="https://t.me/eanocoin" target="_blank">https://t.me/eanocoin</a></p>
+    </div>
+  `
+};
 
       for (const id in pages) {
         document.getElementById(id).addEventListener("click", (e) => {
