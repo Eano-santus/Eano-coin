@@ -18,6 +18,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      color: white;
     }
     .container {
       background: rgba(0, 0, 0, 0.75);
@@ -26,7 +27,6 @@
       width: 90%;
       max-width: 400px;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
-      color: white;
       text-align: center;
       position: relative;
     }
@@ -36,10 +36,9 @@
     .logo-container img {
       height: 60px;
     }
-    .container h2 {
-      margin-bottom: 15px;
+    h2 {
       font-size: 24px;
-      font-weight: bold;
+      margin-bottom: 15px;
     }
     input[type="email"],
     input[type="password"] {
@@ -48,31 +47,28 @@
       margin: 10px 0;
       border-radius: 10px;
       border: none;
-      outline: none;
       font-size: 16px;
     }
     .toggle-password {
-      float: right;
-      margin-right: 10px;
-      margin-top: -32px;
-      position: relative;
-      z-index: 2;
+      position: absolute;
+      right: 35px;
+      top: 260px;
+      font-size: 13px;
       cursor: pointer;
       color: #ccc;
-      font-size: 14px;
     }
     .remember-me {
       display: flex;
       align-items: center;
-      margin: 10px 0;
       font-size: 14px;
+      margin: 10px 0 0;
     }
     .remember-me input {
       margin-right: 6px;
     }
     .forgot-password {
       text-align: right;
-      margin-top: -10px;
+      margin-top: 5px;
       font-size: 13px;
     }
     .forgot-password a {
@@ -90,6 +86,7 @@
     button {
       width: 100%;
       padding: 12px;
+      margin-top: 15px;
       border: none;
       border-radius: 10px;
       background-color: gold;
@@ -131,10 +128,11 @@
       color: gold;
       font-size: 18px;
       border-radius: 16px;
+      z-index: 5;
     }
   </style>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -170,7 +168,7 @@
   </div>
 
   <script>
-    // Firebase config
+    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-miner.firebaseapp.com",
@@ -179,8 +177,8 @@
       messagingSenderId: "946263168182",
       appId: "1:946263168182:web:5bca3676f1fcac09893098"
     };
-
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.firestore();
 
     const loadingOverlay = document.getElementById("loading-overlay");
@@ -194,36 +192,36 @@
       }
     });
 
-    // Toggle Password
+    // Toggle password visibility
     function togglePassword() {
-      const passwordInput = document.getElementById("login-password");
+      const input = document.getElementById("login-password");
       const toggle = document.querySelector(".toggle-password");
-      if (passwordInput.type === "password") {
-        passwordInput.type = "text";
+      if (input.type === "password") {
+        input.type = "text";
         toggle.textContent = "Hide";
       } else {
-        passwordInput.type = "password";
+        input.type = "password";
         toggle.textContent = "Show";
       }
     }
 
-    // Handle Login
+    // Handle login
     document.getElementById("login-form").addEventListener("submit", function(e) {
       e.preventDefault();
       const email = document.getElementById("login-email").value;
       const password = document.getElementById("login-password").value;
+      const remember = document.getElementById("remember-email").checked;
       const errorDiv = document.getElementById("error-message");
-      const rememberMe = document.getElementById("remember-email").checked;
       errorDiv.textContent = "";
       loadingOverlay.style.display = "flex";
 
-      if (rememberMe) {
+      if (remember) {
         localStorage.setItem("savedEmail", email);
       } else {
         localStorage.removeItem("savedEmail");
       }
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
+      auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
           const uid = userCredential.user.uid;
           return db.collection("users").doc(uid).get();
@@ -237,8 +235,8 @@
             }
             window.location.href = "index.html";
           } else {
+            auth.signOut();
             errorDiv.textContent = "User profile not found.";
-            firebase.auth().signOut();
           }
         })
         .catch((error) => {
@@ -247,17 +245,17 @@
         });
     });
 
-    // Forgot Password
+    // Reset password
     function resetPassword(e) {
       e.preventDefault();
       const email = document.getElementById("login-email").value;
       if (!email) {
-        alert("Please enter your email first.");
+        alert("Please enter your email address.");
         return;
       }
-      firebase.auth().sendPasswordResetEmail(email)
+      auth.sendPasswordResetEmail(email)
         .then(() => {
-          alert("Password reset email sent. Check your inbox.");
+          alert("Password reset link sent. Check your email.");
         })
         .catch((error) => {
           alert("Error: " + error.message);
