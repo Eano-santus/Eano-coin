@@ -1,9 +1,12 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EANO Coin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -19,15 +22,18 @@
     };
     firebase.initializeApp(firebaseConfig);
   </script>
+
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      background-color: #f7fafc;
     }
     .active {
       font-weight: 800;
     }
   </style>
-</head><body class="bg-gray-100 text-gray-800">
+</head>
+<body class="bg-gray-100 text-gray-800">
   <div class="flex min-h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-black text-white p-4 space-y-4">
@@ -42,74 +48,80 @@
         <a href="https://t.me/eanocoin" target="_blank" class="block hover:text-yellow-400">Support Portal</a>
         <a href="#leaderboard" class="block hover:text-yellow-400">Leaderboard</a>
       </nav>
-    </aside><!-- Main content -->
-<main class="flex-1 p-6 space-y-6">
-  <!-- Dashboard -->
-  <section id="home" class="space-y-2">
-    <h1 class="text-3xl font-bold">Welcome to EANO Coin</h1>
-    <p class="text-gray-600">Your gateway to community-driven mining and empowerment.</p>
-  </section>
+    </aside>
 
-  <!-- Mining -->
-  <section id="mine" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Mine</h2>
-    <p class="text-gray-600">Mining Rate: <strong>0.100 EANO/hour</strong></p>
-    <button id="mineButton" class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded font-bold">Start Mining</button>
-    <p class="mt-2 text-sm">Countdown: <span id="countdown">00:00:00</span></p>
-    <p class="text-sm">Your Score: <span id="coinBalance">0</span></p>
-    <p class="text-sm">Trust Level: <span id="trustStatus">Unknown</span></p>
-    <p class="text-sm">Level: <span id="upgradeLevel">Unknown</span></p>
-  </section>
+    <!-- Main content -->
+    <main class="flex-1 p-6 space-y-6">
+      <!-- Home -->
+      <section id="home" class="space-y-2">
+        <h1 class="text-3xl font-bold">Welcome to EANO Coin</h1>
+        <p class="text-gray-600">Your gateway to community-driven mining and empowerment.</p>
+      </section>
 
-  <!-- Invite -->
-  <section id="invite" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Invite</h2>
-    <p class="text-sm">Referral Code: <span id="referralCode">Loading...</span></p>
-    <p class="text-sm">Referral Link: <span id="referralLink">Loading...</span></p>
-  </section>
+      <!-- Mine -->
+      <section id="mine" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold mb-2">Mine</h2>
+        <p class="text-gray-600">Mining Rate: <strong>0.100 EANO/hour</strong></p>
+        <button id="mineButton" class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded font-bold">Start Mining</button>
+        <p class="mt-2 text-sm">Countdown: <span id="countdown">00:00:00</span></p>
+        <p class="text-sm">Your Score: <span id="coinBalance">0</span></p>
+        <p class="text-sm">Trust Level: <span id="trustStatus">Loading...</span></p>
+        <p class="text-sm">Level: <span id="upgradeLevel">Loading...</span></p>
+      </section>
 
-  <!-- Mainnet (KYC) -->
-  <section id="mainnet" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Mainnet & KYC</h2>
-    <p>Complete necessary procedures to qualify for migration to EANO Mainnet.Coming soon</p>
-    <button class="mt-2 bg-black text-white px-4 py-2 rounded">Begin KYC</button>
-  </section>
+      <!-- Invite -->
+      <section id="invite" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold mb-2">Invite</h2>
+        <p class="text-sm">Referral Code: <span id="referralCode">NickySantus</span></p>
+        <p class="text-sm">Referral Link: <span id="referralLink">https://eano-coin.netlify.app/nickysantus</span></p>
+      </section>
 
-  <!-- Profile -->
-  <section id="profile" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
-    <p>Email: <span id="userEmail">Santusnicky8@gmail.com</span></p>
-    <p>User ID: <span id="userUID">NickySantus</span></p>
-  </section>
+      <!-- Mainnet & KYC -->
+      <section id="mainnet" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold mb-2">Mainnet & KYC</h2>
+        <p class="text-sm">Complete necessary procedures to qualify for migration to EANO Mainnet. Coming soon.</p>
+        <button class="mt-2 bg-black text-white px-4 py-2 rounded">Begin KYC</button>
+      </section>
 
-  <!-- Author -->
-  <section id="author" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Author</h2>
-    <p class="text-sm">Founded by <strong>Santus Santorum</strong> Welcome to EANO Coin Project
+      <!-- Profile -->
+      <section id="profile" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
+        <p>Email: <span id="userEmail">Santusnicky8@gmail.com</span></p>
+        <p>User ID: <span id="userUID">NickySantus</span></p>
+      </section>
 
-EANO Coin is a decentralized cryptocurrency built for empowerment and indigenous resilience. It represents economic liberation through indigenous values and community-driven technology. EANO stands for the four great market days: Eke, Afor, Nkwo, Orie — a symbol of time, trade, and tradition.</p>
-  </section>
+      <!-- Author -->
+      <section id="author" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold mb-2">Author</h2>
+        <p class="text-sm">
+          Founded by <strong>Santus Santorum</strong>. Welcome to EANO Coin Project. EANO Coin is a decentralized cryptocurrency built for empowerment and indigenous resilience. It represents economic liberation through indigenous values and community-driven technology. EANO stands for the four great market days: Eke, Afor, Nkwo, Orie — a symbol of time, trade, and tradition.
+        </p>
+      </section>
 
-  <!-- Leaderboard -->
-  <section id="leaderboard" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Leaderboard</h2>
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <p class="font-bold">Your Trust Score:</p>
-        <span id="trustStatus">Loading...</span>
-      </div>
-      <div>
-        <p class="font-bold">Your Level:</p>
-        <span id="upgradeLevel">Loading...</span>
-      </div>
-    </div>
-    <div class="mt-4">
-      <h3 class="font-semibold">Top 20 Miners</h3>
-      <ul id="topMiners" class="list-disc pl-6 text-sm">
-        <li>Loading...</li>
-      </ul>
-    </div>
-  </section>
-</main>
+      <!-- Leaderboard -->
+      <section id="leaderboard" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold mb-2">Leaderboard</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="font-bold">Your Trust Score:</p>
+            <span id="trustStatus">Loading...</span>
+          </div>
+          <div>
+            <p class="font-bold">Your Level:</p>
+            <span id="upgradeLevel">Loading...</span>
+          </div>
+        </div>
+        <div class="mt-4">
+          <h3 class="font-semibold">Top 20 Miners</h3>
+          <ul id="topMiners" class="list-disc pl-6 text-sm">
+            <li>Loading...</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
 
-  </div>  <script type="module" src="./dashboard.js"></script></body></html>
+  <!-- JS Logic -->
+  <script type="module" src="./dashboard.js"></script>
+</body>
+</html>
