@@ -178,12 +178,12 @@
     googleBtn.addEventListener('click', () => {
       auth.signInWithPopup(provider)
         .then(result => {
+          provider.addScope('profile');
+          provider.addScope('email');
           window.location.href = "dashboard.html";
         })
         .catch(error => {
           messageBox.textContent = error.message;
-          provider.addScope('profile');
-          provider.addScope('email');
         });
     });
 
