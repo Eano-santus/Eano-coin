@@ -1,87 +1,94 @@
 // signup.js
 
-// Firebase config
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  query,
+  where,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-coin.firebaseapp.com",
   projectId: "eano-coin",
   storageBucket: "eano-coin.appspot.com",
-  messagingSenderId: "98972385091",
-  appId: "1:98972385091:web:85410fccc7c5933d761a9f"
+  messagingSenderId: "1083676735191",
+  appId: "1:1083676735191:web:0aa1fd34a0e9866145f14e"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Generate random referral code
-function generateReferralCode(length = 8) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let code = "";
-  for (let i = 0; i < length; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
-
-// Main signup function (called on button click)
-async function signup() {
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
-  const referralInput = document.getElementById('referral').value.trim();
-
-  if (!email || !password) {
-    alert("Please fill in all required fields.");
-    return;
-  }
+// Handle sign-up form
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const referralCode = new URLSearchParams(window.location.search).get("ref");
 
   try {
-    // Create user
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     const uid = user.uid;
-    const referralCode = generateReferralCode();
 
-    // User data
-    const userData = {
-      uid: uid,
-      email: email,
-      score: 5,
-      trust: "New Miner",
-      level: "Amateurs",
-      referralCode: referralCode,
-      referredBy: referralInput || null,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
+    let referredBy = null;
 
-    // Handle referral
-    if (referralInput !== "") {
-      const querySnapshot = await db.collection("users")
-        .where("referralCode", "==", referralInput)
-        .get();
+    // Check referral code
+    if (referralCode) {
+      const refQuery = query(collection(db, "users"), where("referralCode", "==", referralCode));
+      const refSnap = await getDocs(refQuery);
 
-      if (!querySnapshot.empty) {
-        const referrerDoc = querySnapshot.docs[0];
-        const referrerId = referrerDoc.id;
+      if (!refSnap.empty) {
+        const refDoc = refSnap.docs[0];
+        referredBy = refDoc.data().email;
 
-        await db.collection("users").doc(referrerId).update({
-          score: firebase.firestore.FieldValue.increment(5)
+        // Give referrer +5 trust score
+        const refUserRef = doc(db, "users", refDoc.id);
+        await updateDoc(refUserRef, {
+          trustScore: (refDoc.data().trustScore || 0) + 5
         });
-      } else {
-        alert("Invalid referral code entered.");
-        return;
       }
     }
 
-    // Save user data
-    await db.collection("users").doc(uid).set(userData);
+    // Generate referral code for this new user
+    const newReferralCode = generateReferralCode();
 
-    alert("Signup successful!");
+    // Save user info in Firestore
+    await setDoc(doc(db, "users", uid), {
+      email: email,
+      coinBalance: 0,
+      trustScore: 5, // starting score
+      referralCode: newReferralCode,
+      referredBy: referredBy,
+      lastMined: Date.now() - 86400000, // allow instant mining
+      isAdmin: false
+    });
+
+    alert("Account created successfully!");
     window.location.href = "index.html";
 
   } catch (error) {
+    console.error("Signup error:", error);
     alert("Signup failed: " + error.message);
-    console.error(error);
   }
+});
+
+function generateReferralCode() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
 }
