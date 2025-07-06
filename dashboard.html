@@ -3,188 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin Dashboard</title>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#FFD700">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>EANO Miner Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      background-color: #000;
+      background: #0d1117;
       color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      padding: 1rem;
-      background: #111;
       text-align: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #f9d342;
-    }
-    .container {
-      flex: 1;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      padding: 30px;
+      font-family: 'Segoe UI', sans-serif;
     }
     .card {
-      background: #1a1a1a;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+      background: #161b22;
+      border-radius: 20px;
+      padding: 30px;
+      margin: 0 auto;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.05);
     }
-    .title {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      color: #f9d342;
-    }
-    button {
-      background-color: #f9d342;
+    .mining-btn {
+      background-color: #1f6feb;
+      color: white;
       border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      font-weight: bold;
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    .mining-btn:hover {
+      background-color: #388bfd;
+    }
+    .balance {
+      font-size: 32px;
+      margin: 20px 0;
+    }
+    .timer {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .logout-btn {
+      margin-top: 20px;
+      color: #bbb;
+      font-size: 14px;
       cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    button:hover {
-      background-color: #ffd700;
-    }
-    .admin-panel.hidden {
-      display: none;
-    }
-    @media (min-width: 600px) {
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-      }
-    }
-    .active {
-      font-weight: 800;
     }
   </style>
 </head>
 <body>
 
-  <header>EANO Coin Dashboard</header>
+  <div class="card">
+    <h2>Welcome to EANO Miner</h2>
+    <p id="userEmail" class="mb-3">Checking user...</p>
 
-  <div class="flex flex-col md:flex-row min-h-screen">
+    <div class="balance">⛏️ EANO: <span id="balance">0.000</span></div>
+    <div class="timer">⏳ Time left: <span id="countdown">24:00:00</span></div>
+    <button class="mining-btn" id="startMining">Start Mining</button>
 
-    <!-- Sidebar -->
-    <aside class="w-full md:w-64 bg-black text-white p-4 space-y-4">
-      <div class="text-2xl font-bold text-yellow-400">EANO COIN</div>
-      <nav class="space-y-2">
-        <a href="#home" class="block hover:text-yellow-400">Home</a>
-        <a href="#mine" class="block hover:text-yellow-400">Mine</a>
-        <a href="#invite" class="block hover:text-yellow-400">Invite</a>
-        <a href="#mainnet" class="block hover:text-yellow-400">Mainnet</a>
-        <a href="#profile" class="block hover:text-yellow-400">Profile</a>
-        <a href="#author" class="block hover:text-yellow-400">Author</a>
-        <a href="https://t.me/eanocoin" target="_blank" class="block hover:text-yellow-400">Support Portal</a>
-        <a href="#leaderboard" class="block hover:text-yellow-400">Leaderboard</a>
-        <button id="logoutButton" class="w-full mt-4 bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Logout</button>
-      </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-4 space-y-6 overflow-y-auto">
-
-      <section id="home">
-        <h1 class="text-3xl font-bold">Welcome to EANO Coin</h1>
-        <p class="text-gray-300">Your gateway to community-driven mining and empowerment.</p>
-      </section>
-
-      <section id="mine" class="bg-gray-900 p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-2">Mine</h2>
-        <p class="text-gray-400">Mining Rate: <strong>0.100 EANO/hour</strong></p>
-        <button id="mineButton" class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded font-bold">Start Mining</button>
-        <p class="mt-2 text-sm">Countdown: <span id="countdown">00:00:00</span></p>
-        <p class="text-sm">Your Score: <span id="coinBalance">100</span></p>
-        <p class="text-sm">Trust Level: <span id="trustStatus">new miner</span></p>
-        <p class="text-sm">Level: <span id="upgradeLevel">amateur</span></p>
-      </section>
-
-      <section id="invite" class="bg-gray-900 p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-2">Invite</h2>
-        <p class="text-sm">Referral Code: <span id="referralCode">https://eano-coin.netlify.app/nickysantus</span></p>
-        <p class="text-sm">Referral Link: <span id="referralLink">https://eano-coin.netlify.app/nickysantus</span></p>
-      </section>
-
-      <section id="mainnet" class="bg-gray-900 p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-2">Mainnet & KYC</h2>
-        <p class="text-sm">Complete necessary procedures to qualify for migration to EANO Mainnet. Coming soon.</p>
-        <button class="mt-2 bg-black text-white px-4 py-2 rounded">Begin KYC</button>
-      </section>
-
-      <section id="profile" class="bg-gray-900 p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
-        <p>Email: <span id="userEmail">Santusnicky8@gmail.com</span></p>
-        <p>User ID: <span id="userUID">NickySantus</span></p>
-      </section>
-
-      <section id="author" class="bg-gray-900 p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-2">Author</h2>
-        <p class="text-sm">
-          Founded by <strong>Santus Santorum</strong>. Welcome to EANO Coin Project. EANO Coin is a decentralized cryptocurrency built for empowerment and indigenous resilience. It represents economic liberation through indigenous values and community-driven technology. EANO stands for the four great market days: Eke, Afor, Nkwo, Orie — a symbol of time, trade, and tradition.
-        </p>
-      </section>
-
-      <section id="leaderboard" class="bg-gray-900 p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-2">Leaderboard</h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <p class="font-bold">Your Position:</p>
-            <p id="userRank">Amateur</p>
-          </div>
-          <div>
-            <p class="font-bold">Top Miners</p>
-            <ul id="topMiners" class="list-disc pl-5 text-sm"></ul>
-          </div>
-        </div>
-      </section>
-
-    </main>
+    <div class="logout-btn" id="logout">Logout</div>
   </div>
 
-  <div class="container">
-    <div class="card admin-panel hidden" id="adminPanel">
-      <div class="title">Admin Controls</div>
-      <p>You are logged in as an admin. Future controls will appear here.</p>
-    </div>
-  </div>
+  <script type="module">
+    import { logout, onUserStateChanged } from './auth.js';
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-mining.firebaseapp.com",
-      projectId: "eano-mining",
-      storageBucket: "eano-mining.appspot.com",
-      messagingSenderId: "175857632609",
-      appId: "1:175857632609:web:1447322a8438dacf4560d2"
-    };
-    firebase.initializeApp(firebaseConfig);
+    let mining = false;
+    let balance = 0;
+    let timerDuration = 24 * 60 * 60; // 24 hours in seconds
+    let timer;
+    let miningInterval;
 
-    const auth = firebase.auth();
+    const userEmail = document.getElementById('userEmail');
+    const balanceDisplay = document.getElementById('balance');
+    const countdown = document.getElementById('countdown');
+    const startMiningBtn = document.getElementById('startMining');
+    const logoutBtn = document.getElementById('logout');
 
-    auth.onAuthStateChanged(user => {
-  if (!user) {
-    alert("Session expired or not logged in. Redirecting to homepage.");
-    window.location.href = "index.html"; // default entry or login page
-  }
-});
-    document.getElementById('logoutButton').addEventListener('click', () => {
-      auth.signOut().then(() => {
-        window.location.href = "login.html";
+    // Auth check
+    onUserStateChanged(user => {
+      if (user) {
+        userEmail.textContent = `👤 ${user.email}`;
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    // Mining button
+    startMiningBtn.addEventListener('click', () => {
+      if (!mining) {
+        startMining();
+      } else {
+        stopMining();
+      }
+    });
+
+    function startMining() {
+      mining = true;
+      startMiningBtn.textContent = "Stop Mining";
+      let secondsLeft = timerDuration;
+
+      timer = setInterval(() => {
+        secondsLeft--;
+        updateCountdown(secondsLeft);
+
+        // Fake balance increase
+        balance += 0.0001;
+        balanceDisplay.textContent = balance.toFixed(4);
+
+        if (secondsLeft <= 0) {
+          stopMining();
+        }
+      }, 1000);
+    }
+
+    function stopMining() {
+      mining = false;
+      clearInterval(timer);
+      startMiningBtn.textContent = "Start Mining";
+    }
+
+    function updateCountdown(seconds) {
+      const hrs = Math.floor(seconds / 3600);
+      const mins = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+      countdown.textContent = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    logoutBtn.addEventListener('click', () => {
+      logout().then(() => {
+        window.location.href = "index.html";
       });
     });
   </script>
