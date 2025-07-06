@@ -1,8 +1,33 @@
-// auth.js
+document.addEventListener("DOMContentLoaded", () => {
+  // Wait for Firebase Auth to load
+  firebase.auth().onAuthStateChanged(async user => {
+    if (!user) {
+      // Not logged in: Redirect to login page
+      window.location.href = "signup.html"; // change to your login/signup page
+      return;
+    }
 
-// Firebase Config const firebaseConfig = { apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw", authDomain: "eano-miner.firebaseapp.com", projectId: "eano-miner", storageBucket: "eano-miner.appspot.com", messagingSenderId: "50186911438", appId: "1:50186911438:web:85410fccc7c5933d761a9f" };
+    const uid = user.uid;
+    const userRef = firebase.firestore().collection("users").doc(uid);
+    
+    try {
+      const doc = await userRef.get();
 
-// Initialize Firebase firebase.initializeApp(firebaseConfig);
-
-// Export Firebase services const auth = firebase.auth(); const db = firebase.firestore();
-
+      // If it's a new user, set up default profile
+      if (!doc.exists) {
+        const referralCode = uid.slice(0, 6); // Auto-generate referral code
+        await userRef.set({
+          email: user.email || '',
+          score: 5, // Initial score
+          lastMine: 0,
+          referralCode: referralCode,
+          referredBy: null, // Can be filled if user used a referral link
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log("New user profile created.");
+      }
+    } catch (error) {
+      console.error("Error accessing Firestore user profile:", error);
+    }
+  });
+});
