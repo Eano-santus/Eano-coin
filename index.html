@@ -1,137 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EANO Coin - Login / Signup</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .auth-container {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px gold;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      color: white;
-    }
-
-    h1 {
-      margin-bottom: 10px;
-      color: gold;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-
-    button {
-      width: 48%;
-      padding: 10px;
-      margin: 10px 1%;
-      background-color: gold;
-      color: black;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #f2c744;
-    }
-
-    #authMessage {
-      margin-top: 15px;
-      color: #ff7777;
-      font-weight: 500;
-    }
-  </style>
-</head>
-<body>
-  <div class="auth-container">
-    <h1>EANO COIN</h1>
-    <h2>Sign In / Register</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <div>
-      <button id="loginBtn">Login</button>
-      <button id="registerBtn">Register</button>
-    </div>
-    <p id="authMessage"></p>
-  </div>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-  <!-- Firebase Config -->
-  <script>
+  <link rel="stylesheet" href="style.css" />  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-mining.firebaseapp.com",
-      projectId: "eano-mining",
-      storageBucket: "eano-mining.appspot.com",
-      messagingSenderId: "175857632609",
-      appId: "1:175857632609:web:1447322a8438dacf4560d2"
+      authDomain: "eano-coin.firebaseapp.com",
+      projectId: "eano-coin",
+      storageBucket: "eano-coin.appspot.com",
+      messagingSenderId: "663007844943",
+      appId: "1:663007844943:web:6d5cfa9a31eb252f8853c8"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>  <style>
+    body {
+      background-image: url('eano_background_gold_black.jpg');
+      background-size: cover;
+      background-position: center;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      margin-top: 60px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      text-align: center;
+    }
+    input, button {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+    input {
+      background: #222;
+      color: #fff;
+    }
+    button {
+      background-color: gold;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    h2 {
+      color: gold;
+    }
+    .switch {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .switch a {
+      color: #00f0ff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style></head>
+<body>
+  <div class="container">
+    <h2 id="formTitle">Welcome Pioneer</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <input type="text" id="refCode" placeholder="Referral Code (Optional)" style="display:none" />
+    <button id="actionBtn">Sign Up</button>
+    <p class="switch" id="switchText">
+      Already have an account? <a onclick="toggleMode()">Log In</a>
+    </p>
+  </div>  <script>
+    let isSignup = true;
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const refCode = document.getElementById("refCode");
+    const formTitle = document.getElementById("formTitle");
+    const actionBtn = document.getElementById("actionBtn");
+    const switchText = document.getElementById("switchText");
 
-    // Redirect if already signed in
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        window.location.href = "dashboard.html";
+    function toggleMode() {
+      isSignup = !isSignup;
+      formTitle.innerText = isSignup ? "Join the EANO Revolution" : "Log In to Continue";
+      actionBtn.innerText = isSignup ? "Sign Up" : "Log In";
+      refCode.style.display = isSignup ? "block" : "none";
+      switchText.innerHTML = isSignup ?
+        'Already have an account? <a onclick="toggleMode()">Log In</a>' :
+        "New here? <a onclick=\"toggleMode()\">Sign Up</a>";
+    }
+
+    actionBtn.addEventListener("click", () => {
+      const userEmail = email.value.trim();
+      const userPass = password.value.trim();
+      const referral = refCode.value.trim();
+
+      if (!userEmail || !userPass) return alert("Please enter all fields.");
+
+      if (isSignup) {
+        auth.createUserWithEmailAndPassword(userEmail, userPass)
+          .then(cred => {
+            const uid = cred.user.uid;
+            const referralCode = uid.slice(0, 6);
+            db.collection("users").doc(uid).set({
+              email: userEmail,
+              score: 5,
+              referralCode,
+              referredBy: referral || null,
+              lastMine: 0
+            });
+
+            // reward referrer
+            if (referral) {
+              db.collection("users").where("referralCode", "==", referral).limit(1).get()
+                .then(snapshot => {
+                  if (!snapshot.empty) {
+                    const refUser = snapshot.docs[0];
+                    const refData = refUser.data();
+                    db.collection("users").doc(refUser.id).update({
+                      score: (refData.score || 0) + 5
+                    });
+                  }
+                });
+            }
+            window.location.href = "mining.html";
+          })
+          .catch(err => alert(err.message));
+      } else {
+        auth.signInWithEmailAndPassword(userEmail, userPass)
+          .then(() => {
+            window.location.href = "mining.html";
+          })
+          .catch(err => alert("Login failed: " + err.message));
       }
     });
-  </script>
 
-  <!-- Auth Logic -->
-  <script>
-    const loginBtn = document.getElementById("loginBtn");
-    const registerBtn = document.getElementById("registerBtn");
-    const message = document.getElementById("authMessage");
+    // Auto-login redirect
+    auth.onAuthStateChanged(user => {
+      if (user) window.location.href = "mining.html";
+    });
 
-    loginBtn.onclick = async () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-        window.location.href = "dashboard.html";
-      } catch (error) {
-        message.textContent = error.message;
-      }
-    };
-
-    registerBtn.onclick = async () => {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      try {
-        await auth.createUserWithEmailAndPassword(email, password);
-        window.location.href = "dashboard.html";
-      } catch (error) {
-        message.textContent = error.message;
-      }
-    };
-  </script>
-</body>
+    // Check for referral in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("ref")) {
+      refCode.value = urlParams.get("ref");
+    }
+  </script></body>
 </html>
