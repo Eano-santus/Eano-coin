@@ -1,104 +1,71 @@
-// Import Firebase modules import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"; import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"; import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+// dashboard.js import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"; import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"; import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// Firebase config const firebaseConfig = { apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw", authDomain: "eano-coin.firebaseapp.com", projectId: "eano-coin", storageBucket: "eano-coin.appspot.com", messagingSenderId: "1083676735191", appId: "1:1083676735191:web:0aa1fd34a0e9866145f14e" };
+const firebaseConfig = { apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw", authDomain: "eano-miner.firebaseapp.com", projectId: "eano-miner", storageBucket: "eano-miner.firebasestorage.app", messagingSenderId: "50186911438", appId: "1:50186911438:web:85410fccc7c5933d761a9f", measurementId: "G-NS0W6QSS69" };
 
-// Initialize Firebase const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
+const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-let currentUser = null; let countdownTimer = null;
+const emailDisplay = document.getElementById("user-email"); const balanceDisplay = document.getElementById("balance"); const mineBtn = document.getElementById("mine-btn"); const logoutBtn = document.getElementById("logout-btn"); const timerDisplay = document.getElementById("timer"); const leaderboardList = document.getElementById("leaderboard");
 
-onAuthStateChanged(auth, async (user) => { if (user) { currentUser = user; const uid = user.uid; const userRef = doc(db, "users", uid); const docSnap = await getDoc(userRef);
+let timerInterval;
 
-if (!docSnap.exists()) {
-  await setDoc(userRef, {
-    email: user.email,
-    coinBalance: 0,
-    lastMined: Date.now() - 86400000,
-    trustScore: 5,
-    referralCode: generateReferralCode(),
-    referredBy: null,
-    isAdmin: false
-  });
-}
+onAuthStateChanged(auth, async (user) => { if (!user) { window.location.href = "index.html"; return; }
 
-if (docSnap.exists() && docSnap.data().isAdmin === true) {
-  document.getElementById("adminLink").style.display = "block";
-}
+emailDisplay.textContent = Logged in as: ${user.email}; const uid = user.uid;
 
-updateUI(userRef);
-setupMining(userRef);
+const userRef = doc(db, "users", uid); const userSnap = await getDoc(userRef);
+
+if (!userSnap.exists()) { await setDoc(userRef, { balance: 0, lastMine: null, email: user.email }); }
+
+const data = (await getDoc(userRef)).data(); balanceDisplay.textContent = data.balance.toFixed(3);
+
+if (data.lastMine) { startTimer(new Date(data.lastMine)); }
+
+mineBtn.onclick = async () => { const now = new Date(); const lastMineTime = data.lastMine ? new Date(data.lastMine) : null; if (lastMineTime && now - lastMineTime < 24 * 60 * 60 * 1000) { alert("You can mine only once every 24 hours."); return; }
+
+const reward = 0.001;
+const newBalance = data.balance + reward;
+await updateDoc(userRef, {
+  balance: newBalance,
+  lastMine: now.toISOString()
+});
+
+balanceDisplay.textContent = newBalance.toFixed(3);
+startTimer(now);
+alert(`You've successfully mined ${reward} EANO!`);
+
 loadLeaderboard();
 
-} else { window.location.href = "signup.html"; } });
+};
 
-function generateReferralCode() { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; let code = ""; for (let i = 0; i < 6; i++) { code += chars.charAt(Math.floor(Math.random() * chars.length)); } return code; }
+loadLeaderboard(); });
 
-async function updateUI(userRef) { const docSnap = await getDoc(userRef); if (!docSnap.exists()) return;
+logoutBtn.onclick = () => { signOut(auth).then(() => { window.location.href = "index.html"; }); };
 
-const data = docSnap.data(); const balance = data.coinBalance || 0; const trust = typeof data.trustScore === "number" ? data.trustScore : 0; const referralCode = data.referralCode || ""; const referredBy = data.referredBy || "";
+function startTimer(startTime) { clearInterval(timerInterval);
 
-document.getElementById("coinBalance").textContent = balance.toFixed(2); document.getElementById("trustScore").textContent = trust;
+const endTime = new Date(startTime.getTime() + 24 * 60 * 60 * 1000);
 
-const trustLevels = [ { min: 500, label: "Trusted Miner" }, { min: 200, label: "Reliable Miner" }, { min: 80, label: "New Miner" }, { min: 0, label: "Needs Trust" } ]; const trustLabel = trustLevels.find(t => trust >= t.min)?.label || "Unknown"; document.getElementById("trustLabel").textContent = trustLabel;
+function updateTimer() { const now = new Date(); const diff = endTime - now;
 
-const upgradeLevels = [ { min: 10000, label: "Leaders" }, { min: 5000, label: "Masters" }, { min: 1000, label: "Professionals" }, { min: 500, label: "Elites" }, { min: 50, label: "Amateurs" }, { min: 0, label: "Beginner" } ]; const level = upgradeLevels.find(l => trust >= l.min)?.label || "Beginner"; document.getElementById("upgradeLabel").textContent = level;
-
-document.getElementById("referralCode").textContent = referralCode; document.getElementById("referredBy").textContent = referredBy;
-
-const lastMined = data.lastMined || 0; const msSinceLastMine = Date.now() - lastMined; const msRemaining = Math.max(0, 86400000 - msSinceLastMine); updateCountdown(msRemaining); }
-
-function updateCountdown(ms) { clearInterval(countdownTimer); const countdownEl = document.getElementById("countdown");
-
-if (ms <= 0) { countdownEl.textContent = "00:00:00"; return; }
-
-countdownTimer = setInterval(() => { const hours = Math.floor(ms / 3600000); const minutes = Math.floor((ms % 3600000) / 60000); const seconds = Math.floor((ms % 60000) / 1000); countdownEl.textContent = ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")};
-
-ms -= 1000;
-if (ms <= 0) {
-  clearInterval(countdownTimer);
-  countdownEl.textContent = "00:00:00";
-}
-
-}, 1000); }
-
-function setupMining(userRef) { document.getElementById("mineButton").addEventListener("click", async () => { if (!navigator.onLine) { storeOfflineMining(); alert("You're offline. Mining recorded and will sync when online."); return; }
-
-const docSnap = await getDoc(userRef);
-const data = docSnap.data();
-const now = Date.now();
-
-if (now - data.lastMined < 86400000) {
-  alert("You can only mine once every 24 hours.");
+if (diff <= 0) {
+  timerDisplay.textContent = "⛏ Ready to mine again!";
+  clearInterval(timerInterval);
   return;
 }
 
-const earned = calculateEarnings(data.trustScore || 0);
-await updateDoc(userRef, {
-  coinBalance: (data.coinBalance || 0) + earned,
-  lastMined: now
-});
+const hours = Math.floor(diff / (1000 * 60 * 60));
+const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-alert(`You mined ${earned.toFixed(2)} EANO coins!`);
-updateUI(userRef);
+timerDisplay.textContent = `Next mining in: ${hours}h ${minutes}m ${seconds}s`;
 
-}); }
+}
 
-function calculateEarnings(trust) { if (trust >= 500) return 5; if (trust >= 200) return 3; if (trust >= 80) return 2; return 1; }
+updateTimer(); timerInterval = setInterval(updateTimer, 1000); }
 
-async function loadLeaderboard() { const leaderboardEl = document.getElementById("topMiners"); leaderboardEl.innerHTML = "";
+async function loadLeaderboard() { if (!leaderboardList) return;
 
-const q = query(collection(db, "users"), orderBy("coinBalance", "desc"), limit(20)); const querySnapshot = await getDocs(q);
+leaderboardList.innerHTML = "<li>Loading...</li>"; const usersQuery = query(collection(db, "users"), orderBy("balance", "desc"), limit(10)); const snapshot = await getDocs(usersQuery);
 
-querySnapshot.forEach((doc, index) => { const data = doc.data(); const li = document.createElement("li"); li.textContent = ${index + 1}. ${data.email || "Anonymous"} — ${data.coinBalance?.toFixed(2)} EANO; leaderboardEl.appendChild(li); }); }
-
-document.getElementById("logoutButton").addEventListener("click", () => { const confirmed = confirm("Are you sure you want to log out?"); if (confirmed) { signOut(auth) .then(() => { window.location.href = "signup.html"; }) .catch((error) => { console.error("Logout failed:", error); }); } });
-
-function storeOfflineMining() { const now = new Date().toISOString(); let actions = JSON.parse(localStorage.getItem('offlineMines')) || []; actions.push({ timestamp: now }); localStorage.setItem('offlineMines', JSON.stringify(actions)); console.log('[Offline] Mining stored'); }
-
-window.addEventListener('online', async () => { const actions = JSON.parse(localStorage.getItem('offlineMines')) || []; if (!actions.length || !currentUser) return;
-
-const userRef = doc(db, "users", currentUser.uid); const docSnap = await getDoc(userRef); const data = docSnap.data(); let updatesMade = false;
-
-actions.forEach(action => { if (Date.now() - data.lastMined >= 86400000) { const earned = calculateEarnings(data.trustScore || 0); updateDoc(userRef, { coinBalance: (data.coinBalance || 0) + earned, lastMined: Date.now() }); console.log([Offline Sync] Synced mined ${earned} coins from ${action.timestamp}); updatesMade = true; } });
-
-if (updatesMade) updateUI(userRef); localStorage.removeItem('offlineMines'); });
+leaderboardList.innerHTML = ""; snapshot.forEach((doc) => { const user = doc.data(); const li = document.createElement("li"); li.textContent = ${user.email || "Anonymous"}: ${user.balance.toFixed(3)} EANO; leaderboardList.appendChild(li); }); }
 
