@@ -1,24 +1,91 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin - Login / Signup</title>
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .auth-container {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px gold;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      color: gold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 48%;
+      padding: 10px;
+      margin: 10px 1%;
+      background-color: gold;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f2c744;
+    }
+
+    #authMessage {
+      margin-top: 15px;
+      color: #ff7777;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
   <div class="auth-container">
-    <div class="auth-box">
-      <h1>EANO COIN</h1>
-      <h2>Sign In / Register</h2><input type="email" id="email" placeholder="Email" required>
-  <input type="password" id="password" placeholder="Password" required>
+    <h1>EANO COIN</h1>
+    <h2>Sign In / Register</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <div>
+      <button id="loginBtn">Login</button>
+      <button id="registerBtn">Register</button>
+    </div>
+    <p id="authMessage"></p>
+  </div>
 
-  <button id="loginBtn">Login</button>
-  <button id="registerBtn">Register</button>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-  <p id="authMessage"></p>
-</div>
-
-  </div>  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <!-- Firebase Config -->  <script>
+  <!-- Firebase Config -->
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-mining.firebaseapp.com",
@@ -29,15 +96,17 @@
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
-  </script>  <!-- Auth Logic -->  <script>
+  </script>
+
+  <!-- Auth Logic -->
+  <script>
     const loginBtn = document.getElementById("loginBtn");
     const registerBtn = document.getElementById("registerBtn");
     const message = document.getElementById("authMessage");
 
     loginBtn.onclick = async () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
       try {
         await auth.signInWithEmailAndPassword(email, password);
         window.location.href = "dashboard.html";
@@ -47,8 +116,8 @@
     };
 
     registerBtn.onclick = async () => {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
       try {
         await auth.createUserWithEmailAndPassword(email, password);
         window.location.href = "dashboard.html";
@@ -56,5 +125,6 @@
         message.textContent = error.message;
       }
     };
-  </script></body>
+  </script>
+</body>
 </html>
