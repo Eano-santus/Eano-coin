@@ -58,8 +58,9 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #ffd700;
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
     .login-link {
       text-align: center;
@@ -90,7 +91,7 @@
     <label for="referral">Referral Code (optional)</label>
     <input type="text" id="referral">
 
-    <button onclick="signup()">Sign Up</button>
+    <button id="signupBtn" onclick="signup()">Sign Up</button>
 
     <div class="login-link">
       Already have an account? <a href="login.html">Login</a>
@@ -128,11 +129,14 @@
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
       const referralInput = document.getElementById('referral').value.trim();
+      const signupBtn = document.getElementById('signupBtn');
 
       if (!email || !password) {
         alert("Please fill in all required fields.");
         return;
       }
+
+      signupBtn.disabled = true;
 
       try {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -151,7 +155,7 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        if (referralInput !== "") {
+        if (referralInput) {
           const querySnapshot = await db.collection("users")
             .where("referralCode", "==", referralInput)
             .get();
@@ -165,6 +169,7 @@
             });
           } else {
             alert("Invalid referral code entered.");
+            signupBtn.disabled = false;
             return;
           }
         }
@@ -175,10 +180,25 @@
         window.location.href = "index.html";
 
       } catch (error) {
-        alert("Signup failed: " + error.message);
+        if (error.code === "auth/email-already-in-use") {
+          alert("This email is already in use.");
+        } else {
+          alert("Signup failed: " + error.message);
+        }
         console.error(error);
+      } finally {
+        signupBtn.disabled = false;
       }
     }
+
+    // Optional: Pre-fill referral from URL (?ref=CODE)
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref');
+      if (ref) {
+        document.getElementById('referral').value = ref;
+      }
+    };
   </script>
 </body>
 </html>
