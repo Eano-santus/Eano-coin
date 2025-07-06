@@ -1,8 +1,8 @@
-<!DOCTYPE html><a href="admin.html" id="adminLink" style="display: none;">Admin Panel</a>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -26,7 +26,6 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f7fafc;
     }
     .active {
       font-weight: 800;
@@ -34,10 +33,11 @@
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-  <div class="flex min-h-screen">
+  <a href="admin.html" id="adminLink" class="hidden">Admin Panel</a>
+  <div class="flex flex-col md:flex-row min-h-screen">
+
     <!-- Sidebar -->
-    <button id="logoutButton" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</button>
-    <aside class="w-64 bg-black text-white p-4 space-y-4">
+    <aside class="w-full md:w-64 bg-black text-white p-4 space-y-4">
       <div class="text-2xl font-bold text-yellow-400">EANO COIN</div>
       <nav class="space-y-2">
         <a href="#home" class="block hover:text-yellow-400">Home</a>
@@ -48,13 +48,15 @@
         <a href="#author" class="block hover:text-yellow-400">Author</a>
         <a href="https://t.me/eanocoin" target="_blank" class="block hover:text-yellow-400">Support Portal</a>
         <a href="#leaderboard" class="block hover:text-yellow-400">Leaderboard</a>
+        <button id="logoutButton" class="w-full mt-4 bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Logout</button>
       </nav>
     </aside>
 
-    <!-- Main content -->
-    <main class="flex-1 p-6 space-y-6">
+    <!-- Main Content -->
+    <main class="flex-1 p-4 space-y-6 overflow-y-auto">
+
       <!-- Home -->
-      <section id="home" class="space-y-2">
+      <section id="home">
         <h1 class="text-3xl font-bold">Welcome to EANO Coin</h1>
         <p class="text-gray-600">Your gateway to community-driven mining and empowerment.</p>
       </section>
@@ -87,8 +89,8 @@
       <!-- Profile -->
       <section id="profile" class="bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
-        <p>Email: <span id="userEmail">Santusnicky8@gmail.com</span></p>
-        <p>User ID: <span id="userUID">NickySantus</span></p>
+        <p>Email: <span id="userEmail">Loading...</span></p>
+        <p>User ID: <span id="userUID">Loading...</span></p>
       </section>
 
       <!-- Author -->
