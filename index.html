@@ -96,6 +96,13 @@
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+
+    // Redirect if already signed in
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
   </script>
 
   <!-- Auth Logic -->
