@@ -26,7 +26,7 @@
       text-align: center;
       box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
       width: 90%;
-      max-width: 350px;
+      max-width: 400px;
     }
 
     .login-container h2 {
@@ -38,7 +38,7 @@
     .login-container input {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
       border-radius: 8px;
       border: none;
     }
@@ -46,6 +46,7 @@
     .login-container button {
       width: 100%;
       padding: 12px;
+      margin-top: 10px;
       background-color: gold;
       border: none;
       border-radius: 8px;
@@ -56,6 +57,20 @@
 
     .login-container button:hover {
       background-color: #ffcc00;
+    }
+
+    .small-btn {
+      font-size: 14px;
+      background-color: transparent;
+      color: #ccc;
+      margin: 5px 0;
+      text-decoration: underline;
+    }
+
+    .google-btn {
+      background-color: white;
+      color: black;
+      font-weight: bold;
     }
 
     .message {
@@ -79,20 +94,27 @@
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
   </script>
 </head>
 
 <body>
   <div class="login-container">
-    <h2>Login to EANO</h2>
+    <h2>Welcome to EANO</h2>
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="password" placeholder="Password" />
     <button id="loginBtn">Login</button>
+    <button id="registerBtn" class="small-btn">Create Account</button>
+    <button id="forgotBtn" class="small-btn">Forgot Password?</button>
+    <button id="googleBtn" class="google-btn">Sign in with Google</button>
     <p class="message" id="messageBox"></p>
   </div>
 
   <script>
     const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const forgotBtn = document.getElementById('forgotBtn');
+    const googleBtn = document.getElementById('googleBtn');
     const messageBox = document.getElementById('messageBox');
 
     loginBtn.addEventListener('click', () => {
@@ -106,14 +128,60 @@
 
       auth.signInWithEmailAndPassword(email, password)
         .then(() => {
-          window.location.href = "dashboard.html"; // ✅ Go to app
+          window.location.href = "dashboard.html";
         })
         .catch(error => {
           messageBox.textContent = error.message;
         });
     });
 
-    // Auto-redirect if already logged in
+    registerBtn.addEventListener('click', () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        messageBox.textContent = "Enter email and password to register.";
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          messageBox.textContent = error.message;
+        });
+    });
+
+    forgotBtn.addEventListener('click', () => {
+      const email = document.getElementById('email').value.trim();
+      if (!email) {
+        messageBox.textContent = "Enter your email to reset password.";
+        return;
+      }
+
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          messageBox.style.color = "lightgreen";
+          messageBox.textContent = "Password reset email sent!";
+        })
+        .catch(error => {
+          messageBox.style.color = "red";
+          messageBox.textContent = error.message;
+        });
+    });
+
+    googleBtn.addEventListener('click', () => {
+      auth.signInWithPopup(provider)
+        .then(result => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          messageBox.textContent = error.message;
+        });
+    });
+
+    // Redirect if already logged in
     auth.onAuthStateChanged(user => {
       if (user) {
         window.location.href = "dashboard.html";
