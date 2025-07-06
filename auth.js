@@ -1,8 +1,15 @@
 // auth.js
 
-// Firebase imports
+// Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -18,39 +25,35 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-// Redirect if already logged in
-onAuthStateChanged(auth, (user) => {
-  const currentPage = window.location.pathname;
-
-  if (user && currentPage.includes("index.html")) {
-    window.location.href = "dashboard.html";
-  }
-
-  if (!user && currentPage.includes("dashboard.html")) {
-    window.location.href = "index.html";
-  }
+// Handle Google Sign-In
+document.getElementById("google-signin").addEventListener("click", () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      alert("Google Sign-In Failed: " + error.message);
+    });
 });
 
-// SIGNUP
-window.signup = function (e) {
-  e.preventDefault();
+// Handle Email/Password Sign-Up
+document.getElementById("signup-btn").addEventListener("click", () => {
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
 
   createUserWithEmailAndPassword(auth, email, password)
     .then(() => {
-      alert("Signup successful!");
       window.location.href = "dashboard.html";
     })
     .catch((error) => {
       alert("Signup Error: " + error.message);
     });
-};
+});
 
-// LOGIN
-window.login = function (e) {
-  e.preventDefault();
+// Handle Email/Password Login
+document.getElementById("login-btn").addEventListener("click", () => {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
 
@@ -61,16 +64,11 @@ window.login = function (e) {
     .catch((error) => {
       alert("Login Error: " + error.message);
     });
-};
+});
 
-// LOGOUT
-window.logout = function () {
-  signOut(auth)
-    .then(() => {
-      alert("Logged out successfully.");
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      alert("Logout Error: " + error.message);
-    });
-};
+// Optional: Protect dashboard.html
+onAuthStateChanged(auth, (user) => {
+  if (window.location.pathname.includes("dashboard.html") && !user) {
+    window.location.href = "index.html"; // Redirect if not logged in
+  }
+});
