@@ -1,0 +1,13 @@
+{
+  "name": "EANO Coin",
+  "short_name": "EANO",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FFD700",
+  "icons": [{
+    "src": "/favicon.ico",
+    "sizes": "192x192",
+    "type": "image/x-icon"
+  }]
+}
