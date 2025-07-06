@@ -220,13 +220,10 @@
 </body>
 </html>
 <script>
+  <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => {
-        console.log('[ServiceWorker] Registered successfully:', reg.scope);
-      })
-      .catch(err => {
-        console.error('[ServiceWorker] Registration failed:', err);
-      });
+      .then(reg => console.log('[SW] Registered:', reg.scope))
+      .catch(err => console.error('[SW] Registration failed:', err));
   }
 </script>
