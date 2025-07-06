@@ -1,151 +1,124 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Coin - Login / Signup</title>
-  <link rel="stylesheet" href="style.css" />  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EANO Login</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Rubik', sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+
+    .login-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      width: 90%;
+      max-width: 350px;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: gold;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: gold;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .login-container button:hover {
+      background-color: #ffcc00;
+    }
+
+    .message {
+      margin-top: 10px;
+      color: red;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-coin.firebaseapp.com",
       projectId: "eano-coin",
       storageBucket: "eano-coin.appspot.com",
-      messagingSenderId: "663007844943",
-      appId: "1:663007844943:web:6d5cfa9a31eb252f8853c8"
+      messagingSenderId: "603567498471",
+      appId: "1:603567498471:web:1abf4c34c5d73092dc91b5"
     };
+
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
-  </script>  <style>
-    body {
-      background-image: url('eano_background_gold_black.jpg');
-      background-size: cover;
-      background-position: center;
-      font-family: Arial, sans-serif;
-      color: #fff;
-    }
-    .container {
-      max-width: 400px;
-      margin: auto;
-      margin-top: 60px;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      text-align: center;
-    }
-    input, button {
-      width: 90%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-    }
-    input {
-      background: #222;
-      color: #fff;
-    }
-    button {
-      background-color: gold;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    h2 {
-      color: gold;
-    }
-    .switch {
-      margin-top: 20px;
-      font-size: 14px;
-    }
-    .switch a {
-      color: #00f0ff;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-  </style></head>
+  </script>
+</head>
+
 <body>
-  <div class="container">
-    <h2 id="formTitle">Welcome Pioneer</h2>
+  <div class="login-container">
+    <h2>Login to EANO</h2>
     <input type="email" id="email" placeholder="Email" />
     <input type="password" id="password" placeholder="Password" />
-    <input type="text" id="refCode" placeholder="Referral Code (Optional)" style="display:none" />
-    <button id="actionBtn">Sign Up</button>
-    <p class="switch" id="switchText">
-      Already have an account? <a onclick="toggleMode()">Log In</a>
-    </p>
-  </div>  <script>
-    let isSignup = true;
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const refCode = document.getElementById("refCode");
-    const formTitle = document.getElementById("formTitle");
-    const actionBtn = document.getElementById("actionBtn");
-    const switchText = document.getElementById("switchText");
+    <button id="loginBtn">Login</button>
+    <p class="message" id="messageBox"></p>
+  </div>
 
-    function toggleMode() {
-      isSignup = !isSignup;
-      formTitle.innerText = isSignup ? "Join the EANO Revolution" : "Log In to Continue";
-      actionBtn.innerText = isSignup ? "Sign Up" : "Log In";
-      refCode.style.display = isSignup ? "block" : "none";
-      switchText.innerHTML = isSignup ?
-        'Already have an account? <a onclick="toggleMode()">Log In</a>' :
-        "New here? <a onclick=\"toggleMode()\">Sign Up</a>";
-    }
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const messageBox = document.getElementById('messageBox');
 
-    actionBtn.addEventListener("click", () => {
-      const userEmail = email.value.trim();
-      const userPass = password.value.trim();
-      const referral = refCode.value.trim();
+    loginBtn.addEventListener('click', () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
 
-      if (!userEmail || !userPass) return alert("Please enter all fields.");
+      if (!email || !password) {
+        messageBox.textContent = "Please enter both email and password.";
+        return;
+      }
 
-      if (isSignup) {
-        auth.createUserWithEmailAndPassword(userEmail, userPass)
-          .then(cred => {
-            const uid = cred.user.uid;
-            const referralCode = uid.slice(0, 6);
-            db.collection("users").doc(uid).set({
-              email: userEmail,
-              score: 5,
-              referralCode,
-              referredBy: referral || null,
-              lastMine: 0
-            });
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "dashboard.html"; // ✅ Go to app
+        })
+        .catch(error => {
+          messageBox.textContent = error.message;
+        });
+    });
 
-            // reward referrer
-            if (referral) {
-              db.collection("users").where("referralCode", "==", referral).limit(1).get()
-                .then(snapshot => {
-                  if (!snapshot.empty) {
-                    const refUser = snapshot.docs[0];
-                    const refData = refUser.data();
-                    db.collection("users").doc(refUser.id).update({
-                      score: (refData.score || 0) + 5
-                    });
-                  }
-                });
-            }
-            window.location.href = "mining.html";
-          })
-          .catch(err => alert(err.message));
-      } else {
-        auth.signInWithEmailAndPassword(userEmail, userPass)
-          .then(() => {
-            window.location.href = "mining.html";
-          })
-          .catch(err => alert("Login failed: " + err.message));
+    // Auto-redirect if already logged in
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        window.location.href = "dashboard.html";
       }
     });
-
-    // Auto-login redirect
-    auth.onAuthStateChanged(user => {
-      if (user) window.location.href = "mining.html";
-    });
-
-    // Check for referral in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("ref")) {
-      refCode.value = urlParams.get("ref");
-    }
-  </script></body>
+  </script>
+</body>
 </html>
