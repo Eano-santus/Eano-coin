@@ -1,204 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin - Signup</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
-    body {
-      background-color: #111;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .container {
-      background-color: #222;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-      width: 90%;
-      max-width: 400px;
-    }
-    h2 {
-      text-align: center;
-      color: #f9d342;
-      margin-bottom: 1.5rem;
-    }
-    label {
-      display: block;
-      margin: 0.5rem 0 0.2rem;
-      font-weight: 600;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 1rem;
-    }
-    button {
-      width: 100%;
-      padding: 0.7rem;
-      border: none;
-      background-color: #f9d342;
-      color: #111;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    .login-link {
-      text-align: center;
-      margin-top: 1rem;
-    }
-    .login-link a {
-      color: #f9d342;
-      text-decoration: none;
-    }
-    .welcome {
-      text-align: center;
-      margin-top: 2rem;
-      font-size: 1rem;
-      color: #aaa;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>EANO Coin Signup</h2>
-
-    <label for="email">Email</label>
-    <input type="email" id="email" required>
-
-    <label for="password">Password</label>
-    <input type="password" id="password" required>
-
-    <label for="referral">Referral Code (optional)</label>
-    <input type="text" id="referral">
-
-    <button id="signupBtn" onclick="signup()">Sign Up</button>
-
-    <div class="login-link">
-      Already have an account? <a href="login.html">Login</a>
-    </div>
-
-    <div class="welcome">
-      Powered by <strong>EANO Network</strong>
-    </div>
-  </div>
-
-  <script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Coin Signup / Login</title>
+  <link rel="stylesheet" href="style.css" />  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
       authDomain: "eano-coin.firebaseapp.com",
       projectId: "eano-coin",
       storageBucket: "eano-coin.appspot.com",
-      messagingSenderId: "98972385091",
-      appId: "1:98972385091:web:85410fccc7c5933d761a9f"
+      messagingSenderId: "663007844943",
+      appId: "1:663007844943:web:6d5cfa9a31eb252f8853c8"
     };
-
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+  </script>  <style>
+    body {
+      background-image: url('eano_background_gold_black.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .auth-container {
+      background: rgba(0,0,0,0.8);
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      padding: 12px 25px;
+      margin: 10px;
+      background: gold;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    h2 {
+      color: gold;
+    }
+    .switch-link {
+      color: #00f0ff;
+      cursor: pointer;
+    }
+  </style></head>
+<body>
+  <div class="auth-container">
+    <h2 id="formTitle">Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="handleAuth()" id="authButton">Login</button>
+    <p>
+      <span id="toggleText">Don't have an account?</span>
+      <span class="switch-link" onclick="toggleMode()" id="toggleLink">Register</span>
+    </p>
+    <p id="authMessage"></p>
+  </div>  <script>
+    let isLogin = true;
 
-    function generateReferralCode(length = 8) {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      let code = "";
-      for (let i = 0; i < length; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return code;
+    function toggleMode() {
+      isLogin = !isLogin;
+      document.getElementById("formTitle").textContent = isLogin ? "Login" : "Register";
+      document.getElementById("authButton").textContent = isLogin ? "Login" : "Register";
+      document.getElementById("toggleText").textContent = isLogin ? "Don't have an account?" : "Already have an account?";
+      document.getElementById("toggleLink").textContent = isLogin ? "Register" : "Login";
     }
 
-    async function signup() {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const referralInput = document.getElementById('referral').value.trim();
-      const signupBtn = document.getElementById('signupBtn');
+    function handleAuth() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-      if (!email || !password) {
-        alert("Please fill in all required fields.");
-        return;
-      }
-
-      signupBtn.disabled = true;
-
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-        const uid = user.uid;
-        const referralCode = generateReferralCode();
-
-        const userData = {
-          uid: uid,
-          email: email,
-          score: 5,
-          trust: "New Miner",
-          level: "Amateurs",
-          referralCode: referralCode,
-          referredBy: referralInput || null,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        if (referralInput) {
-          const querySnapshot = await db.collection("users")
-            .where("referralCode", "==", referralInput)
-            .get();
-
-          if (!querySnapshot.empty) {
-            const referrerDoc = querySnapshot.docs[0];
-            const referrerId = referrerDoc.id;
-
-            await db.collection("users").doc(referrerId).update({
-              score: firebase.firestore.FieldValue.increment(5)
+      if (isLogin) {
+        auth.signInWithEmailAndPassword(email, password)
+          .then(() => {
+            window.location.href = "mining.html";
+          })
+          .catch(error => {
+            document.getElementById("authMessage").textContent = error.message;
+          });
+      } else {
+        auth.createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            const uid = userCredential.user.uid;
+            return db.collection("users").doc(uid).set({
+              email: email,
+              score: 5,
+              lastMine: 0,
+              trust: 5,
+              referral: null
             });
-          } else {
-            alert("Invalid referral code entered.");
-            signupBtn.disabled = false;
-            return;
-          }
-        }
-
-        await db.collection("users").doc(uid).set(userData);
-
-        alert("Signup successful!");
-        window.location.href = "index.html";
-
-      } catch (error) {
-        if (error.code === "auth/email-already-in-use") {
-          alert("This email is already in use.");
-        } else {
-          alert("Signup failed: " + error.message);
-        }
-        console.error(error);
-      } finally {
-        signupBtn.disabled = false;
+          })
+          .then(() => {
+            window.location.href = "mining.html";
+          })
+          .catch(error => {
+            document.getElementById("authMessage").textContent = error.message;
+          });
       }
     }
-
-    // Optional: Pre-fill referral from URL (?ref=CODE)
-    window.onload = () => {
-      const params = new URLSearchParams(window.location.search);
-      const ref = params.get('ref');
-      if (ref) {
-        document.getElementById('referral').value = ref;
-      }
-    };
-  </script>
-</body>
+  </script></body>
 </html>
