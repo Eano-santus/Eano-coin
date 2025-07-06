@@ -1,59 +1,46 @@
 // auth.js
-firebase.auth().onAuthStateChanged(user => {
-  if (!user) {
-    alert("You must log in first.");
-    window.location.href = "index.html"; // redirect to login/signup page
-  }
-});
 
-  const uid = user.uid;
-  const userRef = firebase.firestore().collection('users').doc(uid);
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-  try {
-    const doc = await userRef.get();
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+  authDomain: "eano-miner.firebaseapp.com",
+  projectId: "eano-miner",
+  storageBucket: "eano-miner.firebasestorage.app",
+  messagingSenderId: "50186911438",
+  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
+  measurementId: "G-NS0W6QSS69"
+};
 
-    if (!doc.exists) {
-      // First-time user: set default values
-      const defaultData = {
-        score: 5,
-        trust: 5,
-        referrals: 0,
-        lastMine: 0,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
-      await userRef.set(defaultData);
-    }
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-    const userData = (await userRef.get()).data();
+// Register new user
+export function register(email, password) {
+  return createUserWithEmailAndPassword(auth, email, password);
+}
 
-    // Display score
-    document.getElementById("score").textContent = `Your Score: ${userData.score || 0}`;
+// Login user
+export function login(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
 
-    // Trust Level Logic
-    let trustLabel = "Needs Trust";
-    const trust = userData.trust || 0;
-    if (trust >= 500) trustLabel = "Trusted Miner";
-    else if (trust >= 200) trustLabel = "Reliable Miner";
-    else if (trust >= 80) trustLabel = "New Miner";
-    document.getElementById("trustScore").textContent = `Trust Status: ${trustLabel}`;
+// Google login
+export function loginWithGoogle() {
+  return signInWithPopup(auth, provider);
+}
 
-    // Miner Level Logic
-    let level = "Amateur";
-    const score = userData.score || 0;
-    if (score >= 10000) level = "Leader";
-    else if (score >= 5000) level = "Master";
-    else if (score >= 1000) level = "Professional";
-    else if (score >= 500) level = "Elite";
-    else if (score >= 50) level = "Amateur";
-    document.getElementById("minerLevel").textContent = `Miner Level: ${level}`;
+// Logout
+export function logout() {
+  return signOut(auth);
+}
 
-    // Referral Code = UID
-    document.getElementById("codeDisplay").textContent = uid;
-    document.getElementById("linkDisplay").href = `https://your-netlify-domain.netlify.app/signup.html?ref=${uid}`;
-    document.getElementById("linkDisplay").textContent = `https://your-netlify-domain.netlify.app/signup.html?ref=${uid}`;
-
-  } catch (error) {
-    console.error("Auth error:", error);
-    alert("Error loading user data. Please try again.");
-  }
-});
+// Monitor authentication state
+export function onAuthChange(callback) {
+  onAuthStateChanged(auth, callback);
+}
