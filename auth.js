@@ -1,8 +1,8 @@
 // auth.js
 
-// Import Firebase modules
+// Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -18,29 +18,59 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 
-// Register new user
-export function register(email, password) {
-  return createUserWithEmailAndPassword(auth, email, password);
-}
+// Redirect if already logged in
+onAuthStateChanged(auth, (user) => {
+  const currentPage = window.location.pathname;
 
-// Login user
-export function login(email, password) {
-  return signInWithEmailAndPassword(auth, email, password);
-}
+  if (user && currentPage.includes("index.html")) {
+    window.location.href = "dashboard.html";
+  }
 
-// Google login
-export function loginWithGoogle() {
-  return signInWithPopup(auth, provider);
-}
+  if (!user && currentPage.includes("dashboard.html")) {
+    window.location.href = "index.html";
+  }
+});
 
-// Logout
-export function logout() {
-  return signOut(auth);
-}
+// SIGNUP
+window.signup = function (e) {
+  e.preventDefault();
+  const email = document.getElementById("signup-email").value;
+  const password = document.getElementById("signup-password").value;
 
-// Monitor authentication state
-export function onAuthChange(callback) {
-  onAuthStateChanged(auth, callback);
-}
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      alert("Signup successful!");
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      alert("Signup Error: " + error.message);
+    });
+};
+
+// LOGIN
+window.login = function (e) {
+  e.preventDefault();
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+      alert("Login Error: " + error.message);
+    });
+};
+
+// LOGOUT
+window.logout = function () {
+  signOut(auth)
+    .then(() => {
+      alert("Logged out successfully.");
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      alert("Logout Error: " + error.message);
+    });
+};
