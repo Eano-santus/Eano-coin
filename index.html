@@ -178,8 +178,6 @@
     googleBtn.addEventListener('click', () => {
       auth.signInWithPopup(provider)
         .then(result => {
-          provider.addScope('profile');
-          provider.addScope('email');
           window.location.href = "dashboard.html";
         })
         .catch(error => {
