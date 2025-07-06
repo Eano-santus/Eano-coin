@@ -1,11 +1,10 @@
 // auth.js
-
-firebase.auth().onAuthStateChanged(async (user) => {
+firebase.auth().onAuthStateChanged(user => {
   if (!user) {
-    // Not logged in — redirect to login/signup
-    window.location.href = "signup.html";
-    return;
+    alert("You must log in first.");
+    window.location.href = "index.html"; // redirect to login/signup page
   }
+});
 
   const uid = user.uid;
   const userRef = firebase.firestore().collection('users').doc(uid);
