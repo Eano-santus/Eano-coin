@@ -201,3 +201,33 @@ document.getElementById("logoutButton").addEventListener("click", () => {
       });
   }
 });
+function storeOfflineMining() {
+  const now = new Date().toISOString();
+  let actions = JSON.parse(localStorage.getItem('offlineMines')) || [];
+  actions.push({ timestamp: now });
+  localStorage.setItem('offlineMines', JSON.stringify(actions));
+  console.log('[Offline] Mining stored');
+}
+
+// Called when mine button is clicked
+function handleMineClick() {
+  if (!navigator.onLine) {
+    storeOfflineMining();
+  } else {
+    // Normal Firebase mining logic here
+    // Example: updateUserMiningScoreInFirebase();
+  }
+}
+
+// Auto sync when back online
+window.addEventListener('online', () => {
+  const actions = JSON.parse(localStorage.getItem('offlineMines')) || [];
+  if (actions.length > 0) {
+    actions.forEach(action => {
+      // Replace this with your actual mining sync logic
+      console.log('Syncing offline mining:', action.timestamp);
+      // updateUserMiningScoreInFirebase();
+    });
+    localStorage.removeItem('offlineMines');
+  }
+});
