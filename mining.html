@@ -98,10 +98,45 @@
 
 <body>
   <div class="container">
-    <h1>EANO Coin Mining</h1>
-    <h2>Mine every 24 hours</h2>
-    <button id="mineButton">Mine</button>
-    <p id="countdown">Next mine available in: --:--:--</p>
+    <script>
+  const mineButton = document.getElementById('mineButton');
+
+  mineButton.addEventListener('click', () => {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      alert('Please log in to mine.');
+      return;
+    }
+
+    const uid = user.uid;
+    const userRef = firebase.firestore().collection('users').doc(uid);
+
+    userRef.get().then(doc => {
+      let currentScore = 0;
+      if (doc.exists) {
+        currentScore = doc.data().score || 0;
+      }
+
+      const lastMineTime = doc.data().lastMine || 0;
+      const now = Date.now();
+
+      // Allow mining once every 24 hours (86400000 ms)
+      if (now - lastMineTime < 86400000) {
+        alert("You can only mine once every 24 hours.");
+        return;
+      }
+
+      userRef.update({
+        score: currentScore + 1,
+        lastMine: now
+      }).then(() => {
+        alert("Successfully mined 1 EANO!");
+        // Optionally update the display
+      }).catch(error => {
+        console.error("Mining error:", error);
+      });
+    });
+  });
     <p id="score">Your Score: 0</p>
     <p id="trustScore">Trust Status: Unknown</p>
     <p id="minerLevel">Miner Level: Unknown</p>
