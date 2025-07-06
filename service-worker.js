@@ -3,8 +3,9 @@ const FILES_TO_CACHE = [
   '/',
   '/index.html',
   '/dashboard.html',
+  '/offline.html',
   '/dashboard.js',
-  '/style.css',
+  '/assets/style.css',
   '/favicon.ico',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap',
@@ -14,27 +15,18 @@ const FILES_TO_CACHE = [
 ];
 
 self.addEventListener('install', event => {
-  console.log('[SW] Installing and caching app shell');
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(FILES_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
   );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
-  console.log('[SW] Activated');
   event.waitUntil(
-    caches.keys().then(keyList =>
-      Promise.all(
-        keyList.map(key => {
-          if (key !== CACHE_NAME) {
-            console.log('[SW] Removing old cache:', key);
-            return caches.delete(key);
-          }
-        })
-      )
+    caches.keys().then(keys =>
+      Promise.all(keys.map(key => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      }))
     )
   );
   self.clients.claim();
@@ -42,10 +34,8 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    }).catch(() => {
-      return caches.match('/offline.html');
-    })
+    caches.match(event.request).then(resp => {
+      return resp || fetch(event.request);
+    }).catch(() => caches.match('/offline.html'))
   );
 });
