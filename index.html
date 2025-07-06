@@ -1,161 +1,198 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin Dashboard</title>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#FFD700">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>EANO Login</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" />
   <style>
     body {
-      font-family: 'Inter', sans-serif;
       margin: 0;
-      background-color: #000;
-      color: #fff;
+      padding: 0;
+      font-family: 'Rubik', sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
       display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
     }
-    header {
-      padding: 1rem;
-      background: #111;
+
+    .login-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 16px;
       text-align: center;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #f9d342;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      width: 90%;
+      max-width: 400px;
     }
-    .container {
-      flex: 1;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+
+    .login-container h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: gold;
     }
-    .card {
-      background: #1a1a1a;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
-    }
-    .title {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      color: #f9d342;
-    }
-    button {
-      background-color: #f9d342;
+
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
       border: none;
-      padding: 0.6rem 1.2rem;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background-color: gold;
+      border: none;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 0.5rem;
+      transition: 0.3s;
     }
-    button:hover {
-      background-color: #ffd700;
+
+    .login-container button:hover {
+      background-color: #ffcc00;
     }
-    .admin-panel.hidden {
-      display: none;
+
+    .small-btn {
+      font-size: 14px;
+      background-color: transparent;
+      color: #ccc;
+      margin: 5px 0;
+      text-decoration: underline;
     }
-    @media (min-width: 600px) {
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-      }
+
+    .google-btn {
+      background-color: white;
+      color: black;
+      font-weight: bold;
     }
-    .active {
-      font-weight: 800;
+
+    .message {
+      margin-top: 10px;
+      color: red;
     }
   </style>
-</head>
-<body class="bg-gray-100 text-gray-800">  <header>EANO Coin Dashboard</header>  <!-- Sidebar and Main Content -->  <div class="flex flex-col md:flex-row min-h-screen"><!-- Sidebar -->
-<aside class="w-full md:w-64 bg-black text-white p-4 space-y-4">
-  <div class="text-2xl font-bold text-yellow-400">EANO COIN</div>
-  <nav class="space-y-2">
-    <a href="#home" class="block hover:text-yellow-400">Home</a>
-    <a href="#mine" class="block hover:text-yellow-400">Mine</a>
-    <a href="#invite" class="block hover:text-yellow-400">Invite</a>
-    <a href="#mainnet" class="block hover:text-yellow-400">Mainnet</a>
-    <a href="#profile" class="block hover:text-yellow-400">Profile</a>
-    <a href="#author" class="block hover:text-yellow-400">Author</a>
-    <a href="https://t.me/eanocoin" target="_blank" class="block hover:text-yellow-400">Support Portal</a>
-    <a href="#leaderboard" class="block hover:text-yellow-400">Leaderboard</a>
-    <button id="logoutButton" class="w-full mt-4 bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Logout</button>
-  </nav>
-</aside>
 
-<!-- Main Content -->
-<main class="flex-1 p-4 space-y-6 overflow-y-auto">
-  <section id="home">
-    <h1 class="text-3xl font-bold">Welcome to EANO Coin</h1>
-    <p class="text-gray-600">Your gateway to community-driven mining and empowerment.</p>
-  </section>
-
-  <section id="mine" class="bg-blue p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Mine</h2>
-    <p class="text-gray-600">Mining Rate: <strong>0.100 EANO/hour</strong></p>
-    <button id="mineButton" class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded font-bold">Start Mining</button>
-    <p class="mt-2 text-sm">Countdown: <span id="countdown">00:00:00</span></p>
-    <p class="text-sm">Your Score: <span id="coinBalance">0</span></p>
-    <p class="text-sm">Trust Level: <span id="trustStatus">Unknown</span></p>
-    <p class="text-sm">Level: <span id="upgradeLevel">Unknown</span></p>
-  </section>
-
-  <section id="invite" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Invite</h2>
-    <p class="text-sm">Referral Code: <span id="referralCode">Loading...</span></p>
-    <p class="text-sm">Referral Link: <span id="referralLink">Loading...</span></p>
-  </section>
-
-  <section id="mainnet" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Mainnet & KYC</h2>
-    <p class="text-sm">Complete necessary procedures to qualify for migration to EANO Mainnet. Coming soon.</p>
-    <button class="mt-2 bg-black text-white px-4 py-2 rounded">Begin KYC</button>
-  </section>
-
-  <section id="profile" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
-    <p>Email: <span id="userEmail">Loading...</span></p>
-    <p>User ID: <span id="userUID">Loading...</span></p>
-  </section>
-
-  <section id="author" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Author</h2>
-    <p class="text-sm">
-      Founded by <strong>Santus Santorum</strong>. Welcome to EANO Coin Project. EANO Coin is a decentralized cryptocurrency built for empowerment and indigenous resilience. It represents economic liberation through indigenous values and community-driven technology. EANO stands for the four great market days: Eke, Afor, Nkwo, Orie — a symbol of time, trade, and tradition.
-    </p>
-  </section>
-
-  <section id="leaderboard" class="bg-white p-4 rounded shadow">
-    <h2 class="text-xl font-semibold mb-2">Leaderboard</h2>
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <p class="font-bold">Your Position:</p>
-        <p id="userRank">Loading...</p>
-      </div>
-      <div>
-        <p class="font-bold">Top Miners</p>
-        <ul id="topMiners" class="list-disc pl-5 text-sm"></ul>
-      </div>
-    </div>
-  </section>
-</main>
-
-  </div>  <div class="container">
-    <div class="card admin-panel hidden" id="adminPanel">
-      <div class="title">Admin Controls</div>
-      <p>You are logged in as an admin. Future controls will appear here.</p>
-    </div>
-  </div>  <!-- Firebase SDK -->  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  <script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-mining.firebaseapp.com",
-      projectId: "eano-mining",
-      storageBucket: "eano-mining.appspot.com",
-      messagingSenderId: "175857632609",
-      appId: "1:175857632609:web:1447322a8438dacf4560d2"
+      authDomain: "eano-coin.firebaseapp.com",
+      projectId: "eano-coin",
+      storageBucket: "eano-coin.appspot.com",
+      messagingSenderId: "603567498471",
+      appId: "1:603567498471:web:1abf4c34c5d73092dc91b5"
     };
+
     firebase.initializeApp(firebaseConfig);
-  </script>  <script src="/scripts/dashboard.js"></script></body>
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+  </script>
+</head>
+
+<body>
+  <div class="login-container">
+    <h2>Welcome to EANO</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn" class="small-btn">Create Account</button>
+    <button id="forgotBtn" class="small-btn">Forgot Password?</button>
+    <button id="googleBtn" class="google-btn">Sign in with Google</button>
+    <p class="message" id="messageBox"></p>
+  </div>
+
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const forgotBtn = document.getElementById('forgotBtn');
+    const googleBtn = document.getElementById('googleBtn');
+    const messageBox = document.getElementById('messageBox');
+
+    loginBtn.addEventListener('click', () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        messageBox.textContent = "Please enter both email and password.";
+        return;
+      }
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          messageBox.textContent = error.message;
+        });
+    });
+
+    registerBtn.addEventListener('click', () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        messageBox.textContent = "Enter email and password to register.";
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          messageBox.textContent = error.message;
+        });
+    });
+
+    forgotBtn.addEventListener('click', () => {
+      const email = document.getElementById('email').value.trim();
+      if (!email) {
+        messageBox.textContent = "Enter your email to reset password.";
+        return;
+        if (password.length < 6) {
+       messageBox.textContent = "Password must be at least 6 characters.";
+       return;
+        }
+      }
+
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          messageBox.style.color = "lightgreen";
+          messageBox.textContent = "Password reset email sent!";
+        })
+        .catch(error => {
+          messageBox.style.color = "red";
+          messageBox.textContent = error.message;
+        });
+    });
+
+    googleBtn.addEventListener('click', () => {
+      auth.signInWithPopup(provider)
+        .then(result => {
+          window.location.href = "dashboard.html";
+        })
+        .catch(error => {
+          messageBox.textContent = error.message;
+          provider.addScope('profile');
+          provider.addScope('email');
+        });
+    });
+
+    // Redirect if already logged in
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
+  </script>
+</body>
 </html>
