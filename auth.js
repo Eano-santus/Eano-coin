@@ -1,15 +1,11 @@
+// auth.js
+
 // Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// Firebase config
+// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
@@ -23,50 +19,33 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Handle Google Sign-In
-document.getElementById("google-signin").addEventListener("click", () => {
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      window.location.href = "dashboard.html";
-    })
-    .catch((error) => {
-      alert("Google Sign-In Failed: " + error.message);
-    });
-});
+// Attach click listener to Google Sign-In button
+document.getElementById("googleSignInBtn").addEventListener("click", async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
 
-// Handle Email/Password Sign-Up
-document.getElementById("signup-btn").addEventListener("click", () => {
-  const email = document.getElementById("signup-email").value;
-  const password = document.getElementById("signup-password").value;
+    // Check if user already exists in Firestore
+    const userDocRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userDocRef);
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      window.location.href = "dashboard.html";
-    })
-    .catch((error) => {
-      alert("Signup Error: " + error.message);
-    });
-});
+    if (!docSnap.exists()) {
+      // New user: create initial data in Firestore
+      await setDoc(userDocRef, {
+        email: user.email,
+        balance: 0,
+        lastMine: null
+      });
+    }
 
-// Handle Email/Password Login
-document.getElementById("login-btn").addEventListener("click", () => {
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
+    // Redirect to dashboard
+    window.location.href = "dashboard.html";
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      window.location.href = "dashboard.html";
-    })
-    .catch((error) => {
-      alert("Login Error: " + error.message);
-    });
-});
-
-// Optional: Protect dashboard.html
-onAuthStateChanged(auth, (user) => {
-  if (window.location.pathname.includes("dashboard.html") && !user) {
-    window.location.href = "index.html"; // Redirect if not logged in
+  } catch (error) {
+    console.error("Google sign-in error:", error);
+    alert("Sign-in failed: " + error.message);
   }
 });
