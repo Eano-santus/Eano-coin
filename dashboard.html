@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#FFD700">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Dashboard</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FFD700">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  body {
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
       margin: 0;
       background-color: #000;
       color: #fff;
@@ -54,12 +56,6 @@
     button:hover {
       background-color: #ffd700;
     }
-    .admin-panel {
-      margin-top: 1rem;
-      border-top: 1px solid #444;
-      padding-top: 1rem;
-      color: #aaa;
-    }
     .admin-panel.hidden {
       display: none;
     }
@@ -69,64 +65,16 @@
         margin: 0 auto;
       }
     }
-  </style>
-</head>
-<body>
-  <header>EANO Coin Dashboard</header>
-
-  <div class="container">
-    <div class="card">
-      <div class="title">Welcome, <span id="userEmail">Loading...</span></div>
-      <div><strong>Trust Level:</strong> <span id="trustLevel">-</span></div>
-      <div><strong>Miner Score:</strong> <span id="score">-</span></div>
-      <div><strong>Level:</strong> <span id="level">-</span></div>
-    </div>
-
-    <div class="card">
-      <div class="title">Referral Code</div>
-      <div id="referralCode">Loading...</div>
-      <button onclick="copyReferralCode()">Copy Code</button>
-    </div>
-
-    <div class="card">
-      <div class="title">Invite Friends</div>
-      <p>Share this code to earn extra score. When they join, you earn +5 instantly.</p>
-      <p><strong>Invite Link:</strong></p>
-      <p id="inviteLink">Generating...</p>
-    </div>
-
-    <div class="card admin-panel hidden" id="adminPanel">
-      <div class="title">Admin Controls</div>
-      <p>You are logged in as an admin. Future controls will appear here.</p>
-    </div>
-  </div>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-mining.firebaseapp.com",
-      projectId: "eano-mining",
-      storageBucket: "eano-mining.appspot.com",
-      messagingSenderId: "175857632609",
-      appId: "1:175857632609:web:1447322a8438dacf4560d2"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
-
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
     .active {
       font-weight: 800;
     }
   </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
-  <a href="admin.html" id="adminLink" class="hidden">Admin Panel</a>
+
+  <header>EANO Coin Dashboard</header>
+
+  <!-- Sidebar and Main Content -->
   <div class="flex flex-col md:flex-row min-h-screen">
 
     <!-- Sidebar -->
@@ -155,7 +103,7 @@
       </section>
 
       <!-- Mine -->
-      <section id="mine" class="bg-white p-4 rounded shadow">
+      <section id="mine" class="bg-blue p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Mine</h2>
         <p class="text-gray-600">Mining Rate: <strong>0.100 EANO/hour</strong></p>
         <button id="mineButton" class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded font-bold">Start Mining</button>
@@ -165,28 +113,24 @@
         <p class="text-sm">Level: <span id="upgradeLevel">Loading...</span></p>
       </section>
 
-      <!-- Invite -->
-      <section id="invite" class="bg-white p-4 rounded shadow">
+      section id="invite" class="bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Invite</h2>
         <p class="text-sm">Referral Code: <span id="referralCode">NickySantus</span></p>
         <p class="text-sm">Referral Link: <span id="referralLink">https://eano-coin.netlify.app/nickysantus</span></p>
       </section>
 
-      <!-- Mainnet & KYC -->
       <section id="mainnet" class="bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Mainnet & KYC</h2>
         <p class="text-sm">Complete necessary procedures to qualify for migration to EANO Mainnet. Coming soon.</p>
         <button class="mt-2 bg-black text-white px-4 py-2 rounded">Begin KYC</button>
       </section>
 
-      <!-- Profile -->
       <section id="profile" class="bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Your Profile</h2>
         <p>Email: <span id="userEmail">Loading...</span></p>
         <p>User ID: <span id="userUID">Loading...</span></p>
       </section>
 
-      <!-- Author -->
       <section id="author" class="bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Author</h2>
         <p class="text-sm">
@@ -194,38 +138,42 @@
         </p>
       </section>
 
-      <!-- Leaderboard -->
       <section id="leaderboard" class="bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Leaderboard</h2>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <p class="font-bold">Your Trust Score:</p>
-            <span id="trustStatus">Loading...</span>
+            <p class="font-bold">Your Position:</p>
+            <p id="userRank">Loading...</p>
           </div>
           <div>
-            <p class="font-bold">Your Level:</p>
-            <span id="upgradeLevel">Loading...</span>
+            <p class="font-bold">Top Miners</p>
+            <ul id="topMiners" class="list-disc pl-5 text-sm"></ul>
           </div>
-        </div>
-        <div class="mt-4">
-          <h3 class="font-semibold">Top 20 Miners</h3>
-          <ul id="topMiners" class="list-disc pl-6 text-sm">
-            <li>Loading...</li>
-          </ul>
-        </div>
-      </section>
     </main>
   </div>
 
-  <!-- JS Logic -->
-  <script type="module" src="./dashboard.js"></script>
-</body>
+  const allowedAdminEmail = "Santusnicky8@gmail.com";
+  <div class="container">
+    <div class="card admin-panel hidden" id="adminPanel">
+      <div class="title">Admin Controls</div>
+      <p>You are logged in as an admin. Future controls will appear here.</p>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => console.log('[SW] Registered:', reg.scope))
-      .catch(err => console.error('[SW] Registration failed:', err));
-  }
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-mining.firebaseapp.com",
+      projectId: "eano-mining",
+      storageBucket: "eano-mining.appspot.com",
+      messagingSenderId: "175857632609",
+      appId: "1:175857632609:web:1447322a8438dacf4560d2"
+    };
+    firebase.initializeApp(firebaseConfig);
   </script>
+</body>
 </html>
-<script>
