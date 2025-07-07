@@ -3,121 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Invite & Earn – EANO Coin</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <title>Invite Friends - EANO</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background-color: #161b22;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-    }
-    h1 {
+    .invite-container {
+      max-width: 500px;
+      margin: 80px auto;
+      padding: 2rem;
+      background: rgba(0,0,0,0.7);
+      border-radius: 16px;
+      color: #fff;
       text-align: center;
-      color: #facc15;
     }
-    .label {
-      font-weight: bold;
-      color: #facc15;
+    .invite-link-box {
+      background: #222;
+      padding: 10px;
+      border-radius: 8px;
+      word-break: break-all;
+    }
+    .btn-copy {
       margin-top: 10px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
+      background: #28a745;
       border: none;
-      border-radius: 5px;
-      background-color: #1e293b;
-      color: white;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #facc15;
-      color: black;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #fff;
       cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #eab308;
-    }
-    .back-btn {
-      margin-top: 20px;
-      background-color: #374151;
-      color: #facc15;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Invite & Earn</h1>
-    <p>Your referral code:</p>
-    <input type="text" id="referralCode" readonly />
-    <p>Your referral link:</p>
-    <input type="text" id="referralLink" readonly />
-    <p>You have referred:</p>
-    <input type="text" id="referralCount" readonly />
-
-    <button onclick="copyLink()">📋 Copy Referral Link</button>
-    <button onclick="shareWhatsApp()">📲 Share via WhatsApp</button>
-    <button class="back-btn" onclick="window.location.href='mining.html'">← Back to Mining</button>
+  <div class="topbar">
+    <div class="d-flex align-items-center">
+      <img src="logo.png" alt="Logo" class="logo me-2">
+      <strong>EANO</strong>
+    </div>
+    <div>
+      <select id="lang-select" class="form-select form-select-sm" style="width: auto;">
+        <option value="en">🌍 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="sw">🇰🇪 Swahili</option>
+        <option value="gb">🌍 Igbo</option>
+        <option value="ch">🌍 Chinese</option>
+      </select>
+    </div>
   </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
+  <div class="invite-container">
+    <h2>Invite Your Friends to EANO</h2>
+    <p>Earn rewards for every friend who joins through your link.</p>
+    
+    <div class="invite-link-box" id="invite-link">Loading...</div>
+    <button class="btn-copy" id="copy-link">📋 Copy Link</button>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    <div class="mt-4">
+      <h4>Referrals</h4>
+      <div id="referral-count">You have invited: 0 people</div>
+    </div>
+  </div>
 
-    auth.onAuthStateChanged(async user => {
-      if (user) {
-        const uid = user.uid;
-        const doc = await db.collection("miners").doc(uid).get();
-        const data = doc.data();
-        const refCode = data.referralCode || uid.slice(0, 8);
-        const refCount = data.referrals || 0;
-
-        document.getElementById("referralCode").value = refCode;
-        document.getElementById("referralLink").value = `${window.location.origin}/signup.html?ref=${refCode}`;
-        document.getElementById("referralCount").value = `${refCount} people`;
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    function copyLink() {
-      const link = document.getElementById("referralLink").value;
-      navigator.clipboard.writeText(link).then(() => alert("Referral link copied!"));
-    }
-
-    function shareWhatsApp() {
-      const link = document.getElementById("referralLink").value;
-      const text = `Join me and earn EANO Coin! Use this link to sign up: ${link}`;
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-    }
-  </script>
+  <script type="module" src="invite.js"></script>
+  <script type="module" src="lang.js"></script>
 </body>
 </html>
