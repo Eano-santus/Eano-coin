@@ -14,9 +14,11 @@ const leaderboardList = document.getElementById("referral-leaderboard");
 
 // Badge logic based on trust score
 function getTrustBadge(trustScore) {
-  if (trustScore >= 50) return "🟢 Trusted";
-  if (trustScore >= 20) return "🟡 Average";
-  return "🔴 Low";
+  if (trustScore >= 1000) return "🟢 Trusted Miner";
+  if (trustScore >= 500) return "🟡 Reliable Miner";
+  if (trustScore >= 300) return "🔵 New Miner";
+  return "🔴 Low Trust";
+}
 }
 
 // Mining level based on balance
