@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings - EANO</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .settings-container {
+      max-width: 600px;
+      margin: 80px auto;
+      background: rgba(0,0,0,0.7);
+      padding: 2rem;
+      color: #fff;
+      border-radius: 16px;
+    }
+    .settings-container h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .info-box {
+      margin-bottom: 1rem;
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="d-flex align-items-center">
+      <img src="logo.png" alt="EANO Logo" class="logo me-2">
+      <strong>EANO</strong>
+    </div>
+    <div>
+      <select id="lang-select" class="form-select form-select-sm" style="width: auto;">
+        <option value="en">🌍 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="sw">🇰🇪 Swahili</option>
+        <option value="ig">🇳🇬 Igbo</option>
+        <option value="zh">🇨🇳 Chinese</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="settings-container">
+    <h2>Your Miner Stats</h2>
+    <div class="info-box">👤 Email: <span id="email"></span></div>
+    <div class="info-box">💰 Balance: <span id="balance">0</span> EANO</div>
+    <div class="info-box">📈 Trust Score: <span id="trustScore">0</span></div>
+    <div class="info-box">🎖 Level: <span id="level">Beginner</span></div>
+    <div class="info-box">🔗 Referral Link: <a href="#" id="refLink">Generating...</a></div>
+  </div>
+
+  <script type="module" src="settings.js"></script>
+  <script type="module" src="lang.js"></script>
+</body>
+</html>
