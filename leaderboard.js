@@ -21,16 +21,17 @@ function getTrustBadge(trustScore) {
 }
 }
 
-// Mining level based on balance
+// Mining Level based on EANO balance
 function getLevelFromBalance(balance) {
-  if (balance >= 1000) return "🐘 Elephant";
+  if (balance >= 3000) return "🐘 Elephant";
+  if (balance >= 2000) return "🦍 Gorilla";
+  if (balance >= 1000) return "🦁 Lion";
   if (balance >= 500) return "🦒 Giraffe";
-  if (balance >= 200) return "🦍 Gorilla";
-  if (balance >= 100) return "🦁 Lion";
-  if (balance >= 50) return "🐺 Wolf";
-  if (balance >= 20) return "🐶 Dog";
-  if (balance >= 5) return "🐹 Hamster";
-  return "🐣 Egg";
+  if (balance >= 250) return "🐺 Wolf";
+  if (balance >= 100) return "🐶 Dog";
+  if (balance >= 25) return "🐹 Hamster";
+  if (balance >= 5) return "🐥 Chicken";
+  return "🥚 Unhatched";
 }
 
 // Load and display top 10 referrers
