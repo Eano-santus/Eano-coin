@@ -1,0 +1,30 @@
+/* settings.css */
+.settings-container {
+  max-width: 500px;
+  margin: 80px auto;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2rem;
+  border-radius: 16px;
+  color: #fff;
+  text-align: center;
+}
+
+.settings-container h2 {
+  margin-bottom: 1.5rem;
+}
+
+.settings-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.settings-item strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #ffc107;
+  margin-bottom: 0.3rem;
+}
