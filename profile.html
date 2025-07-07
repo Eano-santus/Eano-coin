@@ -1,207 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EANO Coin - Profile</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="auth-check.js"></script> <!-- Firebase Auth protection -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile - EANO</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: url('eano-background.jpg') no-repeat center center fixed;
+      background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
-      color: #f4f4f4;
       margin: 0;
+      color: #fff;
     }
 
-    .container {
-      display: flex;
+    .profile-container {
+      max-width: 600px;
+      margin: 80px auto;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
 
-    .sidebar {
-      width: 220px;
-      background: #000000cc;
-      padding: 20px;
-      height: 100vh;
-      position: fixed;
-    }
-
-    .sidebar h2 {
+    .profile-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
       color: gold;
-      margin-bottom: 30px;
     }
 
-    .sidebar a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin-bottom: 15px;
+    .profile-section {
+      margin-bottom: 20px;
+    }
+
+    .profile-section label {
       font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
     }
 
-    .sidebar a:hover {
-      color: gold;
-    }
-
-    .main-content {
-      margin-left: 240px;
-      padding: 30px;
+    .profile-section input {
       width: 100%;
-    }
-
-    .section {
-      background: #111111cc;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 0 10px #444;
-    }
-
-    .section h3 {
-      color: gold;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
       margin-bottom: 10px;
     }
 
-    .info-row {
-      margin: 10px 0;
-    }
-
-    .info-row span {
-      font-weight: bold;
-      color: #ddd;
-    }
-
-    .invite-box input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      border: none;
-    }
-
     .btn {
-      margin-top: 10px;
-      padding: 8px 14px;
+      display: inline-block;
+      padding: 10px 20px;
       border: none;
-      background-color: gold;
-      color: black;
+      border-radius: 8px;
+      background: gold;
+      color: #000;
       font-weight: bold;
-      border-radius: 6px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     .btn:hover {
-      background-color: #ffd700;
+      background: #ffd700;
     }
 
-    @media screen and (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-      .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        text-align: center;
-      }
-      .main-content {
-        margin-left: 0;
-        padding: 20px;
+    .btn.logout {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn.logout:hover {
+      background: #c82333;
+    }
+
+    .section-title {
+      color: #ddd;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #555;
+      padding-bottom: 4px;
+    }
+
+    .info-box {
+      background: #111;
+      padding: 12px;
+      border-radius: 8px;
+      word-break: break-word;
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    @media screen and (max-width: 600px) {
+      .profile-container {
+        margin: 40px 1rem;
+        padding: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="sidebar">
-      <h2>☀ EANO</h2>
-      <a href="index.html">⛏️ Mine</a>
-      <a href="profile.html">👤 Profile</a>
-      <a href="leaderboard.html">🏆 Leaderboard</a>
-      <a href="trust.html">🔰 Trust Score</a>
-      <a href="levels.html">🎖️ Level Score</a>
+
+  <div class="profile-container">
+    <h2>👤 Your EANO Profile</h2>
+
+    <div class="profile-section">
+      <div class="section-title">Username</div>
+      <div class="info-box" id="user-name">Loading...</div>
     </div>
 
-    <div class="main-content">
-      <div class="section">
-        <h3>👤 User Info</h3>
-        <div class="info-row">Username: <span id="user-name">Loading...</span></div>
-        <div class="info-row">Email: <span id="user-email">Loading...</span></div>
-        <div class="info-row">Phone: <input type="text" id="phone-number" placeholder="Enter phone number" /></div>
-        <button class="btn" onclick="savePhone()">Save Phone</button>
-      </div>
+    <div class="profile-section">
+      <div class="section-title">Email</div>
+      <div class="info-box" id="user-email">Loading...</div>
+    </div>
 
-      <div class="section">
-        <h3>🛡️ KYC</h3>
-        <p>KYC feature is <strong>coming soon</strong>. Stay tuned!</p>
-      </div>
+    <div class="profile-section">
+      <label for="phone-number">Phone Number</label>
+      <input type="text" id="phone-number" placeholder="Enter phone number" />
+      <button class="btn" onclick="savePhone()">💾 Save Phone</button>
+    </div>
 
-      <div class="section invite-box">
-        <h3>🤝 Invite</h3>
-        <p>Share your referral code with friends to earn TrustScore.</p>
-        <input type="text" id="referral-code" readonly value="Loading..." />
-        <button class="btn" onclick="copyReferral()">Copy Code</button>
-      </div>
+    <div class="profile-section">
+      <label for="referral-code">Referral Code</label>
+      <input type="text" id="referral-code" readonly />
+      <button class="btn" onclick="copyReferral()">📋 Copy Referral Code</button>
+    </div>
 
-      <div class="section">
-        <h3>📜 White Paper</h3>
-        <a href="EANO_WhitePaper.pdf" target="_blank" class="btn">View White Paper</a>
-      </div>
+    <div class="profile-section">
+      <div class="section-title">📄 Whitepaper</div>
+      <a href="EANO_WhitePaper.pdf" target="_blank" class="btn">📜 View Whitepaper</a>
+    </div>
 
-      <div class="section">
-        <h3>👨‍💻 Author</h3>
-        <p>Published by: <strong>Santus Santorum</strong></p>
-        <p>GitHub: <a href="https://github.com/Eano-santus/Eano-coin" target="_blank" style="color:gold;">EANO Project</a></p>
-      </div>
+    <div class="profile-section">
+      <div class="section-title">💬 Community</div>
+      <a href="https://t.me/eanocoin" target="_blank" class="btn">🔗 Join Telegram</a>
+    </div>
 
-      <div class="section">
-        <h3>💬 Support Portal</h3>
-        <p>Join our Telegram community for help and updates.</p>
-        <a href="https://t.me/eanocoin" target="_blank" class="btn">Open Telegram</a>
-      </div>
+    <div class="center">
+      <button class="btn logout" id="logoutBtn">🚪 Logout</button>
     </div>
   </div>
 
-  <script type="module">
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { app } from './firebase-config.js';
-
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        document.getElementById('user-name').textContent = user.displayName || "Anonymous";
-        document.getElementById('user-email').textContent = user.email;
-        document.getElementById('referral-code').value = user.uid;
-
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-          document.getElementById("phone-number").value = userDoc.data().phone || "";
-        }
-      } else {
-        window.location.href = "login.html";
-      }
-    });
-
-    window.savePhone = async () => {
-      const user = auth.currentUser;
-      const phone = document.getElementById("phone-number").value;
-      if (user && phone) {
-        await updateDoc(doc(db, "users", user.uid), { phone });
-        alert("Phone number updated.");
-      }
-    }
-
-    window.copyReferral = () => {
-      const refCode = document.getElementById("referral-code");
-      refCode.select();
-      refCode.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      alert("Referral code copied!");
-    }
-  </script>
+  <script type="module" src="profile.js"></script>
 </body>
-  </html>
+</html>
