@@ -1,51 +1,14 @@
-// auth.js
+// auth.js import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"; import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"; import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// Import Firebase modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+const firebaseConfig = { apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw", authDomain: "eano-miner.firebaseapp.com", projectId: "eano-miner", storageBucket: "eano-miner.firebasestorage.app", messagingSenderId: "50186911438", appId: "1:50186911438:web:85410fccc7c5933d761a9f", measurementId: "G-NS0W6QSS69" };
 
-// Your Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "eano-miner.firebaseapp.com",
-  projectId: "eano-miner",
-  storageBucket: "eano-miner.firebasestorage.app",
-  messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-  measurementId: "G-NS0W6QSS69"
-};
+const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const provider = new GoogleAuthProvider();
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+// Elements const loginBtn = document.getElementById("login-btn"); const signupBtn = document.getElementById("signup-btn"); const googleBtn = document.getElementById("google-signin");
 
-// Attach click listener to Google Sign-In button
-document.getElementById("googleSignInBtn").addEventListener("click", async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
+if (loginBtn) { loginBtn.addEventListener("click", async () => { const email = document.getElementById("login-email").value; const password = document.getElementById("login-password").value; try { await signInWithEmailAndPassword(auth, email, password); window.location.href = "dashboard.html"; } catch (err) { alert("Login Failed: " + err.message); } }); }
 
-    // Check if user already exists in Firestore
-    const userDocRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(userDocRef);
+if (signupBtn) { signupBtn.addEventListener("click", async () => { const email = document.getElementById("signup-email").value; const password = document.getElementById("signup-password").value; try { const result = await createUserWithEmailAndPassword(auth, email, password); await setDoc(doc(db, "users", result.user.uid), { email: result.user.email, balance: 0, lastMine: null }); window.location.href = "dashboard.html"; } catch (err) { alert("Signup Failed: " + err.message); } }); }
 
-    if (!docSnap.exists()) {
-      // New user: create initial data in Firestore
-      await setDoc(userDocRef, {
-        email: user.email,
-        balance: 0,
-        lastMine: null
-      });
-    }
+if (googleBtn) { googleBtn.addEventListener("click", async () => { try { const result = await signInWithPopup(auth, provider); const userDoc = doc(db, "users", result.user.uid); const userSnap = await getDoc(userDoc); if (!userSnap.exists()) { await setDoc(userDoc, { email: result.user.email, balance: 0, lastMine: null }); } window.location.href = "dashboard.html"; } catch (err) { alert("Google Sign-In Failed: " + err.message); } }); }
 
-    // Redirect to dashboard
-    window.location.href = "dashboard.html";
-
-  } catch (error) {
-    console.error("Google sign-in error:", error);
-    alert("Sign-in failed: " + error.message);
-  }
-});
