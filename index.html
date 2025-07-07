@@ -6,20 +6,17 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
   <style>
     body {
+      margin: 0;
       background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
     }
     .auth-container {
-      width: 100%;
       max-width: 420px;
+      margin: auto;
+      margin-top: 8vh;
       padding: 2rem;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     }
@@ -45,17 +42,23 @@
       cursor: pointer;
       color: #007bff;
     }
-    .form-control {
-      background-color: #f9f9f9;
-      border: 1px solid #ccc;
+    .language-select {
+      position: absolute;
+      top: 10px;
+      right: 10px;
     }
   </style>
 </head>
-<body>  <div class="auth-container">
-    <img src="logo.png" alt="EANO Logo" class="logo" /><h4 class="text-center mb-3">Join EANO Network</h4>
-
-<!-- Google Sign In -->
-<button id="googleSignInBtn" class="btn btn-google d-flex align-items-center justify-content-center">
+<body>  <select class="form-select language-select" id="language-select">
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+    <option value="sw">Kiswahili</option>
+    <option value="gb">Igbo</option>
+    <option value="ch">Chinese</option>
+  </select>  <div class="auth-container">
+    <img src="logo.png" alt="EANO Logo" class="logo" />
+    <h4 class="text-center mb-3">Join EANO Network</h4><!-- Google Sign In -->
+<button id="google-signin" class="btn btn-google d-flex align-items-center justify-content-center">
   <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" />
   Sign in with Google
 </button>
@@ -76,12 +79,22 @@
   <div class="toggle-section" onclick="toggleAuth()">Already have an account? Login</div>
 </div>
 
-  </div>  <!-- Firebase Auth Logic -->  <script type="module" src="auth.js"></script>  <!-- Toggle script -->  <script>
+  </div>  <!-- Firebase Auth -->  <script type="module" src="auth.js"></script>  <!-- Toggle script -->  <script>
     function toggleAuth() {
       const login = document.getElementById("login-section");
       const signup = document.getElementById("signup-section");
       login.style.display = login.style.display === "none" ? "block" : "none";
       signup.style.display = signup.style.display === "none" ? "block" : "none";
     }
+
+    document.getElementById("language-select").addEventListener("change", function() {
+      localStorage.setItem("eano-lang", this.value);
+      location.reload();
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedLang = localStorage.getItem("eano-lang") || "en";
+      document.getElementById("language-select").value = savedLang;
+    });
   </script></body>
 </html>
