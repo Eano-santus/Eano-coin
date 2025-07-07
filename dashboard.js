@@ -84,10 +84,12 @@ auth.onAuthStateChanged(async (user) => {
 
   // Update UI
   emailEl.textContent = `Logged in as: ${user.email}`;
-  balanceEl.textContent = balance.toFixed(3);
+  import { updateBalanceUI } from './ui.js';
+  updateBalanceUI(balance);
   referralCountEl.textContent = referralCount;
 
   // Display mining level and badge
+  import { getLevelFromBalance } from './ui.js';
   const level = getLevelFromBalance(balance);
   const badge = getTrustBadge(trustScore);
   document.getElementById("referral-info").innerHTML += `
