@@ -1,51 +1,99 @@
 // profile.js
-import { auth, db, onAuthStateChanged, signOut, doc, getDoc, updateDoc } from "./firebase.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
-const profileForm = document.getElementById("profile-form");
-const message = document.getElementById("message");
-const logoutBtn = document.getElementById("logoutBtn");
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-let currentUserUid = null;
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+// Firebase config (same as your existing setup)
+const firebaseConfig = {
+  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+  authDomain: "eano-miner.firebaseapp.com",
+  projectId: "eano-miner",
+  storageBucket: "eano-miner.appspot.com",
+  messagingSenderId: "50186911438",
+  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
+  measurementId: "G-NS0W6QSS69"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Elements
+const userNameEl = document.getElementById("user-name");
+const userEmailEl = document.getElementById("user-email");
+const phoneInput = document.getElementById("phone-number");
+const referralCodeEl = document.getElementById("referral-code");
 
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUserUid = user.uid;
-    const docRef = doc(db, "miners", currentUserUid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      document.getElementById("firstName").value = data.firstname || "";
-      document.getElementById("lastName").value = data.lastName || "";
-      document.getElementById("username").value = data.username || "";
-    }
-  } else {
-    window.location.href = "/login.html";
-  }
-});
-
-profileForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const firstName = document.getElementById("firstName").value.trim();
-  const lastName = document.getElementById("lastName").value.trim();
-  const username = document.getElementById("username").value.trim();
-
-  if (!firstName || !lastName || !username) {
-    message.textContent = "Please fill all fields.";
-    message.style.color = "red";
+  if (!user) {
+    window.location.href = "index.html";
     return;
   }
 
-  try {
-    const userDocRef = doc(db, "miners", currentUserUid);
-    await updateDoc(userDocRef, { firstname: firstName, lastName, username });
-    message.textContent = "Profile updated!";
-    message.style.color = "green";
-  } catch (error) {
-    message.textContent = "Error: " + error.message;
-    message.style.color = "red";
+  const uid = user.uid;
+  userEmailEl.textContent = user.email;
+  referralCodeEl.value = uid;
+
+  const userDocRef = doc(db, "users", uid);
+  const snap = await getDoc(userDocRef);
+
+  if (snap.exists()) {
+    const data = snap.data();
+    userNameEl.textContent = data.username || "Anonymous";
+    phoneInput.value = data.phone || "";
+  } else {
+    // If user data doesn't exist, create a default
+    await updateDoc(userDocRef, {
+      username: user.email.split("@")[0],
+      phone: ""
+    });
+    userNameEl.textContent = user.email.split("@")[0];
   }
 });
 
-logoutBtn.addEventListener("click", () => {
-  signOut(auth).then(() => window.location.href = "/login.html");
-});
+// Save Phone Number
+window.savePhone = async () => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const phone = phoneInput.value.trim();
+  if (!phone) {
+    alert("Phone number cannot be empty.");
+    return;
+  }
+
+  await updateDoc(doc(db, "users", user.uid), { phone });
+  alert("✅ Phone number saved.");
+};
+
+// Copy Referral Code
+window.copyReferral = () => {
+  referralCodeEl.select();
+  referralCodeEl.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  alert("✅ Referral code copied!");
+};
+
+// Logout
+const logoutBtn = document.getElementById("logoutBtn");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    signOut(auth).then(() => {
+      window.location.href = "index.html";
+    });
+  });
+}
