@@ -1,30 +1,80 @@
-// leaderboard.js import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js"; import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js"; import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+// leaderboard.js
 
-const firebaseConfig = { apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw", authDomain: "eano-miner.firebaseapp.com", projectId: "eano-miner", storageBucket: "eano-miner.appspot.com", messagingSenderId: "50186911438", appId: "1:50186911438:web:85410fccc7c5933d761a9f", measurementId: "G-NS0W6QSS69" };
+import { db } from "./firebase.js";
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
+// Element where leaderboard will be injected
+const leaderboardList = document.getElementById("referral-leaderboard");
 
-const leaderboardBody = document.getElementById("leaderboard-body");
+// Badge logic based on trust score
+function getTrustBadge(trustScore) {
+  if (trustScore >= 50) return "🟢 Trusted";
+  if (trustScore >= 20) return "🟡 Average";
+  return "🔴 Low";
+}
 
-function getLevel(balance) { if (balance >= 3000) return { label: "Grandmaster", badge: "🥇" }; if (balance >= 1500) return { label: "Master", badge: "🥈" }; if (balance >= 800) return { label: "Elite", badge: "🥉" }; if (balance >= 200) return { label: "Amateur", badge: "🎖️" }; return { label: "Beginner", badge: "🔰" }; }
+// Mining level based on balance
+function getLevelFromBalance(balance) {
+  if (balance >= 1000) return "🐘 Elephant";
+  if (balance >= 500) return "🦒 Giraffe";
+  if (balance >= 200) return "🦍 Gorilla";
+  if (balance >= 100) return "🦁 Lion";
+  if (balance >= 50) return "🐺 Wolf";
+  if (balance >= 20) return "🐶 Dog";
+  if (balance >= 5) return "🐹 Hamster";
+  return "🐣 Egg";
+}
 
-function getTrust(score) { if (score >= 1000) return "O.G Miner 🧠"; if (score >= 499) return "Trusted Miner 🛡️"; if (score >= 200) return "Reliable Miner ✅"; if (score >= 79) return "New Miner 🚀"; return "Need Trust ⚠️"; }
+// Load and display top 10 referrers
+async function loadLeaderboard() {
+  try {
+    const q = query(
+      collection(db, "users"),
+      orderBy("referralCount", "desc"),
+      limit(10)
+    );
 
-onAuthStateChanged(auth, async user => { if (!user) { window.location.href = "index.html"; return; }
+    const snapshot = await getDocs(q);
+    leaderboardList.innerHTML = ""; // Clear previous content
 
-const q = query(collection(db, "users"), orderBy("balance", "desc")); const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      leaderboardList.innerHTML = `<li class="list-group-item text-center text-muted">No referral data available.</li>`;
+      return;
+    }
 
-let rank = 1; snapshot.forEach(doc => { const data = doc.data(); const balance = data.balance || 0; const referrals = data.referrals || 0; const trust = getTrust(referrals); const level = getLevel(balance);
+    snapshot.forEach((doc, index) => {
+      const user = doc.data();
+      const name = user.name || `User-${doc.id.slice(0, 6)}`;
+      const referralCount = user.referralCount || 0;
+      const trustScore = user.trustScore || 0;
+      const balance = user.balance || 0;
 
-const row = document.createElement("tr");
-row.innerHTML = `
-  <td>${rank++}</td>
-  <td>${data.email || "Anonymous"}</td>
-  <td>${balance.toFixed(3)}</td>
-  <td>${level.badge} ${level.label}</td>
-  <td>${trust}</td>
-`;
-leaderboardBody.appendChild(row);
+      const badge = getTrustBadge(trustScore);
+      const level = getLevelFromBalance(balance);
 
-}); });
+      const li = document.createElement("li");
+      li.className = "list-group-item d-flex justify-content-between align-items-center";
+      li.innerHTML = `
+        <div>
+          <strong>#${index + 1} ${name}</strong><br/>
+          <small>${level} | ${badge}</small>
+        </div>
+        <span class="badge bg-primary rounded-pill">${referralCount} Refs</span>
+      `;
 
+      leaderboardList.appendChild(li);
+    });
+  } catch (error) {
+    console.error("Error loading leaderboard:", error);
+    leaderboardList.innerHTML = `<li class="list-group-item text-danger text-center">Failed to load leaderboard.</li>`;
+  }
+}
+
+// Init on page load
+document.addEventListener("DOMContentLoaded", loadLeaderboard);
