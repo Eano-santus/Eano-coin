@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -9,6 +10,8 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
     }
     .topbar {
       background: rgba(255, 255, 255, 0.9);
@@ -59,15 +62,18 @@
   </style>
 </head>
 <body>
+
+  <!-- Top Bar -->
   <div class="topbar">
     <div class="d-flex align-items-center">
       <img src="logo.png" alt="Logo" class="logo me-2">
-      <strong>EANO</strong>
+      <strong data-i18n="title">EANO</strong>
     </div>
     <div>
       <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
     </div>
-    !-- Language Selector -->
+
+    <!-- Language Selector -->
     <select id="lang-select" class="form-select form-select-sm" style="width: auto; margin-left: auto;">
       <option value="en">🌍 English</option>
       <option value="fr">🇫🇷 French</option>
@@ -75,20 +81,35 @@
       <option value="gb">🌍 Igbo</option>
       <option value="ch">🌍 Chinese</option>
     </select>
-  </div>  <div class="sidebar">
-    <button class="btn btn-primary w-100 mb-2" id="mine-btn">⛏ Start Mining</button>
-    <button class="btn btn-outline-danger w-100" id="logout-btn">Logout</button>
-  </div>  <div class="rightmenu">
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <button class="btn btn-primary w-100 mb-2" id="mine-btn" data-i18n="mine">⛏ Start Mining</button>
+    <button class="btn btn-outline-danger w-100" id="logout-btn" data-i18n="logout">Logout</button>
+  </div>
+
+  <!-- Right Menu -->
+  <div class="rightmenu">
     <div class="text-center">
-      <h6>📊 Menu</h6>
+      <h6 data-i18n="menu">📊 Menu</h6>
       <hr>
-      <p>Leaderboard</p>
-      <p>Referrals</p>
-      <p>Settings</p>
+      <p data-i18n="leaderboard">Leaderboard</p>
+      <p data-i18n="referrals">Referrals</p>
+      <p data-i18n="settings">Settings</p>
     </div>
-  </div>  <div class="main-content text-center">
-    <h3>Welcome to EANO Network</h3>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content text-center">
+    <h3 data-i18n="welcome">Welcome to EANO Network</h3>
     <div id="user-email" class="mt-2 text-muted small"></div>
-    <p class="mt-3">Mine EANO every 24 hours to support the future of Africa.</p>
-  </div>  <script type="module" src="dashboard.js"></script>  <script type="module" src="lang.js"></script></body>
+    <p class="mt-3" data-i18n="instruction">Mine EANO every 24 hours to support the future of Africa.</p>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="dashboard.js"></script>
+  <script type="module" src="lang.js"></script>
+  <script type="module" src="ui.js"></script>
+</body>
 </html>
