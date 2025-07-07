@@ -2,7 +2,7 @@
   publish = "."
   command = ""
 
-# Redirect pretty URLs to corresponding HTML files
+# Redirect root and pretty URLs to their respective HTML files
 [[redirects]]
   from = "/"
   to = "/index.html"
@@ -33,8 +33,14 @@
   to = "/invite.html"
   status = 200
 
-# Optional: redirect /signup to index if you're using query params like ?ref=
+# Optional: redirect /signup to index if you're using ?ref=
 [[redirects]]
   from = "/signup"
   to = "/index.html"
+  status = 200
+
+# Google Search Console verification file
+[[redirects]]
+  from = "/google82c22f7be3edb335.html"
+  to = "/google82c22f7be3edb335.html"
   status = 200
