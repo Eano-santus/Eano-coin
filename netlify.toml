@@ -38,9 +38,3 @@
   from = "/signup"
   to = "/index.html"
   status = 200
-
-# Google Search Console verification file
-[[redirects]]
-  from = "/google82c22f7be3edb335.html"
-  to = "/google82c22f7be3edb335.html"
-  status = 200
