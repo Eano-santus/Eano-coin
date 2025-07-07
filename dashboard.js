@@ -19,6 +19,27 @@ const referralCountEl = document.getElementById('referral-count');
 
 let timerInterval;
 
+// Trust badge logic
+function getTrustBadge(score) {
+  if (score >= 1000) return "🟢 Trusted";
+  if (score >= 500) return "🟡 Reliable Miner";
+  if (score >= 300) return "🔵 New Miner";
+  return "🔴 Low";
+}
+
+// Mining level logic
+function getLevelFromBalance(balance) {
+  if (balance >= 3000) return "🐘 Elephant";
+  if (balance >= 2000) return "🦍 Gorilla";
+  if (balance >= 1000) return "🦁 Lion";
+  if (balance >= 500) return "🦒 Giraffe";
+  if (balance >= 250) return "🐺 Wolf";
+  if (balance >= 100) return "🐶 Dog";
+  if (balance >= 5) return "🐹 Hamster";
+  if (balance >= 1) return "🐣 Egg";
+  return "🪙 New";
+}
+
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
     window.location.href = 'index.html';
@@ -29,16 +50,29 @@ auth.onAuthStateChanged(async (user) => {
   const userRef = doc(db, "users", uid);
   let userSnap = await getDoc(userRef);
 
-  // If user does not exist, create with base data
   if (!userSnap.exists()) {
-    await setDoc(userRef, {
-      balance: 2,                      // default welcome bonus
+    const ref = new URLSearchParams(window.location.search).get('ref');
+    const defaultData = {
+      balance: 2,
       referralCount: 0,
       lastMine: null,
-      referredBy: null,
+      referredBy: ref || null,
+      trustScore: 0,
       createdAt: serverTimestamp(),
       email: user.email
-    });
+    };
+
+    await setDoc(userRef, defaultData);
+
+    if (ref) {
+      const refUser = doc(db, "users", ref);
+      await updateDoc(refUser, {
+        balance: increment(2),
+        referralCount: increment(1),
+        trustScore: increment(50)
+      });
+    }
+
     userSnap = await getDoc(userRef);
   }
 
@@ -46,17 +80,26 @@ auth.onAuthStateChanged(async (user) => {
   const balance = data.balance || 0;
   const lastMine = data.lastMine ? new Date(data.lastMine) : null;
   const referralCount = data.referralCount || 0;
+  const trustScore = data.trustScore || 0;
 
   // Update UI
   emailEl.textContent = `Logged in as: ${user.email}`;
   balanceEl.textContent = balance.toFixed(3);
   referralCountEl.textContent = referralCount;
 
+  // Display mining level and badge
+  const level = getLevelFromBalance(balance);
+  const badge = getTrustBadge(trustScore);
+  document.getElementById("referral-info").innerHTML += `
+    <p><strong>Mining Level:</strong> ${level}</p>
+    <p><strong>Trust Score:</strong> ${trustScore} - ${badge}</p>
+  `;
+
   if (lastMine) {
     startTimer(lastMine);
   }
 
-  // Mining Logic
+  // Mining
   mineBtn.onclick = async () => {
     const now = new Date();
     if (lastMine && now - lastMine < 24 * 60 * 60 * 1000) {
@@ -86,7 +129,7 @@ logoutBtn.onclick = () => {
   });
 };
 
-// Countdown timer
+// Timer
 function startTimer(lastMineTime) {
   clearInterval(timerInterval);
   const nextTime = new Date(lastMineTime.getTime() + 24 * 60 * 60 * 1000);
@@ -109,4 +152,4 @@ function startTimer(lastMineTime) {
 
   updateTimer();
   timerInterval = setInterval(updateTimer, 1000);
-}
+                        }
