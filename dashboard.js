@@ -1,75 +1,112 @@
-// dashboard.js 
-import { auth, db } from './firebase.js'; import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// dashboard.js
+import { auth, db } from './firebase.js';
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  serverTimestamp,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const balanceEl = document.getElementById("balance"); const timerEl = document.getElementById("timer"); const logoutBtn = document.getElementById("logout-btn"); const mineBtn = document.getElementById("mine-btn"); const userEmailEl = document.getElementById("user-email");
+// DOM Elements
+const balanceEl = document.getElementById('balance');
+const timerEl = document.getElementById('timer');
+const mineBtn = document.getElementById('mine-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const emailEl = document.getElementById('user-email');
+const referralCountEl = document.getElementById('referral-count');
 
-let userRef; let timerInterval = null;
+let timerInterval;
 
-onAuthStateChanged(auth, async (user) => { if (!user) { window.location.href = "index.html"; return; }
-
-userEmailEl.textContent = Logged in as: ${user.email}; userRef = doc(db, "users", user.uid); const userSnap = await getDoc(userRef);
-
-if (!userSnap.exists()) { const ref = new URLSearchParams(window.location.search).get("ref") || null; await setDoc(userRef, { balance: 2, lastMine: null, email: user.email, trustScore: 0, referrer: ref });
-
-if (ref) {
-  const refUserRef = doc(db, "users", ref);
-  const refSnap = await getDoc(refUserRef);
-  if (refSnap.exists()) {
-    await updateDoc(refUserRef, {
-      balance: (refSnap.data().balance || 0) + 2
-    });
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    window.location.href = 'index.html';
+    return;
   }
-}
 
-}
+  const uid = user.uid;
+  const userRef = doc(db, "users", uid);
+  let userSnap = await getDoc(userRef);
 
-const data = (await getDoc(userRef)).data(); updateUI(data);
+  // If user does not exist, create with base data
+  if (!userSnap.exists()) {
+    await setDoc(userRef, {
+      balance: 2,                      // default welcome bonus
+      referralCount: 0,
+      lastMine: null,
+      referredBy: null,
+      createdAt: serverTimestamp(),
+      email: user.email
+    });
+    userSnap = await getDoc(userRef);
+  }
 
-if (data.lastMine) { startTimer(new Date(data.lastMine)); }
+  const data = userSnap.data();
+  const balance = data.balance || 0;
+  const lastMine = data.lastMine ? new Date(data.lastMine) : null;
+  const referralCount = data.referralCount || 0;
 
-mineBtn.onclick = async () => { const now = new Date(); const fresh = await getDoc(userRef); const userData = fresh.data(); const lastMine = userData.lastMine ? new Date(userData.lastMine) : null; const canMine = !lastMine || (now - lastMine >= 24 * 60 * 60 * 1000);
+  // Update UI
+  emailEl.textContent = `Logged in as: ${user.email}`;
+  balanceEl.textContent = balance.toFixed(3);
+  referralCountEl.textContent = referralCount;
 
-if (!canMine) {
-  alert("You can mine only once every 24 hours.");
-  return;
-}
+  if (lastMine) {
+    startTimer(lastMine);
+  }
 
-const reward = 0.001;
-const newBalance = (userData.balance || 0) + reward;
-const newTrust = (userData.trustScore || 0) + 1;
+  // Mining Logic
+  mineBtn.onclick = async () => {
+    const now = new Date();
+    if (lastMine && now - lastMine < 24 * 60 * 60 * 1000) {
+      const remaining = 24 * 60 * 60 * 1000 - (now - lastMine);
+      const hrs = Math.floor(remaining / 3600000);
+      const mins = Math.floor((remaining % 3600000) / 60000);
+      alert(`Please wait ${hrs}h ${mins}m before mining again.`);
+      return;
+    }
 
-await updateDoc(userRef, {
-  balance: newBalance,
-  lastMine: now.toISOString(),
-  trustScore: newTrust
+    const reward = 1.0;
+    await updateDoc(userRef, {
+      balance: balance + reward,
+      lastMine: now.toISOString()
+    });
+
+    balanceEl.textContent = (balance + reward).toFixed(3);
+    startTimer(now);
+    alert(`✅ You mined ${reward} EANO! Come back in 24 hours.`);
+  };
 });
 
-updateUI({ balance: newBalance });
-startTimer(now);
-alert(`You earned ${reward} EANO and +1 trust!`);
+// Logout
+logoutBtn.onclick = () => {
+  auth.signOut().then(() => {
+    window.location.href = 'index.html';
+  });
+};
 
-}; });
-
-function updateUI(data) { if (balanceEl && data.balance !== undefined) { balanceEl.textContent = data.balance.toFixed(3); } }
-
-function startTimer(startTime) { clearInterval(timerInterval); const nextMine = new Date(startTime.getTime() + 24 * 60 * 60 * 1000);
-
-function tick() { const now = new Date(); const remaining = nextMine - now;
-
-if (remaining <= 0) {
-  timerEl.textContent = "⛏ Ready to mine!";
+// Countdown timer
+function startTimer(lastMineTime) {
   clearInterval(timerInterval);
-  return;
+  const nextTime = new Date(lastMineTime.getTime() + 24 * 60 * 60 * 1000);
+
+  function updateTimer() {
+    const now = new Date();
+    const diff = nextTime - now;
+
+    if (diff <= 0) {
+      timerEl.textContent = "✅ Ready to mine!";
+      clearInterval(timerInterval);
+      return;
+    }
+
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    timerEl.textContent = `⏳ ${h}h ${m}m ${s}s`;
+  }
+
+  updateTimer();
+  timerInterval = setInterval(updateTimer, 1000);
 }
-
-const h = Math.floor(remaining / (1000 * 60 * 60));
-const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-const s = Math.floor((remaining % (1000 * 60)) / 1000);
-timerEl.textContent = `${h}h ${m}m ${s}s`;
-
-}
-
-tick(); timerInterval = setInterval(tick, 1000); }
-
-if (logoutBtn) { logoutBtn.addEventListener("click", () => { signOut(auth).then(() => { window.location.href = "index.html"; }); }); }
-
