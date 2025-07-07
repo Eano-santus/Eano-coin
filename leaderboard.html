@@ -1,57 +1,63 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Referral Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EANO Leaderboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <style>
-    .leaderboard-container {
-      background: rgba(255, 255, 255, 0.9);
-      margin: 80px auto;
-      padding: 2rem;
-      border-radius: 16px;
-      max-width: 900px;
-    }
-    .badge-level {
-      font-size: 0.75rem;
-      border-radius: 12px;
-      padding: 2px 8px;
-      color: #fff;
-    }
-    .beginner { background: #6c757d; }
-    .amateur { background: #17a2b8; }
-    .elite { background: #007bff; }
-    .master { background: #6610f2; }
-    .grandmaster { background: #ffc107; }.trust-badge {
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 8px;
-  background: #444;
-  color: #fff;
-}
-
-  </style>
 </head>
-<body>
-  <div class="container leaderboard-container">
-    <h3 class="text-center mb-4">🏆 Referral Leaderboard</h3>
-    <div class="table-responsive">
-      <table class="table table-hover text-center">
-        <thead class="table-dark">
-          <tr>
-            <th>#</th>
-            <th>User</th>
-            <th>Balance</th>
-            <th>Level</th>
-            <th>Referrals</th>
-            <th>Trust Score</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboard-body">
-          <tr><td colspan="6">Loading leaderboard...</td></tr>
-        </tbody>
-      </table>
+<body class="dashboard">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="d-flex align-items-center">
+      <img src="logo.png" alt="EANO Logo" class="logo me-2">
+      <strong>EANO</strong>
     </div>
-  </div>  <script type="module" src="leaderboard.js"></script></body>
+    <div>
+      <a href="dashboard.html" class="btn btn-sm btn-outline-primary">🏠 Dashboard</a>
+    </div>
+    <select id="lang-select" class="form-select form-select-sm" style="width: auto;">
+      <option value="en">🌍 English</option>
+      <option value="fr">🇫🇷 French</option>
+      <option value="sw">🇰🇪 Swahili</option>
+      <option value="ig">🇳🇬 Igbo</option>
+      <option value="zh">🇨🇳 Chinese</option>
+    </select>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <img src="logo.png" alt="Logo" class="sidebar-logo" />
+    <a href="dashboard.html" class="btn btn-secondary mt-3">Dashboard</a>
+    <a href="invite.html" class="btn btn-outline-light mt-2">Invite</a>
+    <a href="settings.html" class="btn btn-outline-light mt-2">Settings</a>
+    <a href="profile.html" class="btn btn-outline-light mt-2">Profile</a>
+  </div>
+
+  <!-- Right Menu -->
+  <div class="menu">
+    <div class="text-center text-white small">
+      <strong>🏆 Menu</strong>
+      <hr style="border-color: white;">
+      <p><a href="leaderboard.html" class="text-white text-decoration-none">Leaderboard</a></p>
+      <p><a href="invite.html" class="text-white text-decoration-none">Referrals</a></p>
+      <p><a href="settings.html" class="text-white text-decoration-none">Settings</a></p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content text-dark">
+    <h3 class="text-center">🏅 EANO Referral Leaderboard</h3>
+    <p class="text-center text-muted small">Top users by referrals, trust, and mining activity</p>
+    <ul id="referral-leaderboard" class="list-group mt-4">
+      <li class="list-group-item text-center">Loading leaderboard...</li>
+    </ul>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="leaderboard.js"></script>
+  <script type="module" src="lang.js"></script>
+</body>
 </html>
