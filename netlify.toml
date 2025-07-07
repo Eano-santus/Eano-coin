@@ -2,7 +2,39 @@
   publish = "."
   command = ""
 
+# Redirect pretty URLs to corresponding HTML files
 [[redirects]]
-  from = "/*"
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/dashboard"
+  to = "/dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/leaderboard"
+  to = "/leaderboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/profile"
+  to = "/profile.html"
+  status = 200
+
+[[redirects]]
+  from = "/settings"
+  to = "/settings.html"
+  status = 200
+
+[[redirects]]
+  from = "/invite"
+  to = "/invite.html"
+  status = 200
+
+# Optional: redirect /signup to index if you're using query params like ?ref=
+[[redirects]]
+  from = "/signup"
   to = "/index.html"
   status = 200
