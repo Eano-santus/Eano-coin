@@ -5,31 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Settings - EANO</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .settings-container {
-      max-width: 600px;
-      margin: 80px auto;
-      background: rgba(0,0,0,0.7);
-      padding: 2rem;
-      color: #fff;
-      border-radius: 16px;
-    }
-    .settings-container h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .info-box {
-      margin-bottom: 1rem;
-      background: rgba(255,255,255,0.1);
-      padding: 1rem;
-      border-radius: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="settings.css" />
 </head>
 <body>
+
+  <!-- Topbar -->
   <div class="topbar">
     <div class="d-flex align-items-center">
-      <img src="logo.png" alt="EANO Logo" class="logo me-2">
+      <img src="logo.png" alt="EANO Logo" class="logo me-2" />
       <strong>EANO</strong>
     </div>
     <div>
@@ -43,15 +26,32 @@
     </div>
   </div>
 
+  <!-- Main Settings Content -->
   <div class="settings-container">
-    <h2>Your Miner Stats</h2>
-    <div class="info-box">👤 Email: <span id="email"></span></div>
-    <div class="info-box">💰 Balance: <span id="balance">0</span> EANO</div>
-    <div class="info-box">📈 Trust Score: <span id="trustScore">0</span></div>
-    <div class="info-box">🎖 Level: <span id="level">Beginner</span></div>
-    <div class="info-box">🔗 Referral Link: <a href="#" id="refLink">Generating...</a></div>
+    <h2>⚙️ Account Settings</h2>
+
+    <div class="settings-item" id="user-email">
+      <strong>Email</strong>
+      <span>Loading...</span>
+    </div>
+
+    <div class="settings-item" id="user-balance">
+      <strong>Balance</strong>
+      <span>0.000 EANO</span>
+    </div>
+
+    <div class="settings-item" id="trust-score">
+      <strong>Trust Score</strong>
+      <span>Loading...</span>
+    </div>
+
+    <div class="settings-item" id="miner-level">
+      <strong>Miner Level</strong>
+      <span>Loading...</span>
+    </div>
   </div>
 
+  <!-- Scripts -->
   <script type="module" src="settings.js"></script>
   <script type="module" src="lang.js"></script>
 </body>
