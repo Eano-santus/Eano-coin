@@ -97,9 +97,9 @@ auth.onAuthStateChanged(async (user) => {
 
     const reward = 1.0;
     await updateDoc(userRef, {
-      balance: balance + reward,
-      lastMine: now.toISOString()
-    });
+  balance: increment(reward),
+  lastMine: now.toISOString()
+});
 
     updateBalanceUI(balance + reward);
     startTimer(now);
