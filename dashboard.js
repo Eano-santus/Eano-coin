@@ -4,60 +4,58 @@ const firebaseConfig = { apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw", auth
 
 const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
+const balanceDisplay = document.getElementById("balance"); const timerDisplay = document.getElementById("timer"); const mineBtn = document.getElementById("mine-btn"); const logoutBtn = document.getElementById("logout-btn");
+
 let timerInterval;
 
-onAuthStateChanged(auth, async (user) => { if (!user) { window.location.href = "index.html"; return; }
+onAuthStateChanged(auth, async (user) => { if (!user) return (window.location.href = "index.html");
 
-document.getElementById("user-email").textContent = Logged in as: ${user.email};
+const userRef = doc(db, "users", user.uid); const userSnap = await getDoc(userRef);
 
-const uid = user.uid; const userRef = doc(db, "users", uid); let userSnap = await getDoc(userRef);
+if (!userSnap.exists()) { await setDoc(userRef, { balance: 0, lastMine: null, email: user.email }); }
 
-if (!userSnap.exists()) { await setDoc(userRef, { balance: 0, lastMine: null, email: user.email }); userSnap = await getDoc(userRef); }
+const userData = (await getDoc(userRef)).data(); balanceDisplay.textContent = userData.balance.toFixed(3);
 
-const data = userSnap.data(); updateBalanceUI(data.balance);
+if (userData.lastMine) { startTimer(new Date(userData.lastMine)); }
 
-if (data.lastMine) { startTimer(new Date(data.lastMine)); }
+mineBtn.addEventListener("click", async () => { const now = new Date(); const lastMine = userData.lastMine ? new Date(userData.lastMine) : null;
 
-document.getElementById("mine-btn").onclick = async () => { const now = new Date(); const lastMineTime = data.lastMine ? new Date(data.lastMine) : null;
-
-if (lastMineTime && now - lastMineTime < 24 * 60 * 60 * 1000) {
-  alert("⏱ You can only mine once every 24 hours.");
+if (lastMine && now - lastMine < 86400000) {
+  alert("⛏ You can mine only once every 24 hours.");
   return;
 }
 
 const reward = 0.001;
-const newBalance = data.balance + reward;
+const newBalance = userData.balance + reward;
 
 await updateDoc(userRef, {
   balance: newBalance,
   lastMine: now.toISOString()
 });
 
-updateBalanceUI(newBalance);
+balanceDisplay.textContent = newBalance.toFixed(3);
 startTimer(now);
-alert(`✅ You've mined ${reward} EANO!`);
+alert(`✅ Mined ${reward} EANO successfully!`);
 
-};
+});
 
-document.getElementById("logout-btn").onclick = async () => { await signOut(auth); window.location.href = "index.html"; }; });
+logoutBtn.addEventListener("click", () => { signOut(auth).then(() => { window.location.href = "index.html"; }); }); });
 
-function updateBalanceUI(balance) { document.getElementById("balance").textContent = balance.toFixed(3); }
-
-function startTimer(startTime) { clearInterval(timerInterval); const endTime = new Date(startTime.getTime() + 24 * 60 * 60 * 1000);
+function startTimer(startTime) { clearInterval(timerInterval); const endTime = new Date(startTime.getTime() + 86400000);
 
 function updateTimer() { const now = new Date(); const diff = endTime - now;
 
 if (diff <= 0) {
-  document.getElementById("timer").textContent = "⛏ Ready to mine again!";
+  timerDisplay.textContent = "⛏ Ready to mine again!";
   clearInterval(timerInterval);
   return;
 }
 
-const hours = Math.floor(diff / (1000 * 60 * 60));
-const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+const h = Math.floor(diff / 3600000);
+const m = Math.floor((diff % 3600000) / 60000);
+const s = Math.floor((diff % 60000) / 1000);
 
-document.getElementById("timer").textContent = `Next mine: ${hours}h ${minutes}m ${seconds}s`;
+timerDisplay.textContent = `Next mining in: ${h}h ${m}m ${s}s`;
 
 }
 
