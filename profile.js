@@ -16,7 +16,7 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// Firebase config (same as your existing setup)
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
@@ -32,12 +32,35 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Elements
+// UI elements
 const userNameEl = document.getElementById("user-name");
 const userEmailEl = document.getElementById("user-email");
 const phoneInput = document.getElementById("phone-number");
 const referralCodeEl = document.getElementById("referral-code");
+const trustBadgeEl = document.getElementById("trust-badge");
+const miningLevelEl = document.getElementById("mining-level");
 
+// Badge functions
+function getTrustBadge(score) {
+  if (score >= 1000) return "🔰 GetTrusted";
+  if (score >= 500) return "✅ Reliable Miner";
+  if (score >= 300) return "🟡 New Miner";
+  return "🔴 Low";
+}
+
+function getLevelFromBalance(balance) {
+  if (balance >= 3000) return "🐘 Elephant";
+  if (balance >= 2000) return "🦍 Gorilla";
+  if (balance >= 1000) return "🦁 Lion";
+  if (balance >= 500) return "🦒 Giraffe";
+  if (balance >= 250) return "🐺 Wolf";
+  if (balance >= 100) return "🐶 Dog";
+  if (balance >= 5) return "🐹 Hamster";
+  if (balance >= 1) return "🐣 Egg";
+  return "❌ Not Started";
+}
+
+// Auth check
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "index.html";
@@ -55,13 +78,25 @@ onAuthStateChanged(auth, async (user) => {
     const data = snap.data();
     userNameEl.textContent = data.username || "Anonymous";
     phoneInput.value = data.phone || "";
+
+    // New: Trust Score and Balance Badge
+    const trustScore = data.trustScore || 0;
+    const balance = data.balance || 0;
+
+    trustBadgeEl.textContent = getTrustBadge(trustScore);
+    miningLevelEl.textContent = getLevelFromBalance(balance);
+
   } else {
-    // If user data doesn't exist, create a default
+    // If user doc doesn't exist, create a minimal one
     await updateDoc(userDocRef, {
       username: user.email.split("@")[0],
-      phone: ""
+      phone: "",
+      trustScore: 0,
+      balance: 0
     });
     userNameEl.textContent = user.email.split("@")[0];
+    trustBadgeEl.textContent = getTrustBadge(0);
+    miningLevelEl.textContent = getLevelFromBalance(0);
   }
 });
 
