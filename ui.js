@@ -1,49 +1,57 @@
-// ui.js — Manages UI structure, toggles, layout effects
+// ui.js
 
-// Toggle Left Sidebar
-export function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  sidebar.classList.toggle("show");
-}
-
-// Toggle Right Menu
-export function toggleRightMenu() {
-  const rightMenu = document.getElementById("right-menu");
-  rightMenu.classList.toggle("show");
-}
-
-// Show Global Loading Spinner
-export function showLoading() {
-  const loader = document.getElementById("global-loader");
-  if (loader) loader.style.display = "flex";
-}
-
-// Hide Global Loading Spinner
-export function hideLoading() {
-  const loader = document.getElementById("global-loader");
-  if (loader) loader.style.display = "none";
-}
-
-// Responsive Sidebar Auto-hide on Mobile
-export function autoHideSidebarOnMobile() {
-  const sidebar = document.getElementById("sidebar");
-  if (window.innerWidth < 768 && sidebar.classList.contains("show")) {
-    sidebar.classList.remove("show");
+// Update the balance on the dashboard
+export function updateBalanceUI(balance) {
+  const balanceEl = document.getElementById("balance");
+  if (balanceEl) {
+    balanceEl.textContent = balance.toFixed(3);
   }
 }
 
-// Initialize UI Events
-export function initUIEvents() {
-  const sidebarToggle = document.getElementById("sidebar-toggle");
-  const rightMenuToggle = document.getElementById("right-menu-toggle");
-
-  if (sidebarToggle) {
-    sidebarToggle.addEventListener("click", toggleSidebar);
+// Update the mining countdown timer
+export function updateTimerUI(remainingSeconds) {
+  const timerEl = document.getElementById("timer");
+  if (timerEl) {
+    const hours = Math.floor(remainingSeconds / 3600);
+    const minutes = Math.floor((remainingSeconds % 3600) / 60);
+    const seconds = remainingSeconds % 60;
+    timerEl.textContent = `${hours}h ${minutes}m ${seconds}s`;
   }
+}
 
-  if (rightMenuToggle) {
-    rightMenuToggle.addEventListener("click", toggleRightMenu);
+// Update user email display
+export function updateUserEmailUI(email) {
+  const emailEl = document.getElementById("user-email");
+  if (emailEl) {
+    emailEl.textContent = email;
   }
+}
 
-  window.addEventListener("resize", autoHideSidebarOnMobile);
+// Update referral count
+export function updateReferralCountUI(count) {
+  const countEl = document.getElementById("referral-count");
+  if (countEl) {
+    countEl.textContent = count;
+  }
+}
+
+// Get mining level from balance
+export function getLevelFromBalance(balance) {
+  if (balance >= 3000) return "🐘 Elephant";
+  if (balance >= 2000) return "🦍 Gorilla";
+  if (balance >= 1000) return "🦁 Lion";
+  if (balance >= 500)  return "🦒 Giraffe";
+  if (balance >= 250)  return "🐺 Wolf";
+  if (balance >= 100)  return "🐶 Dog";
+  if (balance >= 5)    return "🐹 Hamster";
+  if (balance >= 1)    return "🐥 Chicken";
+  return "⛏ Beginner";
+}
+
+// Get trust badge from trust score
+export function getTrustBadge(trustScore) {
+  if (trustScore >= 1000) return "✅ Trusted Miner";
+  if (trustScore >= 500) return "🛡 Reliable Miner";
+  if (trustScore >= 300) return "📈 New Miner";
+  return "⚠ Low Trust";
 }
