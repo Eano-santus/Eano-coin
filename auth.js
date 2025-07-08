@@ -90,7 +90,9 @@ if (signupBtn) {
     const email = document.getElementById("signup-email").value.trim();
     const username = document.getElementById("signup-username").value.trim().toLowerCase();
     const password = document.getElementById("signup-password").value;
-
+    const firstname = document.getElementById("signup-firstname").value.trim();
+    const lastname = document.getElementById("signup-lastname").value.trim();
+    
     if (!username || username.length < 4) {
       alert("Username must be at least 4 characters.");
       return;
