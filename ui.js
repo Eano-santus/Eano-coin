@@ -1,6 +1,6 @@
 // ui.js
 
-// Update the balance on the dashboard
+// ✅ Update the balance on the dashboard
 export function updateBalanceUI(balance) {
   const el = document.getElementById("balance");
   if (el) {
@@ -9,7 +9,7 @@ export function updateBalanceUI(balance) {
   }
 }
 
-// Update the mining countdown timer
+// ✅ Update the mining countdown timer
 export function updateTimerUI(remainingSeconds) {
   const timerEl = document.getElementById("timer");
   if (timerEl) {
@@ -20,7 +20,7 @@ export function updateTimerUI(remainingSeconds) {
   }
 }
 
-// Update user email
+// ✅ Update user email
 export function updateUserEmailUI(email) {
   const el = document.getElementById("user-email");
   if (el) {
@@ -29,7 +29,7 @@ export function updateUserEmailUI(email) {
   }
 }
 
-// Update referral count
+// ✅ Update referral count
 export function updateReferralCountUI(count) {
   const el = document.getElementById("referral-count");
   if (el) {
@@ -38,7 +38,7 @@ export function updateReferralCountUI(count) {
   }
 }
 
-// Get mining level from balance (same logic)
+// ✅ Get mining level from balance (light version)
 export function getLevelFromBalance(balance) {
   if (balance >= 3000) return "🐘 Elephant";
   if (balance >= 2000) return "🦍 Gorilla";
@@ -51,7 +51,7 @@ export function getLevelFromBalance(balance) {
   return "⛏ Beginner";
 }
 
-// Get trust badge from trust score (same logic)
+// ✅ Get trust badge from trust score (light version)
 export function getTrustBadge(score) {
   if (score >= 1000) return "✅ Trusted Miner";
   if (score >= 500) return "🛡 Reliable Miner";
@@ -59,7 +59,7 @@ export function getTrustBadge(score) {
   return "⚠ Low Trust";
 }
 
-// 🟡 Optional: show announcement from Firestore
+// ✅ Show announcement from Firestore
 export function showAnnouncement(message) {
   const box = document.getElementById("announcement-box");
   const msg = document.getElementById("latest-announcement");
