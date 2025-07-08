@@ -1,20 +1,20 @@
 {
-  "name": "EANO Miner",
+  "name": "EANO Network",
   "short_name": "EANO",
+  "description": "Mine EANO, grow trust, and empower communities.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "portrait",
-  "description": "Mine EANO daily and build trust in the network.",
   "icons": [
     {
-      "src": "eano-icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "eano-icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
