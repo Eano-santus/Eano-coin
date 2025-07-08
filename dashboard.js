@@ -112,7 +112,23 @@ auth.onAuthStateChanged(async (user) => {
     startTimer(now);
     alert(`✅ You mined ${reward} EANO! Come back in 24 hours.`);
   };
+  
+    // 🌙 Dark Mode Toggle
+const darkToggle = document.getElementById("dark-toggle");
+if (darkToggle) {
+  darkToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
 
+    // Optional: persist user preference
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("dark-mode", isDark ? "on" : "off");
+  });
+
+  // Apply saved preference
+  if (localStorage.getItem("dark-mode") === "on") {
+    document.body.classList.add("dark-mode");
+  }
+  
   // Fetch Announcement
   try {
     const annDoc = await getDoc(doc(db, "announcements", "latest"));
