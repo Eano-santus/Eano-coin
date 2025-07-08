@@ -1,54 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Announcement Panel</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-  <script src="firebase-config.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - EANO</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      padding: 2rem;
     }
+
+    .admin-panel {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 2rem;
+      border-radius: 16px;
+    }
+
+    h2 {
+      text-align: center;
+      color: gold;
+      margin-bottom: 20px;
+    }
+
     textarea {
       width: 100%;
-      padding: 10px;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-    }
-    #logoutBtn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: crimson;
-      color: white;
+      padding: 12px;
+      border-radius: 8px;
       border: none;
-      padding: 8px 12px;
+      resize: vertical;
+      font-size: 1rem;
+    }
+
+    .btn {
+      display: block;
+      margin: 1rem 0;
+      background: gold;
+      color: #000;
+      font-weight: bold;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
+    }
+
+    #latestAnnouncement {
+      background: #222;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: #fff;
+      float: right;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+
+      .admin-panel {
+        padding: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <button id="logoutBtn" onclick="logout()">Logout</button>
 
-  <h2>📢 Post Announcement (Admin Only)</h2>
-  <textarea id="announcementInput" rows="4" placeholder="Write your announcement..."></textarea><br>
-  <button onclick="postAnnouncement()">Post</button>
+  <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
 
-  <h3>📜 Latest Announcement</h3>
-  <p id="latestAnnouncement">Loading...</p>
+  <div class="admin-panel">
+    <h2>📢 Admin Announcements</h2>
 
-  <script>
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    <label for="announcementInput">New Announcement:</label>
+    <textarea id="announcementInput" rows="4" placeholder="Write your message..."></textarea>
+    <button class="btn" id="postBtn">📤 Post Announcement</button>
 
-    async function checkAdmin(user) {
-      const userDoc = await db.collection("users").doc(user.uid).get();
-      return userDoc.exists && userDoc.data().isAdmin === true;
-    }
+    <h3>📜 Latest Announcement</h3>
+    <div id="latestAnnouncement">Loading...</div>
+  </div>
+
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import {
+      doc,
+      setDoc,
+      getDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
@@ -57,50 +108,47 @@
         return;
       }
 
-      const isAdmin = await checkAdmin(user);
-      if (!isAdmin) {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists || userSnap.data().isAdmin !== true) {
         alert("Access denied. Not an admin.");
         window.location.href = "index.html";
         return;
       }
 
-      try {
-        const doc = await db.collection("announcements").doc("latest").get();
-        if (doc.exists) {
-          document.getElementById("latestAnnouncement").innerText = doc.data().message;
-        } else {
-          document.getElementById("latestAnnouncement").innerText = "No announcements yet.";
-        }
-      } catch (error) {
-        console.error("Error fetching announcement:", error);
-        document.getElementById("latestAnnouncement").innerText = "Error loading announcement.";
+      // Load latest announcement
+      const latestRef = doc(db, "announcements", "latest");
+      const latestSnap = await getDoc(latestRef);
+      if (latestSnap.exists()) {
+        document.getElementById("latestAnnouncement").innerText = latestSnap.data().message;
+      } else {
+        document.getElementById("latestAnnouncement").innerText = "No announcements yet.";
       }
     });
 
-    async function postAnnouncement() {
+    document.getElementById("postBtn").onclick = async () => {
       const text = document.getElementById("announcementInput").value.trim();
       if (!text) return alert("Announcement cannot be empty.");
 
       try {
-        await db.collection("announcements").doc("latest").set({
+        const ref = doc(db, "announcements", "latest");
+        await setDoc(ref, {
           message: text,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          timestamp: serverTimestamp()
         });
 
         alert("✅ Announcement posted!");
         document.getElementById("latestAnnouncement").innerText = text;
         document.getElementById("announcementInput").value = "";
-      } catch (error) {
-        console.error("Error posting announcement:", error);
+      } catch (err) {
+        console.error("Error posting:", err);
         alert("Failed to post announcement.");
       }
-    }
+    };
 
-    function logout() {
-      auth.signOut().then(() => {
-        window.location.href = "index.html";
-      });
-    }
+    document.getElementById("logoutBtn").onclick = () => {
+      auth.signOut().then(() => window.location.href = "index.html");
+    };
   </script>
 </body>
 </html>
