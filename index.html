@@ -6,15 +6,14 @@
   <title>EANO • Sign In / Sign Up</title>
 
   <!-- Styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
-  
+
+  <!-- Show Welcome Page Once -->
   <script>
-  // Always redirect to welcome.html before showing index.html
-  if (!sessionStorage.getItem("seenWelcome")) {
-    sessionStorage.setItem("seenWelcome", "yes");
-    window.location.href = "welcome.html";
-  }
+    if (!localStorage.getItem("seenWelcome")) {
+      window.location.href = "welcome.html";
+    }
   </script>
 
   <style>
@@ -27,12 +26,19 @@
     }
 
     .auth-container {
-      max-width: 400px;
+      width: 100%;
+      max-width: 100%;
       margin: 80px auto;
-      background: rgba(0, 0, 0, 0.75);
       padding: 2rem;
+      background: rgba(0, 0, 0, 0.75);
       border-radius: 16px;
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    @media (min-width: 500px) {
+      .auth-container {
+        max-width: 400px;
+      }
     }
 
     .auth-container h2 {
@@ -71,18 +77,33 @@
       border: none;
     }
 
-    @media (max-width: 500px) {
-      .auth-container {
-        margin: 40px 1rem;
-        padding: 1.5rem;
-      }
+    .lang-select,
+    #theme-toggle {
+      margin-top: 1rem;
+      width: 100%;
+      border-radius: 10px;
     }
   </style>
 </head>
-<body>
+<body class="" id="auth-body">
 
   <div class="auth-container">
     <h2>🚀 Welcome to EANO</h2>
+
+    <!-- Language Selector -->
+    <select id="lang-select" class="form-select lang-select">
+      <option value="en">🌍 English</option>
+      <option value="fr">🇫🇷 French</option>
+      <option value="sw">🇰🇪 Swahili</option>
+      <option value="ig">🇳🇬 Igbo</option>
+      <option value="ha">🇳🇬 Hausa</option>
+      <option value="efik">🇳🇬 Efik</option>
+      <option value="pid">🇳🇬 Pidgin</option>
+      <option value="zh">🇨🇳 中文</option>
+    </select>
+
+    <!-- Light/Dark Mode Toggle -->
+    <button id="theme-toggle" class="btn btn-outline-light mt-2">🌗 Toggle Light/Dark</button>
 
     <!-- Sign-Up Section -->
     <div id="signup-section">
@@ -102,12 +123,15 @@
       <button id="google-signin" class="btn btn-light btn-auth">🔐 Sign in with Google</button>
     </div>
 
+    <!-- Toggle Link -->
     <div class="toggle-link" id="toggle-auth">Already have an account? Login</div>
   </div>
 
   <!-- Scripts -->
   <script type="module" src="auth.js"></script>
+  <script type="module" src="lang.js"></script>
   <script>
+    // Toggle Signup/Login
     const toggleLink = document.getElementById("toggle-auth");
     const signupSection = document.getElementById("signup-section");
     const loginSection = document.getElementById("login-section");
@@ -119,6 +143,22 @@
       toggleLink.textContent = isSignupVisible
         ? "Don't have an account? Sign up"
         : "Already have an account? Login";
+    });
+
+    // Light/Dark Mode
+    const themeToggle = document.getElementById("theme-toggle");
+    const body = document.getElementById("auth-body");
+
+    // Load theme from localStorage
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      body.classList.add("light-mode");
+    }
+
+    themeToggle.addEventListener("click", () => {
+      body.classList.toggle("light-mode");
+      const mode = body.classList.contains("light-mode") ? "light" : "dark";
+      localStorage.setItem("theme", mode);
     });
   </script>
 </body>
