@@ -13,11 +13,10 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
   </script>
-  <!-- End Google Tag Manager -->
 
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="dashboard">
+<body class="dashboard" id="dashboard-body">
 
   <!-- Google Tag Manager (noscript) -->
   <noscript>
@@ -28,7 +27,7 @@
   <!-- 🔝 Topbar -->
   <div class="topbar">
     <div class="d-flex align-items-center">
-      <strong>EANO</strong>
+      <strong class="brand">EANO</strong>
     </div>
     <div>
       <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
@@ -45,22 +44,22 @@
         <option value="zh">🇨🇳 中文</option>
       </select>
       <button id="dark-toggle">🌗</button>
-      <button id="menu-toggle">📊</button>
+      <button id="menu-toggle">📋</button>
     </div>
   </div>
 
-  <!-- 📍 Left Sidebar -->
+  <!-- 📍 Sidebar -->
   <div class="sidebar" id="sidebar">
     <button class="btn" id="mine-btn">⛏ Start Mining</button>
   </div>
 
-  <!-- 📍 Right Menu -->
+  <!-- 📍 Right Slide Menu -->
   <div class="menu" id="menu">
     <p><a href="profile.html">👤 Profile</a></p>
-    <p><a href="invite.html">👥 Referrals</a></p>
     <p><a href="leaderboard.html">🏆 Leaderboard</a></p>
+    <p><a href="invite.html">👥 Referrals</a></p>
     <p><a href="settings.html">⚙️ Settings</a></p>
-    <p><button id="logout-btn" class="btn btn-danger">Logout</button></p>
+    <p><button id="logout-btn" class="btn btn-danger w-100">🚪 Logout</button></p>
   </div>
 
   <!-- 📦 Main Content -->
@@ -69,21 +68,27 @@
     <p id="user-email" class="fw-bold">Loading email...</p>
     <p>Mine EANO every 24 hours to increase your score and trust level.</p>
 
-    <div class="announcement" id="announcement-box">
+    <div class="text-center mt-3">
+      <a href="#" class="team-referral-btn" title="Team Referrals">👥 Team</a>
+    </div>
+
+    <!-- 📢 Announcement Section -->
+    <div id="announcement-box" class="announcement centered mt-4">
       <h5>📢 Announcement</h5>
       <p id="latest-announcement">Loading announcement...</p>
     </div>
 
-    <div class="info mt-4">
+    <!-- 📊 Mining Info -->
+    <div id="referral-info" class="mt-4">
       <p><strong id="referral-count-label">Referrals:</strong> <span id="referral-count">0</span></p>
       <p><strong id="level-label">Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
       <p><strong id="trust-label">Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
     </div>
   </div>
 
-  <!-- 🧠 Scripts with versioning -->
-  <script type="module" src="dashboard.js?v=3"></script>
-  <script type="module" src="ui.js?v=3"></script>
-  <script type="module" src="lang.js?v=3"></script>
+  <!-- 🧠 Scripts -->
+  <script type="module" src="dashboard.js"></script>
+  <script type="module" src="ui.js"></script>
+  <script type="module" src="lang.js"></script>
 </body>
 </html>
