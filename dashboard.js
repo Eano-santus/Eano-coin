@@ -23,12 +23,16 @@ const timerEl = document.getElementById('timer');
 const mineBtn = document.getElementById('mine-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const emailEl = document.getElementById('user-email');
+const usernameEl = document.getElementById('user-username');
 const referralCountEl = document.getElementById('referral-count');
 
 let timerInterval;
 
 auth.onAuthStateChanged(async (user) => {
-  if (!user) {
+  if (!user)
+const username = data.username || "Unnamed";
+usernameEl.textContent = `@${username}`;
+ {
     window.location.href = 'index.html';
     return;
   }
