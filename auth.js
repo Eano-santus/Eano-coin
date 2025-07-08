@@ -13,7 +13,11 @@ import {
   doc,
   setDoc,
   getDoc,
-  updateDoc
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 // Your Firebase config
@@ -44,7 +48,7 @@ if (googleBtn) {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      await handleNewUser(user);
+      await handleNewUser(user, null); // Google does not collect username
       window.location.href = "dashboard.html";
     } catch (err) {
       console.error("Google sign-in error:", err);
@@ -74,16 +78,31 @@ const signupBtn = document.getElementById("signup-btn");
 if (signupBtn) {
   signupBtn.addEventListener("click", async () => {
     const email = document.getElementById("signup-email").value.trim();
+    const username = document.getElementById("signup-username").value.trim().toLowerCase();
     const password = document.getElementById("signup-password").value;
+
+    if (!username || username.length < 4) {
+      alert("Username must be at least 4 characters.");
+      return;
+    }
+
     if (password.length < 6) {
       alert("Password must be at least 6 characters.");
+      return;
+    }
+
+    // Check for duplicate username
+    const q = query(collection(db, "users"), where("username", "==", username));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      alert("Username is already taken. Choose another.");
       return;
     }
 
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       const user = result.user;
-      await handleNewUser(user);
+      await handleNewUser(user, username);
       window.location.href = "dashboard.html";
     } catch (err) {
       console.error("Signup error:", err);
@@ -93,19 +112,23 @@ if (signupBtn) {
 }
 
 // ✅ Handle new user creation and referral logic
-async function handleNewUser(user) {
+async function handleNewUser(user, username) {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
+
   if (!userSnap.exists()) {
-    // Give new user 2 EANO
-    await setDoc(userRef, {
+    const baseData = {
       email: user.email,
       balance: 2,
       lastMine: null,
       trustScore: 0,
       referrals: [],
-      referredBy: refId || null
-    });
+      referredBy: refId || null,
+      username: username || null,
+      createdAt: new Date().toISOString()
+    };
+
+    await setDoc(userRef, baseData);
 
     // Give 2 EANO to referrer if valid
     if (refId) {
@@ -115,9 +138,12 @@ async function handleNewUser(user) {
         const refData = refSnap.data();
         await updateDoc(refUserRef, {
           balance: (refData.balance || 0) + 2,
-          referrals: [...(refData.referrals || []), user.uid]
+          referrals: [...(refData.referrals || []), user.uid],
+          trustScore: (refData.trustScore || 0) + 50
         });
       }
     }
   }
 }
+
+export { auth, db };
