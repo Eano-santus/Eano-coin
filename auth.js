@@ -53,17 +53,31 @@ function generateEanoId() {
   return id;
 }
 
-// ✅ Google Sign-In
-document.getElementById("google-signin")?.addEventListener("click", async () => {
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    await handleNewUser(user, null, null, null); // No username/firstname/lastname from Google
-    window.location.href = "dashboard.html";
-  } catch (err) {
-    console.error("Google sign-in error:", err);
-    alert("Google sign-in failed.");
-  }
+// ✅ Google Sign-In for existing users only
+const googleBtn = document.getElementById("google-signin");
+if (googleBtn) {
+  googleBtn.addEventListener("click", async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        // Deny access if user is not found
+        await auth.signOut();
+        alert("❌ Access denied. This Google account is not registered.");
+        return;
+      }
+
+      // Allow access
+      window.location.href = "dashboard.html";
+    } catch (err) {
+      console.error("Google sign-in error:", err);
+      alert("Google sign-in failed.");
+    }
+  });
+}
 });
 
 // ✅ Email/Password Login
