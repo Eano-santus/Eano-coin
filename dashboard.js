@@ -167,17 +167,20 @@ function startTimer(lastMineTime) {
   timerInterval = setInterval(updateTimer, 1000);
 }
 
-// 🌙 Dark Mode Toggle
+// 🌙 Dark/Light Mode Toggle
+const darkToggle = document.getElementById("dark-toggle");
 if (darkToggle) {
   darkToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
+    document.body.classList.toggle("light-mode");
 
-    const isDark = document.body.classList.contains("dark-mode");
-    localStorage.setItem("dark-mode", isDark ? "on" : "off");
+    // Save preference
+    const mode = document.body.classList.contains("dark-mode") ? "dark" : "light";
+    localStorage.setItem("theme", mode);
   });
 
-  // Load saved preference
-  if (localStorage.getItem("dark-mode") === "on") {
-    document.body.classList.add("dark-mode");
-  }
-      }
+  // Apply saved preference
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") document.body.classList.add("dark-mode");
+  else if (savedTheme === "light") document.body.classList.add("light-mode");
+}
