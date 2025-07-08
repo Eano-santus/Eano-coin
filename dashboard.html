@@ -30,17 +30,15 @@
       overflow-x: hidden;
     }
 
+    .topbar {
+      z-index: 1000;
+    }
+
     .dashboard-container {
       width: 100%;
       max-width: 100%;
       padding: 1rem;
       box-sizing: border-box;
-    }
-
-    .main-content {
-      margin-top: 100px;
-      text-align: center;
-      color: #fff;
     }
 
     .content-box {
@@ -51,29 +49,29 @@
       margin: 1rem 0;
     }
 
-    .sidebar, .topbar, .menu {
-      background-color: rgba(0, 0, 0, 0.75);
-    }
-
-    .sidebar-logo {
-      width: 60px;
-      margin-bottom: 1rem;
-    }
-
     @media screen and (max-width: 600px) {
-      .topbar, .sidebar, .menu {
-        position: relative !important;
+      .dashboard-container {
+        padding: 0.75rem;
+      }
+
+      .content-box {
+        padding: 0.75rem;
+      }
+
+      .sidebar, .topbar, .menu {
         width: 100% !important;
+        display: block !important;
+        position: relative !important;
         height: auto !important;
       }
 
-      .main-content {
-        margin-top: 1rem;
-        padding: 1rem;
+      .topbar {
+        margin-bottom: 1rem;
       }
 
-      .sidebar, .menu {
-        padding: 1rem;
+      .main-content {
+        margin-top: 1rem !important;
+        text-align: center;
       }
     }
   </style>
@@ -87,8 +85,8 @@
   </noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-  <!-- Topbar -->
-  <div class="topbar d-flex justify-content-between align-items-center p-2">
+  <!-- ✅ Topbar -->
+  <div class="topbar d-flex justify-content-between align-items-center p-2 bg-dark bg-opacity-75">
     <div class="d-flex align-items-center">
       <img src="logo.png" alt="EANO Logo" class="logo me-2" style="height: 32px;">
       <strong>EANO</strong>
@@ -105,15 +103,15 @@
     </select>
   </div>
 
-  <!-- Left Sidebar -->
-  <div class="sidebar p-3 position-fixed top-0 start-0 vh-100">
-    <img src="logo.png" alt="Logo" class="sidebar-logo" />
+  <!-- ✅ Left Sidebar -->
+  <div class="sidebar p-3 bg-black bg-opacity-75 position-fixed top-0 start-0 vh-100">
+    <img src="logo.png" alt="Logo" class="sidebar-logo mb-3" style="width: 60px;" />
     <button class="btn btn-warning w-100 mb-2" id="mine-btn">⛏ Start Mining</button>
     <button class="btn btn-danger w-100" id="logout-btn">Logout</button>
   </div>
 
-  <!-- Right Menu -->
-  <div class="menu p-3 position-fixed top-0 end-0 vh-100">
+  <!-- ✅ Right Menu -->
+  <div class="menu p-3 bg-black bg-opacity-75 position-fixed top-0 end-0 vh-100">
     <div class="text-center text-white small">
       <strong>📊 Menu</strong>
       <hr style="border-color: white;">
@@ -124,20 +122,25 @@
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div class="main-content container dashboard-container">
-    <h3>👋 Welcome to EANO Network</h3>
-    <p id="user-email" class="fw-bold">Loading email...</p>
-    <p>Mine EANO every 24 hours to increase your Score/TrustLevel.</p>
+  <!-- ✅ Main Content -->
+  <div class="main-content text-center mt-5 dashboard-container">
+    <div class="content-box">
+      <h3>👋 Welcome to EANO Network</h3>
+      <p id="user-username" class="fw-bold text-warning">@Loading...</p>
+      <p id="user-email" class="fw-bold">Loading email...</p>
+      <p class="text-light">Mine EANO every 24 hours to increase your Level and Trust Score.</p>
+    </div>
 
-    <div id="referral-info" class="content-box text-white">
+    <div class="content-box" id="referral-info">
       <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+      <!-- Mining Level and Trust Score will be injected via JS -->
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- ✅ Scripts -->
   <script type="module" src="dashboard.js"></script>
   <script type="module" src="ui.js"></script>
   <script type="module" src="lang.js"></script>
+
 </body>
 </html>
