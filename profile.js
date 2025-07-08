@@ -53,7 +53,7 @@ function getLevelFromBalance(balance) {
   if (balance >= 250) return "🐺 Wolf";
   if (balance >= 100) return "🐶 Dog";
   if (balance >= 5) return "🐹 Hamster";
-  if (balance >= 1) return "🐣 Egg";
+  if (balance >= 1) return "🐥 Chicken";
   return "❌ Not Started";
 }
 
