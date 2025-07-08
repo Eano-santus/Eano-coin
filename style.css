@@ -146,6 +146,35 @@ body.dashboard {
 #referral-info p {
   margin: 4px 0;
 }
+/* 🔄 Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  background-image: none !important;
+  color: #eaeaea;
+}
+
+body.dark-mode .topbar,
+body.dark-mode .sidebar,
+body.dark-mode .menu,
+body.dark-mode .main-content,
+body.dark-mode #announcement-box {
+  background: rgba(30, 30, 30, 0.85);
+  color: #eaeaea;
+}
+
+body.dark-mode a {
+  color: #ffc107;
+}
+
+body.dark-mode #mine-btn {
+  background: #ffcc00;
+  color: #000;
+}
+
+body.dark-mode #logout-btn {
+  border-color: #f44336;
+  color: #f44336;
+}
 
 /* Announcement Box */
 #announcement-box {
