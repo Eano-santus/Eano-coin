@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Dashboard</title>
 
-  <!-- Google Tag Manager -->
+  <!-- GTM -->
   <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -16,18 +16,13 @@
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="dashboard" id="dashboard-body">
+<body class="dashboard">
 
-  <!-- Google Tag Manager (noscript) -->
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe>
-  </noscript>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-  <!-- 🔝 Topbar -->
   <div class="topbar">
     <div class="d-flex align-items-center">
-      <strong class="brand">EANO</strong>
+      <strong>EANO</strong>
     </div>
     <div>
       <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
@@ -44,49 +39,43 @@
         <option value="zh">🇨🇳 中文</option>
       </select>
       <button id="dark-toggle">🌗</button>
-      <button id="menu-toggle">📋</button>
+      <button id="menu-toggle">📊</button>
     </div>
   </div>
 
-  <!-- 📍 Sidebar -->
   <div class="sidebar" id="sidebar">
     <button class="btn" id="mine-btn">⛏ Start Mining</button>
   </div>
 
-  <!-- 📍 Right Slide Menu -->
   <div class="menu" id="menu">
     <p><a href="profile.html">👤 Profile</a></p>
-    <p><a href="leaderboard.html">🏆 Leaderboard</a></p>
     <p><a href="invite.html">👥 Referrals</a></p>
+    <p><a href="leaderboard.html">🏆 Leaderboard</a></p>
     <p><a href="settings.html">⚙️ Settings</a></p>
-    <p><button id="logout-btn" class="btn btn-danger w-100">🚪 Logout</button></p>
+    <p><button id="logout-btn" class="btn btn-outline-danger">Logout</button></p>
   </div>
 
-  <!-- 📦 Main Content -->
   <div class="main-content fade-in">
     <h3>👋 Welcome to EANO Network</h3>
     <p id="user-email" class="fw-bold">Loading email...</p>
     <p>Mine EANO every 24 hours to increase your score and trust level.</p>
 
-    <div class="text-center mt-3">
+    <div style="margin-top: 20px;">
       <a href="#" class="team-referral-btn" title="Team Referrals">👥 Team</a>
     </div>
 
-    <!-- 📢 Announcement Section -->
-    <div id="announcement-box" class="announcement centered mt-4">
+    <div id="announcement-box" class="mt-4">
       <h5>📢 Announcement</h5>
       <p id="latest-announcement">Loading announcement...</p>
     </div>
 
-    <!-- 📊 Mining Info -->
     <div id="referral-info" class="mt-4">
-      <p><strong id="referral-count-label">Referrals:</strong> <span id="referral-count">0</span></p>
-      <p><strong id="level-label">Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
-      <p><strong id="trust-label">Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
+      <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+      <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
+      <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
     </div>
   </div>
 
-  <!-- 🧠 Scripts -->
   <script type="module" src="dashboard.js"></script>
   <script type="module" src="ui.js"></script>
   <script type="module" src="lang.js"></script>
