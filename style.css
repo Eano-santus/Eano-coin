@@ -1,32 +1,84 @@
-/* Global Reset */
+/* ==== Global Reset and Base Styles ==== */
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center top;
   color: #fff;
-  height: 100%;
+  min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Fade-in Animation */
+/* ==== Pi-style Background Overlay ==== */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: -1;
+}
+
+/* ==== Fade-in Animation ==== */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
+
 @keyframes fadeIn {
   0% { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Dashboard Body */
-body.dashboard {
-  background: url('eano-bg.png') no-repeat center center fixed;
-  background-size: cover;
-  color: #fff;
+/* ==== Login/Register Container (Used in index.html) ==== */
+.container {
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
 }
 
-/* Topbar */
+/* ==== Form Fields ==== */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  background: #111;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 8px;
+}
+
+/* ==== Buttons ==== */
+button {
+  width: 100%;
+  padding: 12px;
+  background: gold;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #ffc107;
+}
+
+/* ==== Dashboard Topbar ==== */
 .topbar {
   height: 60px;
   background: rgba(0, 0, 0, 0.75);
@@ -42,32 +94,22 @@ body.dashboard {
   color: #fff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
+
 .topbar .logo {
   width: 32px;
   margin-right: 8px;
 }
+
 #lang-select {
   font-size: 0.8rem;
   padding: 3px 6px;
   border-radius: 6px;
-  background: #fff;
-  color: #000;
-}
-#dark-toggle,
-#menu-toggle {
-  background: #ffc107;
-  color: #000;
-  border: none;
-  padding: 4px 10px;
-  margin-left: 4px;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
-/* Sidebar (Left) */
+/* ==== Sidebar (Left) ==== */
 .sidebar {
   width: 200px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.75);
   padding: 1rem;
   position: fixed;
   top: 60px;
@@ -78,20 +120,22 @@ body.dashboard {
   flex-direction: column;
   align-items: center;
 }
+
 .sidebar-logo {
   width: 60px;
   margin-bottom: 20px;
 }
+
 #mine-btn {
   background: #ffc107;
   border: none;
-  padding: 10px 20px;
+  padding: 10px;
   border-radius: 10px;
   font-weight: 600;
   color: #000;
   margin-bottom: 10px;
-  cursor: pointer;
 }
+
 #logout-btn {
   background: transparent;
   border: 1px solid #dc3545;
@@ -99,13 +143,12 @@ body.dashboard {
   padding: 8px 12px;
   border-radius: 8px;
   font-weight: 500;
-  cursor: pointer;
 }
 
-/* Right Menu */
+/* ==== Right Menu ==== */
 .menu {
   width: 180px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.75);
   position: fixed;
   top: 60px;
   bottom: 0;
@@ -115,19 +158,17 @@ body.dashboard {
   color: #fff;
   text-align: center;
 }
-.menu p {
-  margin: 12px 0;
-}
+
 .menu a {
   color: #fff;
   text-decoration: none;
-  font-weight: 500;
 }
+
 .menu a:hover {
   text-decoration: underline;
 }
 
-/* Main Content Area */
+/* ==== Main Dashboard Content ==== */
 .main-content {
   margin: 100px 220px;
   padding: 2rem;
@@ -135,58 +176,36 @@ body.dashboard {
   border-radius: 12px;
   color: #fff;
 }
-.main-content h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-.main-content p {
-  font-size: 0.95rem;
-  margin-bottom: 0.75rem;
-}
-#referral-info p {
-  margin: 4px 0;
-}
-/* 🔄 Dark Mode Styles */
-body.dark-mode {
-  background-color: #121212;
-  background-image: none !important;
-  color: #eaeaea;
-}
 
-body.dark-mode .topbar,
-body.dark-mode .sidebar,
-body.dark-mode .menu,
-body.dark-mode .main-content,
-body.dark-mode #announcement-box {
-  background: rgba(30, 30, 30, 0.85);
-  color: #eaeaea;
-}
-
-body.dark-mode a {
-  color: #ffc107;
-}
-
-body.dark-mode #mine-btn {
-  background: #ffcc00;
-  color: #000;
-}
-
-body.dark-mode #logout-btn {
-  border-color: #f44336;
-  color: #f44336;
-}
-
-/* Announcement Box */
+/* ==== Announcement Box ==== */
 #announcement-box {
   background: rgba(0, 0, 0, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
+  border-radius: 10px;
 }
 
-/* Responsive Adjustments */
+/* ==== Dark Mode Toggle ==== */
+.dark-mode {
+  background: #111 !important;
+  color: #fff;
+}
+
+.dark-mode .topbar,
+.dark-mode .sidebar,
+.dark-mode .menu,
+.dark-mode .main-content {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+/* ==== Mobile Responsive Fixes ==== */
 @media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    height: auto;
+    gap: 0.5rem;
+  }
+
   .sidebar,
   .menu {
     position: static;
@@ -195,19 +214,16 @@ body.dark-mode #logout-btn {
     flex-direction: row;
     justify-content: space-around;
     padding: 0.5rem;
-    text-align: center;
-  }
-
-  .topbar {
-    flex-direction: column;
-    height: auto;
-    gap: 0.5rem;
   }
 
   .main-content {
-    margin: 130px 10px 20px 10px;
+    margin: 120px 10px 20px 10px;
     padding: 1rem;
-    text-align: center;
+  }
+
+  .container {
+    padding: 16px;
+    margin: 10px;
   }
 
   .sidebar-logo {
