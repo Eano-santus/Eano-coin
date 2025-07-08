@@ -41,6 +41,16 @@ const provider = new GoogleAuthProvider();
 const urlParams = new URLSearchParams(window.location.search);
 const refId = urlParams.get("ref");
 
+// 🔧 Generate 8-char EANO ID
+function generateEanoId() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let id = "EANO";
+  for (let i = 0; i < 4; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
+}
+
 // ✅ Google Sign-In
 const googleBtn = document.getElementById("google-signin");
 if (googleBtn) {
@@ -117,18 +127,22 @@ async function handleNewUser(user, username) {
   const userSnap = await getDoc(userRef);
 
   if (!userSnap.exists()) {
-    const baseData = {
+    const eanoId = generateEanoId();
+
+    await setDoc(userRef, {
+      uid: user.uid,
       email: user.email,
+      username,
+      eanoId,
       balance: 2,
-      lastMine: null,
       trustScore: 0,
+      referralCount: 0,
       referrals: [],
       referredBy: refId || null,
-      username: username || null,
-      createdAt: new Date().toISOString()
-    };
-
-    await setDoc(userRef, baseData);
+      lastMine: null,
+      createdAt: new Date().toISOString(),
+      status: "active"
+    });
 
     // Give 2 EANO to referrer if valid
     if (refId) {
@@ -138,6 +152,7 @@ async function handleNewUser(user, username) {
         const refData = refSnap.data();
         await updateDoc(refUserRef, {
           balance: (refData.balance || 0) + 2,
+          referralCount: (refData.referralCount || 0) + 1,
           referrals: [...(refData.referrals || []), user.uid],
           trustScore: (refData.trustScore || 0) + 50
         });
