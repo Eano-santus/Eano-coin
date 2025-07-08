@@ -1,84 +1,16 @@
-/* style.css */
-body {
+/* Global Reset */
+html, body {
+  margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', sans-serif;
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
-  margin: 0;
-  padding: 0;
+  height: 100%;
   overflow-x: hidden;
 }
 
-.topbar {
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px 20px;
-  font-size: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.sidebar,
-.menu {
-  width: 200px;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-}
-
-.menu {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100%;
-}
-
-.main-content {
-  margin-left: 220px;
-  margin-right: 220px;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 12px;
-  margin-top: 80px;
-}
-
-@media screen and (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .sidebar,
-  .menu {
-    width: 100%;
-    position: relative;
-    height: auto;
-  }
-
-  .main-content {
-    margin: 1rem;
-    padding: 1rem;
-  }
-
-  .logo {
-    height: 30px;
-  }
-}
-
-.btn {
-  font-weight: bold;
-}
-
-.text-black-coffee {
-  color: #3b2f2f;
-}
+/* Fade-in Animation */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -86,4 +18,150 @@ body {
 @keyframes fadeIn {
   0% { opacity: 0; transform: translateY(10px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard Body */
+body.dashboard {
+  background: url('eano-bg.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+}
+
+/* Topbar */
+.topbar {
+  height: 60px;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.topbar .logo {
+  width: 32px;
+  margin-right: 8px;
+}
+
+#lang-select {
+  font-size: 0.8rem;
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+
+/* Sidebar (Left) */
+.sidebar {
+  width: 200px;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 1rem;
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar-logo {
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+#mine-btn {
+  background: #ffc107;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+#logout-btn {
+  background: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Right Menu */
+.menu {
+  width: 180px;
+  background: rgba(0, 0, 0, 0.75);
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  right: 0;
+  padding: 1rem;
+  z-index: 999;
+  color: #fff;
+  text-align: center;
+}
+
+.menu a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu a:hover {
+  text-decoration: underline;
+}
+
+/* Main Content Area */
+.main-content {
+  margin: 100px 220px;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 12px;
+  color: #fff;
+}
+
+/* Announcement Box */
+#announcement-box {
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .sidebar,
+  .menu {
+    position: static;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0.5rem;
+  }
+
+  .topbar {
+    flex-direction: column;
+    height: auto;
+    gap: 0.5rem;
+  }
+
+  .main-content {
+    margin: 120px 10px 20px 10px;
+    padding: 1rem;
+  }
+
+  .sidebar-logo {
+    display: none;
+  }
+
+  #mine-btn,
+  #logout-btn {
+    width: 45%;
+    margin-bottom: 0;
+  }
 }
