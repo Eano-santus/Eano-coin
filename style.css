@@ -128,12 +128,18 @@ button:hover {
 
 #mine-btn {
   background: #ffc107;
+  color: #000;
   border: none;
   padding: 10px;
-  border-radius: 10px;
   font-weight: 600;
-  color: #000;
+  border-radius: 12px;
   margin-bottom: 10px;
+  box-shadow: 0 0 10px #ffc107, 0 0 20px #ffc107;
+  transition: box-shadow 0.3s ease;
+}
+
+#mine-btn:hover {
+  box-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700;
 }
 
 #logout-btn {
@@ -179,10 +185,22 @@ button:hover {
 
 /* ==== Announcement Box ==== */
 #announcement-box {
-  background: rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 1rem;
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 193, 7, 0.9);
+  color: #000;
+  padding: 10px 20px;
   border-radius: 10px;
+  z-index: 1050;
+  font-weight: bold;
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  0% { transform: translate(-50%, -100%); opacity: 0; }
+  100% { transform: translate(-50%, 0); opacity: 1; }
 }
 
 /* ==== Dark Mode Toggle ==== */
@@ -196,6 +214,25 @@ button:hover {
 .dark-mode .menu,
 .dark-mode .main-content {
   background-color: rgba(0, 0, 0, 0.85);
+}
+
+/* Light Mode */
+.light-mode {
+  background-color: #f3f3f3;
+  color: #000;
+}
+
+.light-mode .topbar,
+.light-mode .sidebar,
+.light-mode .menu,
+.light-mode .main-content {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
+
+.light-mode #mine-btn {
+  background: #333;
+  color: #fff;
 }
 
 /* ==== Mobile Responsive Fixes ==== */
