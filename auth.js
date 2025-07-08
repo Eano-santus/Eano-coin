@@ -124,7 +124,10 @@ document.getElementById("signup-btn")?.addEventListener("click", async () => {
 async function handleNewUser(user, username, firstname, lastname) {
   const userRef = doc(db, "users", user.uid);
   const docSnap = await getDoc(userRef);
+import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
+// Set once during initialization
+setPersistence(auth, browserLocalPersistence);
   if (!docSnap.exists()) {
     const referralCode = generateReferralCode(username);
     const eanoId = generateEanoId();
