@@ -19,7 +19,7 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// Firebase Config
+// 🔐 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
@@ -30,16 +30,17 @@ const firebaseConfig = {
   measurementId: "G-NS0W6QSS69"
 };
 
+// ✅ Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Referral Code
+// 🌐 Get Referral Code (if any)
 const urlParams = new URLSearchParams(window.location.search);
 const refId = urlParams.get("ref");
 
-// Utility Functions
+// 🔧 Utility Functions
 function generateReferralCode(username) {
   return `${username}-${Math.floor(Math.random() * 10000)}`;
 }
@@ -53,7 +54,7 @@ function generateEanoId() {
   return id;
 }
 
-// ✅ Google Sign-In for existing users only
+// ✅ Google Sign-In (For Existing Users Only)
 const googleBtn = document.getElementById("google-signin");
 if (googleBtn) {
   googleBtn.addEventListener("click", async () => {
@@ -64,13 +65,11 @@ if (googleBtn) {
       const userSnap = await getDoc(userRef);
 
       if (!userSnap.exists()) {
-        // Deny access if user is not found
         await auth.signOut();
         alert("❌ Access denied. This Google account is not registered.");
         return;
       }
 
-      // Allow access
       window.location.href = "dashboard.html";
     } catch (err) {
       console.error("Google sign-in error:", err);
@@ -78,12 +77,12 @@ if (googleBtn) {
     }
   });
 }
-});
 
 // ✅ Email/Password Login
 document.getElementById("login-btn")?.addEventListener("click", async () => {
   const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value;
+
   try {
     await signInWithEmailAndPassword(auth, email, password);
     window.location.href = "dashboard.html";
@@ -93,7 +92,7 @@ document.getElementById("login-btn")?.addEventListener("click", async () => {
   }
 });
 
-// ✅ Email Signup with Full Fields
+// ✅ Full Signup with Username, Firstname, Lastname
 document.getElementById("signup-btn")?.addEventListener("click", async () => {
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value;
@@ -105,7 +104,7 @@ document.getElementById("signup-btn")?.addEventListener("click", async () => {
   if (!firstname || !lastname) return alert("First and Last name are required.");
   if (password.length < 6) return alert("Password must be at least 6 characters.");
 
-  // Check for username uniqueness
+  // Check for unique username
   const q = query(collection(db, "users"), where("username", "==", username));
   const snapshot = await getDocs(q);
   if (!snapshot.empty) return alert("Username already taken. Choose another.");
@@ -127,15 +126,15 @@ async function handleNewUser(user, username, firstname, lastname) {
   const docSnap = await getDoc(userRef);
 
   if (!docSnap.exists()) {
-    const referralCode = generateReferralCode(username || "user");
+    const referralCode = generateReferralCode(username);
     const eanoId = generateEanoId();
 
     await setDoc(userRef, {
       uid: user.uid,
       email: user.email,
-      username: username || null,
-      firstname: firstname || null,
-      lastname: lastname || null,
+      username,
+      firstname,
+      lastname,
       referralCode,
       referrals: [],
       referralCount: 0,
@@ -149,6 +148,7 @@ async function handleNewUser(user, username, firstname, lastname) {
       eanoId
     });
 
+    // Handle referral bonus
     if (refId) {
       const refUserRef = doc(db, "users", refId);
       const refSnap = await getDoc(refUserRef);
@@ -165,4 +165,5 @@ async function handleNewUser(user, username, firstname, lastname) {
   }
 }
 
+// ✅ Export for other modules
 export { auth, db };
