@@ -4,108 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome to EANO</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
-
+  <link rel="stylesheet" href="style.css" />
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', sans-serif;
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
-      overflow: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: -1;
-    }
-
-    .welcome-container {
+    .welcome-screen {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
       text-align: center;
-      height: 100vh;
-      color: white;
+      color: #fff;
       padding: 2rem;
     }
 
-    .welcome-box {
-      background: rgba(0, 0, 0, 0.75);
-      padding: 2rem;
-      border-radius: 16px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    }
-
-    .welcome-box h1 {
-      font-size: 2rem;
+    .welcome-screen h1 {
+      font-size: 2.5rem;
       margin-bottom: 1rem;
-      color: gold;
     }
 
-    .welcome-box p {
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
+    .welcome-screen p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
     }
 
-    .btn-continue {
+    .welcome-screen button {
       padding: 12px 24px;
+      font-size: 1rem;
+      border-radius: 8px;
       background: gold;
-      color: black;
+      color: #000;
       font-weight: bold;
       border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 1.1rem;
-    }
-
-    .btn-continue:hover {
-      background: #ffc107;
-    }
-
-    @media (max-width: 500px) {
-      .welcome-box {
-        padding: 1.5rem;
-      }
-
-      .welcome-box h1 {
-        font-size: 1.6rem;
-      }
-
-      .welcome-box p {
-        font-size: 0.95rem;
-      }
     }
   </style>
 </head>
 <body>
-
-  <div class="welcome-container">
-    <div class="welcome-box">
-      <h1>👋 Welcome to EANO</h1>
-      <p>Mine EANO every 24 hours and build trust in the network. Let’s get started!</p>
-      <button class="btn-continue" onclick="proceed()">Continue</button>
-    </div>
+  <div class="welcome-screen">
+    <h1>👋 Welcome to EANO</h1>
+    <p>Your gateway to financial freedom. Start mining crypto that empowers communities.</p>
+    <button onclick="proceed()">Continue to App</button>
   </div>
 
   <script>
     function proceed() {
-      localStorage.setItem("seenWelcome", "true");
+      localStorage.setItem("seenWelcome", true);
       window.location.href = "index.html";
     }
   </script>
-
 </body>
 </html>
