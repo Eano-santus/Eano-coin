@@ -1,4 +1,4 @@
-/* Global Reset */
+/* 🌍 Global Reset */
 html, body {
   margin: 0;
   padding: 0;
@@ -10,7 +10,7 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Fade-in Animation */
+/* 🌟 Fade-in Animation */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
@@ -20,14 +20,14 @@ html, body {
   100% { opacity: 1; transform: translateY(0); }
 }
 
-/* Dashboard Body */
+/* 💻 Dashboard Body */
 body.dashboard {
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
 }
 
-/* Topbar */
+/* 🔝 Topbar */
 .topbar {
   height: 60px;
   background: rgba(0, 0, 0, 0.75);
@@ -43,19 +43,17 @@ body.dashboard {
   color: #fff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-
 .topbar .logo {
   width: 32px;
   margin-right: 8px;
 }
-
 #lang-select {
   font-size: 0.8rem;
   padding: 3px 6px;
   border-radius: 6px;
 }
 
-/* Sidebar (Left) */
+/* 📍 Sidebar (Left) */
 .sidebar {
   width: 200px;
   background: rgba(0, 0, 0, 0.75);
@@ -69,12 +67,10 @@ body.dashboard {
   flex-direction: column;
   align-items: center;
 }
-
 .sidebar-logo {
   width: 60px;
   margin-bottom: 20px;
 }
-
 #mine-btn {
   background: #ffc107;
   border: none;
@@ -84,7 +80,6 @@ body.dashboard {
   color: #000;
   margin-bottom: 10px;
 }
-
 #logout-btn {
   background: transparent;
   border: 1px solid #dc3545;
@@ -94,7 +89,7 @@ body.dashboard {
   font-weight: 500;
 }
 
-/* Right Menu */
+/* 📜 Right Menu */
 .menu {
   width: 180px;
   background: rgba(0, 0, 0, 0.75);
@@ -107,33 +102,37 @@ body.dashboard {
   color: #fff;
   text-align: center;
 }
-
 .menu a {
   color: #fff;
   text-decoration: none;
 }
-
 .menu a:hover {
   text-decoration: underline;
 }
 
-/* Main Content Area */
+/* 🧱 Main Content */
 .main-content {
   margin: 100px 220px;
   padding: 2rem;
   background: rgba(0, 0, 0, 0.65);
   border-radius: 12px;
   color: #fff;
+  position: relative;
+  z-index: 1;
 }
 
-/* Announcement Box */
+/* 📢 Announcement Box */
 #announcement-box {
   background: rgba(0, 0, 0, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1rem;
 }
 
-/* Responsive Fixes */
+/* 📱 Mobile Responsive Fixes */
 @media (max-width: 768px) {
+  /* Sidebar and Right Menu become mobile nav */
   .sidebar,
   .menu {
     position: static;
@@ -142,17 +141,8 @@ body.dashboard {
     flex-direction: row;
     justify-content: space-around;
     padding: 0.5rem;
-  }
-
-  .topbar {
-    flex-direction: column;
-    height: auto;
-    gap: 0.5rem;
-  }
-
-  .main-content {
-    margin: 120px 10px 20px 10px;
-    padding: 1rem;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
   }
 
   .sidebar-logo {
@@ -164,4 +154,21 @@ body.dashboard {
     width: 45%;
     margin-bottom: 0;
   }
-}
+
+  .topbar {
+    flex-direction: column;
+    height: auto;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  #lang-select {
+    width: 100%;
+  }
+
+  .main-content {
+    margin: 120px 10px 80px 10px;
+    padding: 1rem;
+    text-align: center;
+  }
+    }
