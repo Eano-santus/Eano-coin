@@ -29,10 +29,7 @@ const referralCountEl = document.getElementById('referral-count');
 let timerInterval;
 
 auth.onAuthStateChanged(async (user) => {
-  if (!user)
-const username = data.username || "Unnamed";
-usernameEl.textContent = `@${username}`;
- {
+  if (!user) {
     window.location.href = 'index.html';
     return;
   }
@@ -50,7 +47,8 @@ usernameEl.textContent = `@${username}`;
       referredBy: ref || null,
       trustScore: 0,
       createdAt: serverTimestamp(),
-      email: user.email
+      email: user.email,
+      username: "Unnamed"
     };
 
     await setDoc(userRef, defaultData);
@@ -72,11 +70,15 @@ usernameEl.textContent = `@${username}`;
   const lastMine = data.lastMine ? new Date(data.lastMine) : null;
   const referralCount = data.referralCount || 0;
   const trustScore = data.trustScore || 0;
+  const username = data.username || "Unnamed";
 
   // UI updates
   updateUserEmailUI(user.email);
   updateBalanceUI(balance);
   updateReferralCountUI(referralCount);
+  if (usernameEl) {
+    usernameEl.textContent = `@${username}`;
+  }
 
   const level = getLevelFromBalance(balance);
   const badge = getTrustBadge(trustScore);
@@ -101,9 +103,9 @@ usernameEl.textContent = `@${username}`;
 
     const reward = 1.0;
     await updateDoc(userRef, {
-  balance: increment(reward),
-  lastMine: now.toISOString()
-});
+      balance: increment(reward),
+      lastMine: now.toISOString()
+    });
 
     updateBalanceUI(balance + reward);
     startTimer(now);
