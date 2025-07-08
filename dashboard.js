@@ -3,10 +3,10 @@ import { auth, db } from './auth.js';
 import {
   doc,
   getDoc,
-  updateDoc,
   setDoc,
-  serverTimestamp,
-  increment
+  updateDoc,
+  increment,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 import {
@@ -23,6 +23,8 @@ const mineBtn = document.getElementById('mine-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const emailEl = document.getElementById('user-email');
 const referralCountEl = document.getElementById('referral-count');
+const announcementBox = document.getElementById('announcement-box');
+const announcementText = document.getElementById('latest-announcement');
 
 let timerInterval;
 
@@ -36,9 +38,10 @@ auth.onAuthStateChanged(async (user) => {
   const userRef = doc(db, "users", uid);
   let userSnap = await getDoc(userRef);
 
+  // Create fallback user if missing
   if (!userSnap.exists()) {
     const ref = new URLSearchParams(window.location.search).get('ref');
-    const defaultData = {
+    const fallbackData = {
       uid: user.uid,
       email: user.email,
       username: "",
@@ -51,14 +54,14 @@ auth.onAuthStateChanged(async (user) => {
       referredBy: ref || null,
       lastMine: null,
       createdAt: serverTimestamp(),
-      level: "🐣 Chick",
+      level: "🐥 Chicken",
       status: "active"
     };
-    await setDoc(userRef, defaultData);
+    await setDoc(userRef, fallbackData);
 
     if (ref) {
-      const refUser = doc(db, "users", ref);
-      await updateDoc(refUser, {
+      const refUserRef = doc(db, "users", ref);
+      await updateDoc(refUserRef, {
         balance: increment(2),
         referralCount: increment(1),
         trustScore: increment(50)
@@ -84,7 +87,7 @@ auth.onAuthStateChanged(async (user) => {
 
   document.getElementById("referral-info").innerHTML += `
     <p><strong>Mining Level:</strong> ${level}</p>
-    <p><strong>Trust Score:</strong> ${trustScore} - ${badge}</p>
+    <p><strong>Trust Score:</strong> ${trustScore} – ${badge}</p>
   `;
 
   if (lastMine) startTimer(lastMine);
@@ -95,11 +98,11 @@ auth.onAuthStateChanged(async (user) => {
       const remaining = 24 * 60 * 60 * 1000 - (now - lastMine);
       const hrs = Math.floor(remaining / 3600000);
       const mins = Math.floor((remaining % 3600000) / 60000);
-      alert(`Please wait ${hrs}h ${mins}m before mining again.`);
+      alert(`⏳ Wait ${hrs}h ${mins}m to mine again.`);
       return;
     }
 
-    const reward = 1.0;
+    const reward = 1;
     await updateDoc(userRef, {
       balance: increment(reward),
       lastMine: now.toISOString()
@@ -109,6 +112,20 @@ auth.onAuthStateChanged(async (user) => {
     startTimer(now);
     alert(`✅ You mined ${reward} EANO! Come back in 24 hours.`);
   };
+
+  // Fetch Announcement
+  try {
+    const annDoc = await getDoc(doc(db, "announcements", "latest"));
+    if (annDoc.exists() && annDoc.data().message) {
+      announcementText.textContent = annDoc.data().message;
+      announcementBox.style.display = 'block';
+    } else {
+      announcementBox.style.display = 'none';
+    }
+  } catch (e) {
+    console.error("Announcement error:", e);
+    announcementBox.style.display = 'none';
+  }
 });
 
 logoutBtn.onclick = () => {
@@ -139,4 +156,4 @@ function startTimer(lastMineTime) {
 
   updateTimer();
   timerInterval = setInterval(updateTimer, 1000);
-}
+  }
