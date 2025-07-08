@@ -1,22 +1,19 @@
 // profile.js
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 import {
   getAuth,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
 import {
   getFirestore,
   doc,
   getDoc,
+  setDoc,
   updateDoc
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// Firebase config
+// ✅ Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
@@ -27,12 +24,12 @@ const firebaseConfig = {
   measurementId: "G-NS0W6QSS69"
 };
 
-// Initialize Firebase
+// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// UI elements
+// ✅ Elements
 const userNameEl = document.getElementById("user-name");
 const userEmailEl = document.getElementById("user-email");
 const phoneInput = document.getElementById("phone-number");
@@ -40,7 +37,7 @@ const referralCodeEl = document.getElementById("referral-code");
 const trustBadgeEl = document.getElementById("trust-badge");
 const miningLevelEl = document.getElementById("mining-level");
 
-// Badge functions
+// ✅ Badge Calculations
 function getTrustBadge(score) {
   if (score >= 1000) return "🔰 GetTrusted";
   if (score >= 500) return "✅ Reliable Miner";
@@ -60,7 +57,7 @@ function getLevelFromBalance(balance) {
   return "❌ Not Started";
 }
 
-// Auth check
+// ✅ Auth Check and Load Profile
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "index.html";
@@ -71,51 +68,45 @@ onAuthStateChanged(auth, async (user) => {
   userEmailEl.textContent = user.email;
   referralCodeEl.value = uid;
 
-  const userDocRef = doc(db, "users", uid);
-  const snap = await getDoc(userDocRef);
+  const userRef = doc(db, "users", uid);
+  const docSnap = await getDoc(userRef);
 
-  if (snap.exists()) {
-    const data = snap.data();
-    userNameEl.textContent = data.username || "Santorumsantus";
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    userNameEl.textContent = data.username || "Anonymous";
     phoneInput.value = data.phone || "";
-
-    // New: Trust Score and Balance Badge
-    const trustScore = data.trustScore || 0;
-    const balance = data.balance || 0;
-
-    trustBadgeEl.textContent = getTrustBadge(trustScore);
-    miningLevelEl.textContent = getLevelFromBalance(balance);
-
+    trustBadgeEl.textContent = getTrustBadge(data.trustScore || 0);
+    miningLevelEl.textContent = getLevelFromBalance(data.balance || 0);
   } else {
-    // If user doc doesn't exist, create a minimal one
-    await updateDoc(userDocRef, {
+    const defaultData = {
       username: user.email.split("@")[0],
       phone: "",
       trustScore: 0,
       balance: 0
-    });
-    userNameEl.textContent = user.email.split("@")[0];
+    };
+    await setDoc(userRef, defaultData);
+    userNameEl.textContent = defaultData.username;
     trustBadgeEl.textContent = getTrustBadge(0);
     miningLevelEl.textContent = getLevelFromBalance(0);
   }
 });
 
-// Save Phone Number
+// ✅ Save Phone Number
 window.savePhone = async () => {
   const user = auth.currentUser;
   if (!user) return;
 
   const phone = phoneInput.value.trim();
   if (!phone) {
-    alert("Phone number cannot be empty.");
+    alert("❌ Phone number cannot be empty.");
     return;
   }
 
   await updateDoc(doc(db, "users", user.uid), { phone });
-  alert("✅ Phone number saved.");
+  alert("✅ Phone number saved!");
 };
 
-// Copy Referral Code
+// ✅ Copy Referral Code
 window.copyReferral = () => {
   referralCodeEl.select();
   referralCodeEl.setSelectionRange(0, 99999);
@@ -123,12 +114,9 @@ window.copyReferral = () => {
   alert("✅ Referral code copied!");
 };
 
-// Logout
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    signOut(auth).then(() => {
-      window.location.href = "index.html";
-    });
+// ✅ Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
   });
-}
+});
