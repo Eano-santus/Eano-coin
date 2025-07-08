@@ -91,6 +91,39 @@ body.dashboard {
 .menu button:hover {
   background: #333;
 }
+/* 🌗 Dark/Light Mode Toggle */
+.light-mode {
+  background-color: #f0f0f0 !important;
+  color: #111 !important;
+}
+
+.light-mode .auth-container,
+.light-mode .profile-container,
+.light-mode .welcome-box,
+.light-mode .main-content,
+.light-mode .topbar,
+.light-mode .sidebar,
+.light-mode .menu {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #111 !important;
+}
+
+.light-mode input,
+.light-mode select,
+.light-mode button,
+.light-mode .info-box {
+  background-color: #fff !important;
+  color: #111 !important;
+}
+
+.light-mode .btn {
+  background-color: #222 !important;
+  color: #fff !important;
+}
+
+.light-mode a {
+  color: #333 !important;
+}
 
 /* ✅ Main content */
 .main-content {
