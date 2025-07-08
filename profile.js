@@ -76,7 +76,7 @@ onAuthStateChanged(auth, async (user) => {
 
   if (snap.exists()) {
     const data = snap.data();
-    userNameEl.textContent = data.username || "Anonymous";
+    userNameEl.textContent = data.username || "Santorumsantus";
     phoneInput.value = data.phone || "";
 
     // New: Trust Score and Balance Badge
