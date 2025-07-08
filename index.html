@@ -3,119 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO | Login or Sign Up</title>
+  <title>EANO • Sign In / Sign Up</title>
 
-  <!-- Google Tag Manager -->
-  <script>
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
-  </script>
-
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
 
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
+      margin: 0;
       color: #fff;
     }
 
     .auth-container {
-      max-width: 420px;
-      margin: 8vh auto;
+      max-width: 400px;
+      margin: 80px auto;
+      background: rgba(0, 0, 0, 0.75);
       padding: 2rem;
-      background: rgba(0,0,0,0.75);
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
 
-    .logo {
-      display: block;
-      margin: 0 auto 20px;
-      width: 80px;
-    }
-
-    .btn-google {
-      background: #fff;
-      border: 1px solid #ccc;
-      color: #000;
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-
-    .btn-google img {
-      height: 18px;
-      margin-right: 8px;
+    .auth-container h2 {
+      text-align: center;
+      color: gold;
+      margin-bottom: 1.5rem;
     }
 
     .form-control {
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
     }
 
-    .toggle-section {
+    .btn-auth {
+      width: 100%;
+      margin-top: 0.5rem;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .toggle-link {
       text-align: center;
       margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #90cdf4;
+      color: #ccc;
       cursor: pointer;
     }
 
-    h4 {
+    .toggle-link:hover {
       color: #fff;
-      text-align: center;
-      margin-bottom: 1.5rem;
+      text-decoration: underline;
+    }
+
+    #google-signin {
+      background: #fff;
+      color: #000;
+      border: none;
+    }
+
+    @media (max-width: 500px) {
+      .auth-container {
+        margin: 40px 1rem;
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div class="auth-container">
-    <img src="logo.png" alt="EANO Logo" class="logo" />
-    <h4>Welcome to EANO</h4>
+    <h2>🚀 Welcome to EANO</h2>
 
-    <!-- Google Sign-In -->
-    <button id="google-signin" class="btn btn-google d-flex align-items-center justify-content-center">
-      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" />
-      Sign in with Google
-    </button>
+    <!-- Sign-Up Section -->
+    <div id="signup-section">
+      <input type="text" id="signup-firstname" class="form-control" placeholder="First Name" required />
+      <input type="text" id="signup-lastname" class="form-control" placeholder="Last Name" required />
+      <input type="text" id="signup-username" class="form-control" placeholder="Username (min 4 chars)" required />
+      <input type="email" id="signup-email" class="form-control" placeholder="Email address" required />
+      <input type="password" id="signup-password" class="form-control" placeholder="Password (min 6 chars)" required />
+      <button id="signup-btn" class="btn btn-warning btn-auth">Sign Up</button>
+    </div>
 
     <!-- Login Section -->
-    <div id="login-section">
-      <input type="email" class="form-control" id="login-email" placeholder="Email" />
-      <input type="password" class="form-control" id="login-password" placeholder="Password" />
-      <button class="btn btn-primary w-100" id="login-btn">Login</button>
-      <div class="toggle-section" onclick="toggleAuth()">Don't have an account? Sign Up</div>
+    <div id="login-section" style="display: none;">
+      <input type="email" id="login-email" class="form-control" placeholder="Email" required />
+      <input type="password" id="login-password" class="form-control" placeholder="Password" required />
+      <button id="login-btn" class="btn btn-success btn-auth">Login</button>
+      <button id="google-signin" class="btn btn-light btn-auth">🔐 Sign in with Google</button>
     </div>
 
-    <!-- Signup Section -->
-    <div id="signup-section" style="display: none;">
-      <input type="text" class="form-control" id="signup-username" placeholder="Username (e.g. john_doe)" />
-      <input type="text" class="form-control" id="signup-firstname" placeholder="First Name" />
-      <input type="text" class="form-control" id="signup-lastname" placeholder="Last Name" />
-      <input type="email" class="form-control" id="signup-email" placeholder="Email" />
-      <input type="password" class="form-control" id="signup-password" placeholder="Password (min 6 chars)" />
-      <button class="btn btn-success w-100" id="signup-btn">Sign Up</button>
-      <div class="toggle-section" onclick="toggleAuth()">Already have an account? Login</div>
-    </div>
+    <div class="toggle-link" id="toggle-auth">Already have an account? Login</div>
   </div>
 
-  <script>
-    function toggleAuth() {
-      const login = document.getElementById("login-section");
-      const signup = document.getElementById("signup-section");
-      login.style.display = login.style.display === "none" ? "block" : "none";
-      signup.style.display = signup.style.display === "none" ? "block" : "none";
-    }
-  </script>
-
+  <!-- Scripts -->
   <script type="module" src="auth.js"></script>
+  <script>
+    const toggleLink = document.getElementById("toggle-auth");
+    const signupSection = document.getElementById("signup-section");
+    const loginSection = document.getElementById("login-section");
+
+    toggleLink.addEventListener("click", () => {
+      const isSignupVisible = signupSection.style.display !== "none";
+      signupSection.style.display = isSignupVisible ? "none" : "block";
+      loginSection.style.display = isSignupVisible ? "block" : "none";
+      toggleLink.textContent = isSignupVisible
+        ? "Don't have an account? Sign up"
+        : "Already have an account? Login";
+    });
+  </script>
 </body>
 </html>
