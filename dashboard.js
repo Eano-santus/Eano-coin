@@ -1,4 +1,3 @@
-// dashboard.js
 import { auth, db } from './auth.js';
 import {
   doc,
@@ -25,6 +24,7 @@ const emailEl = document.getElementById('user-email');
 const referralCountEl = document.getElementById('referral-count');
 const announcementBox = document.getElementById('announcement-box');
 const announcementText = document.getElementById('latest-announcement');
+const darkToggle = document.getElementById('dark-toggle');
 
 let timerInterval;
 
@@ -38,7 +38,7 @@ auth.onAuthStateChanged(async (user) => {
   const userRef = doc(db, "users", uid);
   let userSnap = await getDoc(userRef);
 
-  // Create fallback user if missing
+  // Fallback user creation
   if (!userSnap.exists()) {
     const ref = new URLSearchParams(window.location.search).get('ref');
     const fallbackData = {
@@ -92,44 +92,7 @@ auth.onAuthStateChanged(async (user) => {
 
   if (lastMine) startTimer(lastMine);
 
-  mineBtn.onclick = async () => {
-    const now = new Date();
-    if (lastMine && now - lastMine < 24 * 60 * 60 * 1000) {
-      const remaining = 24 * 60 * 60 * 1000 - (now - lastMine);
-      const hrs = Math.floor(remaining / 3600000);
-      const mins = Math.floor((remaining % 3600000) / 60000);
-      alert(`⏳ Wait ${hrs}h ${mins}m to mine again.`);
-      return;
-    }
-
-    const reward = 1;
-    await updateDoc(userRef, {
-      balance: increment(reward),
-      lastMine: now.toISOString()
-    });
-
-    updateBalanceUI(balance + reward);
-    startTimer(now);
-    alert(`✅ You mined ${reward} EANO! Come back in 24 hours.`);
-  };
-  
-    // 🌙 Dark Mode Toggle
-const darkToggle = document.getElementById("dark-toggle");
-if (darkToggle) {
-  darkToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-
-    // Optional: persist user preference
-    const isDark = document.body.classList.contains("dark-mode");
-    localStorage.setItem("dark-mode", isDark ? "on" : "off");
-  });
-
-  // Apply saved preference
-  if (localStorage.getItem("dark-mode") === "on") {
-    document.body.classList.add("dark-mode");
-  }
-  
-  // Fetch Announcement
+  // Fetch announcement
   try {
     const annDoc = await getDoc(doc(db, "announcements", "latest"));
     if (annDoc.exists() && annDoc.data().message) {
@@ -144,12 +107,42 @@ if (darkToggle) {
   }
 });
 
+mineBtn.onclick = async () => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+  const data = userSnap.data();
+  const lastMine = data.lastMine ? new Date(data.lastMine) : null;
+
+  const now = new Date();
+  if (lastMine && now - lastMine < 24 * 60 * 60 * 1000) {
+    const remaining = 24 * 60 * 60 * 1000 - (now - lastMine);
+    const hrs = Math.floor(remaining / 3600000);
+    const mins = Math.floor((remaining % 3600000) / 60000);
+    alert(`⏳ Wait ${hrs}h ${mins}m to mine again.`);
+    return;
+  }
+
+  const reward = 1;
+  await updateDoc(userRef, {
+    balance: increment(reward),
+    lastMine: now.toISOString()
+  });
+
+  updateBalanceUI(data.balance + reward);
+  startTimer(now);
+  alert(`✅ You mined ${reward} EANO! Come back in 24 hours.`);
+};
+
 logoutBtn.onclick = () => {
   auth.signOut().then(() => {
     window.location.href = 'index.html';
   });
 };
 
+// Start mining timer countdown
 function startTimer(lastMineTime) {
   clearInterval(timerInterval);
   const nextTime = new Date(lastMineTime.getTime() + 24 * 60 * 60 * 1000);
@@ -172,4 +165,19 @@ function startTimer(lastMineTime) {
 
   updateTimer();
   timerInterval = setInterval(updateTimer, 1000);
+}
+
+// 🌙 Dark Mode Toggle
+if (darkToggle) {
+  darkToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+
+    const isDark = document.body.classList.contains("dark-mode");
+    localStorage.setItem("dark-mode", isDark ? "on" : "off");
+  });
+
+  // Load saved preference
+  if (localStorage.getItem("dark-mode") === "on") {
+    document.body.classList.add("dark-mode");
   }
+      }
