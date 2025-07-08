@@ -1,155 +1,62 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile - EANO</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
-      margin: 0;
-      color: #fff;
-    }.profile-container {
-  max-width: 600px;
-  margin: 80px auto;
-  background: rgba(0, 0, 0, 0.75);
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.6);
-}
+  <title>EANO • Profile</title>
 
-.profile-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: gold;
-}
-
-.profile-section {
-  margin-bottom: 20px;
-}
-
-.profile-section label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 6px;
-}
-
-.profile-section input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 10px;
-}
-
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: gold;
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.btn:hover {
-  background: #ffd700;
-}
-
-.btn.logout {
-  background: #2e1f1b;
-  color: coffee-dark;
-}
-
-.btn.logout:hover {
-  background: #c82333;
-}
-
-.section-title {
-  color: #ddd;
-  font-size: 1.2rem;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #555;
-  padding-bottom: 4px;
-}
-
-.info-box {
-  background: #111;
-  padding: 12px;
-  border-radius: 8px;
-  word-break: break-word;
-  font-size: 0.95rem;
-  color: #ccc;
-}
-
-.center {
-  text-align: center;
-}
-
-@media screen and (max-width: 600px) {
-  .profile-container {
-    margin: 40px 1rem;
-    padding: 1rem;
-  }
-}
-
-  </style>
+  <link rel="stylesheet" href="style.css?v=3" />
 </head>
-<body>  <div class="profile-container">
-    <h2>👤 Your EANO Profile</h2><div class="profile-section">
-  <div class="section-title">Username</div>
-  <div class="info-box" id="user-name">Loading...</div>
-</div>
+<body class="dashboard" id="dashboard-body">
 
-<div class="profile-section">
-  <div class="section-title">Email</div>
-  <div class="info-box" id="user-email">Loading...</div>
-</div>
+  <!-- 🔝 Topbar -->
+  <div class="topbar">
+    <div class="d-flex align-items-center">
+      <strong class="brand">EANO</strong>
+    </div>
+    <div>
+      <span id="user-email">Loading...</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button id="dark-toggle">🌗</button>
+      <a href="dashboard.html" class="btn btn-sm btn-outline-light">🏠 Dashboard</a>
+    </div>
+  </div>
 
-<div class="profile-section">
-  <div class="section-title">First Name</div>
-  <div class="info-box" id="profile-firstname">Loading...</div>
-</div>
+  <!-- 📦 Main Content -->
+  <div class="main-content fade-in">
+    <h3>👤 Profile</h3>
 
-<div class="profile-section">
-  <label for="phone-number">Phone Number</label>
-  <input type="text" id="phone-number" placeholder="Enter phone number" />
-  <button class="btn" onclick="savePhone()">💾 Save Phone</button>
-</div>
+    <!-- Username -->
+    <label for="username">Username</label>
+    <input type="text" id="username" class="form-control" placeholder="Your username" />
 
-<div class="profile-section">
-  <label for="referral-code">Referral Code</label>
-  <input type="text" id="referral-code" readonly />
-  <button class="btn" onclick="copyReferral()">📋 Copy Referral Code</button>
-</div>
+    <!-- Phone -->
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" class="form-control" placeholder="+234..." />
 
-<div class="profile-section">
-  <div class="section-title">📈 Mining Level</div>
-  <div class="info-box" id="mining-level">Loading...</div>
-</div>
+    <!-- Referral Code -->
+    <p class="mt-3"><strong>Referral Code:</strong> <span id="referral-code">Loading...</span></p>
 
-<div class="profile-section">
-  <div class="section-title">✅ Trust Badge</div>
-  <div class="info-box" id="trust-badge">Loading...</div>
-</div>
+    <!-- Stats -->
+    <div class="mt-3">
+      <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+      <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
+      <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
+    </div>
 
-<div class="profile-section">
-  <div class="section-title">📄 Whitepaper</div>
-  <a href="EANO_WhitePaper.pdf" target="_blank" class="btn">📜 View Whitepaper</a>
-</div>
+    <!-- Whitepaper & Support -->
+    <div class="mt-4">
+      <a href="https://your-whitepaper-link.com" target="_blank" class="btn btn-outline-warning w-100 mb-2">📄 Read Whitepaper</a>
+      <a href="https://your-support-portal.com" target="_blank" class="btn btn-outline-info w-100">🛠 Support Portal</a>
+    </div>
 
-<div class="profile-section">
-  <div class="section-title">💬 Community</div>
-  <a href="https://t.me/eanocoin" target="_blank" class="btn">🔗 Join Telegram</a>
-</div>
+    <!-- Save Button -->
+    <button id="save-profile-btn" class="btn btn-success mt-4 w-100">💾 Save Profile</button>
+  </div>
 
-<div class="center">
-  <button class="btn logout" id="logoutBtn">🚪 Logout</button>
-</div>
-
-  </div>  <script type="module" src="profile.js"></script></body>
+  <!-- ✅ Scripts -->
+  <script type="module" src="profile.js?v=3"></script>
+  <script type="module" src="ui.js?v=3"></script>
+</body>
 </html>
