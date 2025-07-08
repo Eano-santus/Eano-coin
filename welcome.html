@@ -75,8 +75,9 @@
   <script>
     // Redirect to homepage after 3 seconds
     setTimeout(() => {
-      window.location.href = "index.html";
-    }, 3000);
+  localStorage.setItem("seenWelcome", "true");
+  window.location.href = "index.html";
+}, 3000);
   </script>
 </body>
 </html>
