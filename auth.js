@@ -132,7 +132,9 @@ async function handleNewUser(user, username) {
     await setDoc(userRef, {
       uid: user.uid,
       email: user.email,
-      username,
+      username: username,
+      firstname: firstname,
+      lastname: lastname,
       eanoId,
       balance: 2,
       trustScore: 0,
@@ -142,7 +144,9 @@ async function handleNewUser(user, username) {
       lastMine: null,
       createdAt: new Date().toISOString(),
       status: "active"
+      referralCode: generateReferralCode(username)
     });
+   await setDoc(userRef, defaultData);
 
     // Give 2 EANO to referrer if valid
     if (refId) {
