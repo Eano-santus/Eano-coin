@@ -1,12 +1,15 @@
-// auth.js
+// ✅ Import Firebase Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
 import {
   getFirestore,
   doc,
@@ -30,13 +33,16 @@ const firebaseConfig = {
   measurementId: "G-NS0W6QSS69"
 };
 
-// ✅ Initialize Firebase App
+// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// 🌐 Get Referral Code (if any)
+// ✅ Persistent Login (like Pi Network)
+setPersistence(auth, browserLocalPersistence);
+
+// 🌐 Referral code from URL
 const urlParams = new URLSearchParams(window.location.search);
 const refId = urlParams.get("ref");
 
@@ -54,7 +60,7 @@ function generateEanoId() {
   return id;
 }
 
-// ✅ Google Sign-In (For Existing Users Only)
+// ✅ Google Sign-In
 const googleBtn = document.getElementById("google-signin");
 if (googleBtn) {
   googleBtn.addEventListener("click", async () => {
@@ -92,7 +98,7 @@ document.getElementById("login-btn")?.addEventListener("click", async () => {
   }
 });
 
-// ✅ Full Signup with Username, Firstname, Lastname
+// ✅ Sign-Up with Validation
 document.getElementById("signup-btn")?.addEventListener("click", async () => {
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value;
@@ -104,7 +110,6 @@ document.getElementById("signup-btn")?.addEventListener("click", async () => {
   if (!firstname || !lastname) return alert("First and Last name are required.");
   if (password.length < 6) return alert("Password must be at least 6 characters.");
 
-  // Check for unique username
   const q = query(collection(db, "users"), where("username", "==", username));
   const snapshot = await getDocs(q);
   if (!snapshot.empty) return alert("Username already taken. Choose another.");
@@ -120,14 +125,11 @@ document.getElementById("signup-btn")?.addEventListener("click", async () => {
   }
 });
 
-// ✅ Save New User to Firestore
+// ✅ Save New User
 async function handleNewUser(user, username, firstname, lastname) {
   const userRef = doc(db, "users", user.uid);
   const docSnap = await getDoc(userRef);
-import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-// Set once during initialization
-setPersistence(auth, browserLocalPersistence);
   if (!docSnap.exists()) {
     const referralCode = generateReferralCode(username);
     const eanoId = generateEanoId();
@@ -151,7 +153,7 @@ setPersistence(auth, browserLocalPersistence);
       eanoId
     });
 
-    // Handle referral bonus
+    // 🪙 Referral bonus
     if (refId) {
       const refUserRef = doc(db, "users", refId);
       const refSnap = await getDoc(refUserRef);
@@ -168,5 +170,5 @@ setPersistence(auth, browserLocalPersistence);
   }
 }
 
-// ✅ Export for other modules
+// ✅ Export for reuse
 export { auth, db };
