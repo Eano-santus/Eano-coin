@@ -1,6 +1,6 @@
 // firebase.js
 
-// Import Firebase modules from CDN (Modular SDK v10.12.2)
+// ✅ Import Firebase v10.12.2 CDN Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -9,7 +9,7 @@ import { getAnalytics, isSupported as isAnalyticsSupported } from "https://www.g
 import { getMessaging, isSupported as isMessagingSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 import { getPerformance } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-performance.js";
 
-// ✅ EANO Coin Miner – Firebase Configuration
+// ✅ EANO Miner Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
@@ -23,24 +23,29 @@ const firebaseConfig = {
 // ✅ Initialize Firebase App
 const app = initializeApp(firebaseConfig);
 
-// ✅ Initialize Firebase Services
-const auth = getAuth(app);              // User Authentication
-const db = getFirestore(app);           // Firestore Database
-const storage = getStorage(app);        // Cloud Storage
-const performance = getPerformance(app); // Performance Monitoring
+// ✅ Initialize Core Services
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const performance = getPerformance(app);
 
-// ✅ Conditionally load Analytics and Messaging if supported (for Netlify HTTPS)
+// ✅ Initialize Optional Services (Analytics + Messaging)
 let analytics = null;
-isAnalyticsSupported().then((supported) => {
-  if (supported) analytics = getAnalytics(app);
-});
-
 let messaging = null;
-isMessagingSupported().then((supported) => {
-  if (supported) messaging = getMessaging(app);
+
+isAnalyticsSupported().then((supported) => {
+  if (supported) {
+    analytics = getAnalytics(app);
+  }
 });
 
-// ✅ Export everything for use across your app
+isMessagingSupported().then((supported) => {
+  if (supported) {
+    messaging = getMessaging(app);
+  }
+});
+
+// ✅ Export Firebase services for use across your app
 export {
   app,
   auth,
