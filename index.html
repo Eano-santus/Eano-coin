@@ -176,6 +176,9 @@
       body.classList.toggle("light-mode");
       const mode = body.classList.contains("light-mode") ? "light" : "dark";
       localStorage.setItem("theme", mode);
+      if (!localStorage.getItem("seenWelcome")) {
+  window.location.href = "welcome.html";
+      )
     });
   </script>
 </body>
