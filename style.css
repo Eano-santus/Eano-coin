@@ -1,4 +1,4 @@
-/* ==== Base & Global ==== */
+/* ==== Global Reset and Base Styles ==== */
 html, body {
   margin: 0;
   padding: 0;
@@ -8,13 +8,13 @@ html, body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: center top;
-  color: #f5f5f5;
+  color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
 }
 
-/* ==== Overlay ==== */
+/* ==== Pi-style Background Overlay ==== */
 body::before {
   content: "";
   position: fixed;
@@ -26,7 +26,66 @@ body::before {
   z-index: -1;
 }
 
-/* ==== Topbar ==== */
+/* ==== Fade-in Animation ==== */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ==== Login/Register Container ==== */
+.auth-container,
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 80px auto;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+}
+
+@media (min-width: 500px) {
+  .auth-container,
+  .container {
+    max-width: 400px;
+  }
+}
+
+/* ==== Form Fields ==== */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  background: #111;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 8px;
+}
+
+/* ==== Buttons ==== */
+button {
+  width: 100%;
+  padding: 12px;
+  background: gold;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #ffc107;
+}
+
+/* ==== Dashboard Topbar ==== */
 .topbar {
   height: 60px;
   background: rgba(0, 0, 0, 0.75);
@@ -46,6 +105,12 @@ body::before {
 .topbar .logo {
   width: 32px;
   margin-right: 8px;
+}
+
+#lang-select {
+  font-size: 0.8rem;
+  padding: 3px 6px;
+  border-radius: 6px;
 }
 
 /* ==== Sidebar ==== */
@@ -68,22 +133,14 @@ body::before {
   margin-bottom: 20px;
 }
 
-/* ==== Glowing Mine Button ==== */
 #mine-btn {
-  background: linear-gradient(45deg, gold, orange);
+  background: #ffc107;
   border: none;
   padding: 10px;
   border-radius: 10px;
   font-weight: 600;
   color: #000;
-  box-shadow: 0 0 10px gold;
   margin-bottom: 10px;
-  animation: glow 1.5s infinite alternate;
-}
-
-@keyframes glow {
-  0% { box-shadow: 0 0 5px gold; }
-  100% { box-shadow: 0 0 20px gold; }
 }
 
 /* ==== Logout Button ==== */
@@ -96,14 +153,7 @@ body::before {
   font-weight: 500;
 }
 
-/* ==== Downbar Left ==== */
-.downbar-left {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-/* ==== Menu Panel (Right) ==== */
+/* ==== Right Menu ==== */
 .menu {
   width: 180px;
   background: rgba(0, 0, 0, 0.75);
@@ -115,17 +165,10 @@ body::before {
   z-index: 999;
   color: #fff;
   text-align: center;
-  display: none;
-}
-
-.menu.show {
-  display: block;
 }
 
 .menu a {
-  display: block;
   color: #fff;
-  margin-bottom: 1rem;
   text-decoration: none;
 }
 
@@ -133,12 +176,22 @@ body::before {
   text-decoration: underline;
 }
 
-/* ==== Main Content ==== */
+/* ==== Main Dashboard Content ==== */
 .main-content {
+  width: 100%;
+  max-width: 100%;
   margin: 100px 220px;
   padding: 2rem;
   background: rgba(0, 0, 0, 0.65);
   border-radius: 12px;
+  color: #fff;
+}
+
+@media (min-width: 700px) {
+  .main-content {
+    max-width: 600px;
+    margin: 100px auto;
+  }
 }
 
 /* ==== Announcement Box ==== */
@@ -147,13 +200,20 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 1rem;
   border-radius: 10px;
-  text-align: center;
+  margin-top: 1.5rem;
 }
 
-/* ==== Mining Info ==== */
-#referral-info {
-  margin-top: 20px;
-  line-height: 1.8;
+/* ==== Dark Mode ==== */
+.dark-mode {
+  background: #111 !important;
+  color: #fff;
+}
+
+.dark-mode .topbar,
+.dark-mode .sidebar,
+.dark-mode .menu,
+.dark-mode .main-content {
+  background-color: rgba(0, 0, 0, 0.85);
 }
 
 /* ==== Light Mode ==== */
@@ -175,37 +235,12 @@ body::before {
   color: #fff;
 }
 
-/* ==== Dark Mode Toggle ==== */
-.dark-mode {
-  background-color: #111;
-  color: #fff;
-}
-
-.dark-mode .topbar,
-.dark-mode .sidebar,
-.dark-mode .menu,
-.dark-mode .main-content {
-  background-color: rgba(0, 0, 0, 0.85);
-  color: #fff;
-}
-
-/* ==== Fade-in Animation ==== */
-.fade-in {
-  animation: fadeIn 0.6s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==== Responsive (Pi App Size) ==== */
+/* ==== Responsive Layout ==== */
 @media (max-width: 768px) {
   .topbar {
     flex-direction: column;
     height: auto;
     gap: 0.5rem;
-    padding: 0.5rem;
   }
 
   .sidebar,
@@ -233,13 +268,8 @@ body::before {
     margin-bottom: 0;
   }
 
-  #announcement-box {
-    position: fixed;
-    top: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    z-index: 1000;
+  .team-referral-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
   }
-}
+  }
