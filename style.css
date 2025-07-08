@@ -1,231 +1,200 @@
-/* Reset & Base */
-* {
+/* ✅ General body reset */
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
 }
 
-html, body {
-  height: 100%;
-  font-family: 'Segoe UI', sans-serif;
+/* ✅ Dashboard-specific background */
+body.dashboard {
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
-  overflow-x: hidden;
 }
 
-body.light-mode {
-  background: #f3f3f3;
-  color: #000;
-}
-
-/* Shared Container */
-.auth-container, .main-content, .menu, .sidebar, .topbar {
-  width: 100%;
-  max-width: 100%;
-  margin: auto;
-}
-
-@media (min-width: 500px) {
-  .auth-container {
-    max-width: 400px;
+/* ✅ Responsive background for mobile */
+@media (max-width: 768px) {
+  body.dashboard {
+    background-size: cover;
+    background-attachment: fixed;
   }
 }
 
-/* Topbar */
+/* ✅ Topbar */
 .topbar {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 0.75rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: bold;
+  flex-wrap: wrap;
 }
 
-.light-mode .topbar {
-  background: rgba(255, 255, 255, 0.9);
-  color: #000;
-}
-
-/* Sidebar */
+/* ✅ Sidebar (left) */
 .sidebar {
   position: fixed;
   top: 60px;
   left: 0;
-  width: 60px;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 1rem;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  padding-top: 20px;
-  text-align: center;
-  z-index: 10;
+  width: 140px;
+  z-index: 99;
 }
 
-.sidebar-logo {
-  width: 40px;
-  margin-bottom: 10px;
-}
-
-.sidebar button {
+.sidebar .btn {
+  width: 100%;
+  margin-top: 1rem;
   background: gold;
-  color: #000;
-  border: none;
-  padding: 8px;
-  margin-top: 10px;
-  border-radius: 10px;
-  cursor: pointer;
-  width: 90%;
+  color: black;
   font-weight: bold;
-  transition: background 0.3s ease;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  border: none;
 }
 
-.sidebar button:hover {
+.sidebar .btn:hover {
   background: #ffd700;
 }
 
-/* Menu */
+/* ✅ Right slide-out menu */
 .menu {
   position: fixed;
   top: 60px;
   right: 0;
-  width: 200px;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 20px 16px;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 1rem;
+  width: 220px;
   display: none;
-  z-index: 9;
+  z-index: 99;
 }
 
 .menu p {
-  margin-bottom: 12px;
+  margin: 0.75rem 0;
 }
 
-.menu a {
-  color: gold;
+.menu a,
+.menu button {
+  display: block;
+  width: 100%;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
 }
 
-.menu a:hover {
-  text-decoration: underline;
+.menu a:hover,
+.menu button:hover {
+  background: #333;
 }
 
-/* Main Content */
+/* ✅ Main content */
 .main-content {
-  margin-left: 70px;
-  margin-right: 210px;
-  padding: 20px;
-  min-height: 100vh;
-  padding-bottom: 80px;
+  margin-left: 160px;
+  padding: 2rem 1rem;
+  max-width: 800px;
 }
 
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 60px;
-    margin-right: 0;
-  }
-
-  .menu {
-    width: 100%;
-    top: 50px;
-    right: 0;
-  }
-
-  .sidebar {
-    width: 55px;
-  }
-}
-
-/* Announcement Box */
+/* ✅ Announcement */
 #announcement-box {
-  background: rgba(255, 255, 0, 0.15);
-  color: gold;
-  border: 1px solid gold;
-  padding: 12px 16px;
-  border-radius: 12px;
-  margin-top: 16px;
-  text-align: center;
-  display: none;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-top: 1rem;
 }
 
+#announcement-box h5 {
+  color: gold;
+  margin-bottom: 0.5rem;
+}
+
+/* ✅ Referral/Level/Trust Info */
+#referral-info p {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+}
+
+/* ✅ Language select and dark mode */
+#lang-select {
+  border-radius: 8px;
+  padding: 4px;
+  background: #000;
+  color: #fff;
+}
+
+#dark-toggle {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* ✅ Team Referral button */
+.team-referral-btn {
+  background: #ffa500;
+  color: #000;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.team-referral-btn:hover {
+  background: gold;
+}
+
+/* ✅ Fade-in animation */
 .fade-in {
-  animation: fadeIn 1s ease-in-out;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Light Mode Adjustments */
-.light-mode .menu,
-.light-mode .sidebar,
-.light-mode .main-content {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #000;
-}
-
-.light-mode #mine-btn {
-  background: #333;
-  color: #fff;
-}
-
-/* Auth Page */
-.form-control {
-  margin-bottom: 1rem;
-  border-radius: 10px;
-}
-
-.btn-auth {
-  width: 100%;
-  margin-top: 0.5rem;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-#google-signin {
-  background: #fff;
-  color: #000;
-  border: none;
-}
-
-.lang-select, #theme-toggle {
-  margin-top: 1rem;
-  width: 100%;
-  border-radius: 10px;
-}
-
-/* Toggle Auth Links */
-.toggle-link {
-  text-align: center;
-  margin-top: 1rem;
-  color: #ccc;
-  cursor: pointer;
-}
-
-.toggle-link:hover {
-  color: #fff;
-  text-decoration: underline;
-}
-
-/* Responsive Fixes */
-@media (max-width: 480px) {
-  .main-content {
-    margin: 0;
-    padding: 1rem;
+/* ✅ Mobile responsiveness */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .sidebar {
-    display: none;
+    position: static;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
   }
 
   .menu {
+    position: fixed;
+    top: 60px;
+    right: 0;
     width: 100%;
   }
 
-  #announcement-box {
-    position: fixed;
-    top: 30%;
-    left: 5%;
-    right: 5%;
-    z-index: 99;
+  .team-referral-btn {
+    width: 100%;
   }
 }
