@@ -8,7 +8,7 @@ html, body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: center top;
-  color: #fff;
+  color: #f1f1f1;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
@@ -56,7 +56,7 @@ input[type="email"] {
   padding: 12px;
   margin: 8px 0;
   background: #111;
-  color: #fff;
+  color: #f1f1f1;
   border: 1px solid #555;
   border-radius: 8px;
 }
@@ -91,7 +91,7 @@ button:hover {
   left: 0;
   right: 0;
   z-index: 1000;
-  color: #fff;
+  color: #f1f1f1;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -155,12 +155,12 @@ button:hover {
   right: 0;
   padding: 1rem;
   z-index: 999;
-  color: #fff;
+  color: #f1f1f1;
   text-align: center;
 }
 
 .menu a {
-  color: #fff;
+  color: #f1f1f1;
   text-decoration: none;
 }
 
@@ -174,7 +174,7 @@ button:hover {
   padding: 2rem;
   background: rgba(0, 0, 0, 0.65);
   border-radius: 12px;
-  color: #fff;
+  color: #f1f1f1;
 }
 
 /* ==== Announcement Box ==== */
@@ -188,7 +188,7 @@ button:hover {
 /* ==== Dark Mode Toggle ==== */
 .dark-mode {
   background: #111 !important;
-  color: #fff;
+  color: #f1f1f1;
 }
 
 .dark-mode .topbar,
@@ -235,4 +235,4 @@ button:hover {
     width: 45%;
     margin-bottom: 0;
   }
-}
+  }
