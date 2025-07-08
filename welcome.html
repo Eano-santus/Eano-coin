@@ -3,81 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome EANO</title>
+  <title>Welcome to EANO</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      height: 100vh;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
       background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: -1;
     }
 
     .welcome-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
+      height: 100vh;
+      color: white;
+      padding: 2rem;
+    }
+
+    .welcome-box {
+      background: rgba(0, 0, 0, 0.75);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+    }
+
+    .welcome-box h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
       color: gold;
-      animation: fadeIn 1.5s ease-in-out;
     }
 
-    .welcome-container img {
-      height: 100px;
-      margin-bottom: 20px;
-      animation: zoomIn 2s ease-in-out;
+    .welcome-box p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
     }
 
-    .welcome-container h1 {
-      font-size: 32px;
-      animation: fadeInUp 2s ease-in-out;
+    .btn-continue {
+      padding: 12px 24px;
+      background: gold;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1.1rem;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .btn-continue:hover {
+      background: #ffc107;
     }
 
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
+    @media (max-width: 500px) {
+      .welcome-box {
+        padding: 1.5rem;
       }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
 
-    @keyframes zoomIn {
-      0% {
-        transform: scale(0.5);
-        opacity: 0;
+      .welcome-box h1 {
+        font-size: 1.6rem;
       }
-      100% {
-        transform: scale(1);
-        opacity: 1;
+
+      .welcome-box p {
+        font-size: 0.95rem;
       }
     }
   </style>
 </head>
 <body>
+
   <div class="welcome-container">
-    <img src="assets/eano-logo.png" alt="EANO Logo" />
-    <h1>Welcome to EANO</h1>
+    <div class="welcome-box">
+      <h1>👋 Welcome to EANO</h1>
+      <p>Mine EANO every 24 hours and build trust in the network. Let’s get started!</p>
+      <button class="btn-continue" onclick="proceed()">Continue</button>
+    </div>
   </div>
 
   <script>
-    // Redirect to homepage after 2 seconds
-  setTimeout(() => {
-    window.location.href = "index.html";
-  }, 3000); // splash screen duration
-</script>
+    function proceed() {
+      localStorage.setItem("seenWelcome", "true");
+      window.location.href = "index.html";
+    }
   </script>
+
 </body>
 </html>
