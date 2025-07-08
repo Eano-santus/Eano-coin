@@ -11,22 +11,55 @@
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
+  })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
   </script>
+  <!-- End Google Tag Manager -->
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="style.css" />
-</head>
+  <style>
+    /* Additional custom styles */
+    #menu-toggle {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1001;
+    }
 
+    #menu-toggle:hover {
+      background: #f0f0f0;
+    }
+
+    .dark-mode {
+      background-color: #121212;
+      color: #fff;
+    }
+
+    .dark-mode .topbar {
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .dark-mode .sidebar, .dark-mode .menu {
+      background: rgba(0, 0, 0, 0.85);
+    }
+  </style>
+</head>
 <body class="dashboard">
+
   <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
     height="0" width="0" style="display:none;visibility:hidden"></iframe>
   </noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
-  <!-- 🔝 Topbar -->
-  <div class="topbar d-flex justify-content-between align-items-center p-2 bg-dark bg-opacity-75 text-white">
+  <!-- Topbar -->
+  <div class="topbar d-flex justify-content-between align-items-center p-2 bg-dark bg-opacity-75">
     <div class="d-flex align-items-center">
       <img src="logo.png" alt="EANO Logo" class="logo me-2" style="height: 32px;">
       <strong>EANO</strong>
@@ -41,16 +74,20 @@
       <option value="ig">🇳🇬 Igbo</option>
       <option value="zh">🇨🇳 Chinese</option>
     </select>
+    <button id="dark-mode-toggle" class="btn btn-light">🌙</button>
   </div>
 
-  <!-- 🧱 Left Sidebar (Mining + Logout) -->
+  <!-- Toggle Menu Button (Mobile View) -->
+  <button id="menu-toggle">☰</button>
+
+  <!-- Left Sidebar -->
   <div class="sidebar p-3 bg-black bg-opacity-75 position-fixed top-0 start-0 vh-100">
     <img src="logo.png" alt="Logo" class="sidebar-logo mb-3" style="width: 60px;" />
     <button class="btn btn-warning w-100 mb-2" id="mine-btn">⛏ Start Mining</button>
     <button class="btn btn-danger w-100" id="logout-btn">Logout</button>
   </div>
 
-  <!-- 📋 Right Menu -->
+  <!-- Right Menu -->
   <div class="menu p-3 bg-black bg-opacity-75 position-fixed top-0 end-0 vh-100">
     <div class="text-center text-white small">
       <strong>📊 Menu</strong>
@@ -62,27 +99,46 @@
     </div>
   </div>
 
-  <!-- 📍 Main App Center -->
-  <div class="main-content text-white text-center fade-in" style="margin-top: 100px;">
+  <!-- Main Content -->
+  <div class="main-content text-black-coffee text-center" style="margin-top: 100px;">
     <h3>👋 Welcome to EANO Network</h3>
     <p id="user-email" class="fw-bold">Loading email...</p>
     <p>Mine EANO every 24 hours to increase your Score/TrustLevel.</p>
-    
-    <!-- Referrals + Level -->
     <div id="referral-info" class="mt-3 text-white">
       <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
     </div>
 
-    <!-- 📢 Announcement Section -->
-    <div id="announcement-box" class="mt-4 text-white bg-dark bg-opacity-75 p-3 rounded fade-in">
+    <!-- Announcement Box -->
+    <div id="announcement-box" class="mt-4 text-white bg-dark bg-opacity-75 p-3 rounded">
       <h5>📢 Announcement</h5>
       <p id="latest-announcement">Loading latest announcement...</p>
     </div>
   </div>
 
-  <!-- 🔗 Scripts -->
+  <!-- Scripts -->
   <script type="module" src="dashboard.js"></script>
   <script type="module" src="ui.js"></script>
   <script type="module" src="lang.js"></script>
+
+  <script>
+    // Dark mode toggle script
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    const body = document.body;
+
+    darkModeToggle.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+      darkModeToggle.textContent = body.classList.contains("dark-mode") ? "🌞" : "🌙";
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById("menu-toggle");
+    const sidebar = document.querySelector(".sidebar");
+    const menu = document.querySelector(".menu");
+
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("d-none");
+      menu.classList.toggle("d-none");
+    });
+  </script>
 </body>
 </html>
