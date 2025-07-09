@@ -182,6 +182,17 @@ body.dashboard {
   background: gold;
 }
 
+/* ✅ Announcement Banner (Pi-style, always visible) */
+.announcement-banner {
+  background: linear-gradient(90deg, #ffc107, #ff9800);
+  color: #000;
+  text-align: center;
+  padding: 0.6rem 1rem;
+  font-weight: bold;
+  font-size: 0.95rem;
+  animation: fadeIn 1s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
 /* ✅ Fade-in animation */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
@@ -230,18 +241,4 @@ body.dashboard {
   .team-referral-btn {
     width: 100%;
   }
-}
-.announcement-banner {
-  background: linear-gradient(90deg, #ffc107, #ff9800);
-  color: #000;
-  text-align: center;
-  padding: 0.6rem 1rem;
-  font-weight: bold;
-  font-size: 0.95rem;
-  animation: fadeIn 1s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
