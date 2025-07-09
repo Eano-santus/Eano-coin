@@ -111,7 +111,13 @@
   <script type="module" src="dashboard.js?v=3"></script>
   <script type="module" src="ui.js?v=3"></script>
   <script type="module" src="lang.js?v=3"></script>
+
   <script>
+  document.getElementById("menu-toggle")?.addEventListener("click", () => {
+    document.getElementById("menu").classList.toggle("open");
+  });
+    
+</script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("✅ Service Worker registered"))
