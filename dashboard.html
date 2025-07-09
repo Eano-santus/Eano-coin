@@ -71,16 +71,20 @@
     <button class="btn" id="mine-btn">⛏ Start Mining</button>
   </div>
 
-  <!-- 📍 Right Slide Menu -->
-<div class="menu" id="menu">
-  <p id="user-email" class="fw-bold">Loading email...</p>
-  <p><a href="profile.html">👤 Profile</a></p>
-  <p><a href="invite.html">👥 Referrals</a></p>
-  <p><a href="leaderboard.html">🏆 Leaderboard</a></p>
-  <p><a href="settings.html">⚙️ Settings</a></p>
-  <p><a href="https://your-whitepaper-link.com" target="_blank">📄 WhitePaper</a></p>
-  <p><a href="https://your-support-portal.com" target="_blank">🛠 Support Portal</a></p>
-  <p><button id="logout-btn" class="btn btn-outline-danger">🚪 Logout</button></p>
+  <!-- Hamburger icon at top -->
+<div id="menu-toggle" onclick="toggleMenu()">☰ Menu</div>
+
+<!-- Sidebar menu -->
+<div id="sidebar-menu" class="hidden">
+  <ul>
+    <li><a href="#" onclick="showSection('profile')">👤 Profile</a></li>
+    <li><a href="#" onclick="showSection('referrals')">👥 Referrals</a></li>
+    <li><a href="#" onclick="showSection('leaderboard')">🏆 Leaderboard</a></li>
+    <li><a href="#" onclick="showSection('settings')">⚙️ Settings</a></li>
+    <li><a href="#" onclick="showSection('whitepaper')">📄 WhitePaper</a></li>
+    <li><a href="https://t.me/eanocoin" target="_blank">🛠 Support Portal</a></li>
+    <li><button onclick="logout()" style="color: red;">🚪 Logout</button></li>
+  </ul>
 </div>
 
   <!-- 📦 Main Content -->
