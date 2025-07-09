@@ -7,6 +7,18 @@ body {
   color: #fff;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+/* Apply font globally */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+/* Other styles... */
+
 .dashboard {
   display: flex;
   flex-direction: column;
