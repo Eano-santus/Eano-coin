@@ -1,6 +1,4 @@
-// ui.js
-
-// Update the balance on the dashboard
+// ✅ Update the balance on the dashboard
 export function updateBalanceUI(balance) {
   const el = document.getElementById("balance");
   if (el) {
@@ -9,7 +7,7 @@ export function updateBalanceUI(balance) {
   }
 }
 
-// Update the mining countdown timer
+// ✅ Update the mining countdown timer
 export function updateTimerUI(remainingSeconds) {
   const timerEl = document.getElementById("timer");
   if (timerEl) {
@@ -20,7 +18,7 @@ export function updateTimerUI(remainingSeconds) {
   }
 }
 
-// Update user email
+// ✅ Update user email
 export function updateUserEmailUI(email) {
   const el = document.getElementById("user-email");
   if (el) {
@@ -29,7 +27,7 @@ export function updateUserEmailUI(email) {
   }
 }
 
-// Update referral count
+// ✅ Update referral count
 export function updateReferralCountUI(count) {
   const el = document.getElementById("referral-count");
   if (el) {
@@ -38,7 +36,7 @@ export function updateReferralCountUI(count) {
   }
 }
 
-// Get mining level from balance (same logic)
+// ✅ Get mining level from balance
 export function getLevelFromBalance(balance) {
   if (balance >= 3000) return "🐘 Elephant";
   if (balance >= 2000) return "🦍 Gorilla";
@@ -51,7 +49,7 @@ export function getLevelFromBalance(balance) {
   return "⛏ Beginner";
 }
 
-// Get trust badge from trust score (same logic)
+// ✅ Get trust badge from trust score
 export function getTrustBadge(score) {
   if (score >= 1000) return "✅ Trusted Miner";
   if (score >= 500) return "🛡 Reliable Miner";
@@ -73,19 +71,20 @@ export function showAnnouncement(message) {
   }
 }
 
-// ✅ MENU TOGGLE (Fixes Mine tab being hidden and menu overlay)
-const menuToggle = document.getElementById("menu-toggle");
-const menu = document.getElementById("menu");
+// ✅ MENU TOGGLE (For sidebar sliding)
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("menu-toggle");
+  const sidebarMenu = document.getElementById("sidebar-menu");
 
-menuToggle?.addEventListener("click", () => {
-  menu.classList.toggle("open");
-  document.body.classList.toggle("menu-open");
-});
+  if (toggleBtn && sidebarMenu) {
+    toggleBtn.addEventListener("click", () => {
+      sidebarMenu.classList.toggle("open");
+    });
 
-// Close menu when links are clicked
-menu?.querySelectorAll("a, button").forEach((el) => {
-  el.addEventListener("click", () => {
-    menu.classList.remove("open");
-    document.body.classList.remove("menu-open");
-  });
+    sidebarMenu.querySelectorAll("a, button").forEach((el) => {
+      el.addEventListener("click", () => {
+        sidebarMenu.classList.remove("open");
+      });
+    });
+  }
 });
