@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Dashboard</title>
 
+  <!-- Fonts + Theme -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-
-  <!-- Manifest + Theme -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
 
-  <!-- ✅ Google Tag Manager -->
+  <!-- Google Tag Manager -->
   <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -21,38 +20,18 @@
   </script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="settings.css" />
-  <link rel="stylesheet" href="style.css?v=3" />
-  <style>
-    .announcement-banner {
-      background: linear-gradient(90deg, #ffc107, #ff9800); 
-      color: #000;
-      text-align: center;
-      padding: 0.75rem 1rem;
-      font-weight: bold;
-      font-size: 1rem;
-      margin: 20px auto;
-      max-width: 600px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css?v=4" />
 </head>
-<body class="dashboard" id="dashboard-body">
-  <!-- ✅ GTM noscript -->
-  <noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe>
-  </noscript>
+
+<body class="dashboard">
+  <!-- GTM noscript -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- 🔝 Topbar -->
   <div class="topbar">
-    <div class="d-flex align-items-center">
-      <strong class="brand">EANO</strong>
-    </div>
-    <div>
-      <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
-    </div>
+    <strong class="brand">EANO</strong>
+    <div><span id="balance">0.000</span> EANO | <span id="timer">⏳</span></div>
     <div class="d-flex align-items-center gap-2">
       <select id="lang-select">
         <option value="en">🌍 English</option>
@@ -68,103 +47,72 @@
     </div>
   </div>
 
-  <!-- 📍 Sidebar -->
-  <div id="sidebar-menu" style="position: fixed; top: 0; left: -260px; width: 250px; height: 100%; background: black; padding: 1rem; transition: left 0.3s; z-index: 999;">
-    <button class="btn" id="mine-btn">⛏ Start Mining</button>
+  <!-- ☰ Hamburger -->
+  <div id="menu-toggle">☰ Menu</div>
+
+  <!-- 📍 Slide-Out Menu -->
+  <div id="menu" class="menu">
+    <ul>
+      <li><a href="#" onclick="showSection('profile')">👤 Profile</a></li>
+      <li><a href="#" onclick="showSection('referrals')">👥 Referrals</a></li>
+      <li><a href="#" onclick="showSection('leaderboard')">🏆 Leaderboard</a></li>
+      <li><a href="#" onclick="showSection('settings')">⚙️ Settings</a></li>
+      <li><a href="#" onclick="showSection('whitepaper')">📄 WhitePaper</a></li>
+      <li><a href="https://t.me/eanocoin" target="_blank">🛠 Support Portal</a></li>
+      <li><button id="logout-btn">🚪 Logout</button></li>
+    </ul>
   </div>
 
-  <!-- Hamburger icon at top -->
-<div id="menu-toggle" onclick="toggleMenu()">☰ Menu</div>
+  <!-- ⛏ Mining Button (outside menu, always visible) -->
+  <div class="sidebar">
+    <button id="mine-btn">⛏ Start Mining</button>
+  </div>
 
-<!-- Sidebar menu -->
-<div id="sidebar-menu" class="hidden">
-  <ul>
-    <li><a href="#" onclick="showSection('profile')">👤 Profile</a></li>
-    <li><a href="#" onclick="showSection('referrals')">👥 Referrals</a></li>
-    <li><a href="#" onclick="showSection('leaderboard')">🏆 Leaderboard</a></li>
-    <li><a href="#" onclick="showSection('settings')">⚙️ Settings</a></li>
-    <li><a href="#" onclick="showSection('whitepaper')">📄 WhitePaper</a></li>
-    <li><a href="https://t.me/eanocoin" target="_blank">🛠 Support Portal</a></li>
-    <li><button id="logout-btn" style="color: red;">🚪 Logout</button></li>
-  </ul>
-</div>
-
-  <!-- 📦 Main Content -->
+  <!-- 📦 Main -->
   <div class="main-content fade-in">
-
-    <!-- 📢 Centered Announcement Banner -->
-    <div id="announcement-banner" class="announcement-banner">
+    <!-- 📢 Announcement -->
+    <div id="announcement-box" class="announcement-banner">
       📢 EANO Network App and other cool features coming soon!
     </div>
 
-    <!-- 👥 Team Referral Button -->
+    <!-- 👥 Referral Shortcut -->
     <div style="margin-top: 10px;">
-      <a href="invite.html" class="team-referral-btn" title="Team Referrals">👥 Team</a>
+      <a href="invite.html" class="team-referral-btn">👥 Team</a>
     </div>
 
-    <!-- 📊 Mining Info -->
+    <!-- ℹ️ Mining Info -->
     <div id="referral-info" class="mt-4">
       <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
       <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
       <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
     </div>
-
   </div>
 
-  <body>
-  <div class="app-container">
-    <div class="coming-soon-block">
-      Coming Soon<br>Loading...
-    </div>
-  </div>
+  <!-- Floating "Coming Soon" Box -->
+  <div class="coming-soon-box">Coming Soon Loading...</div>
 
+  <!-- 🔌 Scripts -->
   <script src="firebase.js"></script>
   <script src="auth.js"></script>
-  <script src="ui.js"></script>
+  <script src="ui.js?v=4"></script>
   <script src="lang.js"></script>
   <script src="settings.js"></script>
-  <script type="module" src="install.js?v=3"></script>
+  <script type="module" src="install.js?v=4"></script>
 
-<!-- 🔁 Menu Toggle Logic -->
-<script>
-  let menuOpen = false;
-
-  function toggleMenu() {
-    const menu = document.getElementById("sidebar-menu");
-    if (menuOpen) {
-      menu.style.left = "-260px"; // Slide out
-    } else {
-      menu.style.left = "0px"; // Slide in
+  <!-- 📦 Helper for placeholders -->
+  <script>
+    function showSection(section) {
+      alert(`${section} coming soon!`);
     }
-    menuOpen = !menuOpen;
-  }
+  </script>
 
-  function showSection(sectionName) {
-    alert(`You clicked ${sectionName}. Coming soon!`);
-    toggleMenu(); // Auto-close menu
-  }
-
-  function logout() {
-    alert("Logging out...");
-    // You can redirect or clear session here
-  }
-
-  // Attach toggle to menu button
-  document.getElementById("menu-toggle").addEventListener("click", toggleMenu);
-</script>
-
-<!-- ✅ Service Worker Registration -->
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("✅ Service Worker registered"))
-      .catch(err => console.error("❌ Service Worker failed:", err));
-  }
-</script>
-</body>
- <!-- Floating "Coming Soon" Box -->
-  <div class="coming-soon-box">
-    Coming Soon Loading...
-  </div>
+  <!-- ✅ Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker registered'))
+        .catch(err => console.error('❌ SW failed:', err));
+    }
+  </script>
 </body>
 </html>
