@@ -72,3 +72,20 @@ export function showAnnouncement(message) {
     box.style.display = "none";
   }
 }
+
+// ✅ Handle menu toggle
+const menuToggle = document.getElementById("menu-toggle");
+const menu = document.getElementById("menu");
+
+menuToggle?.addEventListener("click", () => {
+  menu.classList.toggle("open");
+  document.body.classList.toggle("menu-open");
+});
+
+// ✅ Auto-close menu when link/button inside it is clicked
+menu?.querySelectorAll("a, button").forEach((el) => {
+  el.addEventListener("click", () => {
+    menu.classList.remove("open");
+    document.body.classList.remove("menu-open");
+  });
+});
