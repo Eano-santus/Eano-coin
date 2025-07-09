@@ -21,11 +21,33 @@ import {
   showAnnouncement
 } from "./ui.js";
 
+// Global mining config fallback
+let MINING_CONFIG = {
+  baseRate: 0.500,
+  bonusPerReferral: 0.004,
+  durationHours: 24
+};
+
 // ✅ AUTH LISTENER
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
     window.location.href = "index.html";
     return;
+  }
+
+  // 🔄 Load mining config from Firestore
+  try {
+    const configSnap = await getDoc(doc(db, "settings", "mining"));
+    if (configSnap.exists()) {
+      const data = configSnap.data();
+      MINING_CONFIG = {
+        baseRate: data.baseRate || 0.500,
+        bonusPerReferral: data.bonusPerReferral || 0.004,
+        durationHours: data.durationHours || 24
+      };
+    }
+  } catch (e) {
+    console.warn("⚠ Failed to load mining config. Using defaults.", e);
   }
 
   const userRef = doc(db, "users", user.uid);
@@ -45,13 +67,11 @@ auth.onAuthStateChanged(async (user) => {
   document.getElementById("trust-score").textContent = userData.trustScore || 0;
   document.getElementById("trust-badge").textContent = getTrustBadge(userData.trustScore || 0);
 
-  // Load announcement
   const announcementSnap = await getDoc(doc(db, "announcements", "latest"));
   if (announcementSnap.exists()) {
     showAnnouncement(announcementSnap.data().message);
   }
 
-  // Start countdown
   startCountdown(userData.lastMine);
 });
 
@@ -66,21 +86,17 @@ document.getElementById("mine-btn")?.addEventListener("click", async () => {
 
   const now = Date.now();
   const lastMine = userData.lastMine ? new Date(userData.lastMine).getTime() : 0;
-  const hours24 = 24 * 60 * 60 * 1000;
+  const durationMs = MINING_CONFIG.durationHours * 60 * 60 * 1000;
   const timeDiff = now - lastMine;
 
-  if (timeDiff < hours24) {
-    const remaining = Math.floor((hours24 - timeDiff) / 1000);
+  if (timeDiff < durationMs) {
+    const remaining = Math.floor((durationMs - timeDiff) / 1000);
     updateTimerUI(remaining);
     alert("⏳ Wait for the 24-hour mining cooldown.");
     return;
   }
 
-  // 🔢 Mining Rate Logic
-  const baseRate = 0.500; // EANO per hour
-  const bonusPerReferral = 0.004; // EANO/hr per active referral
-
-  // 🔍 Count active referrals (lastMine within last 24h)
+  // 🔍 Count active referrals
   const referralQuery = query(
     collection(db, "users"),
     where("referrerId", "==", user.uid)
@@ -88,16 +104,15 @@ document.getElementById("mine-btn")?.addEventListener("click", async () => {
   const referralSnap = await getDocs(referralQuery);
 
   let activeReferrals = 0;
-  const nowTime = Date.now();
   referralSnap.forEach(doc => {
-    const refLastMine = doc.data().lastMine;
-    if (refLastMine && nowTime - new Date(refLastMine).getTime() < hours24) {
+    const lastMine = doc.data().lastMine;
+    if (lastMine && now - new Date(lastMine).getTime() < durationMs) {
       activeReferrals++;
     }
   });
 
-  const totalHourlyRate = baseRate + (bonusPerReferral * activeReferrals);
-  const earned = parseFloat((totalHourlyRate * 24).toFixed(4));
+  const hourlyRate = MINING_CONFIG.baseRate + (MINING_CONFIG.bonusPerReferral * activeReferrals);
+  const earned = parseFloat((hourlyRate * MINING_CONFIG.durationHours).toFixed(4));
 
   const currentBalance = userData.balance || 0;
   const trust = userData.trustScore || 0;
@@ -129,7 +144,7 @@ function startCountdown(lastMineTime) {
   const interval = setInterval(() => {
     const now = Date.now();
     const last = new Date(lastMineTime).getTime();
-    const remaining = Math.floor((24 * 60 * 60 * 1000 - (now - last)) / 1000);
+    const remaining = Math.floor((MINING_CONFIG.durationHours * 60 * 60 * 1000 - (now - last)) / 1000);
 
     if (remaining > 0) {
       updateTimerUI(remaining);
