@@ -1,244 +1,66 @@
-/* ✅ General body reset */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  color: #fff;
-}
+/* ✅ General body reset */ body { margin: 0; font-family: 'Segoe UI', sans-serif; color: #fff; }
 
-/* ✅ Dashboard-specific background */
-body.dashboard {
-  background: url('eano-bg.png') no-repeat center center fixed;
-  background-size: cover;
-  color: #fff;
-}
+/* ✅ Dashboard-specific background */ body.dashboard { background: url('eano-bg.png') no-repeat center center fixed; background-size: cover; color: #fff; }
 
-/* ✅ Responsive background for mobile */
-@media (max-width: 768px) {
-  body.dashboard {
-    background-size: cover;
-    background-attachment: fixed;
-  }
-}
+/* ✅ Responsive background for mobile */ @media (max-width: 768px) { body.dashboard { background-size: cover; background-attachment: fixed; } }
 
-/* ✅ Topbar */
-.topbar {
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
-  padding: 0.75rem 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
+/* ✅ Topbar */ .topbar { background: rgba(0, 0, 0, 0.85); color: #fff; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
 
-/* ✅ Sidebar (left) */
-.sidebar {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  background: rgba(0, 0, 0, 0.85);
-  padding: 1rem;
-  height: 100%;
-  width: 140px;
-  z-index: 99;
-}
+/* ✅ Sidebar (left) */ .sidebar { position: fixed; top: 60px; left: 0; background: rgba(0, 0, 0, 0.85); padding: 1rem; height: 100%; width: 140px; z-index: 99; }
 
-.sidebar .btn {
-  width: 100%;
-  margin-top: 1rem;
-  background: gold;
-  color: black;
-  font-weight: bold;
-  border-radius: 10px;
-  padding: 0.5rem 1rem;
-  border: none;
-}
+.sidebar .btn { width: 100%; margin-top: 1rem; background: gold; color: black; font-weight: bold; border-radius: 10px; padding: 0.5rem 1rem; border: none; }
 
-.sidebar .btn:hover {
-  background: #ffd700;
-}
+.sidebar .btn:hover { background: #ffd700; }
 
-/* ✅ Right slide-out menu */
-.menu {
-  position: fixed;
-  top: 60px;
-  right: 0;
-  background: rgba(0, 0, 0, 0.9);
-  padding: 1rem;
-  width: 220px;
-  display: none;
-  z-index: 99;
-}
+/* ✅ Right slide-out menu */ .menu { position: fixed; top: 60px; right: -260px; background: rgba(0, 0, 0, 0.9); padding: 1rem; width: 220px; height: calc(100% - 60px); overflow-y: auto; transition: right 0.3s ease; z-index: 999; }
 
-.menu p {
-  margin: 0.75rem 0;
-}
+.menu.open { right: 0; }
 
-.menu a,
-.menu button {
-  display: block;
-  width: 100%;
-  background: #1a1a1a;
-  color: #fff;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-}
+.menu p { margin: 0.75rem 0; }
 
-.menu a:hover,
-.menu button:hover {
-  background: #333;
-}
-/* 🌗 Dark/Light Mode Toggle */
-.light-mode {
-  background-color: #f0f0f0 !important;
-  color: #111 !important;
-}
+.menu a, .menu button { display: block; width: 100%; background: #1a1a1a; color: #fff; padding: 0.5rem; border: none; border-radius: 8px; text-decoration: none; font-weight: bold; }
 
-.light-mode .auth-container,
-.light-mode .profile-container,
-.light-mode .welcome-box,
-.light-mode .main-content,
-.light-mode .topbar,
-.light-mode .sidebar,
-.light-mode .menu {
-  background: rgba(255, 255, 255, 0.9) !important;
-  color: #111 !important;
-}
+.menu a:hover, .menu button:hover { background: #333; }
 
-.light-mode input,
-.light-mode select,
-.light-mode button,
-.light-mode .info-box {
-  background-color: #fff !important;
-  color: #111 !important;
-}
+/* 🌗 Dark/Light Mode Toggle */ .light-mode { background-color: #f0f0f0 !important; color: #111 !important; }
 
-.light-mode .btn {
-  background-color: #222 !important;
-  color: #fff !important;
-}
+.light-mode .auth-container, .light-mode .profile-container, .light-mode .welcome-box, .light-mode .main-content, .light-mode .topbar, .light-mode .sidebar, .light-mode .menu { background: rgba(255, 255, 255, 0.9) !important; color: #111 !important; }
 
-.light-mode a {
-  color: #333 !important;
-}
+.light-mode input, .light-mode select, .light-mode button, .light-mode .info-box { background-color: #fff !important; color: #111 !important; }
 
-/* ✅ Main content */
-.main-content {
-  margin-left: 160px;
-  padding: 2rem 1rem;
-  max-width: 800px;
-}
+.light-mode .btn { background-color: #222 !important; color: #fff !important; }
 
-/* ✅ Announcement */
-#announcement-box {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
-  border-radius: 10px;
-  margin-top: 1rem;
-}
+.light-mode a { color: #333 !important; }
 
-#announcement-box h5 {
-  color: gold;
-  margin-bottom: 0.5rem;
-}
+/* ✅ Main content */ .main-content { margin-left: 160px; padding: 2rem 1rem; max-width: 800px; }
 
-/* ✅ Referral/Level/Trust Info */
-#referral-info p {
-  font-size: 1rem;
-  margin: 0.3rem 0;
-}
+/* ✅ Announcement */ #announcement-box { background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px; margin-top: 1rem; }
 
-/* ✅ Language select and dark mode */
-#lang-select {
-  border-radius: 8px;
-  padding: 4px;
-  background: #000;
-  color: #fff;
-}
+#announcement-box h5 { color: gold; margin-bottom: 0.5rem; }
 
-#dark-toggle {
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: #fff;
-}
+/* ✅ Referral/Level/Trust Info */ #referral-info p { font-size: 1rem; margin: 0.3rem 0; }
 
-/* ✅ Team Referral button */
-.team-referral-btn {
-  background: #ffa500;
-  color: #000;
-  font-weight: bold;
-  padding: 8px 16px;
-  border-radius: 8px;
-  display: inline-block;
-  text-decoration: none;
-}
+/* ✅ Language select and dark mode */ #lang-select { border-radius: 8px; padding: 4px; background: #000; color: #fff; }
 
-.team-referral-btn:hover {
-  background: gold;
-}
+#dark-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: #fff; }
 
-/* ✅ Announcement Banner (Pi-style, always visible) */
-.announcement-banner {
-  background: linear-gradient(90deg, #ffc107, #ff9800);
-  color: #000;
-  text-align: center;
-  padding: 0.6rem 1rem;
-  font-weight: bold;
-  font-size: 0.95rem;
-  animation: fadeIn 1s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-/* ✅ Fade-in animation */
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
+/* ✅ Team Referral button */ .team-referral-btn { background: #ffa500; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 8px; display: inline-block; text-decoration: none; }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+.team-referral-btn:hover { background: gold; }
 
-/* ✅ Mobile responsiveness */
-@media (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+/* ✅ Announcement Banner (Pi-style, always visible) */ .announcement-banner { background: linear-gradient(90deg, #ffc107, #ff9800); color: #000; text-align: center; padding: 0.6rem 1rem; font-weight: bold; font-size: 0.95rem; animation: fadeIn 1s ease-in-out; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-  .sidebar {
-    position: static;
-    width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    margin-bottom: 1rem;
-  }
+/* ✅ Fade-in animation */ .fade-in { animation: fadeIn 0.5s ease-in-out; }
 
-  .main-content {
-    margin-left: 0;
-    padding: 1rem;
-  }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .menu {
-    position: fixed;
-    top: 60px;
-    right: 0;
-    width: 100%;
-  }
+/* ✅ Mobile responsiveness */ @media (max-width: 768px) { .topbar { flex-direction: column; align-items: flex-start; }
 
-  .team-referral-btn {
-    width: 100%;
-  }
-}
+.sidebar { position: static; width: 100%; height: auto; display: flex; flex-direction: row; justify-content: space-around; margin-bottom: 1rem; }
+
+.main-content { margin-left: 0; padding: 1rem; }
+
+.menu { position: fixed; top: 60px; right: 0; width: 100%; }
+
+.team-referral-btn { width: 100%; } }
+
