@@ -1,24 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 /* 🌌 Base styling */
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
+  height: 100vh;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
-/* Apply font globally */
-body {
-  font-family: 'Roboto', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f0f0f0;
-}
-
-/* Other styles... */
-
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -48,7 +41,7 @@ body {
 }
 
 /* 📦 Main content */
-.main-content {
+  .main-content {
   padding: 2rem 1rem;
   flex: 1;
   max-width: 500px;
@@ -58,11 +51,13 @@ body {
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
 }
 
-.main-content h2 {
-  text-align: center;
-  color: gold;
-  margin-bottom: 1.5rem;
-}
+@media (max-width: 600px) {
+  .main-content {
+    max-width: 100%;
+    width: 100%;
+    margin: 1rem auto;
+    padding: 1rem;
+  }
 
 /* ⚙️ Settings Form Section */
 .settings-section .form-group {
@@ -131,3 +126,19 @@ body {
     text-align: center;
   }
     }
+  
+.coming-soon-box {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: gold;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  text-align: center;
+  z-index: 999;
+  box-shadow: 0 0 10px #000;
+}
