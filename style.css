@@ -103,42 +103,38 @@ body::before {
   align-items: center;
 }
 
-/* ==== Menu Panel (Right) ==== */
-.menu {
-  position: fixed;
-  top: 0;
-  right: -220px; /* hidden by default */
-  width: 280px;
-  max-width: 90vw;
-  height: 100%;
-  background-color: #fff;
-  z-index: 1000;
-  overflow-y: auto;
-  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
-  transition: right 0.3s ease;
-  padding: 20px;
+#menu-toggle {
+  background-color: #ffd700;
   color: #000;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-.menu.open {
-  right: 0; /* slide in */
+#sidebar-menu {
+  background-color: #121212;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
-/* Dim background when menu is open */
-body.menu-open::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 900;
+#sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.sidebar {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  padding: 15px;
-  z-index: 998;
+#sidebar-menu li {
+  margin-bottom: 12px;
+}
+
+#sidebar-menu a {
+  color: #ffd700;
+  text-decoration: none;
+  font-size: 16px;
 }
 
 /* ==== Main Content ==== */
