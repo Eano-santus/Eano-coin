@@ -2,54 +2,151 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome to EANO</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome • EANO</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="style.css?v=5" />
+
   <style>
-    .welcome-screen {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      text-align: center;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
       color: #fff;
-      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .welcome-screen h1 {
-      font-size: 2.5rem;
+    .welcome-container {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 2rem;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .welcome-container h1 {
+      color: gold;
+      font-size: 2rem;
       margin-bottom: 1rem;
     }
 
-    .welcome-screen p {
-      font-size: 1.2rem;
+    .welcome-container p {
+      font-size: 1rem;
       margin-bottom: 2rem;
+      color: #ccc;
     }
 
-    .welcome-screen button {
-      padding: 12px 24px;
-      font-size: 1rem;
-      border-radius: 8px;
+    .btn-start {
       background: gold;
       color: #000;
-      font-weight: bold;
       border: none;
+      padding: 0.75rem 2rem;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn-start:hover {
+      background: #ffd700;
+    }
+
+    select,
+    button {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 10px;
+      border: none;
+    }
+
+    /* Light mode override */
+    .light-mode {
+      background-color: #f0f0f0 !important;
+      color: #111 !important;
+    }
+
+    .light-mode .welcome-container {
+      background: rgba(255, 255, 255, 0.9);
+      color: #111;
+    }
+
+    .light-mode .btn-start {
+      background: #222;
+      color: #fff;
+    }
+
+    .light-mode select {
+      background: #eee;
+      color: #111;
+    }
+
+    @media (max-width: 500px) {
+      .welcome-container {
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
-<body>
-  <div class="welcome-screen">
+<body id="welcome-body">
+
+  <div class="welcome-container fade-in">
     <h1>👋 Welcome to EANO</h1>
-    <p>Your gateway to financial freedom. Start mining crypto that empowers communities.</p>
-    <button onclick="proceed()">Continue to App</button>
+    <p>Your mobile-first crypto experience built for everyday users.</p>
+
+    <!-- 🌍 Language Selector -->
+    <select id="lang-select">
+      <option value="en">🌍 English</option>
+      <option value="fr">🇫🇷 French</option>
+      <option value="sw">🇰🇪 Swahili</option>
+      <option value="ig">🇳🇬 Igbo</option>
+      <option value="ha">🇳🇬 Hausa</option>
+      <option value="efik">🇳🇬 Efik</option>
+      <option value="pid">🇳🇬 Pidgin</option>
+      <option value="zh">🇨🇳 中文</option>
+    </select>
+
+    <!-- 🌗 Theme Toggle -->
+    <button id="theme-toggle">🌗 Toggle Light/Dark</button>
+
+    <!-- 🚀 Continue Button -->
+    <button class="btn-start" id="get-started">Get Started</button>
   </div>
 
+  <!-- ✅ Scripts -->
+  <script type="module" src="lang.js?v=5"></script>
+
   <script>
-    function proceed() {
-      localStorage.setItem("seenWelcome", true);
+    document.getElementById("get-started").addEventListener("click", () => {
+      localStorage.setItem("seenWelcome", "true");
       window.location.href = "index.html";
+    });
+
+    const themeToggle = document.getElementById("theme-toggle");
+    const body = document.getElementById("welcome-body");
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+      body.classList.add("light-mode");
     }
+
+    themeToggle.addEventListener("click", () => {
+      body.classList.toggle("light-mode");
+      const mode = body.classList.contains("light-mode") ? "light" : "dark";
+      localStorage.setItem("theme", mode);
+    });
   </script>
 </body>
 </html>
