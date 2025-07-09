@@ -107,21 +107,21 @@ body::before {
 .menu {
   position: fixed;
   top: 0;
-  right: -320px; /* hidden by default */
+  right: -220px; /* hidden by default */
   width: 280px;
   max-width: 90vw;
   height: 100%;
   background-color: #fff;
   z-index: 1000;
   overflow-y: auto;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.2);
   transition: right 0.3s ease;
   padding: 20px;
   color: #000;
 }
 
 .menu.open {
-  right: 0;
+  right: 0; /* slide in */
 }
 
 /* Dim background when menu is open */
