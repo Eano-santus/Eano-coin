@@ -116,13 +116,12 @@
   document.getElementById("menu-toggle")?.addEventListener("click", () => {
     document.getElementById("menu").classList.toggle("open");
   });
-    
-</script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ Service Worker registered"))
-        .catch(err => console.error("❌ Service Worker failed:", err));
-    }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(() => console.log("✅ Service Worker registered"))
+      .catch(err => console.error("❌ Service Worker failed:", err));
+  }
   </script>
 </body>
 </html>
