@@ -1,17 +1,44 @@
-/* ==== Base & Global ==== */
-html, body {
+/* Make app mobile-friendly */
+body, html {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: url('eano-bg.png') no-repeat center center fixed;
-  background-size: cover;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-position: center top;
-  color: #f5f5f5;
-  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  background: #f5f5f5;
+  height: 100vh;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile screen wrapper */
+.app-container {
+  width: 100%;
+  max-width: 480px; /* Similar to Pi Network max width */
+  height: 100vh;
+  margin: 0 auto;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+}
+
+/* Coming soon block */
+.coming-soon-block {
+  width: 280px;
+  height: 280px;
+  background: #fff5cc;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #444;
+  margin-top: 100px;
+  text-align: center;
 }
 
 /* ==== Overlay ==== */
