@@ -1,13 +1,13 @@
-// ✅ Import Firebase Modules
+// auth.js
+
+// Import Firebase modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 import {
   getAuth,
-  GoogleAuthProvider,
   signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  setPersistence,
-  browserLocalPersistence
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signOut
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
 import {
@@ -16,159 +16,77 @@ import {
   setDoc,
   getDoc,
   updateDoc,
-  collection,
-  query,
-  where,
-  getDocs
+  increment
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// 🔐 Firebase Config
+// ✅ Your Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "eano-miner.firebaseapp.com",
-  projectId: "eano-miner",
-  storageBucket: "eano-miner.appspot.com",
-  messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-  measurementId: "G-NS0W6QSS69"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_MSG_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// ✅ Initialize Firebase
+// ✅ Initialize
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
-// ✅ Persistent Login (like Pi Network)
-setPersistence(auth, browserLocalPersistence);
-
-// 🌐 Referral code from URL
-const urlParams = new URLSearchParams(window.location.search);
-const refId = urlParams.get("ref");
-
-// 🔧 Utility Functions
-function generateReferralCode(username) {
-  return `${username}-${Math.floor(Math.random() * 10000)}`;
-}
-
-function generateEanoId() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let id = "EANO";
-  for (let i = 0; i < 4; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return id;
-}
-
-// ✅ Google Sign-In
-const googleBtn = document.getElementById("google-signin");
-if (googleBtn) {
-  googleBtn.addEventListener("click", async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) {
-        await auth.signOut();
-        alert("❌ Access denied. This Google account is not registered.");
-        return;
-      }
-
-      window.location.href = "dashboard.html";
-    } catch (err) {
-      console.error("Google sign-in error:", err);
-      alert("Google sign-in failed.");
-    }
-  });
-}
-
-// ✅ Email/Password Login
-document.getElementById("login-btn")?.addEventListener("click", async () => {
-  const email = document.getElementById("login-email").value.trim();
-  const password = document.getElementById("login-password").value;
+// ✅ Sign in with Google
+export async function signInWithGoogle(referrerId = null) {
+  const provider = new GoogleAuthProvider();
 
   try {
-    await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = "dashboard.html";
-  } catch (err) {
-    console.error("Login error:", err);
-    alert("Invalid credentials.");
-  }
-});
-
-// ✅ Sign-Up with Validation
-document.getElementById("signup-btn")?.addEventListener("click", async () => {
-  const email = document.getElementById("signup-email").value.trim();
-  const password = document.getElementById("signup-password").value;
-  const username = document.getElementById("signup-username").value.trim().toLowerCase();
-  const firstname = document.getElementById("signup-firstname").value.trim();
-  const lastname = document.getElementById("signup-lastname").value.trim();
-
-  if (!username || username.length < 4) return alert("Username must be at least 4 characters.");
-  if (!firstname || !lastname) return alert("First and Last name are required.");
-  if (password.length < 6) return alert("Password must be at least 6 characters.");
-
-  const q = query(collection(db, "users"), where("username", "==", username));
-  const snapshot = await getDocs(q);
-  if (!snapshot.empty) return alert("Username already taken. Choose another.");
-
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
+    const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    await handleNewUser(user, username, firstname, lastname);
-    window.location.href = "dashboard.html";
-  } catch (err) {
-    console.error("Signup error:", err);
-    alert("Signup failed.");
-  }
-});
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
 
-// ✅ Save New User
-async function handleNewUser(user, username, firstname, lastname) {
-  const userRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(userRef);
+    // ⛏ First-time sign-in
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+        phone: user.phoneNumber || "",
+        balance: 2.0,
+        trustScore: 0,
+        level: "🐥 Chicken",
+        referralCount: 0,
+        referrerId: referrerId || null,
+        createdAt: new Date().toISOString(),
+        lastMine: null
+      });
 
-  if (!docSnap.exists()) {
-    const referralCode = generateReferralCode(username);
-    const eanoId = generateEanoId();
-
-    await setDoc(userRef, {
-      uid: user.uid,
-      email: user.email,
-      username,
-      firstname,
-      lastname,
-      referralCode,
-      referrals: [],
-      referralCount: 0,
-      referredBy: refId || null,
-      balance: 2,
-      trustScore: 0,
-      lastMine: null,
-      createdAt: new Date().toISOString(),
-      level: "🐥 Chicken",
-      status: "active",
-      eanoId
-    });
-
-    // 🪙 Referral bonus
-    if (refId) {
-      const refUserRef = doc(db, "users", refId);
-      const refSnap = await getDoc(refUserRef);
-      if (refSnap.exists()) {
-        const refData = refSnap.data();
-        await updateDoc(refUserRef, {
-          balance: (refData.balance || 0) + 2,
-          trustScore: (refData.trustScore || 0) + 50,
-          referralCount: (refData.referralCount || 0) + 1,
-          referrals: [...(refData.referrals || []), user.uid]
-        });
+      // Reward the referrer if exists
+      if (referrerId) {
+        const referrerRef = doc(db, "users", referrerId);
+        const referrerSnap = await getDoc(referrerRef);
+        if (referrerSnap.exists()) {
+          await updateDoc(referrerRef, {
+            balance: increment(2.0),
+            referralCount: increment(1)
+          });
+        }
       }
     }
+
+    // Redirect to dashboard
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    console.error("Google Sign-In Error:", error.message);
+    alert("❌ Sign-in failed. Try again.");
   }
 }
 
-// ✅ Export for reuse
-export { auth, db };
+// ✅ Logout
+export function logout() {
+  signOut(auth)
+    .then(() => window.location.href = "index.html")
+    .catch(err => console.error("Logout failed", err));
+}
+
+// ✅ Export listener
+export { onAuthStateChanged };
