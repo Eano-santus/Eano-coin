@@ -1,66 +1,245 @@
-/* ✅ General body reset */ body { margin: 0; font-family: 'Segoe UI', sans-serif; color: #fff; }
+/* ==== Base & Global ==== */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('eano-bg.png') no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center top;
+  color: #f5f5f5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
 
-/* ✅ Dashboard-specific background */ body.dashboard { background: url('eano-bg.png') no-repeat center center fixed; background-size: cover; color: #fff; }
+/* ==== Overlay ==== */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: -1;
+}
 
-/* ✅ Responsive background for mobile */ @media (max-width: 768px) { body.dashboard { background-size: cover; background-attachment: fixed; } }
+/* ==== Topbar ==== */
+.topbar {
+  height: 60px;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-/* ✅ Topbar */ .topbar { background: rgba(0, 0, 0, 0.85); color: #fff; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.topbar .logo {
+  width: 32px;
+  margin-right: 8px;
+}
 
-/* ✅ Sidebar (left) */ .sidebar { position: fixed; top: 60px; left: 0; background: rgba(0, 0, 0, 0.85); padding: 1rem; height: 100%; width: 140px; z-index: 99; }
+/* ==== Sidebar ==== */
+.sidebar {
+  width: 200px;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 1rem;
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-.sidebar .btn { width: 100%; margin-top: 1rem; background: gold; color: black; font-weight: bold; border-radius: 10px; padding: 0.5rem 1rem; border: none; }
+.sidebar-logo {
+  width: 60px;
+  margin-bottom: 20px;
+}
 
-.sidebar .btn:hover { background: #ffd700; }
+/* ==== Glowing Mine Button ==== */
+#mine-btn {
+  background: linear-gradient(45deg, gold, orange);
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #000;
+  box-shadow: 0 0 10px gold;
+  margin-bottom: 10px;
+  animation: glow 1.5s infinite alternate;
+}
 
-/* ✅ Right slide-out menu */ .menu { position: fixed; top: 60px; right: -260px; background: rgba(0, 0, 0, 0.9); padding: 1rem; width: 220px; height: calc(100% - 60px); overflow-y: auto; transition: right 0.3s ease; z-index: 999; }
+@keyframes glow {
+  0% { box-shadow: 0 0 5px gold; }
+  100% { box-shadow: 0 0 20px gold; }
+}
 
-.menu.open { right: 0; }
+/* ==== Logout Button ==== */
+#logout-btn {
+  background: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
 
-.menu p { margin: 0.75rem 0; }
+/* ==== Downbar Left ==== */
+.downbar-left {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
 
-.menu a, .menu button { display: block; width: 100%; background: #1a1a1a; color: #fff; padding: 0.5rem; border: none; border-radius: 8px; text-decoration: none; font-weight: bold; }
+/* ==== Menu Panel (Right) ==== */
+.menu {
+  width: 180px;
+  background: rgba(0, 0, 0, 0.75);
+  position: fixed;
+  top: 60px;
+  bottom: 0;
+  right: 0;
+  padding: 1rem;
+  z-index: 999;
+  color: #fff;
+  text-align: center;
+  display: none;
+}
 
-.menu a:hover, .menu button:hover { background: #333; }
+.menu.show {
+  display: block;
+}
 
-/* 🌗 Dark/Light Mode Toggle */ .light-mode { background-color: #f0f0f0 !important; color: #111 !important; }
+.menu a {
+  display: block;
+  color: #fff;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
 
-.light-mode .auth-container, .light-mode .profile-container, .light-mode .welcome-box, .light-mode .main-content, .light-mode .topbar, .light-mode .sidebar, .light-mode .menu { background: rgba(255, 255, 255, 0.9) !important; color: #111 !important; }
+.menu a:hover {
+  text-decoration: underline;
+}
 
-.light-mode input, .light-mode select, .light-mode button, .light-mode .info-box { background-color: #fff !important; color: #111 !important; }
+/* ==== Main Content ==== */
+.main-content {
+  margin: 100px 220px;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 12px;
+}
 
-.light-mode .btn { background-color: #222 !important; color: #fff !important; }
+/* ==== Announcement Box ==== */
+#announcement-box {
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+}
 
-.light-mode a { color: #333 !important; }
+/* ==== Mining Info ==== */
+#referral-info {
+  margin-top: 20px;
+  line-height: 1.8;
+}
 
-/* ✅ Main content */ .main-content { margin-left: 160px; padding: 2rem 1rem; max-width: 800px; }
+/* ==== Light Mode ==== */
+.light-mode {
+  background-color: #f3f3f3;
+  color: #000;
+}
 
-/* ✅ Announcement */ #announcement-box { background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px; margin-top: 1rem; }
+.light-mode .topbar,
+.light-mode .sidebar,
+.light-mode .menu,
+.light-mode .main-content {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
 
-#announcement-box h5 { color: gold; margin-bottom: 0.5rem; }
+.light-mode #mine-btn {
+  background: #333;
+  color: #fff;
+}
 
-/* ✅ Referral/Level/Trust Info */ #referral-info p { font-size: 1rem; margin: 0.3rem 0; }
+/* ==== Dark Mode Toggle ==== */
+.dark-mode {
+  background-color: #111;
+  color: #fff;
+}
 
-/* ✅ Language select and dark mode */ #lang-select { border-radius: 8px; padding: 4px; background: #000; color: #fff; }
+.dark-mode .topbar,
+.dark-mode .sidebar,
+.dark-mode .menu,
+.dark-mode .main-content {
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+}
 
-#dark-toggle { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: #fff; }
+/* ==== Fade-in Animation ==== */
+.fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
 
-/* ✅ Team Referral button */ .team-referral-btn { background: #ffa500; color: #000; font-weight: bold; padding: 8px 16px; border-radius: 8px; display: inline-block; text-decoration: none; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-.team-referral-btn:hover { background: gold; }
+/* ==== Responsive (Pi App Size) ==== */
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    height: auto;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
 
-/* ✅ Announcement Banner (Pi-style, always visible) */ .announcement-banner { background: linear-gradient(90deg, #ffc107, #ff9800); color: #000; text-align: center; padding: 0.6rem 1rem; font-weight: bold; font-size: 0.95rem; animation: fadeIn 1s ease-in-out; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+  .sidebar,
+  .menu {
+    position: static;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0.5rem;
+  }
 
-/* ✅ Fade-in animation */ .fade-in { animation: fadeIn 0.5s ease-in-out; }
+  .main-content {
+    margin: 120px 10px 20px 10px;
+    padding: 1rem;
+  }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .sidebar-logo {
+    display: none;
+  }
 
-/* ✅ Mobile responsiveness */ @media (max-width: 768px) { .topbar { flex-direction: column; align-items: flex-start; }
+  #mine-btn,
+  #logout-btn {
+    width: 45%;
+    margin-bottom: 0;
+  }
 
-.sidebar { position: static; width: 100%; height: auto; display: flex; flex-direction: row; justify-content: space-around; margin-bottom: 1rem; }
-
-.main-content { margin-left: 0; padding: 1rem; }
-
-.menu { position: fixed; top: 60px; right: 0; width: 100%; }
-
-.team-referral-btn { width: 100%; } }
-
+  #announcement-box {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    z-index: 1000;
+  }
+  }
