@@ -73,7 +73,7 @@ export function showAnnouncement(message) {
   }
 }
 
-// ✅ Handle menu toggle
+// ✅ MENU TOGGLE (Fixes Mine tab being hidden and menu overlay)
 const menuToggle = document.getElementById("menu-toggle");
 const menu = document.getElementById("menu");
 
@@ -82,7 +82,6 @@ menuToggle?.addEventListener("click", () => {
   document.body.classList.toggle("menu-open");
 });
 
-// ✅ Auto-close menu when link/button inside it is clicked
 menu?.querySelectorAll("a, button").forEach((el) => {
   el.addEventListener("click", () => {
     menu.classList.remove("open");
