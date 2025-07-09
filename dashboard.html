@@ -1,24 +1,37 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Dashboard</title>  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />  <!-- ✅ Google Tag Manager -->  <script>
+  <title>EANO Dashboard</title>
+
+  <!-- Manifest + Theme -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- ✅ Google Tag Manager -->
+  <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
-  </script>  <link rel="stylesheet" href="style.css?v=3" />
+  </script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css?v=3" />
   <style>
     .announcement-banner {
-      background: #222;
-      color: #ffd700;
-      padding: 10px;
+      background: linear-gradient(90deg, #ffc107, #ff9800);
+      color: #000;
       text-align: center;
+      padding: 0.75rem 1rem;
       font-weight: bold;
-      font-size: 14px;
-      border-bottom: 1px solid #444;
+      font-size: 1rem;
+      margin: 20px auto;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
   </style>
 </head>
@@ -27,68 +40,83 @@
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
     height="0" width="0" style="display:none;visibility:hidden"></iframe>
-  </noscript>  <!-- 🔝 Topbar -->  <div class="topbar">
+  </noscript>
+
+  <!-- 🔝 Topbar -->
+  <div class="topbar">
     <div class="d-flex align-items-center">
       <strong class="brand">EANO</strong>
-    </div><!-- 📢 Persistent Announcement Banner -->
-<div id="announcement-banner" class="announcement-banner">
-  📢 EANO Network App and other cool features coming soon!
-</div>
+    </div>
+    <div>
+      <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <select id="lang-select">
+        <option value="en">🌍 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="sw">🇰🇪 Swahili</option>
+        <option value="ig">🇳🇬 Igbo</option>
+        <option value="ha">🇳🇬 Hausa</option>
+        <option value="efik">🇳🇬 Efik</option>
+        <option value="pid">🇳🇬 Pidgin</option>
+        <option value="zh">🇨🇳 中文</option>
+      </select>
+      <button id="dark-toggle">🌗</button>
+      <button id="menu-toggle">📋</button>
+    </div>
+  </div>
 
-<div>
-  <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
-</div>
-<div class="d-flex align-items-center gap-2">
-  <select id="lang-select">
-    <option value="en">🌍 English</option>
-    <option value="fr">🇫🇷 French</option>
-    <option value="sw">🇰🇪 Swahili</option>
-    <option value="ig">🇳🇬 Igbo</option>
-    <option value="ha">🇳🇬 Hausa</option>
-    <option value="efik">🇳🇬 Efik</option>
-    <option value="pid">🇳🇬 Pidgin</option>
-    <option value="zh">🇨🇳 中文</option>
-  </select>
-  <button id="dark-toggle">🌗</button>
-  <button id="menu-toggle">📋</button>
-</div>
-
-  </div>  <!-- 📍 Sidebar -->  <div class="sidebar" id="sidebar">
+  <!-- 📍 Sidebar -->
+  <div class="sidebar" id="sidebar">
     <button class="btn" id="mine-btn">⛏ Start Mining</button>
-  </div>  <!-- 📍 Right Slide Menu -->  <div class="menu" id="menu">
+  </div>
+
+  <!-- 📍 Right Slide Menu -->
+  <div class="menu" id="menu">
     <h6>👋 Welcome to EANO Network</h6>
     <p id="user-email" class="fw-bold">Loading email...</p>
-    <p>Mine EANO every 24 hours to increase your score and trust level.</p><p><a href="profile.html">👤 Profile</a></p>
-<p><a href="invite.html">👥 Referrals</a></p>
-<p><a href="leaderboard.html">🏆 Leaderboard</a></p>
-<p><a href="settings.html">⚙️ Settings</a></p>
-<p><a href="https://your-whitepaper-link.com" target="_blank">📄 WhitePaper</a></p>
-<p><a href="https://your-support-portal.com" target="_blank">🛠 Support Portal</a></p>
-<p><button id="logout-btn" class="btn btn-outline-danger">🚪 Logout</button></p>
+    <p>Mine EANO every hour to increase your score and trust level.</p>
+    <p><a href="profile.html">👤 Profile</a></p>
+    <p><a href="invite.html">👥 Referrals</a></p>
+    <p><a href="leaderboard.html">🏆 Leaderboard</a></p>
+    <p><a href="settings.html">⚙️ Settings</a></p>
+    <p><a href="https://your-whitepaper-link.com" target="_blank">📄 WhitePaper</a></p>
+    <p><a href="https://your-support-portal.com" target="_blank">🛠 Support Portal</a></p>
+    <p><button id="logout-btn" class="btn btn-outline-danger">🚪 Logout</button></p>
+  </div>
 
-  </div>  <!-- 📦 Main Content Center -->  <div class="main-content fade-in"><!-- 👥 Team Referral Button -->
-<div style="margin-top: 10px;">
-  <a href="invite.html" class="team-referral-btn" title="Team Referrals">👥 Team</a>
-</div>
+  <!-- 📦 Main Content -->
+  <div class="main-content fade-in">
 
-<!-- 📢 Announcement Box -->
-<div id="announcement-box" class="mt-10">
-  <h2>📢 Announcement</h2>
-  <p id="latest-announcement">Loading announcement...</p>
-</div>
+    <!-- 📢 Centered Announcement Banner -->
+    <div id="announcement-banner" class="announcement-banner">
+      📢 EANO Network App and other cool features coming soon!
+    </div>
 
-<!-- 📊 Mining Info -->
-<div id="referral-info" class="mt-4">
-  <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
-  <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
-  <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
-</div>
+    <!-- 👥 Team Referral Button -->
+    <div style="margin-top: 10px;">
+      <a href="invite.html" class="team-referral-btn" title="Team Referrals">👥 Team</a>
+    </div>
 
-  </div>  <!-- ✅ Scripts -->  <script type="module" src="dashboard.js?v=3"></script>  <script type="module" src="ui.js?v=3"></script>  <script type="module" src="lang.js?v=3"></script>  <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("✅ Service Worker registered"))
-      .catch(err => console.error("❌ Service Worker failed:", err));
-  }
-  </script></body>
+    <!-- 📊 Mining Info -->
+    <div id="referral-info" class="mt-4">
+      <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+      <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
+      <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
+    </div>
+
+  </div>
+
+  <!-- ✅ Scripts -->
+  <script type="module" src="dashboard.js?v=3"></script>
+  <script type="module" src="ui.js?v=3"></script>
+  <script type="module" src="lang.js?v=3"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker registered"))
+        .catch(err => console.error("❌ Service Worker failed:", err));
+    }
+  </script>
+</body>
 </html>
