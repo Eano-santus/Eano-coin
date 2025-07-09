@@ -155,8 +155,11 @@ function startCountdown(lastMineTime) {
   }, 1000);
 }
 
-// ✅ Toggle right menu (profile slide-out)
-document.getElementById("menu-toggle")?.addEventListener("click", () => {
-  const menu = document.getElementById("menu");
-  menu.classList.toggle("open");
-});
+function toggleMenu() {
+  const menu = document.getElementById("sidebar-menu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+function showSection(sectionName) {
+  alert(`You clicked ${sectionName}. Coming soon!`);
+  document.getElementById("sidebar-menu").style.display = "none";
+}
