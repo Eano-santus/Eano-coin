@@ -154,3 +154,9 @@ function startCountdown(lastMineTime) {
     }
   }, 1000);
 }
+
+// ✅ Toggle right menu (profile slide-out)
+document.getElementById("menu-toggle")?.addEventListener("click", () => {
+  const menu = document.getElementById("menu");
+  menu.classList.toggle("open");
+});
