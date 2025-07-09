@@ -4,13 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO • Settings</title>
+
+  <!-- PWA + Theme -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
+  <link rel="icon" href="favicon.png" type="image/png" />
+
+  <!-- Fonts + Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=3" />
   <link rel="stylesheet" href="settings.css?v=3" />
 </head>
-<body class="dashboard">
 
+<body class="dashboard">
   <!-- 🔝 Topbar -->
   <div class="topbar">
     <div class="d-flex align-items-center">
@@ -30,7 +36,7 @@
         <option value="pid">🇳🇬 Pidgin</option>
         <option value="zh">🇨🇳 中文</option>
       </select>
-      <button id="dark-toggle">🌗</button>
+      <button id="dark-toggle" title="Toggle Light/Dark Mode">🌗</button>
       <a href="dashboard.html" class="btn btn-sm btn-secondary">🏠 Back</a>
     </div>
   </div>
@@ -38,32 +44,47 @@
   <!-- ⚙️ Settings Content -->
   <div class="main-content fade-in">
     <h2>⚙️ Settings</h2>
+
     <div class="settings-section">
+      <!-- Email Display -->
       <div class="form-group">
         <label for="user-email">📧 Email</label>
         <input type="email" id="user-email" class="form-control" readonly />
       </div>
 
+      <!-- Username -->
       <div class="form-group">
         <label for="username">👤 Username</label>
         <input type="text" id="username" class="form-control" placeholder="Enter username" />
         <button id="save-username" class="btn btn-primary mt-2">Save Username</button>
       </div>
 
+      <!-- Phone Number -->
       <div class="form-group mt-4">
         <label for="phone">📞 Phone Number</label>
         <input type="tel" id="phone" class="form-control" placeholder="+234..." />
         <button id="save-phone" class="btn btn-primary mt-2">Save Phone</button>
       </div>
 
+      <!-- Logout -->
       <div class="form-group mt-4">
         <button id="logout-btn" class="btn btn-danger">🚪 Logout</button>
       </div>
     </div>
   </div>
 
-  <script type="module" src="settings.js?v=3"></script>
-  <script type="module" src="lang.js?v=3"></script>
+  <!-- ☁️ Scripts -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="auth.js"></script>
   <script type="module" src="ui.js?v=3"></script>
+  <script type="module" src="lang.js?v=3"></script>
+  <script type="module" src="settings.js?v=3"></script>
+
+  <!-- 🌗 Toggle Light/Dark Mode -->
+  <script>
+    document.getElementById("dark-toggle")?.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+  </script>
 </body>
 </html>
