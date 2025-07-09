@@ -9,13 +9,13 @@
   <meta name="theme-color" content="#000000" />
 
   <!-- ✅ Bootstrap & Styles -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css?v=3" />
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="style.css?v=5" />
 
-  <!-- ✅ Welcome Redirect (first time only) -->
+  <!-- ✅ Welcome Redirect -->
   <script>
     if (!localStorage.getItem("seenWelcome")) {
-  window.location.href = "welcome.html";
+      window.location.href = "welcome.html";
     }
   </script>
 
@@ -111,7 +111,7 @@
     <h2>🚀 Welcome to EANO</h2>
 
     <!-- 🌍 Language Selector -->
-    <select id="lang-select" class="form-select lang-select" aria-label="Select language">
+    <select id="lang-select" class="form-select lang-select">
       <option value="en">🌍 English</option>
       <option value="fr">🇫🇷 French</option>
       <option value="sw">🇰🇪 Swahili</option>
@@ -148,10 +148,23 @@
   </div>
 
   <!-- ✅ Scripts -->
-  <script type="module" src="auth.js?v=3"></script>
-  <script type="module" src="lang.js?v=3"></script>
+  <script type="module" src="auth.js?v=5"></script>
+  <script type="module" src="lang.js?v=5"></script>
+
+  <!-- ✅ Auto-login redirect to dashboard -->
+  <script type="module">
+    import { auth } from './auth.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
+  </script>
+
+  <!-- 🔁 Toggle Login/Signup -->
   <script>
-    // Toggle Signup/Login View
     const toggleLink = document.getElementById("toggle-auth");
     const signupSection = document.getElementById("signup-section");
     const loginSection = document.getElementById("login-section");
@@ -164,12 +177,13 @@
         ? "Don't have an account? Sign up"
         : "Already have an account? Login";
     });
+  </script>
 
-    // 🌗 Theme toggle
+  <!-- 🌗 Theme Toggle -->
+  <script>
     const themeToggle = document.getElementById("theme-toggle");
     const body = document.getElementById("auth-body");
 
-    // Load saved theme
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "light") {
       body.classList.add("light-mode");
@@ -179,18 +193,16 @@
       body.classList.toggle("light-mode");
       const mode = body.classList.contains("light-mode") ? "light" : "dark";
       localStorage.setItem("theme", mode);
-      if (!localStorage.getItem("seenWelcome")) {
-  window.location.href = "welcome.html";
-      }
     });
   </script>
 
+  <!-- ✅ PWA: Service Worker -->
   <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("✅ Service Worker registered"))
-      .catch(err => console.error("❌ Service Worker failed:", err));
-  }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker registered"))
+        .catch(err => console.error("❌ Service Worker failed:", err));
+    }
   </script>
 </body>
 </html>
