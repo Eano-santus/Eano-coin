@@ -1,244 +1,42 @@
-/* ==== Base & Global ==== */
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: url('eano-bg.png') no-repeat center center fixed;
-  background-size: cover;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-position: center top;
-  color: #f5f5f5;
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
-}
+/* 🌙 Global Styles */ body.dashboard { margin: 0; font-family: 'Segoe UI', sans-serif; background: url('eano-bg.png') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
 
-/* ==== Overlay ==== */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: -1;
-}
+/* 🔝 Topbar */ .topbar { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); z-index: 1000; position: fixed; top: 0; width: 100%; }
 
-/* ==== Topbar ==== */
-.topbar {
-  height: 60px;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 1rem;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
+.brand { font-size: 1.3rem; font-weight: bold; }
 
-.topbar .logo {
-  width: 32px;
-  margin-right: 8px;
-}
+.topbar select, .topbar button { background: transparent; color: white; border: none; font-size: 1rem; cursor: pointer; }
 
-/* ==== Sidebar ==== */
-.sidebar {
-  width: 200px;
-  background: rgba(0, 0, 0, 0.75);
-  padding: 1rem;
-  position: fixed;
-  top: 60px;
-  bottom: 0;
-  left: 0;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+/* 📍 Sidebar (Mine Button) */ .sidebar { position: fixed; left: 0; top: 60px; height: calc(100vh - 60px); width: 60px; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 900; }
 
-.sidebar-logo {
-  width: 60px;
-  margin-bottom: 20px;
-}
+#mine-btn { writing-mode: vertical-rl; transform: rotate(180deg); padding: 10px; background: #00c853; border: none; color: white; border-radius: 8px; font-weight: bold; }
 
-/* ==== Glowing Mine Button ==== */
-#mine-btn {
-  background: linear-gradient(45deg, gold, orange);
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 600;
-  color: #000;
-  box-shadow: 0 0 10px gold;
-  margin-bottom: 10px;
-  animation: glow 1.5s infinite alternate;
-}
+/* 📍 Right Menu */ .menu { position: fixed; right: -100%; top: 60px; width: 250px; height: calc(100vh - 60px); background: rgba(0, 0, 0, 0.8); padding: 1rem; overflow-y: auto; transition: right 0.3s ease; z-index: 1001; }
 
-@keyframes glow {
-  0% { box-shadow: 0 0 5px gold; }
-  100% { box-shadow: 0 0 20px gold; }
-}
+.menu.open { right: 0; }
 
-/* ==== Logout Button ==== */
-#logout-btn {
-  background: transparent;
-  border: 1px solid #dc3545;
-  color: #dc3545;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: 500;
-}
+.menu a, .menu button { display: block; margin: 0.5rem 0; color: white; text-decoration: none; }
 
-/* ==== Downbar Left ==== */
-.downbar-left {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
+/* 📦 Main Content */ .main-content { margin-top: 80px; margin-left: 70px; margin-right: 20px; padding-bottom: 2rem; z-index: 1; }
 
-/* ==== Menu Panel (Right) ==== */
-.menu {
-  position: fixed;
-  top: 0;
-  right: -320px; /* hidden by default */
-  width: 300px;
-  height: 100%;
-  background-color: #fff;
-  z-index: 1000;
-  overflow-y: auto;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
-  transition: right 0.3s ease;
-  padding: 20px;
-}
+.fade-in { animation: fadeIn 0.8s ease-in-out; }
 
-.menu.open {
-  right: 0;
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.sidebar {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  padding: 15px;
-  z-index: 998;
-}
+/* 📢 Announcement Banner */ .announcement-banner { z-index: 800; position: relative; text-align: center; }
 
-/* ==== Main Content ==== */
-.main-content {
-  margin-top: 70px;
-  padding: 15px;
-  z-index: 1;
-  position: relative;
-  background: rgba(0, 0, 0, 0.65);
-  border-radius: 12px;
-}
+/* 👥 Team Button */ .team-referral-btn { display: inline-block; background: #ff5722; color: #fff; padding: 8px 12px; border-radius: 5px; text-decoration: none; font-weight: bold; }
 
-/* ==== Announcement Box ==== */
-#announcement-box {
-  background: rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 1rem;
-  border-radius: 10px;
-  text-align: center;
-}
+/* ⚙️ Misc */ .btn { padding: 0.5rem 1rem; background: #2196f3; border: none; color: white; border-radius: 5px; cursor: pointer; }
 
-/* ==== Mining Info ==== */
-#referral-info {
-  margin-top: 20px;
-  line-height: 1.8;
-}
+.btn-outline-danger { background: transparent; border: 1px solid #f44336; color: #f44336; }
 
-/* ==== Light Mode ==== */
-.light-mode {
-  background-color: #f3f3f3;
-  color: #000;
-}
+/* 🌐 Language Dropdown */ #lang-select { background: rgba(255,255,255,0.1); color: white; border-radius: 5px; padding: 4px 8px; }
 
-.light-mode .topbar,
-.light-mode .sidebar,
-.light-mode .menu,
-.light-mode .main-content {
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #000;
-}
+/* 📱 Responsive */ @media (max-width: 768px) { .topbar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
 
-.light-mode #mine-btn {
-  background: #333;
-  color: #fff;
-}
+.sidebar { top: auto; bottom: 0; height: 60px; width: 100%; flex-direction: row; }
 
-/* ==== Dark Mode Toggle ==== */
-.dark-mode {
-  background-color: #111;
-  color: #fff;
-}
+#mine-btn { writing-mode: horizontal-tb; transform: none; }
 
-.dark-mode .topbar,
-.dark-mode .sidebar,
-.dark-mode .menu,
-.dark-mode .main-content {
-  background-color: rgba(0, 0, 0, 0.85);
-  color: #fff;
-}
+.main-content { margin: 80px 10px 70px 10px; } }
 
-/* ==== Fade-in Animation ==== */
-.fade-in {
-  animation: fadeIn 0.6s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==== Responsive (Pi App Size) ==== */
-@media (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    height: auto;
-    gap: 0.5rem;
-    padding: 0.5rem;
-  }
-
-  .sidebar,
-  .menu {
-    position: static;
-    width: 100%;
-    height: auto;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 0.5rem;
-  }
-
-  .main-content {
-    margin: 120px 10px 20px 10px;
-    padding: 1rem;
-  }
-
-  .sidebar-logo {
-    display: none;
-  }
-
-  #mine-btn,
-  #logout-btn {
-    width: 45%;
-    margin-bottom: 0;
-  }
-
-  #announcement-box {
-    position: fixed;
-    top: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    z-index: 1000;
-  }
-  }
