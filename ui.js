@@ -82,6 +82,7 @@ menuToggle?.addEventListener("click", () => {
   document.body.classList.toggle("menu-open");
 });
 
+// Close menu when links are clicked
 menu?.querySelectorAll("a, button").forEach((el) => {
   el.addEventListener("click", () => {
     menu.classList.remove("open");
