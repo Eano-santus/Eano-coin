@@ -104,31 +104,39 @@ body::before {
 }
 
 #menu-toggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
   background-color: #ffd700;
   color: #000;
   padding: 10px 15px;
   cursor: pointer;
   border-radius: 5px;
-  margin-bottom: 10px;
   font-weight: bold;
+  z-index: 999;
 }
 
 #sidebar-menu {
-  background-color: #121212;
+  position: fixed;
+  top: 0;
+  left: -250px; /* Start hidden to the left */
+  width: 250px;
+  height: 100%;
+  background-color: #1c1c1c;
+  color: white;
   padding: 20px;
-  border-radius: 10px;
-  display: none;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  transition: left 0.3s ease;
+  z-index: 998;
+  box-shadow: 2px 0 10px rgba(255, 215, 0, 0.3);
 }
 
 #sidebar-menu ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 #sidebar-menu li {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 #sidebar-menu a {
