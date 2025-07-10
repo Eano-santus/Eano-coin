@@ -1,8 +1,10 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Dashboard</title>  <!-- Fonts + Theme -->  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Dashboard</title>
+  <!-- Fonts + Manifest + Theme -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />  <!-- Google Tag Manager -->  <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -10,11 +12,11 @@
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
-  </script>  <!-- Styles -->  <link rel="stylesheet" href="style.css?v=4" />
-</head><body class="dashboard">
+  </script>  <!-- Styles -->  <link rel="stylesheet" href="style.css?v=5" />
+</head>
+<body class="dashboard">
   <!-- GTM noscript -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>  <!-- 🔝 Topbar -->  <div class="topbar">
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>  <!-- Topbar -->  <div class="topbar">
     <strong class="brand">EANO</strong>
     <div><span id="balance">0.000</span> EANO | <span id="timer">⏳</span></div>
     <div class="d-flex align-items-center gap-2">
@@ -30,59 +32,48 @@
       </select>
       <button id="dark-toggle" title="Toggle Dark Mode">🌗</button>
     </div>
-  <!-- Sidebar Toggle -->
-<button id="menu-toggle">☰ Menu</button>
+  </div>  <!-- Menu Toggle --><button id="menu-toggle">☰ Menu</button>
 
-<!-- Sidebar Menu -->
-<div id="sidebar-menu">
-  <ul>
-</div>
- <!-- ⛏ Mining Button (outside menu, always visible) -->
-  <div class="sidebar">
+  <!-- Sidebar Menu -->  <div id="sidebar-menu">
+    <ul>
+      <li><a href="profile.html">👤 Profile</a></li>
+      <li><a href="invite.html">👥 Referrals</a></li>
+      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
+      <li><a href="settings.html">⚙ Settings</a></li>
+      <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
+      <li><button id="logout-btn">🚪 Logout</button></li>
+    </ul>
+  </div>  <!-- Sidebar Always-visible Mining Button -->  <div class="sidebar">
     <button id="mine-btn">⛏ Start Mining</button>
-  </div>
-    <li><a href="profile.html">👤 Profile</a></li>
-    <li><a href="invite.html">👥 Referrals</a></li>
-    <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
-    <li><a href="settings.html">⚙ Settings</a></li>
-    <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
-    <li><button id="logout-btn">🚪 Logout</button></li>
-  </ul>
-  </div>  <!-- 📦 Main -->  <div class="main-content fade-in">
+  </div>  <!-- Main Content -->  <div class="main-content fade-in">
+    <!-- Announcement -->
     <div id="announcement-box" class="announcement-banner">
-      📢 EANO Network App and other cool features coming soon!
+      <p id="latest-announcement">📢 EANO Network App and other cool features coming soon!</p>
     </div><div style="margin-top: 10px;">
   <a href="invite.html" class="team-referral-btn">👥 Team</a>
 </div>
 
+<!-- Referral Info -->
 <div id="referral-info" class="mt-4">
   <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
   <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
   <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
 </div>
 
-  </div>  <!-- Coming Soon Box -->  <div class="coming-soon-box">Coming Soon Loading...</div>  <!-- 🔌 Scripts -->  <script src="firebase.js"></script>  <script src="auth.js"></script>  <script src="ui.js?v=4"></script>  <script src="lang.js"></script>  <script src="settings.js"></script>  <script type="module" src="install.js?v=4"></script>  <!-- Section placeholder -->  <script>
-    function showSection(section) {
-      alert(`${section} coming soon!`);
-    }
-  </script>  <!-- Dark/Light Toggle -->  <script>
+  </div>  <!-- Coming Soon Placeholder -->  <div class="coming-soon-box">Coming Soon Loading...</div>  <!-- Scripts -->  <script type="module" src="firebase.js"></script>  <script type="module" src="auth.js"></script>  <script type="module" src="dashboard.js?v=5"></script>  <script type="module" src="ui.js?v=5"></script>  <script type="module" src="lang.js?v=5"></script>  <script type="module" src="settings.js"></script>  <script type="module" src="install.js?v=5"></script>  <!-- Dark/Light Mode Toggle -->  <script>
     document.getElementById('dark-toggle')?.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
       document.body.classList.toggle('dark-mode');
     });
-  </script>  <!-- Menu Toggle Logic -->  <script>
-    const menuToggle = document.getElementById("menu-toggle");
-    const menu = document.getElementById("menu");
-
-    menuToggle?.addEventListener("click", () => {
-      menu.classList.toggle("open");
-      document.body.classList.toggle("menu-open");
+  </script>  <!-- Sidebar Menu Toggle -->  <script>
+    const toggleBtn = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("sidebar-menu");
+    toggleBtn?.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
     });
-
-    menu?.querySelectorAll("a, button").forEach((el) => {
+    sidebar?.querySelectorAll("a, button").forEach((el) => {
       el.addEventListener("click", () => {
-        menu.classList.remove("open");
-        document.body.classList.remove("menu-open");
+        sidebar.classList.remove("open");
       });
     });
   </script>  <!-- Service Worker -->  <script>
