@@ -1,108 +1,186 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>EANO Miner Login</title>
-  <link rel="stylesheet" href="style.css"> <!-- Optional custom styles -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to EANO</title>
+  <style>
+    :root {
+      --bg-color: #000;
+      --text-color: #fff;
+      --accent-color: gold;
+    }
+    [data-theme="light"] {
+      --bg-color: #fff;
+      --text-color: #000;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      border: 1px solid var(--accent-color);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+      color: var(--accent-color);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--accent-color);
+      background: transparent;
+      color: var(--text-color);
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--accent-color);
+      color: black;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .toggle-section {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      color: var(--accent-color);
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    select, .toggle-theme {
+      background: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--accent-color);
+      padding: 5px;
+    }
+  </style>
 </head>
 <body>
-  <div id="auth-container">
-    <h1>🪙 EANO Coin Miner</h1>
-
-    <div id="form-toggle">
-      <button onclick="showLogin()">Login</button>
-      <button onclick="showSignup()">Signup</button>
-    </div>
-
-    <form id="login-form" style="display: none;">
-      <h2>Login</h2>
-      <input type="email" id="login-email" placeholder="Email" required>
-      <input type="password" id="login-password" placeholder="Password" required>
-      <button type="submit">Login</button>
+  <div class="top-bar">
+    <select id="language">
+      <option value="en">English</option>
+      <option value="ig">Igbo</option>
+      <option value="fr">French</option>
+    </select>
+    <button class="toggle-theme" onclick="toggleTheme()">🌙/☀️</button>
+  </div>  <h2>Welcome to EANO</h2>
+  <div class="container">
+    <form id="authForm">
+      <div id="signupFields">
+        <div class="form-group">
+          <input type="text" id="firstName" placeholder="First Name" required />
+        </div>
+        <div class="form-group">
+          <input type="text" id="lastName" placeholder="Last Name" required />
+        </div>
+        <div class="form-group">
+          <input type="email" id="email" placeholder="Email" required />
+        </div>
+        <div class="form-group">
+          <input type="text" id="username" placeholder="Username" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password" required />
+      </div>
+      <div class="form-group">
+        <input type="text" id="referral" placeholder="Referral Code (Optional)" />
+      </div>
+      <button type="submit" id="submitBtn">Sign Up</button>
+      <div style="margin-top: 10px; text-align: center;">
+        <button type="button" onclick="googleSignIn()">Sign in with Google</button>
+      </div>
+      <div class="toggle-section" onclick="toggleMode()">Switch to Login</div>
     </form>
+  </div>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-mining.firebaseapp.com",
+      projectId: "eano-mining",
+      appId: "1:455360700303:web:authpageonly"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    <form id="signup-form" style="display: none;">
-      <h2>Create Account</h2>
-      <input type="text" id="signup-username" placeholder="Username" required>
-      <input type="email" id="signup-email" placeholder="Email" required>
-      <input type="password" id="signup-password" placeholder="Password" required>
-      <button type="submit">Sign Up</button>
-    </form>
+    const isLogin = () => document.getElementById('submitBtn').innerText === 'Login';
 
-    <p id="auth-message"></p>
-  </div>
+    function toggleMode() {
+      const signupFields = document.getElementById('signupFields');
+      const submitBtn = document.getElementById('submitBtn');
+      const toggleText = document.querySelector('.toggle-section');
+      if (isLogin()) {
+        signupFields.style.display = 'block';
+        submitBtn.innerText = 'Sign Up';
+        toggleText.innerText = 'Switch to Login';
+      } else {
+        signupFields.style.display = 'none';
+        submitBtn.innerText = 'Login';
+        toggleText.innerText = 'Switch to Sign Up';
+      }
+    }
 
-  <!-- Firebase App & Auth -->
-  <script type="module">
-    import { auth, db } from './firebase.js';
-    import {
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
 
-    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    const authMsg = document.getElementById('auth-message');
-
-    // Handle Login
-    loginForm.addEventListener('submit', async (e) => {
+    document.getElementById('authForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        authMsg.textContent = "✅ Login successful!";
-        window.location.href = 'dashboard.html'; // Redirect to miner dashboard
-      } catch (error) {
-        authMsg.textContent = `❌ ${error.message}`;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (isLogin()) {
+        try {
+          await auth.signInWithEmailAndPassword(email, password);
+          window.location.href = 'dashboard.html';
+        } catch (error) {
+          alert(error.message);
+        }
+      } else {
+        try {
+          await auth.createUserWithEmailAndPassword(email, password);
+          // Save extra info like name/referral in Firestore later
+          window.location.href = 'dashboard.html';
+        } catch (error) {
+          alert(error.message);
+        }
       }
     });
 
-    // Handle Signup
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('signup-username').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
+    function googleSignIn() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => {
+          window.location.href = 'dashboard.html';
+        })
+        .catch(error => alert(error.message));
+    }
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+    // Detect referral from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('ref')) {
+      document.getElementById('referral').value = urlParams.get('ref');
+    }
 
-        // Create Firestore miner entry
-        const minerRef = doc(db, 'miners', user.uid);
-        await setDoc(minerRef, {
-          username: username,
-          email: email,
-          score: 5,
-          trustScore: 5,
-          createdAt: new Date()
-        });
-
-        authMsg.textContent = "✅ Account created!";
+    // Check auth state
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
         window.location.href = 'dashboard.html';
-      } catch (error) {
-        authMsg.textContent = `❌ ${error.message}`;
       }
     });
-
-    // Toggle Forms
-    window.showLogin = () => {
-      loginForm.style.display = 'block';
-      signupForm.style.display = 'none';
-    };
-
-    window.showSignup = () => {
-      loginForm.style.display = 'none';
-      signupForm.style.display = 'block';
-    };
-
-    // Default to login
-    showLogin();
-  </script>
-</body>
+  </script></body>
 </html>
