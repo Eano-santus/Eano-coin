@@ -128,7 +128,7 @@ body::before {
 
 /* ==== Main Content ==== */
 .main-content {
-  margin-top: 80px;
+  margin-center: 80px;
   padding: 16px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
