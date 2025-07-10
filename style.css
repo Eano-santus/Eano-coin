@@ -1,4 +1,4 @@
-/* ==== Global & Base ==== */
+/* ==== Global & Background ==== */
 html, body {
   margin: 0;
   padding: 0;
@@ -6,237 +6,216 @@ html, body {
   background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
   background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-position: center top;
-  color: #f5f5f5;
-  min-height: 100vh;
+  color: #fff;
+  height: 100vh;
   overflow-x: hidden;
-  position: relative;
 }
 
-/* ==== Overlay ==== */
+/* ==== Overlay Dark Layer for Contrast ==== */
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   z-index: -1;
 }
 
 /* ==== Topbar ==== */
 .topbar {
-  height: 60px;
-  background: rgba(0, 0, 0, 0.75);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.85);
   color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  z-index: 1000;
 }
 
-/* ==== Sidebar ==== */
+.brand {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+/* ==== Language & Toggle Controls ==== */
+.topbar select,
+#dark-toggle {
+  background: #222;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* ==== Sidebar Menu ==== */
+#menu-toggle {
+  position: fixed;
+  top: 70px;
+  left: 10px;
+  z-index: 1001;
+  background: #ffd700;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #000;
+  font-weight: bold;
+}
+
 #sidebar-menu {
   position: fixed;
   top: 0;
   left: -260px;
-  width: 250px;
+  width: 240px;
   height: 100%;
   background-color: #1c1c1c;
-  color: white;
   padding: 20px;
-  transition: left 0.3s ease;
   z-index: 999;
-  box-shadow: 2px 0 10px rgba(255, 215, 0, 0.3);
+  transition: left 0.3s ease;
 }
+
 #sidebar-menu.open {
   left: 0;
 }
+
 #sidebar-menu ul {
   list-style: none;
   padding: 0;
-  margin-top: 40px;
+  margin-top: 60px;
 }
+
 #sidebar-menu li {
   margin-bottom: 16px;
 }
+
 #sidebar-menu a, #sidebar-menu button {
   color: #ffd700;
   text-decoration: none;
   font-size: 16px;
+  display: block;
   background: none;
   border: none;
-  display: block;
   width: 100%;
   text-align: left;
-  padding: 0;
-  font-family: inherit;
 }
 
-/* ==== Mine Button ==== */
-#mine-btn {
-  background: linear-gradient(45deg, gold, orange);
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 600;
-  color: #000;
-  box-shadow: 0 0 10px gold;
-  margin-bottom: 10px;
-  animation: glow 1.5s infinite alternate;
+/* ==== Sidebar Mining Button ==== */
+.sidebar {
+  position: fixed;
+  left: 10px;
+  top: 140px;
+  z-index: 998;
 }
+
+#mine-btn {
+  background: linear-gradient(to right, gold, orange);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-weight: bold;
+  box-shadow: 0 0 12px gold;
+  animation: glow 1.2s ease-in-out infinite alternate;
+}
+
 @keyframes glow {
-  0% { box-shadow: 0 0 5px gold; }
-  100% { box-shadow: 0 0 20px gold; }
+  from { box-shadow: 0 0 5px gold; }
+  to { box-shadow: 0 0 20px gold; }
 }
 
 /* ==== Main Content ==== */
 .main-content {
-  margin-top: 70px;
-  padding: 15px;
-  z-index: 1;
-  position: relative;
-  background: rgba(0, 0, 0, 0.65);
+  margin-top: 80px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  margin-left: 10px;
-  margin-right: 10px;
   color: #fff;
+  margin-bottom: 100px;
 }
 
-/* ==== Leaderboard List ==== */
-.leaderboard-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 10px;
-  padding: 0.8rem;
-  margin-bottom: 10px;
-  color: #fff;
-  transition: transform 0.2s ease;
-}
-.leaderboard-item:hover {
-  transform: scale(1.02);
-}
-
-/* ==== Buttons ==== */
-.btn-gold {
-  background: gold;
-  color: #000;
-  font-weight: 600;
-  border-radius: 10px;
-  padding: 8px 14px;
-  border: none;
-}
-.btn-logout {
-  background: transparent;
-  border: 1px solid #dc3545;
-  color: #dc3545;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-/* ==== Announcement ==== */
+/* ==== Announcement Box ==== */
 #announcement-box {
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
   padding: 1rem;
+  border: 1px solid #ffd700;
+  border-radius: 10px;
   text-align: center;
-  border-radius: 12px;
-  margin: 1rem auto;
+  font-size: 14px;
   max-width: 90%;
-  font-size: 1rem;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  margin: 0 auto 20px;
 }
 
 /* ==== Referral Info ==== */
 #referral-info {
   margin-top: 20px;
-  line-height: 1.8;
+  line-height: 1.7;
+  font-size: 15px;
 }
 
-/* ==== Theme Modes ==== */
-.light-mode {
-  background-color: #f3f3f3;
-  color: #000;
-}
-.light-mode .topbar,
-.light-mode .main-content,
-.light-mode #sidebar-menu {
-  background-color: rgba(255, 255, 255, 0.95);
-  color: #000;
-}
-.light-mode .leaderboard-item {
-  background: #fff;
-  color: #000;
-}
-.dark-mode {
-  background-color: #111;
+/* ==== Referral Button ==== */
+.team-referral-btn {
+  display: block;
+  background: #28a745;
   color: #fff;
-}
-.dark-mode .topbar,
-.dark-mode .main-content,
-.dark-mode #sidebar-menu {
-  background-color: rgba(0, 0, 0, 0.85);
-  color: #fff;
+  padding: 10px;
+  margin: 0 auto 1rem;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  width: 90%;
+  font-weight: bold;
 }
 
-/* ==== Fade Animations ==== */
+/* ==== Logout ==== */
+#logout-btn {
+  border: 1px solid red;
+  background: transparent;
+  color: red;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* ==== Fade In Animation ==== */
 .fade-in {
   animation: fadeIn 0.6s ease-in-out;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ==== Coming Soon ==== */
-.coming-soon-block {
-  width: 280px;
-  height: 280px;
-  background: #fff5cc;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #444;
-  margin: 100px auto 0;
-  text-align: center;
-  z-index: 5;
-}
-
 /* ==== Responsive ==== */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .topbar {
     flex-direction: column;
     height: auto;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    padding: 10px;
     text-align: center;
+    gap: 5px;
+  }
+
+  .sidebar {
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .main-content {
-    margin-top: 130px;
+    margin-top: 140px;
     padding: 1rem;
   }
 
   #announcement-box {
-    position: fixed;
-    top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    z-index: 1000;
+    font-size: 15px;
+    padding: 1rem;
+    width: 95%;
+  }
+
+  #menu-toggle {
+    top: 65px;
+    right: 10px;
   }
 }
