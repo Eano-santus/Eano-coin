@@ -1,70 +1,94 @@
-// ✅ Import Firebase Modules
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+// auth.js
+import { auth, db } from "./firebase.js";
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  setPersistence,
-  browserLocalPersistence
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
 import {
-  getFirestore,
   doc,
   setDoc,
-  getDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs
+  getDoc
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// 🔐 Firebase Config
-const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "eano-miner.firebaseapp.com",
-  projectId: "eano-miner",
-  storageBucket: "eano-miner.appspot.com",
-  messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-  measurementId: "G-NS0W6QSS69"
-};
-
-// ✅ Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-
-// ✅ Keep users logged in like Pi Network
-setPersistence(auth, browserLocalPersistence);
-
-// ✅ Handle Google Sign-in
+const signupBtn = document.getElementById("signup-btn");
+const loginBtn = document.getElementById("login-btn");
 const googleBtn = document.getElementById("google-signin");
-if (googleBtn) {
-  googleBtn.addEventListener("click", async () => {
+
+// ✅ SIGN UP
+if (signupBtn) {
+  signupBtn.addEventListener("click", async () => {
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value.trim();
+    const username = document.getElementById("signup-username").value.trim();
+    const firstname = document.getElementById("signup-firstname").value.trim();
+    const lastname = document.getElementById("signup-lastname").value.trim();
+
+    if (username.length < 4 || password.length < 6) {
+      alert("Username or password too short.");
+      return;
+    }
+
     try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) {
-        await auth.signOut();
-        alert("❌ Access denied. This Google account is not registered.");
-        return;
-      }
-
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "users", cred.user.uid), {
+        email,
+        username,
+        firstname,
+        lastname,
+        balance: 2,
+        referralCount: 0,
+        trustScore: 0,
+        lastMine: null,
+        createdAt: new Date()
+      });
+      localStorage.setItem("seenWelcome", "true");
       window.location.href = "dashboard.html";
     } catch (err) {
-      console.error("Google sign-in error:", err);
-      alert("Google sign-in failed.");
+      alert("❌ " + err.message);
     }
   });
 }
 
-// ✅ Export for use in other files
-export { auth, db };
+// ✅ LOGIN
+if (loginBtn) {
+  loginBtn.addEventListener("click", async () => {
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value.trim();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("seenWelcome", "true");
+      window.location.href = "dashboard.html";
+    } catch (err) {
+      alert("❌ " + err.message);
+    }
+  });
+}
+
+// ✅ GOOGLE LOGIN
+if (googleBtn) {
+  googleBtn.addEventListener("click", async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const userDoc = await getDoc(doc(db, "users", result.user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, "users", result.user.uid), {
+          email: result.user.email,
+          username: result.user.displayName || "eano_user",
+          balance: 2,
+          referralCount: 0,
+          trustScore: 0,
+          lastMine: null,
+          createdAt: new Date()
+        });
+      }
+      localStorage.setItem("seenWelcome", "true");
+      window.location.href = "dashboard.html";
+    } catch (err) {
+      alert("❌ Google login failed: " + err.message);
+    }
+  });
+}
