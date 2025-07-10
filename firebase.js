@@ -2,7 +2,7 @@
 
 // ✅ Import Firebase v10.12.2 CDN Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { getAnalytics, isSupported as isAnalyticsSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -29,7 +29,12 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const performance = getPerformance(app);
 
-// ✅ Initialize Optional Services (Analytics + Messaging)
+// ✅ Persistent login like Pi Network (important!)
+setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.warn("Persistence error:", error.message);
+});
+
+// ✅ Initialize Optional Services (Analytics & Messaging)
 let analytics = null;
 let messaging = null;
 
@@ -45,13 +50,13 @@ isMessagingSupported().then((supported) => {
   }
 });
 
-// ✅ Export Firebase services for use across your app
+// ✅ Export all services for app-wide usage
 export {
   app,
   auth,
   db,
   storage,
-  performance,
   analytics,
-  messaging
+  messaging,
+  performance
 };
