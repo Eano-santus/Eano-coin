@@ -30,16 +30,20 @@
       </select>
       <button id="dark-toggle" title="Toggle Dark Mode">🌗</button>
     </div>
-  </div>  <!-- ☰ Hamburger -->  <div id="menu-toggle">☰ Menu</div>  <!-- 📍 Slide-Out Menu -->  <div id="menu" class="menu">
-    <ul>
-      <li><a href="#" onclick="showSection('profile')">👤 Profile</a></li>
-      <li><a href="#" onclick="showSection('referrals')">👥 Referrals</a></li>
-      <li><a href="#" onclick="showSection('leaderboard')">🏆 Leaderboard</a></li>
-      <li><a href="#" onclick="showSection('settings')">⚙️ Settings</a></li>
-      <li><a href="#" onclick="showSection('whitepaper')">📄 WhitePaper</a></li>
-      <li><a href="https://t.me/eanocoin" target="_blank">🛠 Support Portal</a></li>
-      <li><button id="logout-btn">🚪 Logout</button></li>
-    </ul>
+  <!-- Sidebar Toggle -->
+<button id="menu-toggle">☰ Menu</button>
+
+<!-- Sidebar Menu -->
+<div id="sidebar-menu">
+  <ul>
+    <li><a href="profile.html">👤 Profile</a></li>
+    <li><a href="invite.html">👥 Referrals</a></li>
+    <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
+    <li><a href="settings.html">⚙ Settings</a></li>
+    <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
+    <li><button id="logout-btn">🚪 Logout</button></li>
+  </ul>
+</div>
   <!-- ⛏ Mining Button (outside menu, always visible) -->
   <div class="sidebar">
     <button id="mine-btn">⛏ Start Mining</button>
