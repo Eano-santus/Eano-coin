@@ -4,12 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome to EANO</title>
-  <script>
-  if (localStorage.getItem("seenWelcome") === "yes") {
-  window.location.href = "index.html";
-}
-    <script>
-    <head>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
@@ -21,6 +15,7 @@
       overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
       color: #fff;
+      background: #000;
     }
 
     .video-bg {
@@ -42,7 +37,7 @@
       align-items: center;
       text-align: center;
       padding: 2rem;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.4);
     }
 
     h1 {
@@ -51,19 +46,6 @@
       color: gold;
       text-shadow: 0 0 10px #fff, 0 0 20px #e4d800;
       animation: fadeInDown 1.5s ease-out;
-    }
-
-    .carousel {
-      max-width: 400px;
-      margin-top: 2rem;
-    }
-
-    .carousel-item {
-      font-size: 1.2rem;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
     }
 
     .btn-get-started {
@@ -110,61 +92,45 @@
       h1 {
         font-size: 2.2rem;
       }
-      .carousel {
-        width: 100%;
-      }
     }
   </style>
 </head>
 <body>
 
-  <!-- 🎥 Background Video -->
-  <video autoplay muted loop class="video-bg">
-    <source src="https://cdn.coverr.co/videos/coverr-abstract-light-wave-2761/1080p.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+<!-- 🎥 Futuristic Background Video -->
+<video autoplay muted loop class="video-bg">
+  <source src="https://cdn.coverr.co/videos/coverr-digital-circuit-1109/1080p.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
-  <!-- 🔊 Background Audio -->
-  <audio autoplay loop>
-    <source src="https://cdn.pixabay.com/audio/2023/06/19/audio_3474c3f78b.mp3" type="audio/mp3">
-    Your browser does not support the audio element.
-  </audio>
+<!-- 🎙️ Voiceover Audio -->
+<audio autoplay>
+  <source src="https://cdn.pixabay.com/download/audio/2023/07/07/audio_dfe933f580.mp3?filename=ai-futuristic-promo-male-voice-146121.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 
-  <!-- 🛑 Skip Button -->
-  <button class="skip-btn" onclick="skipIntro()">Skip Intro</button>
+<!-- ⏭️ Skip Button -->
+<button class="skip-btn" onclick="startApp()">Skip</button>
 
-  <!-- 💬 Welcome Content -->
-  <div class="welcome-content">
-    <h1>Welcome to EANO</h1>
+<!-- 💬 Welcome Content -->
+<div class="welcome-content">
+  <h1>Welcome to EANO Project</h1>
+  <button class="btn-get-started" onclick="startApp()">🚀 Get Started</button>
+</div>
 
-    <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-      <div class="carousel-inner">
-        <div class="carousel-item active">🔐 Secure mining wallet for everyone.</div>
-        <div class="carousel-item">🤝 Invite and earn EANO passively.</div>
-        <div class="carousel-item">🏆 Build trust and level up daily.</div>
-        <div class="carousel-item">🌍 Multi-language & Africa-first vision.</div>
-      </div>
-    </div>
+<!-- 🧠 Redirect Script -->
+<script>
+  function startApp() {
+    localStorage.setItem("seenWelcome", "yes");
+    window.location.href = "index.html";
+  }
 
-    <button class="btn-get-started" onclick="startApp()">🚀 Get Started</button>
-  </div>
+  // Auto-redirect if already seen
+  if (localStorage.getItem("seenWelcome") === "yes") {
+    window.location.href = "index.html";
+  }
+</script>
 
-  <!-- 🧠 Script -->
-  <script>
-    function startApp() {
-      localStorage.setItem("seenWelcome", "yes");
-      window.location.href = "index.html";
-    }
-
-    function skipIntro() {
-      startApp();
-    }
-
-    if (localStorage.getItem("seenWelcome") === "yes") {
-      window.location.href = "index.html";
-    }
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
