@@ -96,6 +96,18 @@
       background: rgba(255,255,255,0.4);
     }
 
+    .language-select {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 100;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      border-radius: 8px;
+      padding: 0.2rem 0.6rem;
+    }
+
     @keyframes fadeInDown {
       from { opacity: 0; transform: translateY(-50px); }
       to { opacity: 1; transform: translateY(0); }
@@ -113,14 +125,24 @@
 </head>
 <body>
 
+  <!-- 🌍 Language Selector -->
+  <select id="languageSelect" class="language-select" onchange="changeLanguage(this.value)">
+    <option value="en">English</option>
+    <option value="ig">Igbo</option>
+    <option value="fr">French</option>
+    <option value="es">Spanish</option>
+    <option value="sw">Swahili</option>
+    <option value="pidgin">pidgin</option>
+  </select>
+
   <!-- 🎥 Background Video -->
   <video autoplay muted loop class="video-bg">
     <source src="https://cdn.coverr.co/videos/coverr-abstract-light-wave-2761/1080p.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
-  <!-- 🔊 Voice Audio (EANO Vision) -->
-  <audio autoplay>
+  <!-- 🔊 Voice Audio (with fade-in) -->
+  <audio id="eanoAudio" autoplay>
     <source src="https://limewire.com/d/NZffA#kxkj9YBe9r" type="audio/mp3">
     Your browser does not support the audio element.
   </audio>
@@ -130,23 +152,103 @@
 
   <!-- 💬 Welcome Content -->
   <div class="welcome-content">
-    <h1>Welcome to EANO</h1>
+    <h1 id="welcomeTitle">Welcome to EANO</h1>
 
     <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
-      <div class="carousel-inner">
-        <div class="carousel-item active">🌐 A decentralized system of freedom and fairness.</div>
-        <div class="carousel-item">🧠 Built on trust, innovation, and your reputation.</div>
-        <div class="carousel-item">🎮 Mine, play, connect and grow.</div>
-        <div class="carousel-item">📈 Earn value through time, effort and skill.</div>
-        <div class="carousel-item">🚀 Rise through the ranks in the world of EANO.</div>
+      <div class="carousel-inner" id="carouselItems">
+        <!-- Carousel items inserted dynamically -->
       </div>
     </div>
 
-    <button class="btn-get-started" onclick="startApp()">🚀 Get Started</button>
+    <button class="btn-get-started" onclick="startApp()">🚀 <span id="getStartedText">Get Started</span></button>
   </div>
 
   <!-- 🧠 Logic -->
   <script>
+    const translations = {
+      en: {
+        welcome: "Welcome to EANO",
+        getStarted: "Get Started",
+        features: [
+          "🌐 A decentralized system of freedom and fairness.",
+          "🧠 Built on trust, innovation, and your reputation.",
+          "🎮 Mine, play, connect and grow.",
+          "📈 Earn value through time, effort and skill.",
+          "🚀 Rise through the ranks in the world of EANO."
+        ]
+      },
+      ig: {
+        welcome: "Nnọọ na EANO",
+        getStarted: "Malite Ugbu a",
+        features: [
+          "🌐 Sistemụ kwụụrụ onwe ya na nnwere onwe na ịdị mma.",
+          "🧠 E wuru ya na ntụkwasị obi, ọhụụ na aha ọma.",
+          "🎮 Wụọ, kpọọ egwuregwu, jikọọ na eto eto.",
+          "📈 Nweta uru site n’oge, mgbalị na nka.",
+          "🚀 Gbagoo elu n’ụwa EANO."
+        ]
+      },
+      fr: {
+        welcome: "Bienvenue à EANO",
+        getStarted: "Commencer",
+        features: [
+          "🌐 Un système décentralisé de liberté et d'équité.",
+          "🧠 Basé sur la confiance, l'innovation et votre réputation.",
+          "🎮 Minez, jouez, connectez et développez.",
+          "📈 Gagnez en valeur par le temps, l'effort et les compétences.",
+          "🚀 Montez en grade dans le monde de EANO."
+        ]
+      },
+      es: {
+        welcome: "Bienvenido a EANO",
+        getStarted: "Comenzar",
+        features: [
+          "🌐 Un sistema descentralizado de libertad y equidad.",
+          "🧠 Construido sobre la confianza, la innovación y tu reputación.",
+          "🎮 Mina, juega, conecta y crece.",
+          "📈 Gana valor con tiempo, esfuerzo y habilidad.",
+          "🚀 Asciende en el mundo de EANO."
+        ]
+      },
+      sw: {
+        welcome: "Karibu EANO",
+        getStarted: "Anza Sasa",
+        features: [
+          "🌐 Mfumo wa uhuru na haki usio wa kati.",
+          "🧠 Umejengwa kwa uaminifu, ubunifu, na sifa yako.",
+          "🎮 Chimba, cheza, unganika na ukuaji.",
+          "📈 Pata thamani kupitia muda, bidii, na ujuzi.",
+          "🚀 Panda hadhi katika dunia ya EANO."
+        ]
+      }
+  pidgin: {
+    welcome: "Welcome to EANO",
+    getStarted: "Make We Start",
+    features: [
+      "🌐 Na freedom and fairness full this decentralized system.",
+      "🧠 E base on trust, better idea, and your name.",
+      "🎮 Mine, play, connect and grow steady.",
+      "📈 Earn value as you use your time, try well and sabi.",
+      "🚀 Climb level for EANO world as you dey shine."
+    ]
+  }
+    };
+
+    function changeLanguage(lang) {
+      const t = translations[lang] || translations["en"];
+      document.getElementById("welcomeTitle").textContent = t.welcome;
+      document.getElementById("getStartedText").textContent = t.getStarted;
+
+      const carousel = document.getElementById("carouselItems");
+      carousel.innerHTML = "";
+      t.features.forEach((text, index) => {
+        const div = document.createElement("div");
+        div.className = "carousel-item" + (index === 0 ? " active" : "");
+        div.textContent = text;
+        carousel.appendChild(div);
+      });
+    }
+
     function startApp() {
       localStorage.setItem("seenWelcome", "yes");
       window.location.href = "index.html";
@@ -159,6 +261,22 @@
     if (localStorage.getItem("seenWelcome") === "yes") {
       window.location.href = "index.html";
     }
+
+    // Detect browser language
+    const userLang = navigator.language.slice(0, 2);
+    document.getElementById("languageSelect").value = translations[userLang] ? userLang : "en";
+    changeLanguage(document.getElementById("languageSelect").value);
+
+    // 🎵 Fade-in audio
+    const audio = document.getElementById('eanoAudio');
+    audio.volume = 0;
+    const fadeInterval = setInterval(() => {
+      if (audio.volume < 1) {
+        audio.volume = Math.min(audio.volume + 0.05, 1);
+      } else {
+        clearInterval(fadeInterval);
+      }
+    }, 200);
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
