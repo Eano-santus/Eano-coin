@@ -151,7 +151,7 @@ body::before {
 /* ==== Referral Info ==== */
 #referral-info {
   margin-top: 20px;
-  line-height: 1.7;
+  line-height: 1.3;
   font-size: 15px;
 }
 
@@ -210,12 +210,13 @@ body::before {
 
   #announcement-box {
     font-size: 15px;
-    padding: 1rem;
-    width: 95%;
+    padding: 5rem;
+    width: 105%;
+    position: center 
   }
 
   #menu-toggle {
-    top: 65px;
+    down: 65px;
     right: 10px;
   }
 }
