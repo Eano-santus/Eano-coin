@@ -1,6 +1,5 @@
 // firebase.js
 
-// ✅ Import Firebase v10.12.2 CDN Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -9,7 +8,6 @@ import { getAnalytics, isSupported as isAnalyticsSupported } from "https://www.g
 import { getMessaging, isSupported as isMessagingSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 import { getPerformance } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-performance.js";
 
-// ✅ EANO Miner Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
@@ -20,21 +18,16 @@ const firebaseConfig = {
   measurementId: "G-NS0W6QSS69"
 };
 
-// ✅ Initialize Firebase App
 const app = initializeApp(firebaseConfig);
-
-// ✅ Initialize Core Services
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const performance = getPerformance(app);
 
-// ✅ Persistent login like Pi Network (important!)
 setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.warn("Persistence error:", error.message);
 });
 
-// ✅ Initialize Optional Services (Analytics & Messaging)
 let analytics = null;
 let messaging = null;
 
@@ -50,7 +43,6 @@ isMessagingSupported().then((supported) => {
   }
 });
 
-// ✅ Export all services for app-wide usage
 export {
   app,
   auth,
