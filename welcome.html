@@ -43,7 +43,7 @@
       font-size: 3rem;
       font-weight: bold;
       color: gold;
-      text-shadow: 0 0 10px #fff, 0 0 20px #eano;
+      text-shadow: 0 0 10px #fff, 0 0 20px #e4d800;
       animation: fadeInDown 1.5s ease-out;
     }
 
@@ -77,6 +77,24 @@
       transform: scale(1.05);
     }
 
+    .skip-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.4rem 1rem;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    .skip-btn:hover {
+      background: rgba(255,255,255,0.4);
+    }
+
     @keyframes fadeInDown {
       from { opacity: 0; transform: translateY(-50px); }
       to { opacity: 1; transform: translateY(0); }
@@ -106,39 +124,36 @@
     Your browser does not support the audio element.
   </audio>
 
-  <!-- 💬 Welcome Message & Carousel -->
+  <!-- 🛑 Skip Button -->
+  <button class="skip-btn" onclick="skipIntro()">Skip Intro</button>
+
+  <!-- 💬 Welcome Content -->
   <div class="welcome-content">
     <h1>Welcome to EANO</h1>
 
-    <!-- 🧭 Feature Carousel -->
     <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
       <div class="carousel-inner">
-        <div class="carousel-item active">
-          🔐 Secure mining wallet for everyone.
-        </div>
-        <div class="carousel-item">
-          🤝 Invite and earn EANO passively.
-        </div>
-        <div class="carousel-item">
-          🏆 Build trust and level up daily.
-        </div>
-        <div class="carousel-item">
-          🌍 Multi-language & Africa-first vision.
-        </div>
+        <div class="carousel-item active">🔐 Secure mining wallet for everyone.</div>
+        <div class="carousel-item">🤝 Invite and earn EANO passively.</div>
+        <div class="carousel-item">🏆 Build trust and level up daily.</div>
+        <div class="carousel-item">🌍 Multi-language & Africa-first vision.</div>
       </div>
     </div>
 
-    <!-- 🚀 Get Started Button -->
     <button class="btn-get-started" onclick="startApp()">🚀 Get Started</button>
   </div>
 
+  <!-- 🧠 Script -->
   <script>
     function startApp() {
       localStorage.setItem("seenWelcome", "yes");
       window.location.href = "index.html";
     }
 
-    // If already seen, skip
+    function skipIntro() {
+      startApp();
+    }
+
     if (localStorage.getItem("seenWelcome") === "yes") {
       window.location.href = "index.html";
     }
