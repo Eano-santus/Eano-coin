@@ -1,44 +1,140 @@
-// dashboard.js (Final Updated Version)
+// dashboard.js
+import {
+  auth,
+  db
+} from "./firebase.js";
 
-import { auth, db } from "./firebase.js"; import { doc, getDoc, updateDoc, serverTimestamp, collection, query, where, getDocs, } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; import { updateBalanceUI, updateTimerUI, updateReferralCountUI, getLevelFromBalance, getTrustBadge, showAnnouncement, } from "./ui.js"; import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-let miningRatePerHour = 0.6; const miningInterval = 24 * 60 * 60 * 1000; // 24 hours
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Get user and setup dashboard onAuthStateChanged(auth, async (user) => { if (!user) return (window.location.href = "index.html");
+import {
+  updateBalanceUI,
+  updateTimerUI,
+  updateUserEmailUI,
+  updateReferralCountUI,
+  getLevelFromBalance,
+  getTrustBadge,
+  showAnnouncement
+} from "./ui.js";
 
-const userRef = doc(db, "users", user.uid); const snap = await getDoc(userRef); if (!snap.exists()) return;
+// ✅ Constants
+const MINE_RATE = 0.6; // EANO per hour
 
-const data = snap.data(); const balance = data.balance || 0; const lastMine = data.lastMine?.toMillis?.() || 0; const now = Date.now(); const canMine = now - lastMine >= miningInterval;
+// ✅ Mining elements
+const mineBtn = document.getElementById("mine-btn");
+const logoutBtn = document.getElementById("logout-btn");
+const referralEl = document.getElementById("referral-count");
+const levelEl = document.getElementById("mining-level");
+const trustEl = document.getElementById("trust-score");
 
-updateBalanceUI(balance); updateReferralCount(user.uid); updateMiningLevel(balance); updateTrustBadge(data.trustScore || 0);
+// ✅ Check login state
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
 
-if (!canMine) { const remaining = Math.floor((miningInterval - (now - lastMine)) / 1000); updateTimerUI(remaining); startTimer(remaining); disableMiningButton(); }
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
 
-fetchAnnouncement(); });
+  if (!snap.exists()) {
+    alert("⚠ User not found.");
+    await signOut(auth);
+    window.location.href = "index.html";
+    return;
+  }
 
-// 🧠 Start Mining const mineBtn = document.getElementById("mine-btn"); mineBtn?.addEventListener("click", async () => { const user = auth.currentUser; if (!user) return;
+  const userData = snap.data();
+  const balance = userData.balance || 0;
+  const referrals = userData.referralCount || 0;
+  const trust = userData.trustScore || 0;
+  const lastMine = userData.lastMine?.toMillis?.() || 0;
 
-const userRef = doc(db, "users", user.uid); const snap = await getDoc(userRef); if (!snap.exists()) return;
+  updateUserEmailUI(user.email);
+  updateBalanceUI(balance);
+  updateReferralCountUI(referrals);
+  levelEl.textContent = getLevelFromBalance(balance);
+  trustEl.textContent = `${trust} - ${getTrustBadge(trust)}`;
 
-const data = snap.data(); const lastMine = data.lastMine?.toMillis?.() || 0; const now = Date.now(); if (now - lastMine < miningInterval) return;
+  // Countdown Logic
+  const now = Date.now();
+  const secondsSinceMine = Math.floor((now - lastMine) / 1000);
+  const remaining = Math.max(86400 - secondsSinceMine, 0);
+  updateTimerUI(remaining);
 
-const newBalance = (data.balance || 0) + miningRatePerHour; const newTrust = (data.trustScore || 0) + 1;
+  if (remaining > 0) {
+    mineBtn.disabled = true;
+    mineBtn.textContent = "⏳ Come Back Later";
+    let timer = setInterval(() => {
+      const seconds = Math.max(0, Math.floor((86400 - (Date.now() - lastMine) / 1000)));
+      updateTimerUI(seconds);
+      if (seconds <= 0) {
+        mineBtn.disabled = false;
+        mineBtn.textContent = "⚡ Start Mining";
+        clearInterval(timer);
+      }
+    }, 1000);
+  } else {
+    mineBtn.disabled = false;
+    mineBtn.textContent = "⚡ Start Mining";
+  }
 
-await updateDoc(userRef, { balance: newBalance, trustScore: newTrust, lastMine: serverTimestamp(), });
+  // Announcement (optional Firestore doc)
+  const announceRef = doc(db, "config", "announcement");
+  const annSnap = await getDoc(announceRef);
+  if (annSnap.exists()) {
+    showAnnouncement(annSnap.data().message || "");
+  }
+});
 
-updateBalanceUI(newBalance); updateTrustBadge(newTrust); updateMiningLevel(newBalance); startTimer(miningInterval / 1000); disableMiningButton(); });
+// ✅ Mining click
+if (mineBtn) {
+  mineBtn.addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if (!user) return;
 
-// 🧮 Countdown Timer function startTimer(seconds) { let remaining = seconds; const interval = setInterval(() => { if (remaining <= 0) return clearInterval(interval); updateTimerUI(remaining); remaining--; }, 1000); }
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
 
-function disableMiningButton() { mineBtn.disabled = true; mineBtn.textContent = "⏳ Come back in 24h"; }
+    if (!snap.exists()) return;
 
-function updateMiningLevel(balance) { const el = document.getElementById("level"); if (el) el.textContent = getLevelFromBalance(balance); }
+    const userData = snap.data();
+    const lastMine = userData.lastMine?.toMillis?.() || 0;
+    const now = Date.now();
+    const canMine = now - lastMine >= 86400 * 1000;
 
-function updateTrustBadge(score) { const badgeEl = document.getElementById("trust-badge"); const scoreEl = document.getElementById("trust-score"); if (badgeEl && scoreEl) { badgeEl.textContent = getTrustBadge(score); scoreEl.textContent = score; } }
+    if (!canMine) {
+      alert("⛏ You can only mine once every 24 hours.");
+      return;
+    }
 
-async function updateReferralCount(uid) { const usersRef = collection(db, "users"); const q = query(usersRef, where("referrer", "==", uid)); const snapshot = await getDocs(q); updateReferralCountUI(snapshot.size); }
+    const newBalance = (userData.balance || 0) + MINE_RATE * 24;
 
-// 🔔 Announcement async function fetchAnnouncement() { try { const docRef = doc(db, "config", "announcement"); const snap = await getDoc(docRef); if (snap.exists()) { const data = snap.data(); showAnnouncement(data.message); } } catch (err) { console.error("Announcement fetch error:", err); } }
+    await updateDoc(userRef, {
+      balance: newBalance,
+      lastMine: serverTimestamp()
+    });
 
-// 🔓 Logout const logoutBtn = document.getElementById("logout-btn"); logoutBtn?.addEventListener("click", async () => { await signOut(auth); window.location.href = "index.html"; });
+    updateBalanceUI(newBalance);
+    levelEl.textContent = getLevelFromBalance(newBalance);
+    mineBtn.disabled = true;
+    mineBtn.textContent = "⛏ Mined!";
+  });
+}
 
+// ✅ Logout button
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
+}
