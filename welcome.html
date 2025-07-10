@@ -2,151 +2,148 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome • EANO</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome to EANO</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="style.css?v=5" />
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
+    html, body {
       margin: 0;
       padding: 0;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      height: 100%;
       overflow: hidden;
-    }
-
-    .welcome-container {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 2rem;
-      border-radius: 20px;
-      max-width: 500px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-    }
-
-    .welcome-container h1 {
-      color: gold;
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .welcome-container p {
-      font-size: 1rem;
-      margin-bottom: 2rem;
-      color: #ccc;
-    }
-
-    .btn-start {
-      background: gold;
-      color: #000;
-      border: none;
-      padding: 0.75rem 2rem;
-      font-weight: bold;
-      font-size: 1rem;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .btn-start:hover {
-      background: #ffd700;
-    }
-
-    select,
-    button {
-      margin-top: 1rem;
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 10px;
-      border: none;
-    }
-
-    /* Light mode override */
-    .light-mode {
-      background-color: #f0f0f0 !important;
-      color: #111 !important;
-    }
-
-    .light-mode .welcome-container {
-      background: rgba(255, 255, 255, 0.9);
-      color: #111;
-    }
-
-    .light-mode .btn-start {
-      background: #222;
+      font-family: 'Segoe UI', sans-serif;
       color: #fff;
     }
 
-    .light-mode select {
-      background: #eee;
-      color: #111;
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+      object-fit: cover;
+      filter: brightness(0.6);
     }
 
-    @media (max-width: 500px) {
-      .welcome-container {
-        padding: 1.5rem;
+    .welcome-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: gold;
+      text-shadow: 0 0 10px #fff, 0 0 20px #eano;
+      animation: fadeInDown 1.5s ease-out;
+    }
+
+    .carousel {
+      max-width: 400px;
+      margin-top: 2rem;
+    }
+
+    .carousel-item {
+      font-size: 1.2rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+
+    .btn-get-started {
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(to right, #ffd700, #ff8c00);
+      color: #000;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+      transition: transform 0.2s;
+    }
+
+    .btn-get-started:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      .carousel {
+        width: 100%;
       }
     }
   </style>
 </head>
-<body id="welcome-body">
+<body>
 
-  <div class="welcome-container fade-in">
-    <h1>👋 Welcome to EANO</h1>
-    <p>Your mobile-first crypto experience built for everyday users.</p>
+  <!-- 🎥 Background Video -->
+  <video autoplay muted loop class="video-bg">
+    <source src="https://cdn.coverr.co/videos/coverr-abstract-light-wave-2761/1080p.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
-    <!-- 🌍 Language Selector -->
-    <select id="lang-select">
-      <option value="en">🌍 English</option>
-      <option value="fr">🇫🇷 French</option>
-      <option value="sw">🇰🇪 Swahili</option>
-      <option value="ig">🇳🇬 Igbo</option>
-      <option value="ha">🇳🇬 Hausa</option>
-      <option value="efik">🇳🇬 Efik</option>
-      <option value="pid">🇳🇬 Pidgin</option>
-      <option value="zh">🇨🇳 中文</option>
-    </select>
+  <!-- 🔊 Background Audio -->
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2023/06/19/audio_3474c3f78b.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
 
-    <!-- 🌗 Theme Toggle -->
-    <button id="theme-toggle">🌗 Toggle Light/Dark</button>
+  <!-- 💬 Welcome Message & Carousel -->
+  <div class="welcome-content">
+    <h1>Welcome to EANO</h1>
 
-    <!-- 🚀 Continue Button -->
-    <button class="btn-start" id="get-started">Get Started</button>
+    <!-- 🧭 Feature Carousel -->
+    <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          🔐 Secure mining wallet for everyone.
+        </div>
+        <div class="carousel-item">
+          🤝 Invite and earn EANO passively.
+        </div>
+        <div class="carousel-item">
+          🏆 Build trust and level up daily.
+        </div>
+        <div class="carousel-item">
+          🌍 Multi-language & Africa-first vision.
+        </div>
+      </div>
+    </div>
+
+    <!-- 🚀 Get Started Button -->
+    <button class="btn-get-started" onclick="startApp()">🚀 Get Started</button>
   </div>
 
-  <!-- ✅ Scripts -->
-  <script type="module" src="lang.js?v=5"></script>
-
   <script>
-    document.getElementById("get-started").addEventListener("click", () => {
-      localStorage.setItem("seenWelcome", "true");
+    function startApp() {
+      localStorage.setItem("seenWelcome", "yes");
       window.location.href = "index.html";
-    });
-
-    const themeToggle = document.getElementById("theme-toggle");
-    const body = document.getElementById("welcome-body");
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "light") {
-      body.classList.add("light-mode");
     }
 
-    themeToggle.addEventListener("click", () => {
-      body.classList.toggle("light-mode");
-      const mode = body.classList.contains("light-mode") ? "light" : "dark";
-      localStorage.setItem("theme", mode);
-    });
+    // If already seen, skip
+    if (localStorage.getItem("seenWelcome") === "yes") {
+      window.location.href = "index.html";
+    }
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
