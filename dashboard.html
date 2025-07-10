@@ -1,24 +1,39 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Dashboard</title>
-  <!-- Fonts + Manifest + Theme -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+  <!-- Manifest + Theme -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />  <!-- Google Tag Manager -->  <script>
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Fonts + CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=5" />
+
+  <!-- GTM -->
+  <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
-  </script>  <!-- Styles -->  <link rel="stylesheet" href="style.css?v=5" />
+  </script>
 </head>
-<body class="dashboard">
-  <!-- GTM noscript -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>  <!-- Topbar -->  <div class="topbar">
-    <strong class="brand">EANO</strong>
-    <div><span id="balance">0.000</span> EANO | <span id="timer">⏳</span></div>
+
+<body class="dashboard dark-mode">
+  <!-- GTM Fallback -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <!-- 🔝 Topbar -->
+  <div class="topbar">
+    <div><strong class="brand">EANO</strong></div>
+    <div>
+      <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
+    </div>
     <div class="d-flex align-items-center gap-2">
       <select id="lang-select">
         <option value="en">🌍 English</option>
@@ -32,9 +47,13 @@
       </select>
       <button id="dark-toggle" title="Toggle Dark Mode">🌗</button>
     </div>
-  </div>  <!-- Menu Toggle --><button id="menu-toggle">☰ Menu</button>
+  </div>
 
-  <!-- Sidebar Menu -->  <div id="sidebar-menu">
+  <!-- 🍔 Menu Toggle -->
+  <button id="menu-toggle">☰ Menu</button>
+
+  <!-- 📋 Sidebar Menu -->
+  <div id="sidebar-menu">
     <ul>
       <li><a href="profile.html">👤 Profile</a></li>
       <li><a href="invite.html">👥 Referrals</a></li>
@@ -43,44 +62,70 @@
       <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
       <li><button id="logout-btn">🚪 Logout</button></li>
     </ul>
-  </div>  <!-- Sidebar Always-visible Mining Button -->  <div class="sidebar">
+  </div>
+
+  <!-- ⛏ Mine Button -->
+  <div class="sidebar">
     <button id="mine-btn">⛏ Start Mining</button>
-  </div>  <!-- Main Content -->  <div class="main-content fade-in">
-    <!-- Announcement -->
-    <div id="announcement-box" class="announcement-banner">
-      <p id="latest-announcement">📢 EANO Network App and other cool features coming soon!</p>
-    </div><div style="margin-top: 10px;">
-  <a href="invite.html" class="team-referral-btn">👥 Team</a>
-</div>
+  </div>
 
-<!-- Referral Info -->
-<div id="referral-info" class="mt-4">
-  <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
-  <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
-  <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
-</div>
+  <!-- 📣 Announcement -->
+  <div id="announcement-box">
+    <p id="latest-announcement">📢 EANO App launching soon. Stay tuned!</p>
+  </div>
 
-  </div>  <!-- Coming Soon Placeholder -->  <div class="coming-soon-box">Coming Soon Loading...</div>  <!-- Scripts -->  <script type="module" src="firebase.js"></script>  <script type="module" src="auth.js"></script>  <script type="module" src="dashboard.js?v=5"></script>  <script type="module" src="ui.js?v=5"></script>  <script type="module" src="lang.js?v=5"></script>  <script type="module" src="settings.js"></script>  <script type="module" src="install.js?v=5"></script>  <!-- Dark/Light Mode Toggle -->  <script>
+  <!-- 📦 Main Dashboard Info -->
+  <div class="main-content fade-in">
+    <div id="referral-info" class="mt-4">
+      <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+      <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
+      <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
+    </div>
+  </div>
+
+  <!-- 🎯 Team Shortcut -->
+  <div style="margin-top: 20px; text-align: center;">
+    <a href="invite.html" class="team-referral-btn">👥 View Team</a>
+  </div>
+
+  <!-- 🔌 Scripts -->
+  <script src="firebase.js"></script>
+  <script src="auth.js"></script>
+  <script src="ui.js?v=5"></script>
+  <script src="lang.js?v=5"></script>
+  <script src="dashboard.js?v=5" type="module"></script>
+  <script src="settings.js?v=5"></script>
+  <script type="module" src="install.js?v=5"></script>
+
+  <!-- 🌙 Mode Toggle -->
+  <script>
     document.getElementById('dark-toggle')?.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
       document.body.classList.toggle('dark-mode');
     });
-  </script>  <!-- Sidebar Menu Toggle -->  <script>
-    const toggleBtn = document.getElementById("menu-toggle");
-    const sidebar = document.getElementById("sidebar-menu");
-    toggleBtn?.addEventListener("click", () => {
-      sidebar.classList.toggle("open");
-    });
-    sidebar?.querySelectorAll("a, button").forEach((el) => {
-      el.addEventListener("click", () => {
-        sidebar.classList.remove("open");
+  </script>
+
+  <!-- 📱 Sidebar Toggle -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggle = document.getElementById("menu-toggle");
+      const sidebar = document.getElementById("sidebar-menu");
+      toggle?.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+      });
+      sidebar.querySelectorAll("a, button").forEach((el) => {
+        el.addEventListener("click", () => sidebar.classList.remove("open"));
       });
     });
-  </script>  <!-- Service Worker -->  <script>
+  </script>
+
+  <!-- ⚙ Service Worker -->
+  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker registered'))
-        .catch(err => console.error('❌ SW failed:', err));
+        .then(() => console.log('✅ SW registered'))
+        .catch(err => console.error('❌ SW registration failed:', err));
     }
-  </script></body>
+  </script>
+</body>
 </html>
