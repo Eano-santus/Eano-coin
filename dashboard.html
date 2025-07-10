@@ -29,12 +29,13 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- 🔝 Topbar -->
-  <div class="topbar">
-    <div><strong class="brand">EANO</strong></div>
+<div class="topbar">
+  <div class="d-flex flex-column align-items-center text-center w-100">
+    <strong class="brand">EANO</strong>
     <div>
       <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
     </div>
-    <div class="d-flex align-items-center gap-2">
+    <div class="d-flex align-items-center gap-2 mt-1">
       <select id="lang-select">
         <option value="en">🌍 English</option>
         <option value="fr">🇫🇷 French</option>
@@ -46,13 +47,14 @@
         <option value="zh">🇨🇳 中文</option>
       </select>
       <button id="dark-toggle" title="Toggle Dark Mode">🌗</button>
+      <button id="logout-btn">🚪 Logout</button>
     </div>
   </div>
 
   <!-- 🍔 Menu Toggle -->
   <button id="menu-toggle">☰ Menu</button>
 
-  <!-- 📋 Sidebar Menu -->
+  <!-- 📋 Sidebar Menu to the left-->
   <div id="sidebar-menu">
     <ul>
       <li><a href="profile.html">👤 Profile</a></li>
