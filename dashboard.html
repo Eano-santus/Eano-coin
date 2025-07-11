@@ -82,6 +82,85 @@
       font-weight: bold;
       cursor: pointer;
       z-index: 5;
+      
+      <script>
+  const miningBtn = document.getElementById("startMiningBtn");
+  const countdownTimer = document.getElementById("timeRemaining");
+
+  const userId = localStorage.getItem("userId"); // Assumes you've saved it during login
+
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+    const secs = String(totalSeconds % 60).padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+  }
+
+  async function getLastMineTime() {
+    const docRef = doc(db, "miners", userId);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data().lastMine || 0;
+    }
+    return 0;
+  }
+
+  async function updateMineTimeAndBalance() {
+    const now = Date.now();
+    const userRef = doc(db, "miners", userId);
+    await updateDoc(userRef, {
+      lastMine: now,
+      balance: increment(0.6), // mining rate
+      trustScore: increment(1) // earn trust
+    });
+  }
+
+  async function startCountdown() {
+    const now = Date.now();
+    const nextMine = now + 24 * 60 * 60 * 1000;
+
+    localStorage.setItem("nextMineTime", nextMine);
+    miningBtn.disabled = true;
+
+    const interval = setInterval(() => {
+      const timeLeft = nextMine - Date.now();
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        countdownTimer.textContent = "⛏️ Ready to mine!";
+        miningBtn.disabled = false;
+      } else {
+        countdownTimer.textContent = formatTime(timeLeft);
+      }
+    }, 1000);
+  }
+
+  miningBtn.addEventListener("click", async () => {
+    const lastMine = await getLastMineTime();
+    const now = Date.now();
+    const canMine = now - lastMine >= 24 * 60 * 60 * 1000;
+
+    if (canMine) {
+      await updateMineTimeAndBalance();
+      startCountdown();
+    } else {
+      const nextMine = lastMine + 24 * 60 * 60 * 1000;
+      const timeLeft = nextMine - now;
+      countdownTimer.textContent = "Next mine in: " + formatTime(timeLeft);
+      miningBtn.disabled = true;
+    }
+  });
+
+  // Auto-load timer on page load
+  window.addEventListener("DOMContentLoaded", async () => {
+    const lastMine = await getLastMineTime();
+    const now = Date.now();
+    if (now - lastMine < 24 * 60 * 60 * 1000) {
+      miningBtn.disabled = true;
+      startCountdown();
+    }
+  });
+</script>
     }
     .theme-toggle {
       position: fixed;
@@ -148,6 +227,10 @@
 </div>
 
 <div class="mine-tab" onclick="alert('Mining Rate: 0.600 EANO/hr')">⛏️ Mine</div>
+ <div id="miningSection">
+  <button id="startMiningBtn">⛏️ Start Mining</button>
+  <p id="countdownTimer">Next mine in: <span id="timeRemaining">--:--:--</span></p>
+    </div>
 <div class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</div>
 
 <div class="announcement">
