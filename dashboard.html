@@ -1,262 +1,189 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Dashboard</title>
-  <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EANO Miner Dashboard</title>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+    import { getFirestore, doc, getDoc, updateDoc, increment, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";const firebaseConfig = {
+  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+  authDomain: "eano-miner.firebaseapp.com",
+  projectId: "eano-miner",
+  storageBucket: "eano-miner.firebasestorage.app",
+  messagingSenderId: "50186911438",
+  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
+  measurementId: "G-NS0W6QSS69"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore();
+
+window.db = db; // expose globally for use in other scripts
+
+  </script>  <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #fff;
-      overflow-x: hidden;
+      background: linear-gradient(to bottom right, #000000, #1a1a1a);
+      color: white;
     }
     .sidebar {
-      width: 260px;
-      background-color: #222;
-      height: 100vh;
       position: fixed;
-      top: 0;
-      left: -260px;
-      overflow-y: auto;
-      transition: left 0.3s ease;
-      z-index: 10;
-    }
-    .sidebar.open {
-      left: 0;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-    .sidebar ul li {
-      padding: 15px;
-      border-bottom: 1px solid #333;
-      cursor: pointer;
-    }
-    .menu-toggle {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      font-size: 24px;
-      background: #333;
-      border-radius: 5px;
-      padding: 10px;
-      cursor: pointer;
-      z-index: 11;
-    }
-    .header {
-      margin-left: 0;
-      padding: 20px;
-      text-align: center;
+      top: 0; left: 0;
+      width: 200px;
+      height: 100%;
       background-color: #111;
+      padding-top: 20px;
+      overflow-y: auto;
     }
-    .top-controls {
+    .sidebar a {
+      display: block;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #333;
+    }
+    .main-content {
+      margin-left: 200px;
+      padding: 20px;
+    }
+    .top-bar {
       display: flex;
       justify-content: space-between;
-      padding: 10px 20px;
       align-items: center;
     }
-    .balance {
-      font-size: 1.5em;
-    }
-    .lang-select {
-      font-size: 1em;
-    }
-    .main {
-      margin-left: 0;
-      padding: 20px;
-      transition: margin-left 0.3s ease;
-    }
-    .sidebar.open ~ .main {
-      margin-left: 260px;
-    }
-    .mine-tab {
-      position: fixed;
-      right: 20px;
-      top: 80px;
-      background-color: #ffc107;
-      color: #000;
-      padding: 10px;
-      border-radius: 10px;
-      font-weight: bold;
+    .mine-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: gold;
+      color: black;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      z-index: 5;
-      
-      <script>
-  const miningBtn = document.getElementById("startMiningBtn");
-  const countdownTimer = document.getElementById("timeRemaining");
-
-  const userId = localStorage.getItem("userId"); // Assumes you've saved it during login
-
-  function formatTime(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-    const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-    const secs = String(totalSeconds % 60).padStart(2, '0');
-    return `${hrs}:${mins}:${secs}`;
-  }
-
-  async function getLastMineTime() {
-    const docRef = doc(db, "miners", userId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return docSnap.data().lastMine || 0;
     }
-    return 0;
-  }
-
-  async function updateMineTimeAndBalance() {
-    const now = Date.now();
-    const userRef = doc(db, "miners", userId);
-    await updateDoc(userRef, {
-      lastMine: now,
-      balance: increment(0.6), // mining rate
-      trustScore: increment(1) // earn trust
-    });
-  }
-
-  async function startCountdown() {
-    const now = Date.now();
-    const nextMine = now + 24 * 60 * 60 * 1000;
-
-    localStorage.setItem("nextMineTime", nextMine);
-    miningBtn.disabled = true;
-
-    const interval = setInterval(() => {
-      const timeLeft = nextMine - Date.now();
-      if (timeLeft <= 0) {
-        clearInterval(interval);
-        countdownTimer.textContent = "⛏️ Ready to mine!";
-        miningBtn.disabled = false;
-      } else {
-        countdownTimer.textContent = formatTime(timeLeft);
-      }
-    }, 1000);
-  }
-
-  miningBtn.addEventListener("click", async () => {
-    const lastMine = await getLastMineTime();
-    const now = Date.now();
-    const canMine = now - lastMine >= 24 * 60 * 60 * 1000;
-
-    if (canMine) {
-      await updateMineTimeAndBalance();
-      startCountdown();
-    } else {
-      const nextMine = lastMine + 24 * 60 * 60 * 1000;
-      const timeLeft = nextMine - now;
-      countdownTimer.textContent = "Next mine in: " + formatTime(timeLeft);
-      miningBtn.disabled = true;
+    .section {
+      display: none;
     }
-  });
-
-  // Auto-load timer on page load
-  window.addEventListener("DOMContentLoaded", async () => {
-    const lastMine = await getLastMineTime();
-    const now = Date.now();
-    if (now - lastMine < 24 * 60 * 60 * 1000) {
-      miningBtn.disabled = true;
-      startCountdown();
+    .section.active {
+      display: block;
     }
-  });
-</script>
-    }
-    .theme-toggle {
+    #welcomeModal {
+      display: none;
       position: fixed;
-      right: 20px;
-      top: 140px;
-      cursor: pointer;
-      font-size: 1em;
-      padding: 10px;
-      background: #555;
-      color: white;
-      border-radius: 10px;
-    }
-    .announcement {
-      margin: 20px auto;
-      max-width: 700px;
+      top: 25%; left: 25%; right: 25%;
       background: #222;
-      border-left: 5px solid gold;
-      padding: 20px;
-      font-size: 1.1em;
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      z-index: 999;
       text-align: center;
     }
-    .coming-features {
-      margin: 30px auto;
-      max-width: 800px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+    #welcomeModal button {
+      margin-top: 15px;
+      padding: 8px 20px;
+      background: gold;
+      border: none;
+      border-radius: 5px;
     }
-    .coming-box {
-      background: #1a1a1a;
-      border: 1px dashed #444;
-      padding: 20px;
-      text-align: center;
-      color: #aaa;
-    }
-  </style>
-</head>
+  </style></head>
 <body>
-  <div class="menu-toggle" onclick="toggleMenu()">☰</div>  <div class="sidebar" id="sidebar">
-    <ul>
-      <li onclick="goTo('dashboard')">🏡 Home</li>
-      <li>🌐 Mainnet (Coming Soon)</li>
-      <li onclick="goTo('leaderboard')">🏆 Leaderboard</li>
-      <li onclick="goTo('team')">👥 Team</li>
-      <li onclick="goTo('chat')">💬 Community Chat</li>
-      <li onclick="goTo('profile')">👤 Profile</li>
-      <li onclick="goTo('author')">🧑‍🚀 Author</li>
-      <li onclick="goTo('whitepaper')">📜 White Paper</li>
-      <li onclick="window.open('https://t.me/eanocoin')">🛟 Support Portal</li>
-      <li onclick="logout()">🚪 Logout</li>
-    </ul>
-  </div>  <div class="main">
-    <div class="header">
-      <h1>Welcome to EANO Dashboard</h1>
-    </div><div class="top-controls">
-  <div class="balance">EANO Balance: 0.000</div>
-  <select class="lang-select">
-    <option>🌐 Language</option>
-    <option value="en">English</option>
-    <option value="ig">Igbo</option>
-    <option value="fr">French</option>
-    <option value="es">Spanish</option>
-  </select>
+  <div class="sidebar">
+    <a href="#" onclick="showSection('home')">🏡 Home</a>
+    <a href="#" onclick="showSection('mainnet')">Mainnet</a>
+    <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
+    <a href="#" onclick="showSection('team')">Team</a>
+    <a href="#" onclick="showSection('community')">Community</a>
+    <a href="#" onclick="showSection('profile')">Profile</a>
+    <a href="#" onclick="showSection('author')">Author</a>
+    <a href="#" onclick="showSection('whitepaper')">WhitePaper</a>
+    <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
+    <a href="index.html">Logout</a>
+  </div>  <div class="main-content">
+    <div class="top-bar">
+      <div>Balance: <span id="balanceDisplay">0</span> EANO</div>
+      <div>
+        <select id="languageSelect">
+          <option>English</option>
+          <option>French</option>
+          <option>Chinese</option>
+          <option>Arabic</option>
+          <option>Zulu</option>
+          <option>Nigerian Pidgin</option>
+          <option>Igbo</option>
+          <option>Hausa</option>
+          <option>Efik</option>
+          <option>Russian</option>
+          <option>Korean</option>
+        </select>
+      </div>
+    </div><button class="mine-button" onclick="startMining()">⛏️ Mine 0.600 EANO</button>
+
+<div id="home" class="section active">
+  <h2>Welcome, <span id="usernameDisplay">User</span>!</h2>
+  <p>This is your dashboard. More features coming soon.</p>
 </div>
+<div id="mainnet" class="section"><h2>Mainnet</h2><p>Coming soon...</p></div>
+<div id="leaderboard" class="section"><h2>Leaderboard</h2><p>Coming soon...</p></div>
+<div id="team" class="section"><h2>Team</h2><p>Coming soon...</p></div>
+<div id="community" class="section"><h2>Community</h2><p>Coming soon...</p></div>
+<div id="profile" class="section"><h2>Profile</h2><p>Coming soon...</p></div>
+<div id="author" class="section"><h2>Author</h2><p>Founder: Santus Santorum</p></div>
+<div id="whitepaper" class="section"><h2>WhitePaper</h2><p>Coming soon...</p></div>
 
-<div class="mine-tab" onclick="alert('Mining Rate: 0.600 EANO/hr')">⛏️ Mine</div>
- <div id="miningSection">
-  <button id="startMiningBtn">⛏️ Start Mining</button>
-  <p id="countdownTimer">Next mine in: <span id="timeRemaining">--:--:--</span></p>
-    </div>
-<div class="theme-toggle" onclick="toggleTheme()">🌓 Toggle Theme</div>
-
-<div class="announcement">
-  📣 Announcement: Welcome to the EANO Coin Dashboard. Mining is live. Mainnet coming soon.
-</div>
-
-<div class="coming-features">
-  <div class="coming-box">🎮 Feature 1 - Coming Soon</div>
-  <div class="coming-box">🎯 Feature 2 - Coming Soon</div>
-  <div class="coming-box">📈 Feature 3 - Coming Soon</div>
-</div>
-
+  </div>  <div id="welcomeModal">
+    <h2>Welcome to EANO Miner ⛏️</h2>
+    <p>Your journey to future Blockchain Greatness Begins!</p>
+    <button onclick="document.getElementById('welcomeModal').style.display='none'">Close</button>
   </div>  <script>
-    function toggleMenu() {
-      document.getElementById("sidebar").classList.toggle("open");
+    const userId = localStorage.getItem("userId") || "demo-user";
+    const username = localStorage.getItem("username") || "Guest";
+    document.getElementById("usernameDisplay").innerText = username;
+
+    async function fetchBalance() {
+      const docRef = doc(window.db, "miners", userId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        document.getElementById("balanceDisplay").innerText = docSnap.data().balance || 0;
+      } else {
+        await setDoc(docRef, { balance: 0, trustScore: 0, lastMine: 0 });
+        document.getElementById("balanceDisplay").innerText = 0;
+      }
     }
-    function logout() {
-      window.location.href = "index.html";
+
+    async function startMining() {
+      const docRef = doc(window.db, "miners", userId);
+      const docSnap = await getDoc(docRef);
+      const now = Date.now();
+      const lastMine = docSnap.data().lastMine || 0;
+      const diff = now - lastMine;
+      if (diff >= 86400000) {
+        await updateDoc(docRef, {
+          balance: increment(0.6),
+          lastMine: now,
+        });
+        alert("Mined successfully: +0.600 EANO");
+        fetchBalance();
+      } else {
+        alert("You can only mine once every 24 hours.");
+      }
     }
-    function toggleTheme() {
-      const body = document.body;
-      body.style.backgroundColor = body.style.backgroundColor === "white" ? "#111" : "white";
-      body.style.color = body.style.color === "black" ? "white" : "black";
+
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
     }
-    function goTo(section) {
-      alert(section + " section coming soon");
-    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      fetchBalance();
+      if (!sessionStorage.getItem("welcomeShown")) {
+        document.getElementById("welcomeModal").style.display = "block";
+        sessionStorage.setItem("welcomeShown", "true");
+      }
+    });
   </script></body>
 </html>
