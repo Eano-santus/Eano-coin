@@ -3,127 +3,249 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO Coin Dashboard</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>EANO • Dashboard</title>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
-
-  <!-- Custom Scripts -->
-  <script src="firebaseConfig.js" defer></script>
-  <script src="lang.js" defer></script>
-  <script src="ui.js" defer></script>
+  <!-- ---------------- STYLES ---------------- -->
+  <style>
+    :root{
+      --gold:#ffd700;--dark:#111;--light:#f5f5f5;
+      --top-h:60px;--side-w:260px;
+    }
+    *{box-sizing:border-box;scroll-behavior:smooth;}
+    body{
+      margin:0;font-family:Roboto,Segoe UI,Arial,Helvetica,sans-serif;
+      background:url('eano-bg.png') no-repeat center/cover fixed;
+      color:#fff;min-height:100vh;overflow-x:hidden;
+    }
+    /* overlay so text readable on bg */
+    body::before{
+      content:"";position:fixed;inset:0;
+      background:rgba(0,0,0,.45);z-index:-1;
+    }
+    /* ----------  TOP BAR  ---------- */
+    .topbar{
+      position:fixed;top:0;left:0;right:0;
+      height:var(--top-h);padding:0 .8rem;
+      background:rgba(0,0,0,.85);display:flex;
+      align-items:center;justify-content:space-between;
+      z-index:900;
+    }
+    .brand{font-weight:700;font-size:1.25rem;color:var(--gold);}
+    #balance{font-weight:700;}
+    /* ----------  MENU (slide-left)  ---------- */
+    #menu-toggle{
+      position:fixed;top:14px;left:14px;padding:8px 12px;
+      background:var(--gold);color:#000;border:none;border-radius:6px;
+      font-weight:700;z-index:950;cursor:pointer;
+    }
+    #side-menu{
+      position:fixed;top:0;left:-260px;width:var(--side-w);
+      height:100%;background:#1c1c1c;color:#fff;padding:75px 18px 18px;
+      transition:left .3s ease;z-index:940;overflow-y:auto;
+    }
+    #side-menu.open{left:0;}
+    #side-menu ul{list-style:none;padding:0;margin:0;}
+    #side-menu li{margin:14px 0;}
+    #side-menu a,#side-menu button{
+      color:var(--gold);background:none;border:none;
+      font:inherit;text-decoration:none;cursor:pointer;width:100%;text-align:left;
+    }
+    /* ----------  MAIN WRAPPER ---------- */
+    .wrapper{padding-top:calc(var(--top-h) + 20px);max-width:600px;margin:auto;}
+    .announcement{
+      background:linear-gradient(135deg,#ffa726,#ffca28);
+      color:#000;padding:1.1rem;border-radius:14px;
+      font-weight:600;text-align:center;margin:0 10px 26px;
+      box-shadow:0 3px 8px rgba(0,0,0,.35);
+    }
+    .coming-box{
+      background:rgba(255,255,255,.1);border:1px dashed var(--gold);
+      margin:14px 10px;padding:40px 12px;border-radius:14px;
+      text-align:center;font-size:1rem;
+    }
+    /* ----------  MINE BUTTON & TOGGLES ---------- */
+    #mine-btn{
+      position:fixed;top:45%;right:10px;transform:translateY(-50%);
+      background:linear-gradient(45deg,var(--gold),#ff9100);
+      border:none;border-radius:14px;color:#000;padding:14px 18px;
+      font-weight:700;box-shadow:0 0 10px var(--gold);
+      animation:glow 1.5s infinite alternate;cursor:pointer;z-index:910;
+    }
+    @keyframes glow{0%{box-shadow:0 0 6px var(--gold);}100%{box-shadow:0 0 20px var(--gold);}}
+    #theme-toggle{
+      position:fixed;top:calc(45% + 70px);right:10px;
+      background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:50%;
+      width:46px;height:46px;font-size:1.2rem;cursor:pointer;
+    }
+    /* ---------- DARK/LIGHT ---------- */
+    .light body,.light .wrapper{color:#111;}
+    body.light{color:#111;}
+    body.light .topbar,body.light #side-menu{background:rgba(255,255,255,.9);color:#000;}
+    body.light .announcement{color:#000;}
+    /* ----------  RESPONSIVE ---------- */
+    @media(max-width:500px){
+      #mine-btn{right:6px;padding:12px 14px;}
+      #theme-toggle{right:6px;}
+    }
+  </style>
 </head>
-
 <body>
-  <div class="app">
-    <!-- Sidebar Menu -->
-    <aside class="sidebar" id="sidebar">
-      <button class="toggle-btn" onclick="toggleMenu()">☰</button>
-      <nav class="menu">
-        <ul>
-          <li onclick="navigateTo('home')">🏡 Home</li>
-          <li onclick="navigateTo('mainnet')">Mainnet <span class="tag">Coming Soon</span></li>
-          <li onclick="navigateTo('leaderboard')">Leaderboard</li>
-          <li onclick="navigateTo('team')">Team</li>
-          <li onclick="navigateTo('community')">Community</li>
-          <li onclick="navigateTo('profile')">Profile</li>
-          <li onclick="navigateTo('author')">Author</li>
-          <li onclick="navigateTo('whitepaper')">WhitePaper</li>
-          <li><a href="https://t.me/eanocoin" target="_blank">Support Portal</a></li>
-          <li onclick="logoutUser()">Logout</li>
-        </ul>
-      </nav>
-    </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Top bar -->
-      <div class="top-bar">
-        <div class="balance">Balance: <span id="coinBalance">0</span> EANO</div>
-        <div class="lang-select">
-          <select id="languageSelector" onchange="changeLanguage(this.value)">
-            <option value="en">EN</option>
-            <option value="ig">IG</option>
-            <option value="fr">FR</option>
-            <option value="pid">PID</option>
-            <option value="cn">CN</option>
-            <option value="ha">HA</option>
-          </select>
-        </div>
-      </div>
+<!-- ☰  MENU BUTTON -->
+<button id="menu-toggle">☰ Menu</button>
 
-      <!-- Middle buttons -->
-      <div class="mid-controls">
-        <button class="mine-btn" onclick="mineCoins()">Mine +0.600</button>
-        <button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button>
-      </div>
+<!-- ⬅  SIDE MENU -->
+<nav id="side-menu">
+  <ul>
+    <li><a href="#" data-nav="home">🏡 Home</a></li>
+    <li><a href="#" data-nav="mainnet">🚀 Mainnet (Soon)</a></li>
+    <li><a href="#" data-nav="leaderboard">🏆 Leaderboard</a></li>
+    <li><a href="#" data-nav="team">👥 Team</a></li>
+    <li><a href="#" data-nav="community">💬 Community</a></li>
+    <li><a href="#" data-nav="profile">👤 Profile</a></li>
+    <li><a href="#" data-nav="author">📝 Author</a></li>
+    <li><a href="#" data-nav="whitepaper">📄 WhitePaper</a></li>
+    <li><a href="https://t.me/eanocoin" target="_blank">🛠 Support Portal</a></li>
+    <li><button id="logout-btn">🚪 Logout</button></li>
+  </ul>
+</nav>
 
-      <!-- Announcements -->
-      <section class="announcement">
-        <h2>📢 Announcement</h2>
-        <p>Welcome to the official EANO Coin dashboard. Stay tuned for more updates.</p>
-        <img src="announcement.jpg" alt="announcement" class="announcement-img"/>
-      </section>
-
-      <!-- Feature Teasers -->
-      <section class="coming-soon-features">
-        <div class="feature-box">Game 1 - Coming Soon</div>
-        <div class="feature-box">Studio - Coming Soon</div>
-        <div class="feature-box">Driving School - Coming Soon</div>
-      </section>
-
-      <!-- Dynamic View for pages -->
-      <section id="dynamicView"></section>
-    </main>
+<!-- 🔝  TOPBAR -->
+<header class="topbar">
+  <span class="brand">EANO</span>
+  <span><span id="balance">0.000</span> EANO | <span id="timer">⏳</span></span>
+  <div>
+    <select id="lang-select">
+      <option value="en">EN</option><option value="fr">FR</option><option value="sw">SW</option>
+      <option value="ig">IG</option><option value="ha">HA</option><option value="zh">中文</option>
+    </select>
   </div>
+</header>
 
-  <!-- Page Logic -->
-  <script>
-    function toggleMenu() {
-      document.getElementById('sidebar').classList.toggle('open');
-    }
+<!-- ⚡ MINE BUTTON + THEME TOGGLE -->
+<button id="mine-btn">⛏ Mine</button>
+<button id="theme-toggle">🌗</button>
 
-    function navigateTo(page) {
-      const view = document.getElementById('dynamicView');
-      fetch(`sections/${page}.html`)
-        .then(res => res.text())
-        .then(html => {
-          view.innerHTML = html;
-          if (window[`init${capitalize(page)}`]) {
-            window[`init${capitalize(page)}`](); // optional init
-          }
-        })
-        .catch(() => {
-          view.innerHTML = `<h3>${page}</h3><p>Page not found.</p>`;
-        });
-    }
+<!-- 🌟 MAIN CONTENT -->
+<main class="wrapper">
 
-    function logoutUser() {
-      firebase.auth().signOut().then(() => {
-        window.location.href = 'index.html';
-      });
-    }
+  <section class="announcement" id="announcement-box">
+    📢 EANO Network App & other cool features coming soon!
+  </section>
 
-    function mineCoins() {
-      // mining logic already in place
-    }
+  <section id="referral-info" style="text-align:center;margin-bottom:20px;">
+    <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+    <p><strong>Mining Level:</strong> <span id="level">🥚 Beginner</span></p>
+    <p><strong>Trust Score:</strong> <span id="trust-score">0</span></p>
+  </section>
 
-    function toggleTheme() {
-      document.body.classList.toggle('dark-mode');
-    }
+  <!-- Three placeholder boxes -->
+  <div class="coming-box">🎮 Mini-Games – Coming Soon…</div>
+  <div class="coming-box">🛍️ Marketplace – Coming Soon…</div>
+  <div class="coming-box">⚙️ Extra Utilities – Coming Soon…</div>
 
-    function changeLanguage(lang) {
-      if (typeof setLanguage === 'function') {
-        setLanguage(lang);
-      }
-    }
+</main>
 
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
+<!-- ---------------- SCRIPTS ---------------- -->
+<script>
+/* ******************
+   BASIC LOCAL STORAGE DEMO LOGIC
+   (No backend/Firebase in this mock)
+********************* */
+const SIDEMENU   = document.getElementById('side-menu');
+const TOG_BTN    = document.getElementById('menu-toggle');
+const THEME_BTN  = document.getElementById('theme-toggle');
+const MINE_BTN   = document.getElementById('mine-btn');
+const BAL_EL     = document.getElementById('balance');
+const TIMER_EL   = document.getElementById('timer');
+const REF_EL     = document.getElementById('referral-count');
+const LEVEL_EL   = document.getElementById('level');
+const TRUST_EL   = document.getElementById('trust-score');
+const LOGOUT_BTN = document.getElementById('logout-btn');
+
+const RATE_PER_H = 0.6;  // 0.600 per hour
+const MS_24H     = 24*60*60*1000;
+
+/* ---- menu slide ---- */
+TOG_BTN.onclick = ()=>SIDEMENU.classList.toggle('open');
+SIDEMENU.addEventListener('click',e=>{
+  if(e.target.tagName==='A' || e.target.tagName==='BUTTON'){
+    SIDEMENU.classList.remove('open');
+    if(e.target.id!=='logout-btn') alert(e.target.textContent.trim()+" coming soon!");
+  }
+});
+
+/* ---- theme ---- */
+const applyTheme = (mode)=>{
+  if(mode==='light'){document.body.classList.add('light');THEME_BTN.textContent='🌙';}
+  else{document.body.classList.remove('light');THEME_BTN.textContent='🌗';}
+};
+applyTheme(localStorage.getItem('theme')||'dark');
+THEME_BTN.onclick=()=>{
+  const newMode=document.body.classList.contains('light')?'dark':'light';
+  localStorage.setItem('theme',newMode);applyTheme(newMode);
+};
+
+/* ---- fake user state in localStorage ---- */
+let user = JSON.parse(localStorage.getItem('eanoUser')) || {
+  balance:0,lastMine:0,referrals:0,trust:0
+};
+function saveUser(){localStorage.setItem('eanoUser',JSON.stringify(user));}
+
+/* ---- ui helpers ---- */
+function fmt(num){return num.toFixed(3);}
+function getLevel(bal){
+  if(bal>=3000) return "🐘 Elephant";
+  if(bal>=2000) return "🦍 Gorilla";
+  if(bal>=1000) return "🦁 Lion";
+  if(bal>=500)  return "🦒 Giraffe";
+  if(bal>=250)  return "🐺 Wolf";
+  if(bal>=100)  return "🐶 Dog";
+  if(bal>=5)    return "🐹 Hamster";
+  if(bal>=1)    return "🐥 Chicken";
+  return "🥚 Beginner";
+}
+function refreshUI(){
+  BAL_EL.textContent = fmt(user.balance);
+  REF_EL.textContent = user.referrals;
+  LEVEL_EL.textContent = getLevel(user.balance);
+  TRUST_EL.textContent = user.trust;
+}
+refreshUI();
+
+/* ---- mining ---- */
+let countdownInt=null;
+function startCountdown(){
+  clearInterval(countdownInt);
+  const end=user.lastMine+MS_24H;
+  const tick=()=>{
+    const rem=Math.max(0,Math.floor((end-Date.now())/1000));
+    const h=Math.floor(rem/3600),m=Math.floor((rem%3600)/60),s=rem%60;
+    TIMER_EL.textContent=`⏳ ${h}h ${m}m ${s}s`;
+    if(rem<=0){
+      TIMER_EL.textContent="✅ Ready";
+      MINE_BTN.disabled=false;MINE_BTN.textContent="⛏ Mine";
+      clearInterval(countdownInt);
     }
-  </script>
+  };
+  tick();countdownInt=setInterval(tick,1000);
+}
+if(Date.now()-user.lastMine<MS_24H){MINE_BTN.disabled=true;MINE_BTN.textContent="⏳ Wait";startCountdown();}
+MINE_BTN.onclick=()=>{
+  if(Date.now()-user.lastMine<MS_24H)return;
+  const earned=RATE_PER_H*24; // simple 24h batch
+  user.balance+=earned;user.lastMine=Date.now();saveUser();
+  refreshUI();
+  MINE_BTN.disabled=true;MINE_BTN.textContent="⏳ Wait";
+  startCountdown();
+  alert(`✅ Mined ${earned.toFixed(3)} EANO!`);
+};
+
+/* ---- logout (clears mock data) ---- */
+LOGOUT_BTN.onclick=()=>{
+  localStorage.removeItem('eanoUser');
+  alert("Logged out (localStorage cleared). Reload page to start fresh.");
+};
+</script>
 </body>
 </html>
