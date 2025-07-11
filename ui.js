@@ -1,108 +1,74 @@
-// ✅ Update balance
-export function updateBalanceUI(balance) {
-  const el = document.getElementById("balance");
-  if (el) {
-    el.textContent = parseFloat(balance).toFixed(3);
-    el.classList.add("fade-in");
-  }
+/* ──────────────────────────────────────────────
+   ui.js  •  Presentation helpers for dashboard
+   ────────────────────────────────────────────── */
+
+/* =============  Generic helpers  ============= */
+function $(id) { return document.getElementById(id); }
+function fmt(num, digits = 3) { return Number(num).toFixed(digits); }
+
+/* =============  Live-updating fields  ============= */
+
+/** Update the coin balance box */
+export function updateBalanceUI(balance = 0) {
+  const el = $("balance");
+  if (el) el.textContent = fmt(balance);
 }
 
-// ✅ Update mining countdown timer
-export function updateTimerUI(seconds) {
-  const el = document.getElementById("timer");
-  if (el) {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    el.textContent = `⏳ ${h}h ${m}m ${s}s`;
-  }
+/** Update the HHh MMm SSs countdown below the Mine button */
+export function updateTimerUI(secondsLeft = 0) {
+  const t = $("timer");
+  if (!t) return;
+  const h = Math.floor(secondsLeft / 3600);
+  const m = Math.floor((secondsLeft % 3600) / 60);
+  const s = secondsLeft % 60;
+  t.textContent = `⏳ ${h}h ${m}m ${s}s`;
 }
 
-// ✅ Update user email
-export function updateUserEmailUI(email) {
-  const el = document.getElementById("user-email");
-  if (el) {
-    el.textContent = email;
-    el.classList.add("fade-in");
-  }
+/** Drop a headline-style announcement in the centre block */
+export function updateAnnouncementUI(text = "") {
+  const box = $("announcement-box");
+  if (box) box.textContent = text || "📢 No announcement yet…";
 }
 
-// ✅ Update referral count
-export function updateReferralCountUI(count) {
-  const el = document.getElementById("referral-count");
-  if (el) {
-    el.textContent = count;
-    el.classList.add("fade-in");
-  }
-}
+/* =============  Slide-out left menu  ============= */
+(function initMenuToggle () {
+  const toggleBtn = $("menu-toggle");
+  const menu      = $("sidebar-menu");
+  if (!toggleBtn || !menu) return;
 
-// ✅ Get mining level badge from balance
-export function getLevelFromBalance(balance) {
-  if (balance >= 3000) return "🐘 Elephant";
-  if (balance >= 2000) return "🦍 Gorilla";
-  if (balance >= 1000) return "🦁 Lion";
-  if (balance >= 500) return "🦒 Giraffe";
-  if (balance >= 250) return "🐺 Wolf";
-  if (balance >= 100) return "🐶 Dog";
-  if (balance >= 5) return "🐹 Hamster";
-  if (balance >= 1) return "🐥 Chicken";
-  return "⛏ Beginner";
-}
+  toggleBtn.addEventListener("click", () => {
+    menu.classList.toggle("open");          // slide in / out
+    document.body.classList.toggle("blur")  // optional backdrop blur
+  });
 
-// ✅ Get trust badge from score
-export function getTrustBadge(score) {
-  if (score >= 1000) return "✅ Trusted Miner";
-  if (score >= 500) return "🛡 Reliable Miner";
-  if (score >= 300) return "📈 New Miner";
-  return "⚠ Low Trust";
-}
+  // Close the menu when any link inside it is clicked
+  menu.querySelectorAll("a, button").forEach(el =>
+    el.addEventListener("click", () => {
+      menu.classList.remove("open");
+      document.body.classList.remove("blur");
+    })
+  );
+})();
 
-// ✅ Show announcement
-export function showAnnouncement(message) {
-  const box = document.getElementById("announcement-box");
-  const msg = document.getElementById("latest-announcement");
+/* =============  Theme (dark / light)  ============= */
+(function initThemeToggle () {
+  const btn  = $("dark-toggle");
+  if (!btn) return;
 
-  if (box && msg && message) {
-    msg.textContent = message;
-    box.style.display = "block";
-    box.classList.add("fade-in");
-  } else if (box) {
-    box.style.display = "none";
-  }
-}
+  // Apply stored preference on load
+  const stored = localStorage.getItem("theme");
+  if (stored === "light") document.body.classList.add("light-mode");
 
-// ✅ Sidebar toggle
-document.addEventListener("DOMContentLoaded", () => {
-  const toggleBtn = document.getElementById("menu-toggle");
-  const sidebar = document.getElementById("sidebar-menu");
+  btn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+    const mode = document.body.classList.contains("light-mode") ? "light" : "dark";
+    localStorage.setItem("theme", mode);
+  });
+})();
 
-  if (toggleBtn && sidebar) {
-    toggleBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("open");
-    });
-
-    sidebar.querySelectorAll("a, button").forEach((el) => {
-      el.addEventListener("click", () => {
-        sidebar.classList.remove("open");
-      });
-    });
-  }
-
-  // ✅ Dark mode toggle
-  const darkToggle = document.getElementById("dark-toggle");
-  if (darkToggle) {
-    darkToggle.addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-      document.body.classList.toggle("dark-mode");
-      localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
-    });
-
-    // Load saved mode
-    const saved = localStorage.getItem("theme");
-    if (saved === "light") {
-      document.body.classList.add("light-mode");
-    } else {
-      document.body.classList.add("dark-mode");
-    }
-  }
-});
+/* =============  Exports for other modules  ============= */
+export default {
+  updateBalanceUI,
+  updateTimerUI,
+  updateAnnouncementUI
+};
