@@ -96,3 +96,140 @@
 
 </body>
 </html>
+
+<!-- 🔌 App Logic (Embedded JS) -->
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import {
+      onAuthStateChanged,
+      signOut
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {
+      doc, getDoc, updateDoc, serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import {
+      updateBalanceUI,
+      updateTimerUI,
+      updateReferralCountUI,
+      getLevelFromBalance,
+      getTrustBadge,
+      showAnnouncement
+    } from './ui.js';
+
+    const MINE_RATE = 0.6;
+    const mineBtn = document.getElementById('mine-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const levelEl = document.getElementById('level');
+    const trustEl = document.getElementById('trust-score');
+
+    // 🟢 Auth Check
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = "index.html";
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const balance = data.balance || 0;
+      const referrals = data.referralCount || 0;
+      const trust = data.trustScore || 0;
+      const lastMine = data.lastMine?.toMillis?.() || 0;
+
+      updateBalanceUI(balance);
+      updateReferralCountUI(referrals);
+      levelEl.textContent = getLevelFromBalance(balance);
+      trustEl.textContent = `${trust} - ${getTrustBadge(trust)}`;
+
+      // Timer
+      const now = Date.now();
+      const secondsSinceMine = Math.floor((now - lastMine) / 1000);
+      const remaining = Math.max(86400 - secondsSinceMine, 0);
+      updateTimerUI(remaining);
+
+      if (remaining > 0) {
+        mineBtn.disabled = true;
+        mineBtn.textContent = "⏳ Come Back Later";
+        let timer = setInterval(() => {
+          const seconds = Math.max(0, Math.floor(86400 - (Date.now() - lastMine) / 1000));
+          updateTimerUI(seconds);
+          if (seconds <= 0) {
+            mineBtn.disabled = false;
+            mineBtn.textContent = "⚡ Start Mining";
+            clearInterval(timer);
+          }
+        }, 1000);
+      } else {
+        mineBtn.disabled = false;
+        mineBtn.textContent = "⚡ Start Mining";
+      }
+
+      // Announcement
+      const annRef = doc(db, "config", "announcement");
+      const annSnap = await getDoc(annRef);
+      if (annSnap.exists()) {
+        showAnnouncement(annSnap.data().message || "");
+      }
+    });
+
+    // ⛏ Mining
+    mineBtn?.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      const data = snap.data();
+      const lastMine = data.lastMine?.toMillis?.() || 0;
+      const now = Date.now();
+      const canMine = now - lastMine >= 86400 * 1000;
+
+      if (!canMine) return alert("⛏ Come back after 24hrs");
+
+      const newBalance = (data.balance || 0) + (MINE_RATE * 24);
+      await updateDoc(ref, {
+        balance: newBalance,
+        lastMine: serverTimestamp()
+      });
+
+      updateBalanceUI(newBalance);
+      levelEl.textContent = getLevelFromBalance(newBalance);
+      mineBtn.disabled = true;
+      mineBtn.textContent = "✅ Mined!";
+    });
+
+    // 🚪 Logout
+    logoutBtn?.addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    });
+  </script>
+
+  <!-- ☰ Menu Toggle -->
+  <script>
+    const toggleBtn = document.getElementById("menu-toggle");
+    const sidebarMenu = document.getElementById("sidebar-menu");
+    toggleBtn?.addEventListener("click", () => {
+      sidebarMenu.classList.toggle("open");
+    });
+    sidebarMenu?.querySelectorAll("a, button").forEach((el) => {
+      el.addEventListener("click", () => sidebarMenu.classList.remove("open"));
+    });
+  </script>
+
+  <!-- 🌗 Light/Dark -->
+  <script>
+    const darkBtn = document.getElementById("dark-toggle");
+    darkBtn?.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+      document.body.classList.toggle("dark-mode");
+    });
+  </script>
+
+  <!-- ✅ Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
+</body>
+          </html>
