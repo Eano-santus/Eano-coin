@@ -1,17 +1,23 @@
-<!DOCTYPE html><html lang="en"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Coin Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="lang.js" defer></script>
-  <script src="ui.js" defer></script>
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
+
+  <!-- Custom Scripts -->
+  <script src="firebaseConfig.js" defer></script>
   <script src="lang.js" defer></script>
   <script src="ui.js" defer></script>
-  <script src="firebaseConfig.js" defer></script>
-</head><body>
+</head>
+
+<body>
   <div class="app">
     <!-- Sidebar Menu -->
     <aside class="sidebar" id="sidebar">
@@ -30,56 +36,69 @@
           <li onclick="logoutUser()">Logout</li>
         </ul>
       </nav>
-    </aside><!-- Main Content Area -->
-<main class="main-content">
-  <!-- Top Section -->
-  <div class="top-bar">
-    <div class="balance">Balance: <span id="coinBalance">0</span> EANO</div>
-    <div class="lang-select">
-      <select id="languageSelector" onchange="changeLanguage(this.value)">
-        <option value="en">EN</option>
-        <option value="ig">IG</option>
-        <option value="fr">FR</option>
-        <option value="pid">PID</option>
-        <option value="cn">CN</option>
-        <option value="ha">HA</option>
-        <!-- more languages -->
-      </select>
-    </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top bar -->
+      <div class="top-bar">
+        <div class="balance">Balance: <span id="coinBalance">0</span> EANO</div>
+        <div class="lang-select">
+          <select id="languageSelector" onchange="changeLanguage(this.value)">
+            <option value="en">EN</option>
+            <option value="ig">IG</option>
+            <option value="fr">FR</option>
+            <option value="pid">PID</option>
+            <option value="cn">CN</option>
+            <option value="ha">HA</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Middle buttons -->
+      <div class="mid-controls">
+        <button class="mine-btn" onclick="mineCoins()">Mine +0.600</button>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button>
+      </div>
+
+      <!-- Announcements -->
+      <section class="announcement">
+        <h2>📢 Announcement</h2>
+        <p>Welcome to the official EANO Coin dashboard. Stay tuned for more updates.</p>
+        <img src="announcement.jpg" alt="announcement" class="announcement-img"/>
+      </section>
+
+      <!-- Feature Teasers -->
+      <section class="coming-soon-features">
+        <div class="feature-box">Game 1 - Coming Soon</div>
+        <div class="feature-box">Studio - Coming Soon</div>
+        <div class="feature-box">Driving School - Coming Soon</div>
+      </section>
+
+      <!-- Dynamic View for pages -->
+      <section id="dynamicView"></section>
+    </main>
   </div>
 
-  <!-- Mid-right Controls -->
-  <div class="mid-controls">
-    <button class="mine-btn" onclick="mineCoins()">Mine +0.600</button>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button>
-  </div>
-
-  <!-- Announcement Section -->
-  <section class="announcement">
-    <h2>📢 Announcement</h2>
-    <p>Welcome to the official EANO Coin dashboard. Stay tuned for more updates.</p>
-    <img src="announcement.jpg" alt="announcement" class="announcement-img">
-  </section>
-
-  <!-- Placeholder Feature Sections -->
-  <section class="coming-soon-features">
-    <div class="feature-box">Game 1 - Coming Soon</div>
-    <div class="feature-box">Studio - Coming Soon</div>
-    <div class="feature-box">Driving school - Coming Soon</div>
-  </section>
-
-  <!-- Dynamic Views Area -->
-  <section id="dynamicView"></section>
-</main>
-
-  </div>  <script>
+  <!-- Page Logic -->
+  <script>
     function toggleMenu() {
       document.getElementById('sidebar').classList.toggle('open');
     }
 
     function navigateTo(page) {
       const view = document.getElementById('dynamicView');
-      view.innerHTML = `<h3>Loading ${page}...</h3><p>Coming Soon</p>`;
+      fetch(`sections/${page}.html`)
+        .then(res => res.text())
+        .then(html => {
+          view.innerHTML = html;
+          if (window[`init${capitalize(page)}`]) {
+            window[`init${capitalize(page)}`](); // optional init
+          }
+        })
+        .catch(() => {
+          view.innerHTML = `<h3>${page}</h3><p>Page not found.</p>`;
+        });
     }
 
     function logoutUser() {
@@ -89,7 +108,7 @@
     }
 
     function mineCoins() {
-      // mining logic (already implemented)
+      // mining logic already in place
     }
 
     function toggleTheme() {
@@ -97,6 +116,14 @@
     }
 
     function changeLanguage(lang) {
-      // language logic from lang.js
+      if (typeof setLanguage === 'function') {
+        setLanguage(lang);
+      }
     }
-  </script></body></html>
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+  </script>
+</body>
+</html>
