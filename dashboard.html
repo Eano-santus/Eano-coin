@@ -3,81 +3,63 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EANO Coin Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css" />
+  <script src="ui.js" defer></script>
+  <script src="lang.js" defer></script>
+
+  <!-- Mobile Responsive Overrides -->
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #f1f1f1;
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 200px;
+      }
+      .sidebar.show ~ .main {
+        margin-left: 200px;
+      }
+      .menu-toggle {
+        top: 10px;
+        left: 10px;
+      }
+      .balance {
+        font-size: 18px;
+      }
+      .mine-btn {
+        width: 100%;
+        font-size: 16px;
+      }
+      .lang-selector {
+        width: 100%;
+        margin-top: 10px;
+        float: none;
+      }
     }
-    .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 250px;
-      height: 100%;
-      background-color: #000;
-      padding-top: 60px;
-      transition: transform 0.3s ease;
-      transform: translateX(-100%);
-    }
-    .sidebar.show {
-      transform: translateX(0);
-    }
-    .sidebar a {
-      display: block;
-      padding: 15px;
-      color: white;
-      text-decoration: none;
-      border-bottom: 1px solid #444;
-    }
-    .menu-toggle {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 1000;
-      cursor: pointer;
-    }
-    .main {
-      margin-left: 0;
-      padding: 20px;
-      padding-top: 70px;
-      transition: margin-left 0.3s ease;
-    }
-    .sidebar.show ~ .main {
-      margin-left: 250px;
-    }
-    .lang-selector {
-      float: right;
-      background: #222;
-      color: white;
-      border: none;
-      padding: 5px;
-    }
-    .balance {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .mine-btn {
-      display: inline-block;
-      background: gold;
-      color: black;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-    }
-    .announcement, .feature-boxes {
-      background: #222;
-      padding: 20px;
-      margin-top: 20px;
-      border-radius: 10px;
-    }
-    .feature-box {
+
+    @media (max-width: 480px) {
+      .sidebar {
+        width: 100%;
+        transform: translateX(-100%);
+      }
+      .sidebar.show {
+        transform: translateX(0);
+      }
+      .sidebar.show ~ .main {
+        margin-left: 0;
+      }
+      .main {
+        padding: 10px;
+      }
+      .mine-btn {
+        font-size: 14px;
+      }
+      .announcement h3 {
+        font-size: 18px;
+      }
+        .feature-box {
       background: #333;
       padding: 15px;
       margin-top: 10px;
       border-radius: 5px;
+      }
     }
   </style>
 </head>
