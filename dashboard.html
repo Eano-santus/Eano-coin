@@ -1,224 +1,102 @@
-<!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EANO Coin Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="ui.js" defer></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ui.js">
+  <link rel="stylesheet" href="lang.js">
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js"></script>
   <script src="lang.js" defer></script>
-
-  <!-- Mobile Responsive Overrides -->
-  <style>
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 200px;
-      }
-      .sidebar.show ~ .main {
-        margin-left: 200px;
-      }
-      .menu-toggle {
-        top: 10px;
-        left: 10px;
-      }
-      .balance {
-        font-size: 18px;
-      }
-      .mine-btn {
-        width: 100%;
-        font-size: 16px;
-      }
-      .lang-selector {
-        width: 100%;
-        margin-top: 10px;
-        float: none;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .sidebar {
-        width: 100%;
-        transform: translateX(-100%);
-      }
-      .sidebar.show {
-        transform: translateX(0);
-      }
-      .sidebar.show ~ .main {
-        margin-left: 0;
-      }
-      .main {
-        padding: 10px;
-      }
-      .mine-btn {
-        font-size: 14px;
-      }
-      .announcement h3 {
-        font-size: 18px;
-      }
-        .feature-box {
-      background: #333;
-      padding: 15px;
-      margin-top: 10px;
-      border-radius: 5px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="menu-toggle" onclick="toggleMenu()">☰ Menu</div>  <div class="sidebar" id="sidebar">
-    <a href="#">🏡 Home</a>
-    <a href="#">Mainnet (Coming Soon)</a>
-    <a href="#">Leaderboard</a>
-    <a href="#">Team</a>
-    <a href="#">Community</a>
-    <a href="#">Profile</a>
-    <a href="#">Author</a>
-    <a href="#">WhitePaper</a>
-    <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
-    <a href="index.html">Logout</a>
-  </div>  <div class="main">
-    <div>
-      <span class="balance">Balance: <span id="balanceDisplay">0</span> EANO</span>
-      <select id="languageSelect" class="lang-selector">
-        <option value="en">English</option>
-        <option value="fr">French</option>
-        <option value="zh">Chinese</option>
-        <option value="ar">Arabic</option>
-        <option value="zu">Zulu (South Africa)</option>
-        <option value="ngp">Pidgin</option>
-        <option value="ig">Igbo</option>
-        <option value="ha">Hausa</option>
-        <option value="efi">Efik</option>
-        <option value="ru">Russian</option>
-        <option value="ko">Korean</option>
+  <script src="ui.js" defer></script>
+  <script src="firebaseConfig.js" defer></script>
+</head><body>
+  <div class="app">
+    <!-- Sidebar Menu -->
+    <aside class="sidebar" id="sidebar">
+      <button class="toggle-btn" onclick="toggleMenu()">☰</button>
+      <nav class="menu">
+        <ul>
+          <li onclick="navigateTo('home')">🏡 Home</li>
+          <li onclick="navigateTo('mainnet')">Mainnet <span class="tag">Coming Soon</span></li>
+          <li onclick="navigateTo('leaderboard')">Leaderboard</li>
+          <li onclick="navigateTo('team')">Team</li>
+          <li onclick="navigateTo('community')">Community</li>
+          <li onclick="navigateTo('profile')">Profile</li>
+          <li onclick="navigateTo('author')">Author</li>
+          <li onclick="navigateTo('whitepaper')">WhitePaper</li>
+          <li><a href="https://t.me/eanocoin" target="_blank">Support Portal</a></li>
+          <li onclick="logoutUser()">Logout</li>
+        </ul>
+      </nav>
+    </aside><!-- Main Content Area -->
+<main class="main-content">
+  <!-- Top Section -->
+  <div class="top-bar">
+    <div class="balance">Balance: <span id="coinBalance">0</span> EANO</div>
+    <div class="lang-select">
+      <select id="languageSelector" onchange="changeLanguage(this.value)">
+        <option value="en">EN</option>
+        <option value="ig">IG</option>
+        <option value="fr">FR</option>
+        <option value="pid">PID</option>
+        <option value="cn">CN</option>
+        <option value="ha">HA</option>
+        <!-- more languages -->
       </select>
-    </div><div class="balance">Welcome, <span id="usernameDisplay">User</span></div>
-
-<button class="mine-btn" id="mineBtn" onclick="startMining()">Mine @ 0.600 EANO</button>
-    <div id="miningStatus" style="display: none; margin-top: 15px;">
-  ⛏️ Mining... <br />
-  Earned: <span id="earnedAmount">0.0000</span> EANO<br />
-  Time Left: <span id="countdownText">24:00:00</span>
     </div>
-<div style="margin-top:10px">
-  <button onclick="toggleTheme()">Toggle Light/Dark</button>
-</div>
+  </div>
 
-<div class="announcement">
-  <h3>📢 Announcement</h3>
-  <p>Welcome to the EANO Coin Mining App! This is your dashboard. Stay tuned for more features.</p>
-</div>
+  <!-- Mid-right Controls -->
+  <div class="mid-controls">
+    <button class="mine-btn" onclick="mineCoins()">Mine +0.600</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</button>
+  </div>
 
-<div class="feature-boxes">
-  <div class="feature-box">🎮 Game 1 (Coming Soon)</div>
-  <div class="feature-box">🎯 Feature 2 (Coming Soon)</div>
-  <div class="feature-box">💬 Chat 3 (Coming Soon)</div>
-</div>
+  <!-- Announcement Section -->
+  <section class="announcement">
+    <h2>📢 Announcement</h2>
+    <p>Welcome to the official EANO Coin dashboard. Stay tuned for more updates.</p>
+    <img src="announcement.jpg" alt="announcement" class="announcement-img">
+  </section>
 
-  </div>  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  <!-- Placeholder Feature Sections -->
+  <section class="coming-soon-features">
+    <div class="feature-box">Game 1 - Coming Soon</div>
+    <div class="feature-box">Studio - Coming Soon</div>
+    <div class="feature-box">Driving school - Coming Soon</div>
+  </section>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.firebasestorage.app",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-      measurementId: "G-NS0W6QSS69"
-    };
+  <!-- Dynamic Views Area -->
+  <section id="dynamicView"></section>
+</main>
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const uid = user.uid;
-        const userDoc = await getDoc(doc(db, "users", uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          document.getElementById("usernameDisplay").textContent = data.username || "User";
-          document.getElementById("balanceDisplay").textContent = data.balance || "0";
-        }
-      } else {
-        window.location.href = "index.html";
-      }
-    });
-  </script>  <script>
+  </div>  <script>
     function toggleMenu() {
-      document.getElementById("sidebar").classList.toggle("show");
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function navigateTo(page) {
+      const view = document.getElementById('dynamicView');
+      view.innerHTML = `<h3>Loading ${page}...</h3><p>Coming Soon</p>`;
+    }
+
+    function logoutUser() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = 'index.html';
+      });
+    }
+
+    function mineCoins() {
+      // mining logic (already implemented)
     }
 
     function toggleTheme() {
-      document.body.classList.toggle("light-mode");
+      document.body.classList.toggle('dark-mode');
     }
 
-  </script>
-  <script>
-  const ratePerSecond = 0.600 / 3600; // 0.00016666666 EANO/sec
-  let miningInterval;
-  let miningEndTime;
-  let currentEarned = 0;
-
-  function startMining() {
-    const now = Date.now();
-    miningEndTime = now + 24 * 60 * 60 * 1000;
-    localStorage.setItem("miningEndTime", miningEndTime);
-    localStorage.setItem("minedStartTime", now);
-    localStorage.setItem("earnedAmount", "0");
-    document.getElementById("mineBtn").style.display = "none";
-    document.getElementById("miningStatus").style.display = "block";
-    currentEarned = 0;
-    startCountdown();
-  }
-
-  function startCountdown() {
-    miningInterval = setInterval(() => {
-      const now = Date.now();
-      const end = parseInt(localStorage.getItem("miningEndTime"), 10);
-      const start = parseInt(localStorage.getItem("minedStartTime"), 10);
-      if (now >= end) {
-        clearInterval(miningInterval);
-        localStorage.removeItem("miningEndTime");
-        document.getElementById("mineBtn").style.display = "inline-block";
-        document.getElementById("miningStatus").style.display = "none";
-        updateBalanceDisplay(); // Optional future sync with Firestore
-        return;
-      }
-
-      const secondsPassed = Math.floor((now - start) / 1000);
-      currentEarned = (secondsPassed * ratePerSecond).toFixed(4);
-      document.getElementById("earnedAmount").textContent = currentEarned;
-
-      const timeLeft = end - now;
-      const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-      document.getElementById("countdownText").textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-
-      // Update display balance temporarily
-      document.getElementById("balanceDisplay").textContent = (parseFloat(currentEarned)).toFixed(4);
-    }, 1000);
-  }
-
-  function pad(num) {
-    return num.toString().padStart(2, "0");
-  }
-
-  function resumeMiningIfActive() {
-    const end = localStorage.getItem("miningEndTime");
-    if (end && Date.now() < parseInt(end, 10)) {
-      document.getElementById("mineBtn").style.display = "none";
-      document.getElementById("miningStatus").style.display = "block";
-      startCountdown();
+    function changeLanguage(lang) {
+      // language logic from lang.js
     }
-  }
-
-  resumeMiningIfActive();
-  </script>
-</body>
-</html>
+  </script></body></html>
