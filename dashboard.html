@@ -1,189 +1,214 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EANO Miner Dashboard</title>
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
-    import { getFirestore, doc, getDoc, updateDoc, increment, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "eano-miner.firebaseapp.com",
-  projectId: "eano-miner",
-  storageBucket: "eano-miner.firebasestorage.app",
-  messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-  measurementId: "G-NS0W6QSS69"
-};
-
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore();
-
-window.db = db; // expose globally for use in other scripts
-
-  </script>  <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Coin Dashboard</title>
+  <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #000000, #1a1a1a);
-      color: white;
+      background-color: #0a0a0a;
+      color: #f1c40f;
+    }
+    header {
+      background-color: #111;
+      color: #f1c40f;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .menu-toggle {
+      font-size: 24px;
+      cursor: pointer;
     }
     .sidebar {
+      width: 250px;
+      background-color: #1a1a1a;
       position: fixed;
-      top: 0; left: 0;
-      width: 200px;
       height: 100%;
-      background-color: #111;
-      padding-top: 20px;
-      overflow-y: auto;
+      top: 0;
+      left: -250px;
+      transition: 0.3s;
+      padding-top: 60px;
     }
     .sidebar a {
-      display: block;
       padding: 10px 20px;
-      color: white;
+      display: block;
+      color: #f1c40f;
       text-decoration: none;
     }
     .sidebar a:hover {
       background-color: #333;
     }
-    .main-content {
-      margin-left: 200px;
+    .sidebar.active {
+      left: 0;
+    }
+    .main {
+      margin-left: 0;
       padding: 20px;
+      transition: margin-left 0.3s;
     }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .sidebar.active ~ .main {
+      margin-left: 250px;
     }
-    .mine-button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: gold;
-      color: black;
+    #mineButton {
+      background-color: #f1c40f;
+      color: #000;
       border: none;
-      border-radius: 5px;
+      padding: 10px 20px;
       cursor: pointer;
+      margin: 20px 0;
+      font-size: 18px;
     }
-    .section {
+    #rateDisplay {
+      font-weight: bold;
+      color: #f1c40f;
+    }
+    .hidden {
       display: none;
-    }
-    .section.active {
-      display: block;
     }
     #welcomeModal {
-      display: none;
       position: fixed;
-      top: 25%; left: 25%; right: 25%;
-      background: #222;
-      color: white;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #welcomeModalContent {
+      background-color: #1a1a1a;
       padding: 30px;
-      border-radius: 10px;
-      z-index: 999;
+      border-radius: 8px;
+      color: #f1c40f;
       text-align: center;
     }
-    #welcomeModal button {
-      margin-top: 15px;
-      padding: 8px 20px;
-      background: gold;
-      border: none;
-      border-radius: 5px;
-    }
-  </style></head>
+  </style>
+</head>
 <body>
-  <div class="sidebar">
+  <header>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <h1>EANO Dashboard</h1>
+    <span id="rateDisplay">0.600</span>
+  </header>  <div class="sidebar" id="sidebar">
     <a href="#" onclick="showSection('home')">🏡 Home</a>
-    <a href="#" onclick="showSection('mainnet')">Mainnet</a>
+    <a href="#" onclick="showSection('mainnet')">Mainnet (Coming Soon)</a>
     <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
     <a href="#" onclick="showSection('team')">Team</a>
     <a href="#" onclick="showSection('community')">Community</a>
     <a href="#" onclick="showSection('profile')">Profile</a>
     <a href="#" onclick="showSection('author')">Author</a>
     <a href="#" onclick="showSection('whitepaper')">WhitePaper</a>
-    <a href="https://t.me/eanocoin" target="_blank">Support Portal</a>
     <a href="index.html">Logout</a>
-  </div>  <div class="main-content">
-    <div class="top-bar">
-      <div>Balance: <span id="balanceDisplay">0</span> EANO</div>
-      <div>
-        <select id="languageSelect">
-          <option>English</option>
-          <option>French</option>
-          <option>Chinese</option>
-          <option>Arabic</option>
-          <option>Zulu</option>
-          <option>Nigerian Pidgin</option>
-          <option>Igbo</option>
-          <option>Hausa</option>
-          <option>Efik</option>
-          <option>Russian</option>
-          <option>Korean</option>
-        </select>
-      </div>
-    </div><button class="mine-button" onclick="startMining()">⛏️ Mine 0.600 EANO</button>
+  </div>  <div class="main" id="main">
+    <section id="home">
+      <h2>Dashboard</h2>
+      <button id="mineButton" onclick="mineCoin()">Tap to Mine</button>
+      <p>Balance: <span id="balanceDisplay">0</span> EANO</p>
+    </section><section id="mainnet" class="hidden">
+  <h2>Mainnet</h2>
+  <p>Coming Soon...</p>
+</section>
 
-<div id="home" class="section active">
-  <h2>Welcome, <span id="usernameDisplay">User</span>!</h2>
-  <p>This is your dashboard. More features coming soon.</p>
-</div>
-<div id="mainnet" class="section"><h2>Mainnet</h2><p>Coming soon...</p></div>
-<div id="leaderboard" class="section"><h2>Leaderboard</h2><p>Coming soon...</p></div>
-<div id="team" class="section"><h2>Team</h2><p>Coming soon...</p></div>
-<div id="community" class="section"><h2>Community</h2><p>Coming soon...</p></div>
-<div id="profile" class="section"><h2>Profile</h2><p>Coming soon...</p></div>
-<div id="author" class="section"><h2>Author</h2><p>Founder: Santus Santorum</p></div>
-<div id="whitepaper" class="section"><h2>WhitePaper</h2><p>Coming soon...</p></div>
+<section id="leaderboard" class="hidden">
+  <h2>Leaderboard</h2>
+  <p>Coming Soon...</p>
+</section>
+
+<section id="team" class="hidden">
+  <h2>Team</h2>
+  <p>Coming Soon...</p>
+</section>
+
+<section id="community" class="hidden">
+  <h2>Community</h2>
+  <p>Coming Soon...</p>
+</section>
+
+<section id="profile" class="hidden">
+  <h2>Profile</h2>
+  <p>Coming Soon...</p>
+</section>
+
+<section id="author" class="hidden">
+  <h2>Author</h2>
+  <p>Coming Soon...</p>
+</section>
+
+<section id="whitepaper" class="hidden">
+  <h2>WhitePaper</h2>
+  <p>Coming Soon...</p>
+</section>
 
   </div>  <div id="welcomeModal">
-    <h2>Welcome to EANO Miner ⛏️</h2>
-    <p>Your journey to future Blockchain Greatness Begins!</p>
-    <button onclick="document.getElementById('welcomeModal').style.display='none'">Close</button>
-  </div>  <script>
-    const userId = localStorage.getItem("userId") || "demo-user";
-    const username = localStorage.getItem("username") || "Guest";
-    document.getElementById("usernameDisplay").innerText = username;
+    <div id="welcomeModalContent">
+      <h2>Welcome to EANO!</h2>
+      <p>Let’s grow together and mine for a better future.</p>
+      <button onclick="document.getElementById('welcomeModal').style.display='none'">Enter</button>
+    </div>
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-    async function fetchBalance() {
-      const docRef = doc(window.db, "miners", userId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        document.getElementById("balanceDisplay").innerText = docSnap.data().balance || 0;
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.firebasestorage.app",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f",
+      measurementId: "G-NS0W6QSS69"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let userId = localStorage.getItem("eanoUser") || "testUser"; // temp fallback
+    const userRef = doc(db, "miners", userId);
+
+    async function getBalance() {
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        document.getElementById("balanceDisplay").innerText = data.balance || 0;
       } else {
-        await setDoc(docRef, { balance: 0, trustScore: 0, lastMine: 0 });
-        document.getElementById("balanceDisplay").innerText = 0;
+        await setDoc(userRef, { balance: 0 });
       }
     }
 
-    async function startMining() {
-      const docRef = doc(window.db, "miners", userId);
-      const docSnap = await getDoc(docRef);
+    async function mineCoin() {
       const now = Date.now();
-      const lastMine = docSnap.data().lastMine || 0;
-      const diff = now - lastMine;
-      if (diff >= 86400000) {
-        await updateDoc(docRef, {
-          balance: increment(0.6),
-          lastMine: now,
-        });
-        alert("Mined successfully: +0.600 EANO");
-        fetchBalance();
-      } else {
-        alert("You can only mine once every 24 hours.");
+      const lastMine = localStorage.getItem("lastMine") || 0;
+      if (now - lastMine < 86400000) {
+        alert("Please wait 24 hours before mining again.");
+        return;
       }
+
+      const userSnap = await getDoc(userRef);
+      let balance = 0;
+      if (userSnap.exists()) {
+        balance = userSnap.data().balance || 0;
+      }
+
+      balance += 0.6;
+      await setDoc(userRef, { balance });
+      document.getElementById("balanceDisplay").innerText = balance.toFixed(3);
+      localStorage.setItem("lastMine", now);
+    }
+
+    function toggleMenu() {
+      document.getElementById("sidebar").classList.toggle("active");
     }
 
     function showSection(id) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+      document.querySelectorAll(".main section").forEach(s => s.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      fetchBalance();
-      if (!sessionStorage.getItem("welcomeShown")) {
-        document.getElementById("welcomeModal").style.display = "block";
-        sessionStorage.setItem("welcomeShown", "true");
-      }
-    });
+    window.onload = getBalance;
   </script></body>
 </html>
