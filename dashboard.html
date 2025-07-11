@@ -3,28 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Dashboard</title>
+  <title>EANO Dashboard</title>
 
-  <!-- 🌐 Manifest & Theme -->
+  <!-- Fonts + Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=6" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-
-  <!-- 🌍 Fonts & Styles -->
-  <link rel="stylesheet" href="style.css?v=6" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
-
-  <!-- 🔐 Firebase Core -->
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="ui.js?v=6"></script>
-  <script type="module" src="lang.js?v=6"></script>
 </head>
 <body class="dashboard dark-mode">
-  
-  <!-- 🔝 Topbar -->
-  <div class="topbar d-flex justify-content-between align-items-center">
-    <strong class="brand">EANO</strong>
-    <div><span id="balance">0.000</span> EANO</div>
-    <div class="d-flex align-items-center gap-2">
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <ul>
+      <li><a href="dashboard.html">🏡 Home</a></li>
+      <li><a href="#" onclick="alert('Mainnet coming soon')">🌐 Mainnet</a></li>
+      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
+      <li><a href="invite.html">👥 Team</a></li>
+      <li><a href="#" onclick="alert('Community coming soon')">💬 Community</a></li>
+      <li><a href="profile.html">👤 Profile</a></li>
+      <li><a href="#" onclick="alert('Founder: Santus Santorum')">👑 Author</a></li>
+      <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
+      <li><a href="https://t.me/eanonetwork" target="_blank">🛟 Support Portal</a></li>
+      <li><button id="logout-btn">🚪 Logout</button></li>
+    </ul>
+  </div>
+
+  <!-- Menu Toggle -->
+  <button id="menu-toggle" class="menu-btn">☰ Menu</button>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">EANO</div>
+    <div><span id="balance">0.000</span> EANO | <span id="timer">⏳</span></div>
+    <div class="top-controls">
       <select id="lang-select">
         <option value="en">🌍 English</option>
         <option value="fr">🇫🇷 French</option>
@@ -38,87 +50,168 @@
     </div>
   </div>
 
-  <!-- ☰ Menu Button -->
-  <button id="menu-toggle">☰ Menu</button>
-
-  <!-- 📜 Sidebar -->
-  <div id="sidebar-menu">
-    <ul>
-      <li><a href="dashboard.html">🏡 Home</a></li>
-      <li><button onclick="alert('Mainnet coming soon!')">🚀 Mainnet</button></li>
-      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
-      <li><a href="invite.html">👥 Team</a></li>
-      <li><button onclick="alert('🧑‍🤝‍🧑 Community coming soon!')">🌐 Community</button></li>
-      <li><a href="profile.html">👤 Profile</a></li>
-      <li><button onclick="alert('📜 Written by Santus Santorum')">🧠 Author</button></li>
-      <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
-      <li><a href="https://t.me/yourTelegramSupport" target="_blank">💬 Support</a></li>
-      <li><button id="logout-btn">🚪 Logout</button></li>
-    </ul>
+  <!-- Right Side Controls -->
+  <div class="right-controls">
+    <button id="mine-btn" class="mine-btn">⛏ Start Mining</button>
+    <button id="dark-toggle" class="theme-toggle">🌗</button>
   </div>
 
-  <!-- ⚡ Mine + Theme -->
-  <div class="sidebar">
-    <button id="mine-btn">⛏ Start Mining</button>
-    <div id="timer" class="text-center text-light mt-1">⏳</div>
-    <button id="dark-toggle" class="btn btn-sm mt-2">🌗 Toggle</button>
-  </div>
+  <!-- Main Scrollable Content -->
+  <main class="content">
+    <!-- Announcement -->
+    <div id="announcement-box" class="announcement-box">
+      📢 EANO App & cool features are launching soon. Stay active daily!
+    </div>
 
-  <!-- 📢 Announcement -->
-  <div id="announcement-box" class="announcement-banner mt-5 mb-3">
-    <p id="latest-announcement">📢 EANO App & cool features are launching soon. Stay active daily!</p>
-  </div>
-
-  <!-- 👤 Info -->
-  <div class="main-content fade-in">
-    <div id="referral-info">
+    <!-- Stats -->
+    <div class="stats-box">
       <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
-      <p><strong>Mining Level:</strong> <span id="level">⛏ Beginner</span></p>
+      <p><strong>Mining Level:</strong> <span id="mining-level">⚒ Beginner</span></p>
       <p><strong>Trust Score:</strong> <span id="trust-score">0 - ⚠ Low Trust</span></p>
     </div>
 
-    <!-- 🧩 Coming Soon Blocks -->
-    <div class="coming-soon-block mt-4">🎮 Game Arena Coming Soon</div>
-    <div class="coming-soon-block mt-4">💰 EANO Marketplace Coming Soon</div>
-    <div class="coming-soon-block mt-4">📚 Learn & Earn Coming Soon</div>
-  </div>
+    <!-- Coming Soon Features -->
+    <div class="coming-soon">
+      <p>🎮 Game Arena Coming Soon</p>
+      <p>💰 EANO Marketplace Coming Soon</p>
+      <p>📚 Learn & Earn Coming Soon</p>
+    </div>
+  </main>
 
-  <!-- 🔌 App Logic (Embedded JS) -->
+  <!-- Background -->
+  <style>
+    body.dashboard {
+      font-family: Roboto, sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      color: #fff;
+      overflow-x: hidden;
+    }
+    .topbar, .right-controls, .menu-btn, .content {
+      position: relative;
+      z-index: 2;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      height: 100vh;
+      width: 80%;
+      background: #000;
+      padding: 1rem;
+      transition: 0.3s ease-in-out;
+      z-index: 99;
+    }
+    .sidebar.open { left: 0; }
+    .sidebar ul { list-style: none; padding: 0; }
+    .sidebar li { margin: 1rem 0; }
+    .sidebar a, .sidebar button { color: #fff; text-decoration: none; font-size: 16px; }
+
+    .menu-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: yellow;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .topbar {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .topbar .brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .top-controls {
+      margin-top: 0.5rem;
+    }
+    .right-controls {
+      position: absolute;
+      top: 6rem;
+      right: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .mine-btn {
+      background: linear-gradient(to right, gold, orange);
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 15px;
+      font-weight: bold;
+    }
+    .theme-toggle {
+      background: #333;
+      border: none;
+      padding: 0.4rem;
+      border-radius: 8px;
+    }
+    .announcement-box {
+      margin: 2rem auto;
+      max-width: 90%;
+      padding: 1rem;
+      background: rgba(0,0,0,0.6);
+      border-radius: 15px;
+      font-size: 16px;
+      text-align: center;
+    }
+    .stats-box {
+      background: rgba(255,255,255,0.1);
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+    .coming-soon {
+      margin-top: 2rem;
+      text-align: center;
+      padding-bottom: 100px;
+    }
+    main.content {
+      margin-top: 3rem;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+  </style>
+
+  <!-- Scripts -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="ui.js?v=6"></script>
+  <script type="module" src="lang.js?v=6"></script>
   <script type="module">
     import { auth, db } from './firebase.js';
     import {
-      onAuthStateChanged,
-      signOut
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-    import {
       doc, getDoc, updateDoc, serverTimestamp
-    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import {
-      updateBalanceUI,
-      updateTimerUI,
-      updateReferralCountUI,
-      getLevelFromBalance,
-      getTrustBadge,
-      showAnnouncement
+      onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      updateBalanceUI, updateTimerUI, updateReferralCountUI,
+      getLevelFromBalance, getTrustBadge, showAnnouncement
     } from './ui.js';
 
-    const MINE_RATE = 0.6;
-    const mineBtn = document.getElementById('mine-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const levelEl = document.getElementById('level');
-    const trustEl = document.getElementById('trust-score');
+    const mineBtn = document.getElementById("mine-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const levelEl = document.getElementById("mining-level");
+    const trustEl = document.getElementById("trust-score");
 
-    // 🟢 Auth Check
+    const MINE_RATE = 0.6;
+
     onAuthStateChanged(auth, async (user) => {
-      if (!user) return window.location.href = "index.html";
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+      if (!user) return (window.location.href = "index.html");
+
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
       if (!snap.exists()) return;
 
       const data = snap.data();
       const balance = data.balance || 0;
-      const referrals = data.referralCount || 0;
       const trust = data.trustScore || 0;
+      const referrals = data.referralCount || 0;
       const lastMine = data.lastMine?.toMillis?.() || 0;
 
       updateBalanceUI(balance);
@@ -126,22 +219,20 @@
       levelEl.textContent = getLevelFromBalance(balance);
       trustEl.textContent = `${trust} - ${getTrustBadge(trust)}`;
 
-      // Timer
+      // Mining Timer
       const now = Date.now();
-      const secondsSinceMine = Math.floor((now - lastMine) / 1000);
-      const remaining = Math.max(86400 - secondsSinceMine, 0);
+      const remaining = Math.max(86400 - Math.floor((now - lastMine) / 1000), 0);
       updateTimerUI(remaining);
-
       if (remaining > 0) {
         mineBtn.disabled = true;
         mineBtn.textContent = "⏳ Come Back Later";
-        let timer = setInterval(() => {
-          const seconds = Math.max(0, Math.floor(86400 - (Date.now() - lastMine) / 1000));
-          updateTimerUI(seconds);
-          if (seconds <= 0) {
+        let interval = setInterval(() => {
+          const left = Math.max(0, 86400 - Math.floor((Date.now() - lastMine) / 1000));
+          updateTimerUI(left);
+          if (left <= 0) {
             mineBtn.disabled = false;
             mineBtn.textContent = "⚡ Start Mining";
-            clearInterval(timer);
+            clearInterval(interval);
           }
         }, 1000);
       } else {
@@ -150,72 +241,52 @@
       }
 
       // Announcement
-      const annRef = doc(db, "config", "announcement");
-      const annSnap = await getDoc(annRef);
-      if (annSnap.exists()) {
-        showAnnouncement(annSnap.data().message || "");
-      }
+      const ann = await getDoc(doc(db, "config", "announcement"));
+      if (ann.exists()) showAnnouncement(ann.data().message || "");
     });
 
-    // ⛏ Mining
-    mineBtn?.addEventListener('click', async () => {
+    // Mining Action
+    mineBtn?.addEventListener("click", async () => {
       const user = auth.currentUser;
       if (!user) return;
       const ref = doc(db, "users", user.uid);
       const snap = await getDoc(ref);
       if (!snap.exists()) return;
-      const data = snap.data();
-      const lastMine = data.lastMine?.toMillis?.() || 0;
+
+      const lastMine = snap.data().lastMine?.toMillis?.() || 0;
       const now = Date.now();
-      const canMine = now - lastMine >= 86400 * 1000;
+      if (now - lastMine < 86400 * 1000) return alert("Come back later");
 
-      if (!canMine) return alert("⛏ Come back after 24hrs");
-
-      const newBalance = (data.balance || 0) + (MINE_RATE * 24);
+      const newBal = (snap.data().balance || 0) + MINE_RATE * 24;
       await updateDoc(ref, {
-        balance: newBalance,
+        balance: newBal,
         lastMine: serverTimestamp()
       });
 
-      updateBalanceUI(newBalance);
-      levelEl.textContent = getLevelFromBalance(newBalance);
+      updateBalanceUI(newBal);
+      levelEl.textContent = getLevelFromBalance(newBal);
       mineBtn.disabled = true;
-      mineBtn.textContent = "✅ Mined!";
+      mineBtn.textContent = "⛏ Mined!";
     });
 
-    // 🚪 Logout
-    logoutBtn?.addEventListener('click', async () => {
+    // Logout
+    logoutBtn?.addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "index.html";
     });
-  </script>
 
-  <!-- ☰ Menu Toggle -->
-  <script>
-    const toggleBtn = document.getElementById("menu-toggle");
-    const sidebarMenu = document.getElementById("sidebar-menu");
-    toggleBtn?.addEventListener("click", () => {
-      sidebarMenu.classList.toggle("open");
+    // Sidebar toggle
+    const menuBtn = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("sidebar");
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
     });
-    sidebarMenu?.querySelectorAll("a, button").forEach((el) => {
-      el.addEventListener("click", () => sidebarMenu.classList.remove("open"));
-    });
-  </script>
 
-  <!-- 🌗 Light/Dark -->
-  <script>
-    const darkBtn = document.getElementById("dark-toggle");
-    darkBtn?.addEventListener("click", () => {
+    // Theme toggle
+    document.getElementById("dark-toggle").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
       document.body.classList.toggle("dark-mode");
     });
-  </script>
-
-  <!-- ✅ Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
-    }
   </script>
 </body>
 </html>
