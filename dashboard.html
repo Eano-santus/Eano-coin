@@ -110,7 +110,12 @@
       </select>
     </div><div class="balance">Welcome, <span id="usernameDisplay">User</span></div>
 
-<button class="mine-btn" onclick="startMining()">Mine @ 0.600 EANO</button>
+<div id="miningSection">
+  <button class="mine-btn" id="mineBtn" onclick="startMining()">Mine @ 0.600 EANO/hr</button>
+  <div id="miningStatus" style="margin-top:10px; display:none;">
+    ⛏ Mining Active | <span id="countdownText">24:00:00</span> | Earned: <span id="earnedAmount">0.000</span> EANO
+  </div>
+  
 <div style="margin-top:10px">
   <button onclick="toggleTheme()">Toggle Light/Dark</button>
 </div>
@@ -168,9 +173,69 @@
     function toggleTheme() {
       document.body.classList.toggle("light-mode");
     }
+    
+      <script>
+  const ratePerSecond = 0.600 / 3600; // 0.00016666666 EANO/sec
+  let miningInterval;
+  let miningEndTime;
+  let currentEarned = 0;
 
-    function startMining() {
-      alert("Mining started at 0.600 EANO/hour. Timer logic will be implemented.");
+  function startMining() {
+    const now = Date.now();
+    miningEndTime = now + 24 * 60 * 60 * 1000; // 24 hours from now
+    localStorage.setItem("miningEndTime", miningEndTime);
+    localStorage.setItem("minedStartTime", now);
+    localStorage.setItem("earnedAmount", "0");
+    document.getElementById("mineBtn").style.display = "none";
+    document.getElementById("miningStatus").style.display = "block";
+    currentEarned = 0;
+    startCountdown();
+  }
+
+  function startCountdown() {
+    miningInterval = setInterval(() => {
+      const now = Date.now();
+      const end = parseInt(localStorage.getItem("miningEndTime"), 10);
+      const start = parseInt(localStorage.getItem("minedStartTime"), 10);
+      if (now >= end) {
+        clearInterval(miningInterval);
+        localStorage.removeItem("miningEndTime");
+        document.getElementById("mineBtn").style.display = "inline-block";
+        document.getElementById("miningStatus").style.display = "none";
+        updateBalanceDisplay(); // Optional
+        return;
+      }
+
+      const secondsPassed = Math.floor((now - start) / 1000);
+      currentEarned = (secondsPassed * ratePerSecond).toFixed(4);
+      document.getElementById("earnedAmount").textContent = currentEarned;
+
+      const timeLeft = end - now;
+      const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+      document.getElementById("countdownText").textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+      // Update display balance temporarily
+      document.getElementById("balanceDisplay").textContent = (parseFloat(currentEarned)).toFixed(4);
+    }, 1000);
+  }
+
+  function pad(num) {
+    return num.toString().padStart(2, "0");
+  }
+
+  function resumeMiningIfActive() {
+    const end = localStorage.getItem("miningEndTime");
+    if (end && Date.now() < parseInt(end, 10)) {
+      document.getElementById("mineBtn").style.display = "none";
+      document.getElementById("miningStatus").style.display = "block";
+      startCountdown();
+    }
+  }
+
+  resumeMiningIfActive();
+</script>
     }
   </script></body>
 </html>
