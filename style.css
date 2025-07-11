@@ -7,14 +7,42 @@
 
 /* ROOT VARIABLES */
 :root {
+  /* Colors */
   --primary-bg: #0f0f0f;
   --sidebar-bg: #1c1c1c;
   --topbar-bg: #1a1a1a;
   --highlight-color: #ffcc00;
   --text-color: #f5f5f5;
-  --secondary-text: #aaa;
+  --secondary-text: #aaaaaa;
   --border-color: #333;
   --card-bg: #1e1e1e;
+  --accent-color: #ffc107;
+
+  /* Shadows */
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+  /* Font sizes */
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-md: 1rem;
+  --font-lg: 1.25rem;
+  --font-xl: 1.5rem;
+  --font-xxl: 2rem;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  /* Spacing */
+  --padding-sm: 0.5rem;
+  --padding-md: 1rem;
+  --padding-lg: 2rem;
+
+  /* Transition */
+  --transition-fast: 0.2s ease-in-out;
+  --transition-slow: 0.4s ease-in-out;
 }
 
 /* BODY */
