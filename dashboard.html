@@ -5,38 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Dashboard</title>
 
-  <!-- Fonts + Styles -->
+  <!-- Fonts + Theme -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=6" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
-<body class="dashboard dark-mode">
+<body class="dashboard">
 
-  <!-- Sidebar -->
-  <div id="sidebar" class="sidebar">
-    <ul>
-      <li><a href="dashboard.html">🏡 Home</a></li>
-      <li><a href="#" onclick="alert('Mainnet coming soon')">🌐 Mainnet</a></li>
-      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
-      <li><a href="invite.html">👥 Team</a></li>
-      <li><a href="#" onclick="alert('Community coming soon')">💬 Community</a></li>
-      <li><a href="profile.html">👤 Profile</a></li>
-      <li><a href="#" onclick="alert('Founder: Santus Santorum')">👑 Author</a></li>
-      <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
-      <li><a href="https://t.me/eanonetwork" target="_blank">🛟 Support Portal</a></li>
-      <li><button id="logout-btn">🚪 Logout</button></li>
-    </ul>
-  </div>
-
-  <!-- Menu Toggle -->
-  <button id="menu-toggle" class="menu-btn">☰ Menu</button>
-
-  <!-- Topbar -->
+  <!-- 🔝 Topbar -->
   <div class="topbar">
-    <div class="brand">EANO</div>
-    <div><span id="balance">0.000</span> EANO | <span id="timer">⏳</span></div>
-    <div class="top-controls">
+    <button id="menu-toggle">☰</button>
+    <strong class="brand">EANO</strong>
+    <div>
+      <span id="balance">0.000</span> EANO | <span id="timer">⏳</span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
       <select id="lang-select">
         <option value="en">🌍 English</option>
         <option value="fr">🇫🇷 French</option>
@@ -47,140 +33,57 @@
         <option value="pid">🇳🇬 Pidgin</option>
         <option value="zh">🇨🇳 中文</option>
       </select>
+      <button id="dark-toggle">🌗</button>
+      <button id="logout-btn">🚪</button>
     </div>
   </div>
 
-  <!-- Right Side Controls -->
-  <div class="right-controls">
-    <button id="mine-btn" class="mine-btn">⛏ Start Mining</button>
-    <button id="dark-toggle" class="theme-toggle">🌗</button>
+  <!-- 📱 Sidebar -->
+  <div id="sidebar-menu">
+    <ul>
+      <li><a href="dashboard.html">🏡 Home</a></li>
+      <li><button onclick="showSection('Mainnet')">🔗 Mainnet</button></li>
+      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
+      <li><a href="invite.html">👥 Team</a></li>
+      <li><button onclick="showSection('Community')">🌍 Community</button></li>
+      <li><a href="profile.html">👤 Profile</a></li>
+      <li><button onclick="showSection('Author')">🧠 Author</button></li>
+      <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
+      <li><a href="https://t.me/EANO_SUPPORT" target="_blank">🆘 Support</a></li>
+      <li><button id="logout-btn">🚪 Logout</button></li>
+    </ul>
   </div>
 
-  <!-- Main Scrollable Content -->
-  <main class="content">
-    <!-- Announcement -->
-    <div id="announcement-box" class="announcement-box">
-      📢 EANO App & cool features are launching soon. Stay active daily!
+  <!-- ⛏ Mining Button & Theme Toggle -->
+  <div class="sidebar">
+    <button id="mine-btn">⚡ Start Mining</button>
+    <button id="dark-toggle-bottom">🌗</button>
+  </div>
+
+  <!-- 📣 Announcement -->
+  <div class="main-content fade-in">
+    <div id="announcement-box" class="announcement-banner">
+      📢 Welcome to EANO! Cool features launching soon.
     </div>
 
-    <!-- Stats -->
-    <div class="stats-box">
+    <!-- 🧑‍🤝‍🧑 Referral Info -->
+    <div id="referral-info">
       <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
-      <p><strong>Mining Level:</strong> <span id="mining-level">⚒ Beginner</span></p>
-      <p><strong>Trust Score:</strong> <span id="trust-score">0 - ⚠ Low Trust</span></p>
+      <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
+      <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
     </div>
 
-    <!-- Coming Soon Features -->
-    <div class="coming-soon">
-      <p>🎮 Game Arena Coming Soon</p>
-      <p>💰 EANO Marketplace Coming Soon</p>
-      <p>📚 Learn & Earn Coming Soon</p>
-    </div>
-  </main>
+    <!-- 🔲 Coming Soon Boxes -->
+    <div class="coming-soon-block">📱 Feature 1<br>Coming Soon...</div>
+    <div class="coming-soon-block">🎮 Feature 2<br>Coming Soon...</div>
+    <div class="coming-soon-block">💰 Feature 3<br>Coming Soon...</div>
+  </div>
 
-  <!-- Background -->
-  <style>
-    body.dashboard {
-      font-family: Roboto, sans-serif;
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
-      margin: 0;
-      color: #fff;
-      overflow-x: hidden;
-    }
-    .topbar, .right-controls, .menu-btn, .content {
-      position: relative;
-      z-index: 2;
-    }
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: -100%;
-      height: 100vh;
-      width: 80%;
-      background: #000;
-      padding: 1rem;
-      transition: 0.3s ease-in-out;
-      z-index: 99;
-    }
-    .sidebar.open { left: 0; }
-    .sidebar ul { list-style: none; padding: 0; }
-    .sidebar li { margin: 1rem 0; }
-    .sidebar a, .sidebar button { color: #fff; text-decoration: none; font-size: 16px; }
-
-    .menu-btn {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      background: yellow;
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-    .topbar {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .topbar .brand {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    .top-controls {
-      margin-top: 0.5rem;
-    }
-    .right-controls {
-      position: absolute;
-      top: 6rem;
-      right: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .mine-btn {
-      background: linear-gradient(to right, gold, orange);
-      border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 15px;
-      font-weight: bold;
-    }
-    .theme-toggle {
-      background: #333;
-      border: none;
-      padding: 0.4rem;
-      border-radius: 8px;
-    }
-    .announcement-box {
-      margin: 2rem auto;
-      max-width: 90%;
-      padding: 1rem;
-      background: rgba(0,0,0,0.6);
-      border-radius: 15px;
-      font-size: 16px;
-      text-align: center;
-    }
-    .stats-box {
-      background: rgba(255,255,255,0.1);
-      margin: 1rem;
-      padding: 1rem;
-      border-radius: 10px;
-      font-size: 15px;
-    }
-    .coming-soon {
-      margin-top: 2rem;
-      text-align: center;
-      padding-bottom: 100px;
-    }
-    main.content {
-      margin-top: 3rem;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-  </style>
-
-  <!-- Scripts -->
+  <!-- 🔌 Scripts -->
   <script type="module" src="firebase.js"></script>
-  <script type="module" src="ui.js?v=6"></script>
-  <script type="module" src="lang.js?v=6"></script>
+  <script type="module" src="ui.js"></script>
+  <script type="module" src="lang.js"></script>
+
   <script type="module">
     import { auth, db } from './firebase.js';
     import {
@@ -192,47 +95,55 @@
     import {
       updateBalanceUI, updateTimerUI, updateReferralCountUI,
       getLevelFromBalance, getTrustBadge, showAnnouncement
-    } from './ui.js';
-
-    const mineBtn = document.getElementById("mine-btn");
-    const logoutBtn = document.getElementById("logout-btn");
-    const levelEl = document.getElementById("mining-level");
-    const trustEl = document.getElementById("trust-score");
+    } from "./ui.js";
 
     const MINE_RATE = 0.6;
+    const mineBtn = document.getElementById("mine-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const levelEl = document.getElementById("level");
+    const trustEl = document.getElementById("trust-score");
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) return (window.location.href = "index.html");
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
 
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) return;
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+
+      if (!snap.exists()) {
+        alert("User data missing");
+        return;
+      }
 
       const data = snap.data();
+      const lastMine = data.lastMine?.toMillis?.() || 0;
       const balance = data.balance || 0;
       const trust = data.trustScore || 0;
       const referrals = data.referralCount || 0;
-      const lastMine = data.lastMine?.toMillis?.() || 0;
 
       updateBalanceUI(balance);
       updateReferralCountUI(referrals);
       levelEl.textContent = getLevelFromBalance(balance);
       trustEl.textContent = `${trust} - ${getTrustBadge(trust)}`;
 
-      // Mining Timer
+      // Countdown
       const now = Date.now();
-      const remaining = Math.max(86400 - Math.floor((now - lastMine) / 1000), 0);
+      const elapsed = now - lastMine;
+      const remaining = Math.max(86400 - Math.floor(elapsed / 1000), 0);
       updateTimerUI(remaining);
+
       if (remaining > 0) {
         mineBtn.disabled = true;
         mineBtn.textContent = "⏳ Come Back Later";
-        let interval = setInterval(() => {
-          const left = Math.max(0, 86400 - Math.floor((Date.now() - lastMine) / 1000));
-          updateTimerUI(left);
-          if (left <= 0) {
+        const interval = setInterval(() => {
+          const secs = Math.max(0, 86400 - Math.floor((Date.now() - lastMine) / 1000));
+          updateTimerUI(secs);
+          if (secs <= 0) {
+            clearInterval(interval);
             mineBtn.disabled = false;
             mineBtn.textContent = "⚡ Start Mining";
-            clearInterval(interval);
           }
         }, 1000);
       } else {
@@ -240,53 +151,75 @@
         mineBtn.textContent = "⚡ Start Mining";
       }
 
-      // Announcement
-      const ann = await getDoc(doc(db, "config", "announcement"));
-      if (ann.exists()) showAnnouncement(ann.data().message || "");
+      // Announcements
+      const announceRef = doc(db, "config", "announcement");
+      const annSnap = await getDoc(announceRef);
+      if (annSnap.exists()) {
+        showAnnouncement(annSnap.data().message || "");
+      }
     });
 
-    // Mining Action
-    mineBtn?.addEventListener("click", async () => {
+    // Mining Button
+    mineBtn.addEventListener("click", async () => {
       const user = auth.currentUser;
       if (!user) return;
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
+
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
       if (!snap.exists()) return;
 
-      const lastMine = snap.data().lastMine?.toMillis?.() || 0;
+      const data = snap.data();
+      const lastMine = data.lastMine?.toMillis?.() || 0;
       const now = Date.now();
-      if (now - lastMine < 86400 * 1000) return alert("Come back later");
+      if (now - lastMine < 86400000) {
+        alert("⛏ Wait 24h before mining again.");
+        return;
+      }
 
-      const newBal = (snap.data().balance || 0) + MINE_RATE * 24;
-      await updateDoc(ref, {
-        balance: newBal,
+      const newBalance = (data.balance || 0) + MINE_RATE * 24;
+      await updateDoc(userRef, {
+        balance: newBalance,
         lastMine: serverTimestamp()
       });
 
-      updateBalanceUI(newBal);
-      levelEl.textContent = getLevelFromBalance(newBal);
+      updateBalanceUI(newBalance);
+      levelEl.textContent = getLevelFromBalance(newBalance);
       mineBtn.disabled = true;
       mineBtn.textContent = "⛏ Mined!";
     });
 
     // Logout
-    logoutBtn?.addEventListener("click", async () => {
+    logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
       window.location.href = "index.html";
     });
 
     // Sidebar toggle
-    const menuBtn = document.getElementById("menu-toggle");
-    const sidebar = document.getElementById("sidebar");
-    menuBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("open");
+    document.getElementById("menu-toggle").addEventListener("click", () => {
+      document.getElementById("sidebar-menu").classList.toggle("open");
     });
 
-    // Theme toggle
-    document.getElementById("dark-toggle").addEventListener("click", () => {
+    // Dark mode
+    const toggleTheme = () => {
       document.body.classList.toggle("light-mode");
       document.body.classList.toggle("dark-mode");
-    });
+    };
+    document.getElementById("dark-toggle").addEventListener("click", toggleTheme);
+    document.getElementById("dark-toggle-bottom").addEventListener("click", toggleTheme);
+
+    // Section Alert
+    window.showSection = (section) => {
+      alert(`${section} coming soon...`);
+    };
+  </script>
+
+  <!-- PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log("✅ SW registered"))
+        .catch(err => console.error("❌ SW failed", err));
+    }
   </script>
 </body>
 </html>
