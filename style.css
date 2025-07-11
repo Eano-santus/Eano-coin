@@ -1,87 +1,96 @@
-/* === Global Resets === */
+/* ==== Base & Global ==== */
 html, body {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
-  background: url('eano-bg.png') no-repeat center top fixed;
+  background: url('eano-bg.png') no-repeat center center fixed;
   background-size: cover;
+  background-attachment: fixed;
   color: #fff;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
 }
 
-/* === Overlay Tint */
+body.light-mode {
+  background-color: #f3f3f3;
+  color: #111;
+}
+
+body.light-mode .topbar,
+body.light-mode .main-content,
+body.light-mode #sidebar-menu {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
+
+/* ==== Overlay ==== */
 body::before {
   content: "";
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: -1;
 }
 
-/* === Topbar === */
+/* ==== Topbar ==== */
 .topbar {
   height: 60px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.topbar .brand {
+.brand {
   font-size: 20px;
   font-weight: bold;
-  color: gold;
 }
 
-.topbar .top-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.topbar select,
+.topbar button {
+  margin-left: 8px;
 }
 
-#lang-select {
-  background: transparent;
-  color: #fff;
-  border: 1px solid #fff;
-  border-radius: 6px;
-  padding: 2px 8px;
-}
-
-/* === Sidebar Toggle Button === */
+/* ==== Menu Toggle Button ==== */
 #menu-toggle {
   position: fixed;
   top: 15px;
   left: 15px;
-  background-color: #ffd700;
+  background-color: gold;
   color: #000;
+  padding: 8px 12px;
+  border-radius: 5px;
   font-weight: bold;
-  padding: 10px 15px;
-  border-radius: 6px;
-  z-index: 1100;
+  z-index: 1001;
   border: none;
+  cursor: pointer;
 }
 
-/* === Sidebar Menu === */
+/* ==== Sidebar Menu ==== */
 #sidebar-menu {
   position: fixed;
   top: 0;
   left: -260px;
-  width: 250px;
+  width: 240px;
   height: 100%;
-  background: rgba(0, 0, 0, 0.95);
-  color: white;
+  background-color: #1c1c1c;
+  color: #fff;
   padding: 20px;
   transition: left 0.3s ease;
-  z-index: 1099;
-  box-shadow: 2px 0 10px rgba(255, 215, 0, 0.2);
+  z-index: 1000;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
 }
 
 #sidebar-menu.open {
@@ -91,38 +100,41 @@ body::before {
 #sidebar-menu ul {
   list-style: none;
   padding: 0;
-  margin: 40px 0 0;
+  margin-top: 80px;
 }
 
 #sidebar-menu li {
-  margin: 16px 0;
+  margin-bottom: 14px;
 }
 
-#sidebar-menu a, #sidebar-menu button {
+#sidebar-menu a,
+#sidebar-menu button {
   color: #ffd700;
+  text-decoration: none;
+  font-size: 16px;
   background: none;
   border: none;
-  font-size: 16px;
+  display: block;
   width: 100%;
   text-align: left;
-  display: block;
-  padding: 8px 0;
+  padding: 5px 0;
+  font-family: inherit;
 }
 
-/* === Mining Button === */
+/* ==== Mine Button ==== */
 #mine-btn {
+  position: fixed;
+  top: 75px;
+  right: 20px;
   background: linear-gradient(45deg, gold, orange);
   border: none;
-  padding: 10px;
+  padding: 12px 20px;
   border-radius: 10px;
-  font-weight: 600;
+  font-weight: bold;
   color: #000;
   box-shadow: 0 0 10px gold;
   animation: glow 1.5s infinite alternate;
-  position: fixed;
-  right: 10px;
-  top: 70px;
-  z-index: 1001;
+  z-index: 999;
 }
 
 @keyframes glow {
@@ -130,115 +142,110 @@ body::before {
   100% { box-shadow: 0 0 20px gold; }
 }
 
-/* === Dark Mode Button === */
+/* ==== Dark/Light Toggle ==== */
 #dark-toggle {
   background: transparent;
-  border: 1px solid #fff;
-  padding: 5px 8px;
-  border-radius: 6px;
-  color: #fff;
+  border: 1px solid #ccc;
+  color: #ccc;
+  padding: 6px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 130px;
+  position: fixed;
+  right: 20px;
+  z-index: 999;
 }
 
-/* === Logout Button === */
+/* ==== Logout Button ==== */
 #logout-btn {
-  background: transparent;
   border: 1px solid #dc3545;
   color: #dc3545;
-  padding: 6px 10px;
+  background: transparent;
+  padding: 8px 12px;
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
 }
 
-/* === Announcement Section === */
+/* ==== Announcement Box ==== */
 #announcement-box {
-  margin-top: 100px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #111;
-  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem;
   border-radius: 12px;
   text-align: center;
-  font-size: 18px;
+  color: gold;
+  font-size: 16px;
   max-width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
-  z-index: 5;
-}
-
-/* === Main Content === */
-.main-content {
-  margin-top: 200px;
-  padding: 1rem;
-  position: relative;
+  margin: 120px auto 40px auto;
   z-index: 1;
 }
 
-/* === Floating Boxes: Coming Soon === */
+/* ==== Main Content ==== */
+.main-content {
+  padding: 1rem;
+  margin: 200px 10px 80px 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  z-index: 1;
+}
+
+/* ==== Coming Soon Boxes ==== */
 .coming-soon-box {
-  background: rgba(255,255,255,0.85);
-  color: #000;
-  width: 100%;
-  max-width: 90%;
-  height: 150px;
-  border-radius: 14px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  margin: 20px auto;
+  height: 180px;
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-weight: bold;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-weight: 600;
+  align-items: center;
+  font-size: 20px;
 }
 
-/* === Scroll Behavior === */
-body {
-  overflow-y: scroll;
+/* ==== Referrals & Level Info ==== */
+#referral-info p {
+  font-size: 16px;
+  line-height: 1.8;
 }
 
-/* === Light / Dark Themes === */
-.light-mode {
-  background-color: #f0f0f0;
-  color: #000;
-}
-
-.light-mode .topbar,
-.light-mode #sidebar-menu,
-.light-mode .main-content {
-  background: rgba(255,255,255,0.95);
-  color: #000;
-}
-
-.dark-mode {
-  background-color: #121212;
-  color: #fff;
-}
-
+/* ==== Fade Animation ==== */
 .fade-in {
-  animation: fadeIn 0.6s ease-in-out;
+  animation: fadeIn 0.5s ease-in-out;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* === Mobile Adjustments === */
-@media (max-width: 768px) {
+/* ==== Responsive Mobile ==== */
+@media screen and (max-width: 768px) {
   .topbar {
     flex-direction: column;
-    gap: 0.3rem;
-    text-align: center;
-    padding: 0.5rem;
     height: auto;
-  }
-
-  #mine-btn {
-    top: 130px;
-    right: 15px;
+    padding: 0.5rem;
   }
 
   #announcement-box {
-    margin-top: 140px;
-    font-size: 16px;
-    padding: 1rem;
+    margin-top: 100px;
+    width: 95%;
+    font-size: 14px;
+  }
+
+  .main-content {
+    margin-top: 250px;
+  }
+
+  #mine-btn {
+    top: 80px;
+    right: 15px;
+    padding: 10px 15px;
+  }
+
+  #dark-toggle {
+    top: 140px;
+    right: 15px;
   }
 }
