@@ -183,35 +183,74 @@ body::before {
 }
 
 /* ==== Responsive ==== */
-@media screen and (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    height: auto;
-    padding: 10px;
-    text-align: center;
-    gap: 5px;
-  }
-
+@media (max-width: 768px) {
   .sidebar {
-    top: 120px;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 200px;
+    padding-top: 50px;
   }
 
-  .main-content {
-    margin-top: 140px;
-    padding: 1rem;
+  .sidebar.show ~ .main {
+    margin-left: 200px;
   }
 
-  #announcement-box {
-    font-size: 15px;
-    padding: 5rem;
-    width: 105%;
-    position: center 
+  .menu-toggle {
+    top: 15px;
+    left: 15px;
+    font-size: 1.2em;
   }
 
-  #menu-toggle {
-    down: 65px;
-    right: 10px;
+  .main {
+    padding: 15px;
   }
+
+  .balance {
+    font-size: 18px;
+  }
+
+  .mine-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+
+  #languageSelect {
+    margin-top: 10px;
+    float: none;
+    width: 100%;
+  }
+
+  .announcement, .feature-boxes {
+    padding: 15px;
+  }
+
+  .feature-box {
+    padding: 10px;
+  }
+}
+
+.light-mode {
+  background-color: #f9f9f9;
+  color: #222;
+}
+
+.light-mode .sidebar {
+  background-color: #eaeaea;
+}
+
+.light-mode .sidebar a {
+  color: #000;
+  border-bottom: 1px solid #ccc;
+}
+
+.light-mode .announcement,
+.light-mode .feature-boxes,
+.light-mode .feature-box {
+  background: #f1f1f1;
+  color: #222;
+}
+
+.light-mode .mine-btn {
+  background: #222;
+  color: gold;
 }
