@@ -1,26 +1,24 @@
-// ui.js
-
-// ✅ Update the balance on the dashboard
+// ✅ Update balance
 export function updateBalanceUI(balance) {
   const el = document.getElementById("balance");
   if (el) {
-    el.textContent = balance.toFixed(3);
+    el.textContent = parseFloat(balance).toFixed(3);
     el.classList.add("fade-in");
   }
 }
 
-// ✅ Update the mining countdown timer
-export function updateTimerUI(remainingSeconds) {
-  const timerEl = document.getElementById("timer");
-  if (timerEl) {
-    const h = Math.floor(remainingSeconds / 3600);
-    const m = Math.floor((remainingSeconds % 3600) / 60);
-    const s = remainingSeconds % 60;
-    timerEl.textContent = `⏳ ${h}h ${m}m ${s}s`;
+// ✅ Update mining countdown timer
+export function updateTimerUI(seconds) {
+  const el = document.getElementById("timer");
+  if (el) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    el.textContent = `⏳ ${h}h ${m}m ${s}s`;
   }
 }
 
-// ✅ Update user email on UI
+// ✅ Update user email
 export function updateUserEmailUI(email) {
   const el = document.getElementById("user-email");
   if (el) {
@@ -29,7 +27,7 @@ export function updateUserEmailUI(email) {
   }
 }
 
-// ✅ Update referral count on UI
+// ✅ Update referral count
 export function updateReferralCountUI(count) {
   const el = document.getElementById("referral-count");
   if (el) {
@@ -38,7 +36,7 @@ export function updateReferralCountUI(count) {
   }
 }
 
-// ✅ Determine mining level from balance
+// ✅ Get mining level badge from balance
 export function getLevelFromBalance(balance) {
   if (balance >= 3000) return "🐘 Elephant";
   if (balance >= 2000) return "🦍 Gorilla";
@@ -51,7 +49,7 @@ export function getLevelFromBalance(balance) {
   return "⛏ Beginner";
 }
 
-// ✅ Determine trust badge from trust score
+// ✅ Get trust badge from score
 export function getTrustBadge(score) {
   if (score >= 1000) return "✅ Trusted Miner";
   if (score >= 500) return "🛡 Reliable Miner";
@@ -59,54 +57,52 @@ export function getTrustBadge(score) {
   return "⚠ Low Trust";
 }
 
-// ✅ Show announcement message in box
+// ✅ Show announcement
 export function showAnnouncement(message) {
   const box = document.getElementById("announcement-box");
   const msg = document.getElementById("latest-announcement");
 
   if (box && msg && message) {
-    box.style.display = "block";
     msg.textContent = message;
+    box.style.display = "block";
     box.classList.add("fade-in");
   } else if (box) {
     box.style.display = "none";
   }
 }
 
-// ✅ Sidebar Menu Toggle
+// ✅ Sidebar toggle
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("menu-toggle");
-  const sidebarMenu = document.getElementById("sidebar-menu");
+  const sidebar = document.getElementById("sidebar-menu");
 
-  if (toggleBtn && sidebarMenu) {
+  if (toggleBtn && sidebar) {
     toggleBtn.addEventListener("click", () => {
-      sidebarMenu.classList.toggle("open");
+      sidebar.classList.toggle("open");
     });
 
-    sidebarMenu.querySelectorAll("a, button").forEach((el) => {
+    sidebar.querySelectorAll("a, button").forEach((el) => {
       el.addEventListener("click", () => {
-        sidebarMenu.classList.remove("open");
+        sidebar.classList.remove("open");
       });
     });
   }
-});
 
-// ✅ Dark/Light Mode Toggle
-document.addEventListener("DOMContentLoaded", () => {
-  const toggle = document.getElementById("dark-toggle");
-  if (toggle) {
-    toggle.addEventListener("click", () => {
+  // ✅ Dark mode toggle
+  const darkToggle = document.getElementById("dark-toggle");
+  if (darkToggle) {
+    darkToggle.addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
       document.body.classList.toggle("dark-mode");
-      const isDark = document.body.classList.contains("dark-mode");
-      localStorage.setItem("eanoTheme", isDark ? "dark" : "light");
+      localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
     });
 
-    const savedTheme = localStorage.getItem("eanoTheme");
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark-mode");
-    } else if (savedTheme === "light") {
+    // Load saved mode
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") {
       document.body.classList.add("light-mode");
+    } else {
+      document.body.classList.add("dark-mode");
     }
   }
 });
