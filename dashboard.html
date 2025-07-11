@@ -110,7 +110,12 @@
       </select>
     </div><div class="balance">Welcome, <span id="usernameDisplay">User</span></div>
 
-<button class="mine-btn" onclick="startMining()">Mine @ 0.600 EANO</button>
+<button class="mine-btn" id="mineBtn" onclick="startMining()">Mine @ 0.600 EANO</button>
+    <div id="miningStatus" style="display: none; margin-top: 15px;">
+  ⛏️ Mining... <br />
+  Earned: <span id="earnedAmount">0.0000</span> EANO<br />
+  Time Left: <span id="countdownText">24:00:00</span>
+    </div>
 <div style="margin-top:10px">
   <button onclick="toggleTheme()">Toggle Light/Dark</button>
 </div>
