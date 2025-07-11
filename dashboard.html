@@ -95,11 +95,11 @@
     .sidebar {
       position: fixed;
       top: 0;
-      left: -100%;
+      left: -260px;
       height: 100vh;
-      width: 80%;
-      background: #000;
-      padding: 1rem;
+      width: 250px;
+      background-color: #1c1c1c;
+      padding: 20px;
       transition: 0.3s ease-in-out;
       z-index: 999;
     }
@@ -149,14 +149,15 @@
       padding: 0.4rem;
       border-radius: 8px;
     }
-    .announcement-box {
-      margin: 2rem auto;
-      max-width: 90%;
-      padding: 1rem;
-      background: rgba(0,0,0,0.6);
-      border-radius: 15px;
-      font-size: 16px;
-      text-align: center;
+    #announcement-box {
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 950; /* make sure it's above bg but below topbar */
     }
     .stats-box {
       background: rgba(255,255,255,0.1);
