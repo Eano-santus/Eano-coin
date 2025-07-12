@@ -4,59 +4,109 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO • Profile</title>
-
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 </head>
-<body class="dashboard" id="dashboard-body">
-
-  <!-- 🔝 Topbar -->
-  <div class="topbar">
-    <div class="d-flex align-items-center">
-      <strong class="brand">EANO</strong>
-    </div>
-    <div>
-      <span id="user-email">Loading...</span>
-    </div>
-    <div class="d-flex align-items-center gap-2">
-      <button id="dark-toggle">🌗</button>
-      <a href="dashboard.html" class="btn btn-sm btn-outline-light">🏠 Dashboard</a>
-    </div>
+<body>
+  <div class="nav-fixed">
+    <h1>👤 Profile</h1>
+    <button onclick="goBack()" class="btn btn-outline-light">← Back</button>
   </div>
 
-  <!-- 📦 Main Content -->
-  <div class="main-content fade-in">
-    <h3>👤 Profile</h3>
-
-    <!-- Username -->
-    <label for="username">Username</label>
-    <input type="text" id="username" class="form-control" placeholder="Your username" />
-
-    <!-- Phone -->
-    <label for="phone">Phone Number</label>
-    <input type="tel" id="phone" class="form-control" placeholder="+234..." />
-
-    <!-- Referral Code -->
-    <p class="mt-3"><strong>Referral Code:</strong> <span id="referral-code">Loading...</span></p>
-
-    <!-- Stats -->
-    <div class="mt-3">
-      <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
-      <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
-      <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
-    </div>
-
-    <!-- Whitepaper & Support -->
-    <div class="mt-4">
-      <a href="https://your-whitepaper-link.com" target="_blank" class="btn btn-outline-warning w-100 mb-2">📄 Read Whitepaper</a>
-      <a href="https://your-support-portal.com" target="_blank" class="btn btn-outline-info w-100">🛠 Support Portal</a>
-    </div>
-
-    <!-- Save Button -->
-    <button id="save-profile-btn" class="btn btn-success mt-4 w-100">💾 Save Profile</button>
+  <div class="feature-card">
+    <h2>Welcome, <span id="displayName">...</span>!</h2>
+    <p><strong>Email:</strong> <span id="email">...</span></p>
+    <p><strong>Phone:</strong> <span id="phone">Not set</span></p>
+    <p><strong>Score:</strong> <span id="score">0</span></p>
+    <p><strong>Trust Score:</strong> <span id="trustScore">0</span></p>
+    <p><strong>Balance:</strong> <span id="balance">0.000</span> EANO</p>
   </div>
 
-  <!-- ✅ Scripts -->
-  <script type="module" src="profile.js?v=3"></script>
-  <script type="module" src="ui.js?v=3"></script>
+  <div class="feature-card">
+    <h3>✏️ Update Profile</h3>
+    <input type="text" id="newName" placeholder="New name" class="form-input" /><br/><br/>
+    <input type="text" id="newPhone" placeholder="Phone number" class="form-input" /><br/><br/>
+    <button onclick="updateProfile()" class="btn btn-warning">Update</button>
+  </div>
+
+  <div class="footer">© 2025 EANO • Trust Through Mining</div>
+
+  <!-- Firebase + Profile Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, updateProfile as updateAuthProfile } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUserId = "";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      currentUserId = user.uid;
+
+      document.getElementById("email").textContent = user.email;
+      document.getElementById("displayName").textContent = user.displayName || "Miner";
+
+      const userRef = doc(db, "users", currentUserId);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("score").textContent = data.score || 0;
+        document.getElementById("trustScore").textContent = data.trustScore || 0;
+        document.getElementById("balance").textContent = (data.balance || 0).toFixed(3);
+        document.getElementById("phone").textContent = data.phone || "Not set";
+      }
+    });
+
+    async function updateProfile() {
+      const name = document.getElementById("newName").value.trim();
+      const phone = document.getElementById("newPhone").value.trim();
+
+      if (!name && !phone) {
+        alert("Please enter name or phone to update.");
+        return;
+      }
+
+      const updates = {};
+      if (name) updates.name = name;
+      if (phone) updates.phone = phone;
+
+      const userRef = doc(db, "users", currentUserId);
+      await updateDoc(userRef, updates);
+
+      if (name) {
+        await updateAuthProfile(auth.currentUser, { displayName: name });
+        document.getElementById("displayName").textContent = name;
+      }
+      if (phone) {
+        document.getElementById("phone").textContent = phone;
+      }
+
+      document.getElementById("newName").value = "";
+      document.getElementById("newPhone").value = "";
+      alert("✅ Profile updated.");
+    }
+
+    function goBack() {
+      window.location.href = "dashboard.html";
+    }
+  </script>
 </body>
 </html>
