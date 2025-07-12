@@ -4,12 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO • Sign In / Sign Up</title>
-
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-
   <style>
     body {
       margin: 0;
@@ -109,22 +107,26 @@
     <button id="theme-toggle" class="btn btn-outline-light mt-2">🌗 Toggle Light/Dark</button>
 
     <!-- 📝 Sign-Up Section -->
-    <div id="signup-section">
-      <input type="text" id="signup-firstname" class="form-control" placeholder="First Name" />
-      <input type="text" id="signup-lastname" class="form-control" placeholder="Last Name" />
-      <input type="text" id="signup-username" class="form-control" placeholder="Username" />
-      <input type="email" id="signup-email" class="form-control" placeholder="Email" />
-      <input type="password" id="signup-password" class="form-control" placeholder="Password" />
-      <button id="signup-btn" class="btn btn-warning btn-auth">Sign Up</button>
-    </div>
+    <form id="signup-form">
+      <div id="signup-section">
+        <input type="text" id="signup-firstname" class="form-control" placeholder="First Name" required />
+        <input type="text" id="signup-lastname" class="form-control" placeholder="Last Name" required />
+        <input type="text" id="signup-username" class="form-control" placeholder="Username" required />
+        <input type="email" id="signup-email" class="form-control" placeholder="Email" required />
+        <input type="password" id="signup-password" class="form-control" placeholder="Password" required />
+        <button type="submit" class="btn btn-warning btn-auth">Sign Up</button>
+      </div>
+    </form>
 
     <!-- 🔐 Login Section -->
-    <div id="login-section" style="display: none;">
-      <input type="email" id="login-email" class="form-control" placeholder="Email" />
-      <input type="password" id="login-password" class="form-control" placeholder="Password" />
-      <button id="login-btn" class="btn btn-success btn-auth">Login</button>
-      <button id="google-signin" class="btn btn-light btn-auth">🔐 Sign in with Google</button>
-    </div>
+    <form id="login-form" style="display: none;">
+      <div id="login-section">
+        <input type="email" id="login-email" class="form-control" placeholder="Email" required />
+        <input type="password" id="login-password" class="form-control" placeholder="Password" required />
+        <button type="submit" class="btn btn-success btn-auth">Login</button>
+        <button type="button" id="google-signin" class="btn btn-light btn-auth">🔐 Sign in with Google</button>
+      </div>
+    </form>
 
     <!-- Toggle -->
     <div class="toggle-link" id="toggle-auth">Already have an account? Login</div>
@@ -132,14 +134,14 @@
 
   <!-- Scripts -->
   <script type="module">
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
       getAuth,
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
-      onAuthStateChanged
+      onAuthStateChanged,
+      GoogleAuthProvider,
+      signInWithPopup
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -155,8 +157,9 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Sign up
-    document.getElementById("signup-btn").addEventListener("click", async () => {
+    // Sign Up
+    document.getElementById("signup-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
       const email = document.getElementById("signup-email").value;
       const password = document.getElementById("signup-password").value;
       try {
@@ -168,7 +171,8 @@
     });
 
     // Login
-    document.getElementById("login-btn").addEventListener("click", async () => {
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
       const email = document.getElementById("login-email").value;
       const password = document.getElementById("login-password").value;
       try {
@@ -179,29 +183,40 @@
       }
     });
 
-    onAuthStateChanged(auth, (user) => {
-  const hasSeenWelcome = localStorage.getItem("seenWelcome") === "true";
+    // Google Sign In
+    document.getElementById("google-signin").addEventListener("click", async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+        window.location.href = "dashboard.html";
+      } catch (e) {
+        alert(e.message);
+      }
+    });
 
-  if (user) {
-    window.location.href = "dashboard.html";
-  } else if (!hasSeenWelcome) {
-    localStorage.setItem("seenWelcome", "true"); // Prevent loop
-    window.location.href = "welcome.html";
-  }
-});
+    // Auto-redirect if already logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      } else {
+        if (!localStorage.getItem("seenWelcome")) {
+          window.location.href = "welcome.html";
+        }
+      }
+    });
   </script>
 
-  <!-- Auth Toggle -->
+  <!-- Toggle Auth -->
   <script>
     const toggleLink = document.getElementById("toggle-auth");
-    const signupSection = document.getElementById("signup-section");
-    const loginSection = document.getElementById("login-section");
+    const signupSection = document.getElementById("signup-form");
+    const loginSection = document.getElementById("login-form");
 
     toggleLink.addEventListener("click", () => {
-      const showSignup = signupSection.style.display !== "none";
-      signupSection.style.display = showSignup ? "none" : "block";
-      loginSection.style.display = showSignup ? "block" : "none";
-      toggleLink.textContent = showSignup
+      const isSignupVisible = signupSection.style.display !== "none";
+      signupSection.style.display = isSignupVisible ? "none" : "block";
+      loginSection.style.display = isSignupVisible ? "block" : "none";
+      toggleLink.textContent = isSignupVisible
         ? "Don't have an account? Sign up"
         : "Already have an account? Login";
     });
@@ -232,5 +247,6 @@
         .catch(err => console.error("❌ SW Error", err));
     }
   </script>
+
 </body>
 </html>
