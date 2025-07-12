@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -22,13 +23,22 @@
         <option value="pidgin">Pidgin</option>
       </select>
     </div>
-  </div>  <!-- Mine Button -->  <div class="circle-mine">🔵</div>  <!-- Announcement -->  <div class="announcement">
+  </div>
+
+  <!-- Mine Button -->
+  <div class="circle-mine" onclick="startMining()">🔵</div>
+
+  <!-- Announcement -->
+  <div class="announcement">
     <img src="announcement-image.jpg" alt="EANO Announcement" />
     <h2>📢 Welcome to EANO!</h2>
     <p>Your mining session will run for 24 hours after refresh.</p>
     <p id="mining-status">Initializing mining session...</p>
     <p id="countdown"></p>
-  </div>  <!-- Sections -->  <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
+  </div>
+
+  <!-- Sections -->
+  <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
   <div class="feature-card" id="leaderboard"><h3>🏆 Leaderboard</h3><p>Top miners and TrustScores</p></div>
   <div class="feature-card" id="team"><h3>👥 Your Team</h3><p>Referrals and bonuses</p></div>
   <div class="feature-card" id="chat"><h3>💬 Community Chat</h3><p>Talk with the community</p></div>
@@ -39,10 +49,18 @@
   <div class="feature-card"><h3>🎮 Games</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎤 Studio</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <div class="feature-card text-center">
+  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>
+
+  <!-- Logout Button -->
+  <div class="feature-card text-center">
     <button onclick="logout()" class="btn btn-danger">Logout</button>
   </div>
-  <div class="footer">&copy; 2025 EANO Network • Built on Trust & Reputation</div>  <!-- Firebase + Mining + UI Logic -->  <script type="module">
+
+  <!-- Footer -->
+  <div class="footer">&copy; 2025 EANO Network • Built on Trust & Reputation</div>
+
+  <!-- Firebase + Mining + UI Logic -->
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
@@ -62,88 +80,82 @@
 
     const MINE_RATE = 0.600;
     const MINE_DURATION = 24 * 60 * 60 * 1000;
-    let intervalId;
 
     function updateCountdown(msLeft) {
-  const h = Math.floor(msLeft / 3600000);
-  const m = Math.floor((msLeft % 3600000) / 60000);
-  const s = Math.floor((msLeft % 60000) / 1000);
-  document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
-}
-
-async function runMiningSession(userId) {
-  const userRef = doc(db, "users", userId);
-  const snap = await getDoc(userRef);
-  const data = snap.exists() ? snap.data() : {};
-  const now = Date.now();
-
-  if (!data.miningEnd || now >= data.miningEnd) {
-    const newEnd = now + MINE_DURATION;
-    await setDoc(userRef, {
-      balance: data.balance || 0,
-      miningStart: now,
-      miningEnd: newEnd,
-      lastUpdate: now,
-      score: data.score || 0,
-      trustScore: data.trustScore || 0
-    }, { merge: true });
-  }
-
-  startAutoMining(userId);
-}
-
-async function startAutoMining(userId) {
-  const userRef = doc(db, "users", userId);
-
-  const interval = setInterval(async () => {
-    const snap = await getDoc(userRef);
-    const data = snap.data();
-    const now = Date.now();
-
-    if (!data || now >= data.miningEnd) {
-      clearInterval(interval);
-      document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
-      document.getElementById("countdown").textContent = "";
-      return;
+      const h = Math.floor(msLeft / 3600000);
+      const m = Math.floor((msLeft % 3600000) / 60000);
+      const s = Math.floor((msLeft % 60000) / 1000);
+      document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
     }
 
-    const lastUpdate = data.lastUpdate || now;
-    const earned = ((now - lastUpdate) / 3600000) * MINE_RATE;
+    async function startAutoMining(userId) {
+      const userRef = doc(db, "users", userId);
 
-    await updateDoc(userRef, {
-      balance: (data.balance || 0) + earned,
-      lastUpdate: now
-    });
+      setInterval(async () => {
+        const snap = await getDoc(userRef);
+        const data = snap.data();
+        const now = Date.now();
 
-    document.getElementById("mining-status").textContent = `⛏️ Mining... +${earned.toFixed(3)} EANO`;
-    updateCountdown(data.miningEnd - now);
-  }, 60000); // Update every minute
-  
-   }
-      runMining(userId);
+        if (!data || now >= data.miningEnd) {
+          document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
+          document.getElementById("countdown").textContent = "";
+          return;
+        }
+
+        const lastUpdate = data.lastUpdate || now;
+        const earned = ((now - lastUpdate) / 3600000) * MINE_RATE;
+
+        await updateDoc(userRef, {
+          balance: (data.balance || 0) + earned,
+          lastUpdate: now
+        });
+
+        document.getElementById("mining-status").textContent = `⛏️ Mining... +${earned.toFixed(3)} EANO`;
+        updateCountdown(data.miningEnd - now);
+      }, 60000); // every minute
     }
-    
-  function startMining() {
-    alert("⛏️ Mining starts automatically and updates every minute.");
-  }
+
+    async function runMiningSession(userId) {
+      const userRef = doc(db, "users", userId);
+      const snap = await getDoc(userRef);
+      const data = snap.exists() ? snap.data() : {};
+      const now = Date.now();
+
+      if (!data.miningEnd || now >= data.miningEnd) {
+        const newEnd = now + MINE_DURATION;
+        await setDoc(userRef, {
+          balance: data.balance || 0,
+          miningStart: now,
+          miningEnd: newEnd,
+          lastUpdate: now,
+          score: data.score || 0,
+          trustScore: data.trustScore || 0
+        }, { merge: true });
+      }
+
+      startAutoMining(userId);
+    }
+
+    function startMining() {
+      alert("⛏️ Mining starts automatically and updates every minute.");
+    }
 
     function logout() {
       localStorage.clear();
       window.location.href = "index.html";
     }
 
-    // Theme toggle
     document.getElementById("toggle-theme").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
     });
 
     onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    await runMiningSession(user.uid);
-  } else {
-    window.location.href = "index.html";
-  }
-});
+      if (user) {
+        await runMiningSession(user.uid);
+      } else {
+        window.location.href = "index.html";
+      }
+    });
   </script>
 </body>
 </html>
