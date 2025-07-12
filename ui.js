@@ -15,14 +15,14 @@ export function updateBalanceUI(balance = 0) {
 }
 
 /** Update the HHh MMm SSs countdown below the Mine button */
-export function updateTimerUI(secondsLeft = 0) {
-  const t = $("timer");
-  if (!t) return;
-  const h = Math.floor(secondsLeft / 3600);
-  const m = Math.floor((secondsLeft % 3600) / 60);
-  const s = secondsLeft % 60;
-  t.textContent = `⏳ ${h}h ${m}m ${s}s`;
-}
+export function updateTimerUI(remainingSeconds) {
+  const el = document.getElementById("timer");
+  if (el) {
+    const h = Math.floor(remainingSeconds / 3600);
+    const m = Math.floor((remainingSeconds % 3600) / 60);
+    const s = remainingSeconds % 60;
+    el.textContent = `⏳ ${h}h ${m}m ${s}s`;
+  }
 
 /** Drop a headline-style announcement in the centre block */
 export function updateAnnouncementUI(text = "") {
