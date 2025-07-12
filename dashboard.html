@@ -120,25 +120,27 @@
       document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
     }
 
-    async function startMiningSession(userId) {
-      const userRef = doc(db, "users", userId);
-      const snap = await getDoc(userRef);
-      const now = Date.now();
-      const data = snap.exists() ? snap.data() : {};
+  async function startMiningSession(userId) {
+  const userRef = doc(db, "users", userId);
+  const snap = await getDoc(userRef);
+  const now = Date.now();
+  const data = snap.exists() ? snap.data() : {};
 
-      if (!data.miningEnd || now >= data.miningEnd) {
-        const newEnd = now + MINE_DURATION;
-        await setDoc(userRef, {
-          balance: data.balance || 0,
-          miningStart: now,
-          miningEnd: newEnd,
-          lastUpdate: now,
-          score: data.score || 0,
-          trustScore: data.trustScore || 0
-        }, { merge: true });
-      }
+  if (!data.miningEnd || now >= data.miningEnd) {
+    const newEnd = now + MINE_DURATION;
+    await setDoc(userRef, {
+      balance: data.balance || 0,
+      miningStart: now,
+      miningEnd: newEnd,
+      lastUpdate: now,
+      score: data.score || 0,
+      trustScore: data.trustScore || 0
+    }, { merge: true });
 
-      runMining(userId);
+    notifyMiningStarted(); // Shows notification + sound
+  }
+
+  runMining(userId); // Starts mining countdown + earnings
     }
 
     async function runMining(userId) {
@@ -166,7 +168,7 @@
         document.getElementById("mining-status").textContent = `⛏️ Mining... +${earned.toFixed(3)} EANO`;
         document.getElementById("balance-display").textContent = `Balance: ${newBalance.toFixed(3)} EANO`;
         updateCountdown(data.miningEnd - now);
-      }, 60000);
+      }, 60000); //every minute 
     }
 
     function startMining() {
