@@ -140,7 +140,6 @@
   </div>
 
   <!-- ✅ Scripts -->
-  <script type="module" src="auth.js?v=5"></script>
   <script type="module" src="lang.js?v=5"></script>
 
   <!-- Auto Redirect if logged in -->
@@ -245,10 +244,14 @@
     }
   });
 
-  // Auto redirect if already logged in
   onAuthStateChanged(auth, (user) => {
     if (user) {
       window.location.href = "dashboard.html";
+    } else {
+      // Only redirect to welcome.html if not logged in and not seen
+      if (!localStorage.getItem("seenWelcome")) {
+        window.location.href = "welcome.html";
+      }
     }
   });
   </script>
