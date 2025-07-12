@@ -22,23 +22,24 @@
       border-radius: 16px;
     }
 
-    h2 {
+    h2, h3 {
       text-align: center;
       color: gold;
       margin-bottom: 20px;
     }
 
-    textarea {
+    textarea, input {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
       border: none;
-      resize: vertical;
       font-size: 1rem;
+      margin-bottom: 10px;
     }
 
     .btn {
       display: block;
+      width: 100%;
       margin: 1rem 0;
       background: gold;
       color: #000;
@@ -90,6 +91,11 @@
 
     <h3>📜 Latest Announcement</h3>
     <div id="latestAnnouncement">Loading...</div>
+
+    <hr/>
+    <h3>⛏️ Force Mining Start</h3>
+    <input type="text" id="uidInput" placeholder="Enter user UID here" />
+    <button class="btn" id="forceMiningBtn">⛏️ Start Mining for UID</button>
   </div>
 
   <script type="module">
@@ -101,6 +107,8 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+    const MINE_DURATION = 24 * 60 * 60 * 1000;
+
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
         alert("You must be logged in.");
@@ -110,7 +118,7 @@
 
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
-      if (!userSnap.exists || userSnap.data().isAdmin !== true) {
+      if (!userSnap.exists() || userSnap.data().isAdmin !== true) {
         alert("Access denied. Not an admin.");
         window.location.href = "index.html";
         return;
@@ -143,6 +151,34 @@
       } catch (err) {
         console.error("Error posting:", err);
         alert("Failed to post announcement.");
+      }
+    };
+
+    document.getElementById("forceMiningBtn").onclick = async () => {
+      const uid = document.getElementById("uidInput").value.trim();
+      if (!uid) return alert("Please enter a valid UID.");
+
+      const now = Date.now();
+      const miningEnd = now + MINE_DURATION;
+
+      try {
+        const userRef = doc(db, "users", uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          return alert("❌ User not found.");
+        }
+
+        await setDoc(userRef, {
+          miningStart: now,
+          miningEnd: miningEnd,
+          lastUpdate: now
+        }, { merge: true });
+
+        alert("✅ Mining started for UID: " + uid);
+      } catch (err) {
+        console.error(err);
+        alert("⚠️ Failed to start mining.");
       }
     };
 
