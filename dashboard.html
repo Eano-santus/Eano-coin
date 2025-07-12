@@ -116,6 +116,8 @@
           score: data.score || 0,
           trustScore: data.trustScore || 0
         }, { merge: true });
+           // ✅ Add this line below to trigger notification and sound
+    notifyMiningStarted();
       }
 
       runMining(userId);
