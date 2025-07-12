@@ -6,15 +6,13 @@
 function $(id) { return document.getElementById(id); }
 function fmt(num, digits = 3) { return Number(num).toFixed(digits); }
 
-/* =============  Live-updating fields  ============= */
-
-/** Update the coin balance box */
+// ✅ Coin balance display
 export function updateBalanceUI(balance = 0) {
   const el = $("balance");
   if (el) el.textContent = fmt(balance);
 }
 
-/** Update the HHh MMm SSs countdown below the Mine button */
+// ✅ Mining countdown timer
 export function updateTimerUI(remainingSeconds) {
   const el = document.getElementById("timer");
   if (el) {
@@ -23,25 +21,25 @@ export function updateTimerUI(remainingSeconds) {
     const s = remainingSeconds % 60;
     el.textContent = `⏳ ${h}h ${m}m ${s}s`;
   }
+}
 
-/** Drop a headline-style announcement in the centre block */
+// ✅ Announcement update
 export function updateAnnouncementUI(text = "") {
   const box = $("announcement-box");
   if (box) box.textContent = text || "📢 No announcement yet…";
 }
 
-/* =============  Slide-out left menu  ============= */
+// ✅ Sidebar toggle
 (function initMenuToggle () {
   const toggleBtn = $("menu-toggle");
   const menu      = $("sidebar-menu");
   if (!toggleBtn || !menu) return;
 
   toggleBtn.addEventListener("click", () => {
-    menu.classList.toggle("open");          // slide in / out
-    document.body.classList.toggle("blur")  // optional backdrop blur
+    menu.classList.toggle("open");
+    document.body.classList.toggle("blur");
   });
 
-  // Close the menu when any link inside it is clicked
   menu.querySelectorAll("a, button").forEach(el =>
     el.addEventListener("click", () => {
       menu.classList.remove("open");
@@ -50,12 +48,11 @@ export function updateAnnouncementUI(text = "") {
   );
 })();
 
-/* =============  Theme (dark / light)  ============= */
+// ✅ Theme toggle
 (function initThemeToggle () {
   const btn  = $("dark-toggle");
   if (!btn) return;
 
-  // Apply stored preference on load
   const stored = localStorage.getItem("theme");
   if (stored === "light") document.body.classList.add("light-mode");
 
@@ -66,7 +63,7 @@ export function updateAnnouncementUI(text = "") {
   });
 })();
 
-/* =============  Exports for other modules  ============= */
+// ✅ Exports
 export default {
   updateBalanceUI,
   updateTimerUI,
