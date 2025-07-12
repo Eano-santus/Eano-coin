@@ -4,37 +4,131 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO • Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom, #000000, #111111);
+      color: #fff;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+    .nav-fixed {
+      position: sticky;
+      top: 0;
+      background-color: #000;
+      z-index: 1000;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .menu-toggle {
+      font-size: 1.5rem;
+      font-weight: bold;
+      background: none;
+      color: white;
+      border: none;
+    }
+    .lang-select {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 6px;
+      padding: 0.3rem;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 240px;
+      height: 100%;
+      background: #000;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 999;
+      padding: 2rem 1rem;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar.show {
+      transform: translateX(0);
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .circle-mine {
+      position: fixed;
+      bottom: 2rem;
+      right: 1rem;
+      background: #007bff;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      z-index: 1002;
+      box-shadow: 0 0 10px rgba(0,123,255,0.5);
+      cursor: pointer;
+    }
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+      margin: 2rem;
+      text-align: center;
+    }
+    .announcement {
+      background: rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      border-radius: 16px;
+      margin: 2rem auto;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+    .announcement img {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+  </style>
 </head>
-
 <body>
-  <!-- 🔀 Sidebar Toggle -->
-  <button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
-  <!-- 🌐 Language Selector -->
-  <select id="langSelect" class="lang-select">
-    <option value="en">English</option>
-    <option value="ig">Igbo</option>
-    <option value="fr">French</option>
-    <option value="sw">Swahili</option>
-    <option value="pidgin">Pidgin</option>
-  </select>
 
-  <!-- 🔘 Fixed Mine Button -->
-  <div class="circle-mine" onclick="startMining()">🔵</div>
+  <!-- Navigation -->
+  <div class="nav-fixed">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
+    <select id="langSelect" class="lang-select">
+      <option value="en">English</option>
+      <option value="ig">Igbo</option>
+      <option value="fr">French</option>
+      <option value="sw">Swahili</option>
+      <option value="pidgin">Pidgin</option>
+    </select>
+  </div>
 
-  <!-- 📜 Sidebar Menu -->
+  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
-    <div class="feature-block">
-      <h3>⛏️ Mining Status</h3>
-      <p id="mining-status">Checking mining session...</p>
-      <p id="countdown"></p>
-    </div>
-    <h3>MENU</h3>
-    <a href="#home">🏡 Home</a>
+    <a href="#home">🏠 Home</a>
     <a href="#kyc">📄 Mainnet-KYC (Soon)</a>
     <a href="#leaderboard">🏆 Leaderboard</a>
     <a href="#team">👥 Team</a>
@@ -46,59 +140,67 @@
     <a href="index.html">🚪 Logout</a>
   </div>
 
-  <!-- 📣 Announcement -->
+  <!-- Fixed Mine Button -->
+  <div class="circle-mine" onclick="startMining()">🔵</div>
+
+  <!-- Announcement -->
   <div class="announcement" id="home">
-    <img src="announcement-image.jpg" alt="Announcement"/>
-    <h2>📣 EANO Announcement</h2>
+    <img src="announcement-image.jpg" alt="EANO Announcement" />
+    <h2>📢 EANO Announcement</h2>
     <p>Welcome to the future of mining. Stay tuned for exciting updates!</p>
+    <p id="mining-status">Checking mining...</p>
+    <p id="countdown"></p>
   </div>
 
-  <!-- 📦 Main Content Scrollable -->
-  <div class="container-fluid">
-    <div class="feature-block" id="kyc">
-      <h3>📄 Mainnet - KYC</h3>
-      <p>Coming Soon</p>
-    </div>
-    <div class="feature-block" id="leaderboard">
-      <h3>🏆 Leaderboard</h3>
-      <p>Top miners, trust scores and ranks will be here!</p>
-    </div>
-    <div class="feature-block" id="team">
-      <h3>👥 Your Team</h3>
-      <p>Your referrals and their badges will show here.</p>
-    </div>
-    <div class="feature-block" id="chat">
-      <h3>💬 Community Chat</h3>
-      <p>Connect, post, and interact with others (no links allowed).</p>
-    </div>
-    <div class="feature-block" id="profile">
-      <h3>👤 Your Profile</h3>
-      <p>Username, full name, email, and phone link (edit + save)</p>
-    </div>
-    <div class="feature-block" id="author">
-      <h3>🧑‍💼 About Author</h3>
-      <p>Information about the founder of EANO.</p>
-    </div>
-    <div class="feature-block" id="whitepaper">
-      <h3>📜 WhitePaper</h3>
-      <p>Coming Soon</p>
-    </div>
-    <div class="feature-block" id="support">
-      <h3>🆘 Support Portal</h3>
-      <p>Join us on Telegram for support and updates.</p>
-    </div>
-    <!-- Coming Soon Blocks -->
-    <div class="feature-block"><h3>🎮 Games</h3><p>Coming Soon</p></div>
-    <div class="feature-block"><h3>🎙 Studio</h3><p>Coming Soon</p></div>
-    <div class="feature-block"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
-    <div class="feature-block"><h3>📋 Tasks</h3><p>Coming Soon</p></div>
-
-    <div class="footer">
-      © 2025 EANO Network. Built on trust and community.
-    </div>
+  <!-- Main Sections -->
+  <div class="feature-card" id="kyc">
+    <h3>📄 Mainnet-KYC</h3>
+    <p>Coming Soon</p>
+  </div>
+  <div class="feature-card" id="leaderboard">
+    <h3>🏆 Leaderboard</h3>
+    <p>Top miners and TrustScores will show here</p>
+  </div>
+  <div class="feature-card" id="team">
+    <h3>👥 Your Team</h3>
+    <p>Referrals, invite stats and bonuses</p>
+  </div>
+  <div class="feature-card" id="chat">
+    <h3>💬 Community Chat</h3>
+    <p>Connect with other miners</p>
+  </div>
+  <div class="feature-card" id="profile">
+    <h3>👤 Profile</h3>
+    <p>Edit name, phone and view your score</p>
+  </div>
+  <div class="feature-card" id="author">
+    <h3>🧑‍💼 Author</h3>
+    <p>Meet the founder of EANO</p>
+  </div>
+  <div class="feature-card" id="whitepaper">
+    <h3>📜 WhitePaper</h3>
+    <p>Coming Soon</p>
+  </div>
+  <div class="feature-card" id="support">
+    <h3>🆘 Support Portal</h3>
+    <p>Join our Telegram</p>
+  </div>
+  <div class="feature-card">
+    <h3>🎮 Games</h3><p>Coming Soon</p>
+  </div>
+  <div class="feature-card">
+    <h3>🎙 Studio</h3><p>Coming Soon</p>
+  </div>
+  <div class="feature-card">
+    <h3>🛒 Marketplace</h3><p>Coming Soon</p>
+  </div>
+  <div class="feature-card">
+    <h3>📋 Tasks</h3><p>Coming Soon</p>
   </div>
 
-  <!-- 🔁 JavaScript -->
+  <div class="footer">© 2025 EANO Network • Built on Trust & Reputation</div>
+
+  <!-- Firebase + Mining JS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
@@ -117,9 +219,13 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const MINE_RATE = 0.6; // EANO/hour
-    const MINE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+    const MINE_RATE = 0.600;
+    const MINE_DURATION = 24 * 60 * 60 * 1000;
     let miningInterval;
+
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("show");
+    }
 
     function updateCountdown(msLeft) {
       const h = Math.floor(msLeft / 3600000);
@@ -128,7 +234,7 @@
       document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
     }
 
-    async function runMiningLoop(userId) {
+    async function runMining(userId) {
       const userRef = doc(db, "users", userId);
       miningInterval = setInterval(async () => {
         const snap = await getDoc(userRef);
@@ -138,41 +244,44 @@
         if (now >= data.miningEnd) {
           clearInterval(miningInterval);
           document.getElementById("mining-status").textContent = "⛏️ Mining session ended.";
-          document.getElementById("countdown").textContent = "";
           return;
         }
 
-        const earned = ((now - data.lastUpdate) / 3600000) * MINE_RATE;
+        const earned = ((now - (data.lastUpdate || now)) / 3600000) * MINE_RATE;
         await updateDoc(userRef, {
           balance: (data.balance || 0) + earned,
           lastUpdate: now
         });
 
         document.getElementById("mining-status").textContent =
-          `⛏️ Mining... (+${earned.toFixed(3)} EANO)`;
+          `⛏️ Mining... +${earned.toFixed(3)} EANO`;
         updateCountdown(data.miningEnd - now);
-      }, 60000); // Every 1 minute
+      }, 60000);
     }
 
     async function startMiningSession(userId) {
-      const userRef = doc(db, "users", userId);
-      const snap = await getDoc(userRef);
+      const ref = doc(db, "users", userId);
+      const snap = await getDoc(ref);
       const now = Date.now();
       const data = snap.exists() ? snap.data() : {};
 
       if (!data.miningEnd || now >= data.miningEnd) {
-        const end = now + MINE_DURATION;
-        await setDoc(userRef, {
+        const newEnd = now + MINE_DURATION;
+        await setDoc(ref, {
           balance: data.balance || 0,
           miningStart: now,
-          miningEnd: end,
+          miningEnd: newEnd,
           lastUpdate: now,
           score: data.score || 0,
           trustScore: data.trustScore || 0
         }, { merge: true });
       }
 
-      runMiningLoop(userId);
+      runMining(userId);
+    }
+
+    function startMining() {
+      alert("⛏️ Mining started or resumed. Your balance will auto-update.");
     }
 
     onAuthStateChanged(auth, async (user) => {
@@ -182,14 +291,6 @@
         window.location.href = "index.html";
       }
     });
-
-    window.toggleSidebar = function () {
-      document.getElementById("sidebar").classList.toggle("show");
-    };
-
-    window.startMining = function () {
-      alert("⛏️ Mining started and will auto-update for 24 hours!");
-    };
   </script>
 </body>
 </html>
