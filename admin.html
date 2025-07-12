@@ -28,18 +28,19 @@
       margin-bottom: 20px;
     }
 
-    textarea, input {
+    textarea, input[type="file"] {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
       border: none;
       font-size: 1rem;
       margin-bottom: 10px;
+      background: #fff;
+      color: #000;
     }
 
     .btn {
       display: block;
-      width: 100%;
       margin: 1rem 0;
       background: gold;
       color: #000;
@@ -67,6 +68,12 @@
       cursor: pointer;
     }
 
+    img.announcement-img {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
     @media screen and (max-width: 600px) {
       body {
         padding: 1rem;
@@ -87,28 +94,26 @@
 
     <label for="announcementInput">New Announcement:</label>
     <textarea id="announcementInput" rows="4" placeholder="Write your message..."></textarea>
+
+    <label for="imageInput">Optional Image:</label>
+    <input type="file" id="imageInput" accept="image/*" />
+
     <button class="btn" id="postBtn">📤 Post Announcement</button>
 
     <h3>📜 Latest Announcement</h3>
     <div id="latestAnnouncement">Loading...</div>
-
-    <hr/>
-    <h3>⛏️ Force Mining Start</h3>
-    <input type="text" id="uidInput" placeholder="Enter user UID here" />
-    <button class="btn" id="forceMiningBtn">⛏️ Start Mining for UID</button>
   </div>
 
   <script type="module">
-    import { auth, db } from './firebase.js';
+    import { auth, db, storage } from './firebase.js';
     import {
-      doc,
-      setDoc,
-      getDoc,
-      serverTimestamp
+      doc, setDoc, getDoc, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      ref as storageRef, uploadBytes, getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-    const MINE_DURATION = 24 * 60 * 60 * 1000;
-
+    // Auth check
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
         alert("You must be logged in.");
@@ -128,60 +133,57 @@
       const latestRef = doc(db, "announcements", "latest");
       const latestSnap = await getDoc(latestRef);
       if (latestSnap.exists()) {
-        document.getElementById("latestAnnouncement").innerText = latestSnap.data().message;
+        const data = latestSnap.data();
+        let html = data.message ? `<p>${data.message}</p>` : '';
+        if (data.imageUrl) {
+          html += `<img class="announcement-img" src="${data.imageUrl}" alt="Announcement Image" />`;
+        }
+        document.getElementById("latestAnnouncement").innerHTML = html;
       } else {
         document.getElementById("latestAnnouncement").innerText = "No Announcement Yet.";
       }
     });
 
+    // Post Announcement
     document.getElementById("postBtn").onclick = async () => {
       const text = document.getElementById("announcementInput").value.trim();
-      if (!text) return alert("Announcement cannot be empty.");
+      const file = document.getElementById("imageInput").files[0];
+
+      if (!text && !file) {
+        alert("❗ Please enter a message or choose an image.");
+        return;
+      }
+
+      let imageUrl = "";
 
       try {
+        if (file) {
+          const imgRef = storageRef(storage, "announcements/" + Date.now() + "-" + file.name);
+          await uploadBytes(imgRef, file);
+          imageUrl = await getDownloadURL(imgRef);
+        }
+
         const ref = doc(db, "announcements", "latest");
         await setDoc(ref, {
           message: text,
+          imageUrl,
           timestamp: serverTimestamp()
         });
 
         alert("✅ Announcement posted!");
-        document.getElementById("latestAnnouncement").innerText = text;
+        document.getElementById("latestAnnouncement").innerHTML = `
+          ${text ? `<p>${text}</p>` : ''}
+          ${imageUrl ? `<img class="announcement-img" src="${imageUrl}" alt="Announcement Image" />` : ''}
+        `;
         document.getElementById("announcementInput").value = "";
-      } catch (err) {
-        console.error("Error posting:", err);
-        alert("Failed to post announcement.");
+        document.getElementById("imageInput").value = "";
+      } catch (error) {
+        console.error(error);
+        alert("⚠️ Failed to post announcement.");
       }
     };
 
-    document.getElementById("forceMiningBtn").onclick = async () => {
-      const uid = document.getElementById("uidInput").value.trim();
-      if (!uid) return alert("Please enter a valid UID.");
-
-      const now = Date.now();
-      const miningEnd = now + MINE_DURATION;
-
-      try {
-        const userRef = doc(db, "users", uid);
-        const userSnap = await getDoc(userRef);
-
-        if (!userSnap.exists()) {
-          return alert("❌ User not found.");
-        }
-
-        await setDoc(userRef, {
-          miningStart: now,
-          miningEnd: miningEnd,
-          lastUpdate: now
-        }, { merge: true });
-
-        alert("✅ Mining started for UID: " + uid);
-      } catch (err) {
-        console.error(err);
-        alert("⚠️ Failed to start mining.");
-      }
-    };
-
+    // Logout
     document.getElementById("logoutBtn").onclick = () => {
       auth.signOut().then(() => window.location.href = "index.html");
     };
