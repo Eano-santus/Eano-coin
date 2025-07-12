@@ -5,11 +5,8 @@ const urlsToCache = [
   "/index.html",
   "/dashboard.html",
   "/style.css",
-  "/auth.js",
-  "/dashboard.js",
   "/lang.js",
   "/ui.js",
-  "/eano-bg.png",
   "/eano-icon-192.png",
   "/eano-icon-512.png"
 ];
