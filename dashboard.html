@@ -26,6 +26,13 @@
       </select>
     </div>
   </div>
+  
+  <!-- Balance + Mining Status -->
+<div class="balance-status">
+  <h2>💰 Balance: <span id="balance">0.000</span> EANO</h2>
+  <p id="mining-status">⛏️ Checking mining session...</p>
+  <p id="countdown"></p>
+</div>
 
   <!-- Mine Button -->
   <div class="circle-mine" onclick="startMining()">🔵</div>
@@ -38,9 +45,6 @@
   <p>Other features will begin very soon.</p>
   <p>⛏️ <strong>Mine daily to increase your score and TrustScore.</strong></p>
   <p>👥 <strong>Refer people to level up and unlock more features.</strong></p>
-  <p id="mining-status">Checking mining session...</p>
-  <p id="countdown"></p>
-  </div>
 
   <!-- Sections -->
   <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
@@ -61,7 +65,7 @@
     <button onclick="logout()" class="btn btn-danger">Logout</button>
   </div>
 
-  <div class="footer">&copy; 2025 EANO Network • Built on Trust & Reputation</div>
+  <div class="footer">&copy; 2025 EANO Network • Built on Trust/Level-Up & Reputation</div>
 
   <!-- Firebase + Mining + Theme Toggle -->
   <script type="module">
