@@ -1,64 +1,23 @@
 // firebase.js
-
-// ✅ Import Firebase v10.12.2 CDN Modules
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-import { getAnalytics, isSupported as isAnalyticsSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-import { getMessaging, isSupported as isMessagingSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
-import { getPerformance } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-performance.js";
 
-// ✅ EANO Miner Firebase Configuration
+// ✅ Replace with your own Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
   projectId: "eano-miner",
   storageBucket: "eano-miner.appspot.com",
   messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-  measurementId: "G-NS0W6QSS69"
+  appId: "1:50186911438:web:85410fccc7c5933d761a9f"
 };
 
-// ✅ Initialize Firebase App
+// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// ✅ Core Services
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-const performance = getPerformance(app);
-
-// ✅ Persistent login (like Pi Network)
-setPersistence(auth, browserLocalPersistence).catch((error) => {
-  console.warn("Persistence error:", error.message);
-});
-
-// ✅ Optional: Analytics & Messaging
-let analytics = null;
-let messaging = null;
-
-isAnalyticsSupported().then((supported) => {
-  if (supported) {
-    analytics = getAnalytics(app);
-    console.log("✅ Analytics initialized");
-  }
-});
-
-isMessagingSupported().then((supported) => {
-  if (supported) {
-    messaging = getMessaging(app);
-    console.log("✅ Messaging initialized");
-  }
-});
-
-// ✅ Export services for use in other files
-export {
-  app,
-  auth,
-  db,
-  storage,
-  analytics,
-  messaging,
-  performance
-};
+// ✅ Export modules for use in other files
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app); // ✅ Needed for uploading announcement images
