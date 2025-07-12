@@ -1,52 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                      http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-  <!-- Homepage (also signup via ?ref=) -->
+  <!-- Home / Auth -->
   <url>
-    <loc>https://eano.netlify.app/index.html</loc>
-    <lastmod>2025-07-06</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://eano-santus.github.io/eano-coin/auth.js 
+https://eano-coin.netlify.app/auth.js
+https://super-dodol-76ad47.netlify.app/auth.js
+  </loc>
+    <lastmod>2025-07-11</lastmod>
     <priority>1.0</priority>
   </url>
 
   <!-- Dashboard -->
   <url>
-    <loc>https://eano.netlify.app/dashboard.html</loc>
-    <lastmod>2025-07-06</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://eano-santus.github.io/eano-coin/dashboard.html 
+https://eano-coin.netlify.app/dashboard.html
+https://super-dodol-76ad47.netlify.app/dashboard.html
+  </loc>
+    <lastmod>2025-07-11</lastmod>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Welcome Page -->
+  <url>
+    <loc>https://eano-santus.github.io/eano-coin/welcome.html 
+https://eano-coin.netlify.app/welcome.html 
+https://super-dodol-76ad47.netlify.app/welcome.html 
+  </loc>
+    <lastmod>2025-07-11</lastmod>
     <priority>0.9</priority>
   </url>
 
   <!-- Leaderboard -->
   <url>
-    <loc>https://eano.netlify.app/leaderboard.html</loc>
-    <lastmod>2025-07-06</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://eano-santus.github.io/eano-coin/leaderboard.html
+https://eano-coin.netlify.app/leaderboard.html
+https://super-dodol-76ad47.netlify.app/leaderboard.html
+  </loc>
+    <lastmod>2025-07-11</lastmod>
     <priority>0.8</priority>
-  </url>
-
-  <!-- Invite/Referral -->
-  <url>
-    <loc>https://eano.netlify.app/invite.html</loc>
-    <lastmod>2025-07-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Settings -->
-  <url>
-    <loc>https://eano.netlify.app/settings.html</loc>
-    <lastmod>2025-07-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
 
   <!-- Profile -->
   <url>
-    <loc>https://eano.netlify.app/profile.html</loc>
-    <lastmod>2025-07-06</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://eano-santus.github.io/eano-coin/profile.html
+https://eano-coin.netlify.app/profile.html
+https://super-dodol-76ad47.netlify.app/profile.html 
+  </loc>
+    <lastmod>2025-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Invite / Team -->
+  <url>
+    <loc>https://eano-santus.github.io/eano-coin/invite.html 
+https://eano-coin.netlify.app/invite.html 
+https://super-dodol-76ad47.netlify.app/invite.html 
+  </loc>
+    <lastmod>2025-07-11</lastmod>
     <priority>0.7</priority>
+  </url>
+
+  <!-- Settings -->
+  <url>
+    <loc>https://eano-santus.github.io/eano-coin/settings.html 
+https://eano-coin.netlify.app/settings.html
+https://super-dodol-76ad47.netlify.app/settings.html 
+  </loc>
+    <lastmod>2025-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Whitepaper -->
+  <url>
+    <loc>https://eano-santus.github.io/eano-coin/  
+https://eano-coin.netlify.app/  
+https://super-dodol-76ad47.netlify.app/  
+  </loc>
+    <lastmod>2025-07-11</lastmod>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Support -->
+  <url>
+    <loc>https://eano-santus.github.io/eano-coin/t.me/eanocoin  
+https://eano-coin.netlify.app/t.me/eanocoin  
+https://super-dodol-76ad47.netlify.app/t.me/eanocoin  
+  </loc>
+    <priority>0.5</priority>
   </url>
 
 </urlset>
