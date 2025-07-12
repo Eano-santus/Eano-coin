@@ -145,6 +145,10 @@ button#dark-toggle {
 
 /* ==== Announcement Box ==== */
 #announcement-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 30vh;
   background: rgba(255, 255, 255, 0.9);
   color: #111;
   padding: 1.5rem;
