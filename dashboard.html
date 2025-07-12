@@ -49,6 +49,7 @@
   <p>Other features will begin very soon.</p>
   <p>⛏️ <strong>Mine daily to increase your score and TrustScore.</strong></p>
   <p>👥 <strong>Refer people to level up and unlock more features.</strong></p>
+ </div>
 
   <!-- Sections -->
   <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
@@ -116,8 +117,6 @@
           score: data.score || 0,
           trustScore: data.trustScore || 0
         }, { merge: true });
-           // ✅ Add this line below to trigger notification and sound
-    notifyMiningStarted();
       }
 
       runMining(userId);
