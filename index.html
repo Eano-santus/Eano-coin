@@ -3,6 +3,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to EANO</title>
+  <script>
+  if (!localStorage.getItem("seenWelcome")) {
+    window.location.href = "welcome.html";
+  }
+  </script>
   <style>
     :root {
       --bg-color: #000;
