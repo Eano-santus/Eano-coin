@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,117 +9,30 @@
   <link rel="stylesheet" href="style.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background: linear-gradient(to bottom, #000, #111);
-      color: #fff;
-      overflow-x: hidden;
-    }
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 250px;
-      height: 100%;
-      background-color: #000;
-      border-right: 1px solid rgba(255,255,255,0.2);
-      padding: 1rem;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      z-index: 1001;
-    }
-    .sidebar.show {
-      transform: translateX(0);
-    }
-    .sidebar h3 {
-      color: white;
-      margin-bottom: 2rem;
-    }
-    .sidebar a {
-      display: block;
-      margin-bottom: 1rem;
-      color: white;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .menu-toggle {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.5rem;
-      font-weight: bold;
-      z-index: 1100;
-    }
-    .circle-mine {
-      position: fixed;
-      top: 5rem;
-      right: 1rem;
-      background: #007bff;
-      color: white;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.2rem;
-      z-index: 1002;
-      box-shadow: 0 0 10px rgba(0,123,255,0.5);
-      cursor: pointer;
-    }
-    .announcement {
-      margin: 6rem auto 2rem;
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 600px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(255,215,0,0.2);
-    }
-    .announcement img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-    }
-    .feature-block {
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 2rem;
-      margin: 2rem;
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
-      text-align: center;
-    }
-    .footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .lang-select {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 1100;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      border-radius: 8px;
-      padding: 0.2rem 0.6rem;
-    }
-  </style>
 </head>
-<body>  <!-- 🔀 Sidebar Toggle --><button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button> <select id="langSelect" class="lang-select"> <option value="en">English</option> <option value="ig">Igbo</option> <option value="fr">French</option> <option value="sw">Swahili</option> <option value="pidgin">Pidgin</option> </select>
 
-  <!-- 🔘 Fixed Mine Button -->  <div class="circle-mine" onclick="startMining()">🔵</div>  <!-- 📜 Sidebar Menu -->  <div class="sidebar" id="sidebar"> <div class="feature-block">
-  <h3>⛏️ Mining Status</h3>
-  <p id="mining-status">Checking mining session...</p>
-  <p id="countdown"></p>
-  </div>
+<body>
+  <!-- 🔀 Sidebar Toggle -->
+  <button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
+  <!-- 🌐 Language Selector -->
+  <select id="langSelect" class="lang-select">
+    <option value="en">English</option>
+    <option value="ig">Igbo</option>
+    <option value="fr">French</option>
+    <option value="sw">Swahili</option>
+    <option value="pidgin">Pidgin</option>
+  </select>
+
+  <!-- 🔘 Fixed Mine Button -->
+  <div class="circle-mine" onclick="startMining()">🔵</div>
+
+  <!-- 📜 Sidebar Menu -->
+  <div class="sidebar" id="sidebar">
+    <div class="feature-block">
+      <h3>⛏️ Mining Status</h3>
+      <p id="mining-status">Checking mining session...</p>
+      <p id="countdown"></p>
+    </div>
     <h3>MENU</h3>
     <a href="#home">🏡 Home</a>
     <a href="#kyc">📄 Mainnet-KYC (Soon)</a>
@@ -130,11 +44,17 @@
     <a href="#whitepaper">📜 WhitePaper (Soon)</a>
     <a href="#support">🆘 Support Portal</a>
     <a href="index.html">🚪 Logout</a>
-  </div>  <!-- 📣 Announcement -->  <div class="announcement" id="home">
+  </div>
+
+  <!-- 📣 Announcement -->
+  <div class="announcement" id="home">
     <img src="announcement-image.jpg" alt="Announcement"/>
     <h2>📣 EANO Announcement</h2>
     <p>Welcome to the future of mining. Stay tuned for exciting updates!</p>
-  </div>  <!-- 📦 Main Content Scrollable -->  <div class="container-fluid">
+  </div>
+
+  <!-- 📦 Main Content Scrollable -->
+  <div class="container-fluid">
     <div class="feature-block" id="kyc">
       <h3>📄 Mainnet - KYC</h3>
       <p>Coming Soon</p>
@@ -166,123 +86,110 @@
     <div class="feature-block" id="support">
       <h3>🆘 Support Portal</h3>
       <p>Join us on Telegram for support and updates.</p>
-    </div><!-- Coming Soon Blocks -->
-<div class="feature-block">
-  <h3>🎮 Games</h3>
-  <p>Coming Soon</p>
-</div>
-<div class="feature-block">
-  <h3>🎙 Studio</h3>
-  <p>Coming Soon</p>
-</div>
-<div class="feature-block">
-  <h3>🛒 Marketplace</h3>
-  <p>Coming Soon</p>
-</div>
-<div class="feature-block">
-  <h3>📋 Tasks</h3>
-  <p>Coming Soon</p>
-</div>
+    </div>
+    <!-- Coming Soon Blocks -->
+    <div class="feature-block"><h3>🎮 Games</h3><p>Coming Soon</p></div>
+    <div class="feature-block"><h3>🎙 Studio</h3><p>Coming Soon</p></div>
+    <div class="feature-block"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
+    <div class="feature-block"><h3>📋 Tasks</h3><p>Coming Soon</p></div>
 
-<div class="footer">
-  © 2025 EANO Network. Built on trust and community.
-</div>
+    <div class="footer">
+      © 2025 EANO Network. Built on trust and community.
+    </div>
+  </div>
 
-  </div>  <!-- 🔁 JavaScript -->  <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("show");
+  <!-- 🔁 JavaScript -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const MINE_RATE = 0.6; // EANO/hour
+    const MINE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+    let miningInterval;
+
+    function updateCountdown(msLeft) {
+      const h = Math.floor(msLeft / 3600000);
+      const m = Math.floor((msLeft % 3600000) / 60000);
+      const s = Math.floor((msLeft % 60000) / 1000);
+      document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
     }
 
-    function startMining() {
-      alert("Mining started at 0.600 EANO/hour for 24 hours.");
-      // Add Firebase mining logic here
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    async function runMiningLoop(userId) {
+      const userRef = doc(db, "users", userId);
+      miningInterval = setInterval(async () => {
+        const snap = await getDoc(userRef);
+        const data = snap.data();
+        const now = Date.now();
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "50186911438",
-    appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-  };
+        if (now >= data.miningEnd) {
+          clearInterval(miningInterval);
+          document.getElementById("mining-status").textContent = "⛏️ Mining session ended.";
+          document.getElementById("countdown").textContent = "";
+          return;
+        }
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+        const earned = ((now - data.lastUpdate) / 3600000) * MINE_RATE;
+        await updateDoc(userRef, {
+          balance: (data.balance || 0) + earned,
+          lastUpdate: now
+        });
 
-  const MINE_RATE = 0.600; // EANO/hour
-  const MINE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
-  let miningInterval;
+        document.getElementById("mining-status").textContent =
+          `⛏️ Mining... (+${earned.toFixed(3)} EANO)`;
+        updateCountdown(data.miningEnd - now);
+      }, 60000); // Every 1 minute
+    }
 
-  function updateCountdown(msLeft) {
-    const hours = Math.floor(msLeft / (1000 * 60 * 60));
-    const minutes = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((msLeft % (1000 * 60)) / 1000);
-    document.getElementById("countdown").textContent =
-      `⏳ ${hours}h ${minutes}m ${seconds}s left`;
-  }
-
-  async function runMiningLoop(userId) {
-    const userRef = doc(db, "users", userId);
-    miningInterval = setInterval(async () => {
+    async function startMiningSession(userId) {
+      const userRef = doc(db, "users", userId);
       const snap = await getDoc(userRef);
-      const data = snap.data();
       const now = Date.now();
+      const data = snap.exists() ? snap.data() : {};
 
-      if (now >= data.miningEnd) {
-        clearInterval(miningInterval);
-        document.getElementById("mining-status").textContent = "⛏️ Mining session ended.";
-        document.getElementById("countdown").textContent = "";
-        return;
+      if (!data.miningEnd || now >= data.miningEnd) {
+        const end = now + MINE_DURATION;
+        await setDoc(userRef, {
+          balance: data.balance || 0,
+          miningStart: now,
+          miningEnd: end,
+          lastUpdate: now,
+          score: data.score || 0,
+          trustScore: data.trustScore || 0
+        }, { merge: true });
       }
 
-      const lastUpdate = data.lastUpdate || now;
-      const earned = ((now - lastUpdate) / 3600000) * MINE_RATE;
-
-      await updateDoc(userRef, {
-        balance: (data.balance || 0) + earned,
-        lastUpdate: now
-      });
-
-      document.getElementById("mining-status").textContent =
-        `⛏️ Mining... Balance updated (+${earned.toFixed(3)} EANO)`;
-      updateCountdown(data.miningEnd - now);
-    }, 60000); // every minute
-  }
-
-  async function startMiningSession(userId) {
-    const userRef = doc(db, "users", userId);
-    const userSnap = await getDoc(userRef);
-    const now = Date.now();
-    const userData = userSnap.exists() ? userSnap.data() : {};
-
-    if (!userData.miningEnd || now >= userData.miningEnd) {
-      const newEnd = now + MINE_DURATION;
-      await setDoc(userRef, {
-        balance: userData.balance || 0,
-        miningStart: now,
-        miningEnd: newEnd,
-        lastUpdate: now,
-        score: userData.score || 0,
-        trustScore: userData.trustScore || 0
-      }, { merge: true });
+      runMiningLoop(userId);
     }
 
-    runMiningLoop(userId);
-  }
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await startMiningSession(user.uid);
+      } else {
+        window.location.href = "index.html";
+      }
+    });
 
-  // Automatically run on login
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      await startMiningSession(user.uid);
-    } else {
-      window.location.href = "index.html";
-    }
-  });
+    window.toggleSidebar = function () {
+      document.getElementById("sidebar").classList.toggle("show");
+    };
+
+    window.startMining = function () {
+      alert("⛏️ Mining started and will auto-update for 24 hours!");
+    };
   </script>
 </body>
 </html>
