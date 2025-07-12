@@ -65,59 +65,67 @@
     let intervalId;
 
     function updateCountdown(msLeft) {
-      const h = Math.floor(msLeft / 3600000);
-      const m = Math.floor((msLeft % 3600000) / 60000);
-      const s = Math.floor((msLeft % 60000) / 1000);
-      document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
+  const h = Math.floor(msLeft / 3600000);
+  const m = Math.floor((msLeft % 3600000) / 60000);
+  const s = Math.floor((msLeft % 60000) / 1000);
+  document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
+}
+
+async function runMiningSession(userId) {
+  const userRef = doc(db, "users", userId);
+  const snap = await getDoc(userRef);
+  const data = snap.exists() ? snap.data() : {};
+  const now = Date.now();
+
+  if (!data.miningEnd || now >= data.miningEnd) {
+    const newEnd = now + MINE_DURATION;
+    await setDoc(userRef, {
+      balance: data.balance || 0,
+      miningStart: now,
+      miningEnd: newEnd,
+      lastUpdate: now,
+      score: data.score || 0,
+      trustScore: data.trustScore || 0
+    }, { merge: true });
+  }
+
+  startAutoMining(userId);
+}
+
+async function startAutoMining(userId) {
+  const userRef = doc(db, "users", userId);
+
+  const interval = setInterval(async () => {
+    const snap = await getDoc(userRef);
+    const data = snap.data();
+    const now = Date.now();
+
+    if (!data || now >= data.miningEnd) {
+      clearInterval(interval);
+      document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
+      document.getElementById("countdown").textContent = "";
+      return;
     }
 
-    async function runMining(userId) {
-      const ref = doc(db, "users", userId);
-      intervalId = setInterval(async () => {
-        const snap = await getDoc(ref);
-        const data = snap.data();
-        const now = Date.now();
+    const lastUpdate = data.lastUpdate || now;
+    const earned = ((now - lastUpdate) / 3600000) * MINE_RATE;
 
-        if (now >= data.miningEnd) {
-          clearInterval(intervalId);
-          document.getElementById("mining-status").textContent = "⛏️ Mining session ended.";
-          document.getElementById("countdown").textContent = "";
-          return;
-        }
+    await updateDoc(userRef, {
+      balance: (data.balance || 0) + earned,
+      lastUpdate: now
+    });
 
-        const last = data.lastUpdate || now;
-        const earned = ((now - last) / 3600000) * MINE_RATE;
-
-        await updateDoc(ref, {
-          balance: (data.balance || 0) + earned,
-          lastUpdate: now
-        });
-
-        document.getElementById("mining-status").textContent = `⛏️ Mining... +${earned.toFixed(3)} EANO`;
-        updateCountdown(data.miningEnd - now);
-      }, 60000);
-    }
-
-    async function startMiningSession(userId) {
-      const ref = doc(db, "users", userId);
-      const snap = await getDoc(ref);
-      const now = Date.now();
-      const data = snap.exists() ? snap.data() : {};
-
-      if (!data.miningEnd || now >= data.miningEnd) {
-        const newEnd = now + MINE_DURATION;
-        await setDoc(ref, {
-          balance: data.balance || 0,
-          miningStart: now,
-          miningEnd: newEnd,
-          lastUpdate: now,
-          score: data.score || 0,
-          trustScore: data.trustScore || 0
-        }, { merge: true });
-      }
-
+    document.getElementById("mining-status").textContent = `⛏️ Mining... +${earned.toFixed(3)} EANO`;
+    updateCountdown(data.miningEnd - now);
+  }, 60000); // Update every minute
+  
+   }
       runMining(userId);
     }
+    
+  function startMining() {
+    alert("⛏️ Mining starts automatically and updates every minute.");
+  }
 
     function logout() {
       localStorage.clear();
@@ -130,8 +138,12 @@
     });
 
     onAuthStateChanged(auth, async (user) => {
-      if (user) await startMiningSession(user.uid);
-      else window.location.href = "index.html";
-    });
-  </script></body>
+  if (user) {
+    await runMiningSession(user.uid);
+  } else {
+    window.location.href = "index.html";
+  }
+});
+  </script>
+</body>
 </html>
