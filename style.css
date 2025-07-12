@@ -1,205 +1,119 @@
-/* ==== Reset & Base ==== */
-body, html {
+/* === EANO Dashboard Styles === */
+
+body {
   margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: url('eano-bg.png') no-repeat center center fixed;
-  background-size: cover;
-  background-attachment: fixed;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to bottom, #000000, #111111);
   color: #fff;
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
-/* ==== Overlay Dark Background ==== */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  z-index: -1;
-}
-
-/* ==== Topbar ==== */
-.topbar {
+.nav-fixed {
+  position: sticky;
+  top: 0;
+  background-color: #000;
+  z-index: 1000;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.6rem 1rem;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: rgba(0,0,0,0.85);
-  color: #fff;
-  z-index: 999;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
-.brand {
+.menu-toggle {
+  font-size: 1.5rem;
   font-weight: bold;
-  font-size: 1.3rem;
-}
-
-/* ==== Language Selector & Logout ==== */
-.top-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-select#lang-select,
-button#logout-btn,
-button#dark-toggle {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: none;
-  background: #333;
-  color: #fff;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-#dark-toggle:hover,
-#logout-btn:hover {
-  background: #444;
-}
-
-/* ==== Sidebar Menu ==== */
-#menu-toggle {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1000;
-  background: gold;
-  color: black;
-  border: none;
-  padding: 10px;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-#sidebar-menu {
-  position: fixed;
-  top: 0;
-  left: -260px;
-  width: 250px;
-  height: 100%;
-  background: #1c1c1c;
-  color: white;
-  transition: left 0.3s ease-in-out;
-  z-index: 998;
-  padding: 20px;
-  box-shadow: 2px 0 15px rgba(255, 215, 0, 0.3);
-}
-
-#sidebar-menu.open {
-  left: 0;
-}
-
-#sidebar-menu ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 60px;
-}
-
-#sidebar-menu li {
-  margin: 15px 0;
-}
-
-#sidebar-menu a,
-#sidebar-menu button {
-  color: gold;
-  text-decoration: none;
   background: none;
+  color: white;
   border: none;
-  font-size: 1rem;
-  width: 100%;
-  display: block;
-  text-align: left;
 }
 
-/* ==== Mine Button ==== */
-#mine-btn {
+.lang-select {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-radius: 6px;
+  padding: 0.3rem;
+}
+
+/* Sidebar */
+.sidebar {
   position: fixed;
-  top: 80px;
-  right: 15px;
-  background: linear-gradient(45deg, gold, orange);
-  color: black;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100%;
+  background: #000;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 999;
+  padding: 2rem 1rem;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar.show {
+  transform: translateX(0);
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  margin-bottom: 1rem;
   font-weight: bold;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  z-index: 998;
-  animation: glow 1.5s infinite alternate;
+  text-decoration: none;
 }
 
-@keyframes glow {
-  0% { box-shadow: 0 0 8px gold; }
-  100% { box-shadow: 0 0 20px orange; }
-}
-
-/* ==== Announcement Box ==== */
-#announcement-box {
+/* Mine Button */
+.circle-mine {
+  position: fixed;
+  bottom: 2rem;
+  right: 1rem;
+  background: #007bff;
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 30vh;
-  background: rgba(255, 255, 255, 0.9);
-  color: #111;
+  font-size: 1.2rem;
+  z-index: 1002;
+  box-shadow: 0 0 10px rgba(0,123,255,0.5);
+  cursor: pointer;
+}
+
+/* Card Blocks */
+.feature-card {
+  background: rgba(255, 255, 255, 0.05);
   padding: 1.5rem;
-  border-radius: 14px;
-  margin: 110px auto 20px;
-  max-width: 90%;
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  margin: 2rem;
   text-align: center;
-  font-size: 1rem;
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* ==== Main Content ==== */
-.main-content {
-  margin-top: 220px;
-  padding: 1rem;
-  position: relative;
-  z-index: 1;
+/* Announcement */
+.announcement {
+  background: rgba(255,255,255,0.05);
+  padding: 1.5rem;
+  border-radius: 16px;
+  margin: 2rem auto;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
 }
 
-/* ==== Coming Soon Blocks ==== */
-.coming-soon-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.coming-box {
-  background: rgba(255, 255, 255, 0.85);
-  color: #333;
-  padding: 1.2rem;
+.announcement img {
+  width: 100%;
+  max-width: 100%;
   border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+/* Footer */
+.footer {
   text-align: center;
-  font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-/* ==== Responsive Fixes ==== */
-@media (max-width: 768px) {
-  .topbar {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+  color: #ccc;
   }
-
-  #mine-btn {
-    top: 140px;
-  }
-
-  #announcement-box {
-    margin-top: 160px;
-  }
-}
