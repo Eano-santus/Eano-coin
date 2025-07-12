@@ -3,39 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Profile</title>
+  <title>👤 Profile • EANO</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
+
   <div class="nav-fixed">
-    <h1>👤 Profile</h1>
-    <button onclick="goBack()" class="btn btn-outline-light">← Back</button>
+    <h1>👤 My Profile</h1>
+    <button onclick="logout()" class="btn btn-danger">Logout</button>
   </div>
 
   <div class="feature-card">
-    <h2>Welcome, <span id="displayName">...</span>!</h2>
-    <p><strong>Email:</strong> <span id="email">...</span></p>
-    <p><strong>Phone:</strong> <span id="phone">Not set</span></p>
-    <p><strong>Score:</strong> <span id="score">0</span></p>
-    <p><strong>Trust Score:</strong> <span id="trustScore">0</span></p>
+    <h2 id="username">Loading...</h2>
+    <p id="email">Checking email...</p>
+
     <p><strong>Balance:</strong> <span id="balance">0.000</span> EANO</p>
+    <p><strong>Score:</strong> <span id="score">0</span></p>
+    <p><strong>Trust Score:</strong> <span id="trust">0</span></p>
+
+    <p><strong>Score Level:</strong> <span id="score-level">-</span></p>
+    <p><strong>Mining Level:</strong> <span id="mining-level">-</span></p>
+
+    <div id="badges" style="margin-top: 1rem; font-size: 1.5rem;"></div>
   </div>
 
-  <div class="feature-card">
-    <h3>✏️ Update Profile</h3>
-    <input type="text" id="newName" placeholder="New name" class="form-input" /><br/><br/>
-    <input type="text" id="newPhone" placeholder="Phone number" class="form-input" /><br/><br/>
-    <button onclick="updateProfile()" class="btn btn-warning">Update</button>
+  <div class="footer">
+    &copy; 2025 EANO Network • Powered by Trust & Scores
   </div>
 
-  <div class="footer">© 2025 EANO • Trust Through Mining</div>
-
-  <!-- Firebase + Profile Logic -->
+  <!-- Firebase + JS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, updateProfile as updateAuthProfile } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -50,63 +51,63 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let currentUserId = "";
+    const trustBadge = (score) => {
+      if (score >= 5000) return "💠 O.G";
+      if (score >= 1000) return "🟢 Trusted Miner";
+      if (score >= 500)  return "🟡 Reliable Miner";
+      if (score >= 300)  return "🔵 New Miner";
+      return "🔴 Low Trust";
+    };
+
+    const miningLevel = (balance) => {
+      if (balance >= 10000) return "🐉 Dragon";
+      if (balance >= 5000) return "🐘 Elephant";
+      if (balance >= 2500) return "🦍 Gorilla";
+      if (balance >= 1200) return "🐻 Bear";
+      if (balance >= 600)  return "🐯 Lion";
+      if (balance >= 300)  return "🐼 Panda";
+      if (balance >= 150)  return "🐺 Wolf";
+      if (balance >= 50)   return "🐹 Hamster";
+      return "🐥 Chicken";
+    };
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
+      if (user) {
+        document.getElementById("username").textContent = user.displayName || "Unnamed Miner";
+        document.getElementById("email").textContent = user.email || "No email";
+
+        const ref = doc(db, "users", user.uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          const data = snap.data();
+
+          const balance = data.balance || 0;
+          const score = data.score || 0;
+          const trust = data.trustScore || 0;
+
+          document.getElementById("balance").textContent = balance.toFixed(3);
+          document.getElementById("score").textContent = score;
+          document.getElementById("trust").textContent = trust;
+
+          document.getElementById("score-level").textContent = trustBadge(score);
+          document.getElementById("mining-level").textContent = miningLevel(balance);
+
+          document.getElementById("badges").innerHTML = `
+            ${trustBadge(score)} | ${miningLevel(balance)}
+          `;
+        }
+      } else {
         window.location.href = "index.html";
-        return;
-      }
-
-      currentUserId = user.uid;
-
-      document.getElementById("email").textContent = user.email;
-      document.getElementById("displayName").textContent = user.displayName || "Miner";
-
-      const userRef = doc(db, "users", currentUserId);
-      const docSnap = await getDoc(userRef);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById("score").textContent = data.score || 0;
-        document.getElementById("trustScore").textContent = data.trustScore || 0;
-        document.getElementById("balance").textContent = (data.balance || 0).toFixed(3);
-        document.getElementById("phone").textContent = data.phone || "Not set";
       }
     });
 
-    async function updateProfile() {
-      const name = document.getElementById("newName").value.trim();
-      const phone = document.getElementById("newPhone").value.trim();
-
-      if (!name && !phone) {
-        alert("Please enter name or phone to update.");
-        return;
-      }
-
-      const updates = {};
-      if (name) updates.name = name;
-      if (phone) updates.phone = phone;
-
-      const userRef = doc(db, "users", currentUserId);
-      await updateDoc(userRef, updates);
-
-      if (name) {
-        await updateAuthProfile(auth.currentUser, { displayName: name });
-        document.getElementById("displayName").textContent = name;
-      }
-      if (phone) {
-        document.getElementById("phone").textContent = phone;
-      }
-
-      document.getElementById("newName").value = "";
-      document.getElementById("newPhone").value = "";
-      alert("✅ Profile updated.");
-    }
-
-    function goBack() {
-      window.location.href = "dashboard.html";
+    function logout() {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
     }
   </script>
+
 </body>
 </html>
