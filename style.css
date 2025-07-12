@@ -1,4 +1,6 @@
-/* === Base Styles === */
+/* -------------------------
+   GENERAL STYLES
+-------------------------- */
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
@@ -8,12 +10,9 @@ body {
   scroll-behavior: smooth;
 }
 
-h1, h2, h3 {
-  color: gold;
-  text-shadow: 0 0 10px #ffd700;
-}
-
-/* === Navigation === */
+/* -------------------------
+   NAVIGATION BAR
+-------------------------- */
 .nav-fixed {
   position: sticky;
   top: 0;
@@ -26,50 +25,66 @@ h1, h2, h3 {
   border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
-.menu-toggle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  background: none;
-  color: white;
-  border: none;
+.nav-fixed h1 {
+  font-size: 1.3rem;
+  margin: 0;
+  color: gold;
+  text-shadow: 0 0 5px #ffd700;
 }
 
-.lang-select {
-  background: rgba(255,255,255,0.1);
+.nav-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+#toggle-theme {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.light-mode #toggle-theme {
+  color: black;
+}
+
+#langSelect {
+  background: rgba(255, 255, 255, 0.1);
   color: white;
   border-radius: 6px;
   padding: 0.3rem;
-  border: 1px solid rgba(255,255,255,0.3);
+  border: none;
 }
 
-/* === Sidebar === */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 100%;
-  background: #000;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  z-index: 999;
-  padding: 2rem 1rem;
-  border-right: 1px solid rgba(255,255,255,0.1);
+.light-mode #langSelect {
+  background: rgba(0, 0, 0, 0.1);
+  color: black;
 }
 
-.sidebar.show {
-  transform: translateX(0);
-}
-
-.sidebar a {
-  display: block;
-  color: white;
-  margin-bottom: 1rem;
+/* -------------------------
+   BALANCE BAR
+-------------------------- */
+.balance-bar {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.1rem;
   font-weight: bold;
-  text-decoration: none;
+  color: gold;
+  box-shadow: 0 0 10px rgba(255,215,0,0.2);
+  margin: 0;
 }
 
-/* === Mine Button === */
+.light-mode .balance-bar {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000;
+}
+
+/* -------------------------
+   CIRCLE MINE BUTTON
+-------------------------- */
 .circle-mine {
   position: fixed;
   bottom: 2rem;
@@ -82,28 +97,15 @@ h1, h2, h3 {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
-  z-index: 1002;
-  box-shadow: 0 0 10px rgba(0,123,255,0.5);
+  font-size: 1.5rem;
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
   cursor: pointer;
+  z-index: 1000;
 }
 
-/* === Cards === */
-.feature-card {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  border-radius: 16px;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-  margin: 2rem;
-  text-align: center;
-  transition: transform 0.2s;
-}
-
-.feature-card:hover {
-  transform: translateY(-4px);
-}
-
-/* === Announcement === */
+/* -------------------------
+   ANNOUNCEMENT BLOCK
+-------------------------- */
 .announcement {
   background: rgba(255,255,255,0.05);
   padding: 1.5rem;
@@ -121,7 +123,84 @@ h1, h2, h3 {
   margin-bottom: 1rem;
 }
 
-/* === Footer === */
+.light-mode .announcement {
+  background: rgba(0,0,0,0.05);
+  color: black;
+}
+
+/* -------------------------
+   MINING STATUS BOX
+-------------------------- */
+.mining-status-box {
+  background: rgba(0, 255, 0, 0.05);
+  border-left: 4px solid limegreen;
+  padding: 1rem;
+  margin: 2rem;
+  border-radius: 12px;
+  color: #0f0;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.light-mode .mining-status-box {
+  background: rgba(0, 255, 0, 0.05);
+  border-left-color: #0a0;
+  color: green;
+}
+
+/* -------------------------
+   FEATURE CARDS
+-------------------------- */
+.feature-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  margin: 2rem;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+.light-mode .feature-card {
+  background: rgba(0,0,0,0.05);
+  color: black;
+}
+
+/* -------------------------
+   BUTTONS
+-------------------------- */
+button, .btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-danger {
+  background: crimson;
+  color: white;
+}
+
+.btn-outline-light {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.light-mode .btn-outline-light {
+  border: 1px solid black;
+  color: black;
+}
+
+/* -------------------------
+   FOOTER
+-------------------------- */
 .footer {
   text-align: center;
   padding: 2rem;
@@ -129,37 +208,6 @@ h1, h2, h3 {
   color: #ccc;
 }
 
-/* === Light Mode Support === */
-body.light-mode {
-  background: #f9f9f9;
-  color: #111;
-}
-
-body.light-mode .nav-fixed {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-}
-
-body.light-mode .sidebar {
-  background: #fff;
-  border-right: 1px solid #ddd;
-}
-
-body.light-mode .sidebar a {
-  color: #111;
-}
-
-body.light-mode .circle-mine {
-  background: #ff9500;
-  box-shadow: 0 0 10px rgba(255, 149, 0, 0.4);
-}
-
-body.light-mode .feature-card,
-body.light-mode .announcement {
-  background: rgba(0, 0, 0, 0.05);
-  color: #111;
-}
-
-body.light-mode .footer {
-  color: #666;
+.light-mode .footer {
+  color: #333;
 }
