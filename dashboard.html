@@ -6,9 +6,9 @@
   <title>EANO Dashboard</title>
     <script>
   if (!localStorage.getItem("seenWelcome")) {
-  window.location.href = "welcome.html";
-}
-<script>
+    window.location.href = "welcome.html";
+  }
+    </script>
     <!-- Fonts + Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=6" />
@@ -29,7 +29,7 @@
       <li><a href="#" onclick="alert('Founder: Santus Santorum')">👑 Author</a></li>
       <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
       <li><a href="https://t.me/eanonetwork" target="_blank">🛟 Support Portal</a></li>
-      <li><button id="logout-btn">🚪 Logout</button></li>
+      <li><a href="#" id="logout-btn">🚪 Logout</a></li>
     </ul>
   </div>
 
@@ -164,7 +164,7 @@
       font-size: 16px;
       text-align: center;
       position: relative;
-      z-index: 910;
+      z-index: 800;
     }
     .stats-box {
       background: rgba(255,255,255,0.1);
@@ -221,7 +221,10 @@
       const trust = data.trustScore || 0;
       const referrals = data.referralCount || 0;
       const lastMine = data.lastMine?.toMillis?.() || 0;
-
+if (!data.lastMine) {
+  mineBtn.disabled = false;
+  mineBtn.textContent = "⚡ Start Mining";
+}
       updateBalanceUI(balance);
       updateReferralCountUI(referrals);
       levelEl.textContent = getLevelFromBalance(balance);
