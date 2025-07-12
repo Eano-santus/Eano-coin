@@ -7,15 +7,8 @@
 
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-
-  <!-- 🔁 Redirect to welcome.html if not seen -->
-  <script>
-    if (!localStorage.getItem("seenWelcome")) {
-      window.location.href = "welcome.html";
-    }
-  </script>
 
   <style>
     body {
@@ -102,7 +95,6 @@
   <div class="auth-container">
     <h2>🚀 Welcome to EANO</h2>
 
-    <!-- 🌍 Language Selector -->
     <select id="lang-select" class="form-select lang-select">
       <option value="en">🌍 English</option>
       <option value="fr">🇫🇷 French</option>
@@ -114,7 +106,6 @@
       <option value="zh">🇨🇳 中文</option>
     </select>
 
-    <!-- 🌗 Light/Dark Toggle -->
     <button id="theme-toggle" class="btn btn-outline-light mt-2">🌗 Toggle Light/Dark</button>
 
     <!-- 📝 Sign-Up Section -->
@@ -139,21 +130,68 @@
     <div class="toggle-link" id="toggle-auth">Already have an account? Login</div>
   </div>
 
-  <!-- ✅ Scripts -->
-  <script type="module" src="lang.js?v=5"></script>
-
-  <!-- Auto Redirect if logged in -->
+  <!-- Scripts -->
   <script type="module">
-    import { auth } from "./auth.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f",
+      measurementId: "G-NS0W6QSS69"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Sign up
+    document.getElementById("signup-btn").addEventListener("click", async () => {
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        window.location.href = "dashboard.html";
+      } catch (e) {
+        alert(e.message);
+      }
+    });
+
+    // Login
+    document.getElementById("login-btn").addEventListener("click", async () => {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "dashboard.html";
+      } catch (e) {
+        alert(e.message);
+      }
+    });
+
+    // Redirect based on state
     onAuthStateChanged(auth, (user) => {
       if (user) {
         window.location.href = "dashboard.html";
+      } else {
+        if (!localStorage.getItem("seenWelcome")) {
+          window.location.href = "welcome.html";
+        }
       }
     });
   </script>
 
-  <!-- Toggle between Login and Signup -->
+  <!-- Auth Toggle -->
   <script>
     const toggleLink = document.getElementById("toggle-auth");
     const signupSection = document.getElementById("signup-section");
@@ -169,7 +207,7 @@
     });
   </script>
 
-  <!-- 🌗 Theme Toggle -->
+  <!-- Theme Toggle -->
   <script>
     const themeToggle = document.getElementById("theme-toggle");
     const body = document.getElementById("auth-body");
@@ -186,74 +224,13 @@
     });
   </script>
 
-  <!-- ✅ PWA SW -->
+  <!-- PWA -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("✅ SW Registered"))
         .catch(err => console.error("❌ SW Error", err));
     }
-  </script>
-  <script type="module">
-  import {
-    initializeApp
-  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-  const firebaseConfig = {
-  apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-  authDomain: "eano-miner.firebaseapp.com",
-  projectId: "eano-miner",
-  storageBucket: "eano-miner.appspot.com",
-  messagingSenderId: "50186911438",
-  appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-  measurementId: "G-NS0W6QSS69"
-};
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // Sign up
-  document.getElementById("signup-btn").addEventListener("click", async () => {
-    const email = document.getElementById("signup-email").value;
-    const password = document.getElementById("signup-password").value;
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      localStorage.setItem("loggedIn", "true");
-      window.location.href = "dashboard.html";
-    } catch (e) {
-      alert(e.message);
-    }
-  });
-
-  // Login
-  document.getElementById("login-btn").addEventListener("click", async () => {
-    const email = document.getElementById("login-email").value;
-    const password = document.getElementById("login-password").value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem("loggedIn", "true");
-      window.location.href = "dashboard.html";
-    } catch (e) {
-      alert(e.message);
-    }
-  });
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      window.location.href = "dashboard.html";
-    } else {
-      // Only redirect to welcome.html if not logged in and not seen
-      if (!localStorage.getItem("seenWelcome")) {
-        window.location.href = "welcome.html";
-      }
-    }
-  });
   </script>
 </body>
 </html>
