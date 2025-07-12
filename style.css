@@ -211,3 +211,20 @@ button, .btn {
 .light-mode .footer {
   color: #333;
 }
+/* Existing feature-card or other section styles */
+
+/* =======================
+   Shiny Founder Name Style
+   ======================= */
+.shiny-name {
+  background: linear-gradient(90deg, #ffd700, #ff8c00, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  animation: shine 3s infinite linear;
+}
+
+@keyframes shine {
+  0% { background-position: 0% }
+  100% { background-position: 200% }
+}
