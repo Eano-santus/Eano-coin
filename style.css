@@ -1,230 +1,72 @@
-/* -------------------------
-   GENERAL STYLES
--------------------------- */
-body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(to bottom, #000000, #111111);
-  color: #fff;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-}
+/* ------------------------- GENERAL STYLES -------------------------- */ body { margin: 0; font-family: 'Roboto', sans-serif; background: linear-gradient(to bottom, #000000, #111111); color: #fff; overflow-y: auto; scroll-behavior: smooth; }
 
-/* -------------------------
-   NAVIGATION BAR
--------------------------- */
-.nav-fixed {
-  position: sticky;
-  top: 0;
-  background-color: #000;
-  z-index: 1000;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-}
+/* ------------------------- NAVIGATION BAR -------------------------- */ .nav-fixed { position: sticky; top: 0; background-color: #000; z-index: 1000; padding: 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); }
 
-.nav-fixed h1 {
-  font-size: 1.3rem;
-  margin: 0;
-  color: gold;
-  text-shadow: 0 0 5px #ffd700;
-}
+.nav-fixed h1 { font-size: 1.3rem; margin: 0; color: gold; text-shadow: 0 0 5px #ffd700; }
 
-.nav-controls {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
+.nav-controls { display: flex; gap: 1rem; align-items: center; }
 
-#toggle-theme {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.3rem;
-  cursor: pointer;
-}
+#toggle-theme { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; }
 
-.light-mode #toggle-theme {
-  color: black;
-}
+.light-mode #toggle-theme { color: black; }
 
-#langSelect {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-radius: 6px;
-  padding: 0.3rem;
-  border: none;
-}
+#langSelect { background: rgba(255, 255, 255, 0.1); color: white; border-radius: 6px; padding: 0.3rem; border: none; }
 
-.light-mode #langSelect {
-  background: rgba(0, 0, 0, 0.1);
-  color: black;
-}
+.light-mode #langSelect { background: rgba(0, 0, 0, 0.1); color: black; }
 
-/* -------------------------
-   BALANCE BAR
--------------------------- */
-.balance-bar {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: gold;
-  box-shadow: 0 0 10px rgba(255,215,0,0.2);
-  margin: 0;
-}
+/* ------------------------- BALANCE BAR -------------------------- */ .balance-bar { background: rgba(255, 255, 255, 0.05); padding: 1rem; text-align: center; font-size: 1.1rem; font-weight: bold; color: gold; box-shadow: 0 0 10px rgba(255,215,0,0.2); margin: 0; }
 
-.light-mode .balance-bar {
-  background: rgba(0, 0, 0, 0.05);
-  color: #000;
-}
+.light-mode .balance-bar { background: rgba(0, 0, 0, 0.05); color: #000; }
 
-/* -------------------------
-   CIRCLE MINE BUTTON
--------------------------- */
-.circle-mine {
-  position: fixed;
-  bottom: 2rem;
-  right: 1rem;
-  background: #007bff;
-  color: white;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
-  cursor: pointer;
-  z-index: 1000;
-}
+/* ------------------------- CIRCLE MINE BUTTON -------------------------- */ .circle-mine { position: fixed; bottom: 2rem; right: 1rem; background: #007bff; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; box-shadow: 0 0 15px rgba(0, 123, 255, 0.4); cursor: pointer; z-index: 1000; }
 
-/* -------------------------
-   ANNOUNCEMENT BLOCK
--------------------------- */
-.announcement {
-  background: rgba(255,255,255,0.05);
-  padding: 1.5rem;
-  border-radius: 16px;
-  margin: 2rem auto;
-  max-width: 600px;
-  text-align: center;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
-}
+.circle-mine.active { animation: pulse 1.2s infinite ease-in-out; background: #00bfff; box-shadow: 0 0 20px rgba(0, 191, 255, 0.6), 0 0 40px rgba(0, 191, 255, 0.4); }
 
-.announcement img {
-  width: 100%;
-  max-width: 100%;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-}
+@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
 
-.light-mode .announcement {
-  background: rgba(0,0,0,0.05);
-  color: black;
-}
+/* ------------------------- ANNOUNCEMENT BLOCK -------------------------- */ .announcement { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 16px; margin: 2rem auto; max-width: 600px; text-align: center; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
 
-/* -------------------------
-   MINING STATUS BOX
--------------------------- */
-.mining-status-box {
-  background: rgba(0, 255, 0, 0.05);
-  border-left: 4px solid limegreen;
-  padding: 1rem;
-  margin: 2rem;
-  border-radius: 12px;
-  color: #0f0;
-  text-align: center;
-  font-size: 1rem;
-}
+.announcement img { width: 100%; max-width: 100%; border-radius: 12px; margin-bottom: 1rem; }
 
-.light-mode .mining-status-box {
-  background: rgba(0, 255, 0, 0.05);
-  border-left-color: #0a0;
-  color: green;
-}
+.light-mode .announcement { background: rgba(0,0,0,0.05); color: black; }
 
-/* -------------------------
-   FEATURE CARDS
--------------------------- */
-.feature-card {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1.5rem;
-  border-radius: 16px;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-  margin: 2rem;
-  text-align: center;
-  transition: transform 0.2s;
-}
+#announcement-img.loading { filter: grayscale(1) blur(2px); opacity: 0.5; }
 
-.feature-card:hover {
-  transform: translateY(-5px);
-}
+.announcement img[onerror] { border: 2px dashed red; }
 
-.light-mode .feature-card {
-  background: rgba(0,0,0,0.05);
-  color: black;
-}
+/* ------------------------- MINING STATUS BOX -------------------------- */ .mining-status-box { background: rgba(0, 255, 0, 0.05); border-left: 4px solid limegreen; padding: 1rem; margin: 2rem; border-radius: 12px; color: #0f0; text-align: center; font-size: 1rem; }
 
-/* -------------------------
-   BUTTONS
--------------------------- */
-button, .btn {
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-}
+.light-mode .mining-status-box { background: rgba(0, 255, 0, 0.05); border-left-color: #0a0; color: green; }
 
-.btn-danger {
-  background: crimson;
-  color: white;
-}
+/* ------------------------- FEATURE CARDS -------------------------- */ .feature-card { background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 16px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); margin: 2rem; text-align: center; transition: transform 0.2s, opacity 0.8s ease-out, transform 0.8s ease-out; opacity: 0; transform: translateY(30px); }
 
-.btn-outline-light {
-  background: transparent;
-  border: 1px solid white;
-  color: white;
-}
+.feature-card:hover { transform: translateY(-5px); }
 
-.light-mode .btn-outline-light {
-  border: 1px solid black;
-  color: black;
-}
+.feature-card.fade-in { opacity: 1; transform: translateY(0); }
 
-/* -------------------------
-   FOOTER
--------------------------- */
-.footer {
-  text-align: center;
-  padding: 2rem;
-  font-size: 0.9rem;
-  color: #ccc;
-}
+.light-mode .feature-card { background: rgba(0,0,0,0.05); color: black; }
 
-.light-mode .footer {
-  color: #333;
-}
-/* Existing feature-card or other section styles */
+/* ------------------------- BUTTONS -------------------------- */ button, .btn { padding: 0.6rem 1.2rem; font-size: 1rem; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; }
 
-/* =======================
-   Shiny Founder Name Style
-   ======================= */
-.shiny-name {
-  background: linear-gradient(90deg, #ffd700, #ff8c00, #ff00ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  animation: shine 3s infinite linear;
-}
+.btn-danger { background: crimson; color: white; }
 
-@keyframes shine {
-  0% { background-position: 0% }
-  100% { background-position: 200% }
-}
+.btn-outline-light { background: transparent; border: 1px solid white; color: white; }
+
+.light-mode .btn-outline-light { border: 1px solid black; color: black; }
+
+/* ------------------------- FOOTER -------------------------- */ .footer { text-align: center; padding: 2rem; font-size: 0.9rem; color: #ccc; }
+
+.light-mode .footer { color: #333; }
+
+/* ======================= Shiny Founder Name Style ======================= */ .shiny-name { background: linear-gradient(90deg, #ffd700, #ff8c00, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; animation: shine 3s infinite linear; }
+
+@keyframes shine { 0% { background-position: 0% } 100% { background-position: 200% } }
+
+/* ======================= Responsive Enhancements ======================= */ @media (max-width: 600px) { .feature-card { margin: 1rem; padding: 1rem; }
+
+.circle-mine { bottom: 1rem; right: 1rem; width: 55px; height: 55px; font-size: 1.3rem; }
+
+.nav-fixed { flex-direction: column; gap: 0.5rem; }
+
+.nav-controls { justify-content: center; } }
+
