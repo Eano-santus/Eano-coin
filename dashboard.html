@@ -1,12 +1,15 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Dashboard</title>  <!-- Firebase + UI -->  <script src="ui.js"></script>  <script src="dashboard-extras.js"></script>  <script type="module" src="dashboard-firebase.js"></script>  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO • Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <meta name="theme-color" content="#000000" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <script type="module" src="firebase.js"></script>
+  <script src="dashboard-extras.js" defer></script>
 </head>
 <body>
   <!-- Top Bar -->
@@ -23,21 +26,25 @@
         <option value="pidgin">Pidgin</option>
       </select>
     </div>
-  </div>  <!-- Balance + Mining Status -->  <div class="balance-status">
+  </div>  <!-- Mining Status -->  <div class="balance-status">
     <h2>💰 Balance: <span id="balance">0.000</span> EANO</h2>
     <p id="mining-status">⛏️ Checking mining session...</p>
     <p id="countdown"></p>
-  </div>  <!-- Mine Button -->  <div class="circle-mine" onclick="startMining()">🔵</div>  <!-- Announcement -->  <div class="announcement" id="home">
-    <img id="announcement-img" src="announcement-eano.png" alt="EANO Live Announcement" onerror="this.src='default-announcement.png';" />
+  </div>  <!-- Fixed Mine Button -->  <div class="circle-mine" id="mineBtn">🔵</div>  <!-- Announcement -->  <div class="announcement" id="home">
+    <img id="announcement-img" src="announcement-eano.png" onerror="this.src='default-announcement.png'" alt="EANO Live Announcement" />
     <h2>📢 EANO Announcement</h2>
-    <p id="announcement-msg"><strong>Loading latest updates...</strong></p>
-  </div>  <!-- Sections -->  <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
+    <p><strong>Mining updates are live!</strong></p>
+    <p>Other features will begin very soon.</p>
+    <p>⛏️ <strong>Mine daily to increase your score and TrustScore.</strong></p>
+    <p>👥 <strong>Refer people to level up and unlock more features.</strong></p>
+  </div>  <!-- Navigation Cards -->  <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
   <a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners and TrustScores</p></a>
   <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals and bonuses</p></a>
   <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>View and update details</p></a>
   <div class="feature-card" id="support">
-    <a href="https://t.me/eanocoin" target="_blank" style="text-decoration: none; color: inherit;">
-      <h3>🌚 Support Portal</h3><p>Join our Telegram Community</p>
+    <a href="https://t.me/eanocoin" target="_blank" style="text-decoration:none;color:inherit">
+      <h3>🆘 Support Portal</h3>
+      <p>Join our Telegram Community</p>
     </a>
   </div>
   <div class="feature-card" id="author">
@@ -46,30 +53,32 @@
       Founded by <span class="shiny-name">Santus Santorum</span>, a visionary mind building a network rooted in trust, privacy, and empowerment.
     </p>
   </div>
+  <div class="feature-card" id="chat"><h3>💬 Community Chat</h3><p>Talk with the community</p></div>
+  <div class="feature-card" id="whitepaper"><h3>📜 WhitePaper</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎮 Games</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎤 Studio</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>
-  <div class="feature-card text-center">
+  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <!-- Logout -->  <div class="feature-card text-center">
     <button onclick="logout()" class="btn btn-danger">Logout</button>
-  </div>  <div class="footer">&copy; 2025 EANO Network • Built on Trust/Level-Up & Reputation</div>  <!-- Firebase + Mining Logic -->  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  </div>  <div class="footer">&copy; 2025 EANO Network • Built on Trust/Level-Up & Reputation</div>  <!-- Firebase + Mining + Toggle Logic -->  <script type="module">
+    import { app, auth, db } from './firebase.js';
+    import {
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc,
+    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
 
-    const app = initializeApp({
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    });
-
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const MINE_RATE = 0.600;
+    const MINE_RATE = 0.6;
     const MINE_DURATION = 24 * 60 * 60 * 1000;
+
+    function updateCountdown(msLeft) {
+      const h = Math.floor(msLeft / 3600000);
+      const m = Math.floor((msLeft % 3600000) / 60000);
+      const s = Math.floor((msLeft % 60000) / 1000);
+      document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
+    }
 
     async function startMiningSession(userId) {
       const userRef = doc(db, "users", userId);
@@ -87,6 +96,7 @@
           score: data.score || 0,
           trustScore: data.trustScore || 0
         }, { merge: true });
+
         notifyMiningStarted();
       }
 
@@ -104,7 +114,6 @@
           clearInterval(interval);
           document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
           document.getElementById("countdown").textContent = "";
-          document.querySelector(".circle-mine").classList.remove("active");
           return;
         }
 
@@ -118,20 +127,9 @@
 
         document.getElementById("mining-status").textContent = `⛏️ Mining... +${earned.toFixed(3)} EANO`;
         document.getElementById("balance-display").textContent = `Balance: ${newBalance.toFixed(3)} EANO`;
+        document.getElementById("balance").textContent = `${newBalance.toFixed(3)}`;
         updateCountdown(data.miningEnd - now);
-        document.querySelector(".circle-mine").classList.add("active");
       }, 60000);
-    }
-
-    function updateCountdown(msLeft) {
-      const h = Math.floor(msLeft / 3600000);
-      const m = Math.floor((msLeft % 3600000) / 60000);
-      const s = Math.floor((msLeft % 60000) / 1000);
-      document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
-    }
-
-    function startMining() {
-      alert("⛏️ Mining is running automatically. You earn 0.600 EANO/hr.");
     }
 
     function logout() {
@@ -143,21 +141,15 @@
       document.body.classList.toggle("light-mode");
     });
 
+    document.getElementById("mineBtn").addEventListener("click", () => {
+      alert("⛏️ Mining starts automatically and updates every minute.");
+    });
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         await startMiningSession(user.uid);
       } else {
         window.location.href = "index.html";
-      }
-    });
-
-    // Load Announcement from Firestore
-    const announcementRef = doc(db, "announcements", "latest");
-    getDoc(announcementRef).then((snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        document.getElementById("announcement-img").src = data.image || "default-announcement.png";
-        document.getElementById("announcement-msg").innerText = data.message || "No message";
       }
     });
   </script></body>
