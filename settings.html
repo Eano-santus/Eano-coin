@@ -5,15 +5,158 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO • Settings</title>
 
-  <!-- PWA + Theme -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
   <link rel="icon" href="favicon.png" type="image/png" />
-
-  <!-- Fonts + Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=3" />
-  <link rel="stylesheet" href="settings.css?v=3" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background: url('eano-bg.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.85);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .topbar .brand {
+      font-weight: bold;
+      font-size: 1.3rem;
+      color: gold;
+    }
+
+    .topbar select,
+    .topbar button,
+    .topbar a {
+      margin-left: 0.5rem;
+      border-radius: 8px;
+      padding: 0.3rem 0.6rem;
+      font-size: 14px;
+      border: none;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .main-content {
+      padding: 2rem 1rem;
+      flex: 1;
+      max-width: 480px;
+      margin: 80px auto 20px auto;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .settings-section {
+      margin-top: 1rem;
+    }
+
+    .settings-section .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-section label {
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      display: block;
+      color: #ddd;
+    }
+
+    .settings-section input {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 10px;
+      border: none;
+      background: #333;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .settings-section button {
+      margin-top: 0.5rem;
+      border-radius: 10px;
+      font-weight: bold;
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      background: gold;
+      color: #000;
+      border: none;
+      cursor: pointer;
+    }
+
+    #logout-btn {
+      background: #dc3545;
+      color: #fff;
+    }
+
+    .light-mode {
+      background-color: #f9f9f9 !important;
+      color: #111 !important;
+    }
+
+    .light-mode .topbar {
+      background: #fff !important;
+      color: #111 !important;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .light-mode .topbar button,
+    .light-mode .topbar select {
+      background: #eee;
+      color: #111;
+    }
+
+    .light-mode .main-content {
+      background: rgba(255, 255, 255, 0.95);
+      color: #111;
+    }
+
+    .light-mode .settings-section input {
+      background: #eee;
+      color: #111;
+    }
+
+    .light-mode .settings-section label {
+      color: #333;
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+      }
+
+      .main-content {
+        max-width: 100%;
+        width: 100%;
+        margin: 1rem auto;
+        padding: 1rem;
+      }
+    }
+  </style>
 </head>
 
 <body class="dashboard">
@@ -44,43 +187,111 @@
   <!-- ⚙️ Settings Content -->
   <div class="main-content fade-in">
     <h2>⚙️ Settings</h2>
-
     <div class="settings-section">
-      <!-- Email Display -->
       <div class="form-group">
         <label for="user-email">📧 Email</label>
         <input type="email" id="user-email" class="form-control" readonly />
       </div>
 
-      <!-- Username -->
       <div class="form-group">
         <label for="username">👤 Username</label>
         <input type="text" id="username" class="form-control" placeholder="Enter username" />
         <button id="save-username" class="btn btn-primary mt-2">Save Username</button>
       </div>
 
-      <!-- Phone Number -->
       <div class="form-group mt-4">
         <label for="phone">📞 Phone Number</label>
         <input type="tel" id="phone" class="form-control" placeholder="+234..." />
         <button id="save-phone" class="btn btn-primary mt-2">Save Phone</button>
       </div>
 
-      <!-- Logout -->
       <div class="form-group mt-4">
         <button id="logout-btn" class="btn btn-danger">🚪 Logout</button>
       </div>
     </div>
   </div>
 
-  <!-- ☁️ Scripts -->
+  <!-- 🌐 FIREBASE + UI -->
   <script type="module" src="firebase.js"></script>
-  <script type="module" src="auth.js"></script>
   <script type="module" src="ui.js?v=3"></script>
   <script type="module" src="lang.js?v=3"></script>
-  <script type="module" src="settings.js?v=3"></script>
 
-  <!-- 🌗 Toggle Light/Dark Mode -->
+  <!-- 📜 Settings Inline Script -->
+  <script type="module">
+    import { auth, db } from "./auth.js";
+    import {
+      doc, getDoc, updateDoc
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        alert("User data not found.");
+        return;
+      }
+
+      const data = userSnap.data();
+      document.getElementById("user-email").value = user.email || "";
+      document.getElementById("username").value = data.username || "";
+      document.getElementById("phone").value = data.phone || "";
+      document.getElementById("balance").textContent = (data.balance || 0).toFixed(3);
+    });
+
+    document.getElementById("save-username")?.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const username = document.getElementById("username").value.trim();
+      if (username.length < 3) {
+        alert("Username must be at least 3 characters.");
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { username });
+        alert("✅ Username saved!");
+      } catch (err) {
+        console.error("Error saving username:", err);
+        alert("❌ Failed to save username.");
+      }
+    });
+
+    document.getElementById("save-phone")?.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const phone = document.getElementById("phone").value.trim();
+      if (!phone.startsWith("+")) {
+        alert("Phone number must start with + and country code.");
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { phone });
+        alert("✅ Phone number saved!");
+      } catch (err) {
+        console.error("Error saving phone:", err);
+        alert("❌ Failed to save phone number.");
+      }
+    });
+
+    document.getElementById("logout-btn")?.addEventListener("click", () => {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+
+  <!-- 🌗 Light/Dark Mode Toggle -->
   <script>
     document.getElementById("dark-toggle")?.addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
