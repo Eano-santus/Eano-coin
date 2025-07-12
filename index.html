@@ -195,5 +195,60 @@
         .catch(err => console.error("❌ SW Error", err));
     }
   </script>
+  <script type="module">
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    appId: "YOUR_APP_ID"
+    // etc...
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Sign up
+  document.getElementById("signup-btn").addEventListener("click", async () => {
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("loggedIn", "true");
+      window.location.href = "dashboard.html";
+    } catch (e) {
+      alert(e.message);
+    }
+  });
+
+  // Login
+  document.getElementById("login-btn").addEventListener("click", async () => {
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("loggedIn", "true");
+      window.location.href = "dashboard.html";
+    } catch (e) {
+      alert(e.message);
+    }
+  });
+
+  // Auto redirect if already logged in
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.location.href = "dashboard.html";
+    }
+  });
+  </script>
 </body>
 </html>
