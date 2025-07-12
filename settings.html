@@ -2,239 +2,161 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Settings</title>  <!-- PWA + Theme -->  <link rel="manifest" href="manifest.json" />
+  <title>EANO • Settings</title>  <!-- Theme + Icons -->  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-  <link rel="icon" href="favicon.png" type="image/png" />  <!-- Fonts + Styles -->  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <style>
-    /* Combined settings.css */
+    /* COMBINED CSS (style.css + settings.css) */
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Roboto', sans-serif;
       background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
-      height: 100vh;
       overflow-x: hidden;
     }
-    .dashboard {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+    .dashboard { display: flex; flex-direction: column; min-height: 100vh; }
     .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(0, 0, 0, 0.85);
-      padding: 0.75rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(0, 0, 0, 0.85); padding: 0.75rem 1rem;
     }
-    .topbar .brand {
-      font-weight: bold;
-      font-size: 1.3rem;
-      color: gold;
-    }
-    .topbar select,
-    .topbar button,
-    .topbar a {
-      margin-left: 0.5rem;
-      border-radius: 8px;
-      padding: 0.3rem 0.6rem;
-      font-size: 14px;
-      border: none;
-      background: #333;
-      color: #fff;
-      cursor: pointer;
-      text-decoration: none;
+    .topbar .brand { font-weight: bold; font-size: 1.3rem; color: gold; }
+    .topbar select, .topbar button, .topbar a {
+      margin-left: 0.5rem; border-radius: 8px; padding: 0.3rem 0.6rem;
+      font-size: 14px; border: none; background: #333; color: #fff;
     }
     .main-content {
-      padding: 2rem 1rem;
-      flex: 1;
-      max-width: 480px;
+      padding: 2rem 1rem; flex: 1; max-width: 480px;
       margin: 80px auto 20px auto;
       background: rgba(0, 0, 0, 0.7);
       border-radius: 16px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
     }
-    .settings-section {
-      margin-top: 1rem;
-    }
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    label {
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-      display: block;
-      color: #ddd;
-    }
-    input {
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 10px;
-      border: none;
-      background: #333;
-      color: #fff;
-      font-size: 1rem;
+    label { display: block; margin-bottom: 0.25rem; color: #ddd; font-weight: bold; }
+    .form-control {
+      width: 100%; padding: 0.6rem; border-radius: 10px;
+      background: #333; color: #fff; border: none;
     }
     button {
-      margin-top: 0.5rem;
-      border-radius: 10px;
-      font-weight: bold;
-      width: 100%;
-      padding: 0.6rem;
-      font-size: 1rem;
-      background: gold;
-      color: #000;
-      border: none;
-      cursor: pointer;
+      margin-top: 0.5rem; border-radius: 10px; padding: 0.6rem;
+      width: 100%; font-weight: bold; font-size: 1rem;
+      background: gold; color: #000; border: none;
     }
-    #logout-btn {
-      background: #dc3545;
-      color: #fff;
-    }
-    .light-mode {
-      background-color: #f9f9f9 !important;
-      color: #111 !important;
-    }
-    .light-mode .topbar {
-      background: #fff !important;
-      color: #111 !important;
-      border-bottom: 1px solid #ccc;
-    }
-    .light-mode .topbar button,
-    .light-mode .topbar select {
-      background: #eee;
-      color: #111;
-    }
-    .light-mode .main-content {
-      background: rgba(255, 255, 255, 0.95);
-      color: #111;
-    }
-    .light-mode input {
-      background: #eee;
-      color: #111;
-    }
-    .light-mode label {
-      color: #333;
-    }
-    @media (max-width: 600px) {
-      .topbar {
-        flex-direction: column;
-        gap: 0.5rem;
-        text-align: center;
-      }
-      .main-content {
-        max-width: 100%;
-        width: 100%;
-        margin: 1rem auto;
-        padding: 1rem;
-      }
-    }
+    #logout-btn { background: crimson; color: white; }
+    #avatar-preview { width: 100px; height: 100px; border-radius: 50%; border: 2px solid gold; object-fit: cover; display: block; margin: 0 auto 1rem; }
   </style>
-</head><body class="dashboard">
-  <!-- 🔝 Topbar -->
+</head>
+<body class="dashboard">
   <div class="topbar">
-    <div class="d-flex align-items-center">
-      <strong class="brand">EANO</strong>
-    </div>
+    <div><strong class="brand">EANO</strong></div>
+    <div><span id="balance">0.000</span> EANO</div>
     <div>
-      <span id="balance">0.000</span> EANO
-    </div>
-    <div class="d-flex align-items-center gap-2">
       <select id="lang-select">
-        <option value="en">🌍 English</option>
-        <option value="fr">🇫🇷 French</option>
-        <option value="sw">🇰🇪 Swahili</option>
-        <option value="ig">🇳🇬 Igbo</option>
-        <option value="ha">🇳🇬 Hausa</option>
-        <option value="efik">🇳🇬 Efik</option>
-        <option value="pid">🇳🇬 Pidgin</option>
-        <option value="zh">🇨🇳 中文</option>
+        <option value="en">🌍 English</option><option value="fr">🇫🇷 French</option><option value="sw">🇰🇪 Swahili</option>
+        <option value="ig">🇳🇬 Igbo</option><option value="ha">🇳🇬 Hausa</option><option value="efik">🇳🇬 Efik</option>
+        <option value="pid">🇳🇬 Pidgin</option><option value="zh">🇨🇳 中文</option>
       </select>
-      <button id="dark-toggle" title="Toggle Light/Dark Mode">🌗</button>
-      <a href="dashboard.html" class="btn btn-sm btn-secondary">🏠 Back</a>
+      <button id="dark-toggle">🌗</button>
+      <a href="dashboard.html">🏠 Back</a>
     </div>
-  </div>  <!-- ⚙️ Settings Content -->  <div class="main-content fade-in">
-    <h2>⚙️ Settings</h2><div class="settings-section">
-  <div class="form-group">
-    <label for="user-email">📧 Email</label>
-    <input type="email" id="user-email" class="form-control" readonly />
-  </div>
-  <div class="form-group">
-    <label for="username">👤 Username</label>
-    <input type="text" id="username" class="form-control" placeholder="Enter username" />
-    <button id="save-username">Save Username</button>
-  </div>
-  <div class="form-group">
-    <label for="phone">📞 Phone Number</label>
-    <input type="tel" id="phone" class="form-control" placeholder="+234..." />
-    <button id="save-phone">Save Phone</button>
-  </div>
-  <div class="form-group">
-    <button id="logout-btn">🚪 Logout</button>
-  </div>
-</div>
+  </div>  <div class="main-content">
+    <h2>⚙️ Settings</h2><!-- 📸 Avatar Upload -->
+<img id="avatar-preview" src="default-avatar.png" alt="Avatar Preview">
+<input type="file" id="avatar-upload" class="form-control" accept="image/*" />
+<button id="upload-avatar">Upload Avatar</button>
 
-  </div>  <!-- FIREBASE + UI -->  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+<!-- 📧 Email (read-only) -->
+<label for="user-email">📧 Email</label>
+<input type="email" id="user-email" class="form-control" readonly />
+<button id="verify-email">Verify Email</button>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f",
-      measurementId: "G-NS0W6QSS69"
-    };
+<!-- 👤 Username (editable every 14 days) -->
+<label for="username">👤 Username</label>
+<input type="text" id="username" class="form-control" />
+<button id="save-username">Save Username</button>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+<!-- 📞 Phone (trigger email instead) -->
+<label for="phone">📞 Phone Number</label>
+<input type="text" id="phone" class="form-control" readonly />
+<button id="request-phone-change">Request Phone Change</button>
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) return location.href = "index.html";
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) return alert("User not found.");
-      const data = userSnap.data();
-      document.getElementById("user-email").value = user.email || "";
-      document.getElementById("username").value = data.username || "";
-      document.getElementById("phone").value = data.phone || "";
-      document.getElementById("balance").textContent = (data.balance || 0).toFixed(3);
+<!-- 🚪 Logout -->
+<button id="logout-btn">🚪 Logout</button>
+
+  </div>  <script type="module" src="firebase.js"></script>  <script type="module" src="ui.js"></script>  <script type="module" src="lang.js"></script>  <script type="module">
+    import { auth, db, storage } from './auth.js';
+    import {
+      doc, getDoc, updateDoc
+    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+    import {
+      sendEmailVerification
+    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
+    import {
+      ref, uploadBytes, getDownloadURL
+    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js';
+
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return window.location.href = 'index.html';
+
+      document.getElementById('user-email').value = user.email;
+      document.getElementById('verify-email').style.display = user.emailVerified ? 'none' : 'block';
+
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      const data = snap.data();
+      document.getElementById('username').value = data.username || '';
+      document.getElementById('phone').value = data.phone || '';
+      document.getElementById('balance').textContent = (data.balance || 0).toFixed(3);
+      if (data.avatarURL) document.getElementById('avatar-preview').src = data.avatarURL;
     });
 
-    document.getElementById("save-username").addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-      const username = document.getElementById("username").value.trim();
-      if (username.length < 3) return alert("Username must be at least 3 characters.");
-      const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, { username });
-      alert("✅ Username saved!");
+    // ✉️ Verify email
+    document.getElementById('verify-email').addEventListener('click', () => {
+      if (auth.currentUser)
+        sendEmailVerification(auth.currentUser).then(() => alert('📩 Verification email sent!'));
     });
 
-    document.getElementById("save-phone").addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-      const phone = document.getElementById("phone").value.trim();
-      if (!phone.startsWith("+")) return alert("Phone number must start with +.");
-      const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, { phone });
-      alert("✅ Phone number saved!");
+    // 📸 Avatar Upload
+    document.getElementById('upload-avatar').addEventListener('click', async () => {
+      const file = document.getElementById('avatar-upload').files[0];
+      if (!file) return alert('Select an image.');
+      const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), { avatarURL: url });
+      document.getElementById('avatar-preview').src = url;
+      alert('✅ Avatar updated.');
     });
 
-    document.getElementById("logout-btn").addEventListener("click", () => {
-      auth.signOut().then(() => location.href = "index.html");
+    // 👤 Username (every 14 days)
+    document.getElementById('save-username').addEventListener('click', async () => {
+      const username = document.getElementById('username').value.trim();
+      if (username.length < 3) return alert('Too short.');
+      const userRef = doc(db, 'users', auth.currentUser.uid);
+      const snap = await getDoc(userRef);
+      const lastChanged = snap.data().usernameChangedAt || 0;
+      const now = Date.now();
+      if (now - lastChanged < 14 * 86400000)
+        return alert('❌ Username can only be changed every 14 days.');
+      await updateDoc(userRef, { username, usernameChangedAt: now });
+      alert('✅ Username updated.');
     });
-  </script>  <!-- 🌗 Toggle Light/Dark -->  <script>
-    document.getElementById("dark-toggle")?.addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
+
+    // 📞 Phone (request only)
+    document.getElementById('request-phone-change').addEventListener('click', () => {
+      const userEmail = auth.currentUser.email;
+      const msg = `A user has requested to change phone number.\nEmail: ${userEmail}`;
+      window.open(`mailto:Santorumsantus@gmail.com?subject=Phone%20Change%20Request&body=${encodeURIComponent(msg)}`);
     });
-  </script>  <script type="module" src="lang.js?v=3"></script>  <script type="module" src="ui.js?v=3"></script></body>
+
+    // 🚪 Logout
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      auth.signOut().then(() => window.location.href = 'index.html');
+    });
+
+    // 🌗 Theme
+    document.getElementById('dark-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+    });
+  </script></body>
 </html>
