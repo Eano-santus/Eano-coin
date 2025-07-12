@@ -2,161 +2,186 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Settings</title>  <!-- Theme + Icons -->  <link rel="manifest" href="manifest.json" />
+  <title>EANO • Settings</title>
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
   <link rel="icon" href="favicon.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=3" />
   <style>
-    /* COMBINED CSS (style.css + settings.css) */
     body {
-      margin: 0;
       font-family: 'Roboto', sans-serif;
       background: url('eano-bg.png') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
-      overflow-x: hidden;
+      margin: 0;
     }
-    .dashboard { display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar, .main-content, .form-group {
+      padding: 1rem;
+    }
     .topbar {
-      display: flex; justify-content: space-between; align-items: center;
-      background: rgba(0, 0, 0, 0.85); padding: 0.75rem 1rem;
-    }
-    .topbar .brand { font-weight: bold; font-size: 1.3rem; color: gold; }
-    .topbar select, .topbar button, .topbar a {
-      margin-left: 0.5rem; border-radius: 8px; padding: 0.3rem 0.6rem;
-      font-size: 14px; border: none; background: #333; color: #fff;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .main-content {
-      padding: 2rem 1rem; flex: 1; max-width: 480px;
-      margin: 80px auto 20px auto;
-      background: rgba(0, 0, 0, 0.7);
+      max-width: 500px;
+      margin: 3rem auto;
+      background: rgba(0, 0, 0, 0.75);
       border-radius: 16px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
     }
-    label { display: block; margin-bottom: 0.25rem; color: #ddd; font-weight: bold; }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
     .form-control {
-      width: 100%; padding: 0.6rem; border-radius: 10px;
-      background: #333; color: #fff; border: none;
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 1rem;
     }
-    button {
-      margin-top: 0.5rem; border-radius: 10px; padding: 0.6rem;
-      width: 100%; font-weight: bold; font-size: 1rem;
-      background: gold; color: #000; border: none;
+    .btn {
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
     }
-    #logout-btn { background: crimson; color: white; }
-    #avatar-preview { width: 100px; height: 100px; border-radius: 50%; border: 2px solid gold; object-fit: cover; display: block; margin: 0 auto 1rem; }
+    .btn-primary { background: gold; color: #000; }
+    .btn-danger { background: crimson; color: #fff; }
+    .avatar-container img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 0.3rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .avatar-selected {
+      border-color: gold;
+    }
   </style>
 </head>
-<body class="dashboard">
+<body>
   <div class="topbar">
-    <div><strong class="brand">EANO</strong></div>
+    <div><strong>EANO</strong></div>
     <div><span id="balance">0.000</span> EANO</div>
     <div>
-      <select id="lang-select">
-        <option value="en">🌍 English</option><option value="fr">🇫🇷 French</option><option value="sw">🇰🇪 Swahili</option>
-        <option value="ig">🇳🇬 Igbo</option><option value="ha">🇳🇬 Hausa</option><option value="efik">🇳🇬 Efik</option>
-        <option value="pid">🇳🇬 Pidgin</option><option value="zh">🇨🇳 中文</option>
-      </select>
-      <button id="dark-toggle">🌗</button>
-      <a href="dashboard.html">🏠 Back</a>
+      <button onclick="window.location='dashboard.html'">🏠 Back</button>
     </div>
   </div>  <div class="main-content">
-    <h2>⚙️ Settings</h2><!-- 📸 Avatar Upload -->
-<img id="avatar-preview" src="default-avatar.png" alt="Avatar Preview">
-<input type="file" id="avatar-upload" class="form-control" accept="image/*" />
-<button id="upload-avatar">Upload Avatar</button>
+    <h2>⚙️ Settings</h2><div class="form-group">
+  <label for="email">📧 Email</label>
+  <input id="email" type="email" class="form-control" readonly />
+</div>
 
-<!-- 📧 Email (read-only) -->
-<label for="user-email">📧 Email</label>
-<input type="email" id="user-email" class="form-control" readonly />
-<button id="verify-email">Verify Email</button>
+<div class="form-group">
+  <label for="username">👤 Username (editable every 14 days)</label>
+  <input id="username" type="text" class="form-control" />
+  <button class="btn btn-primary" onclick="saveUsername()">Save Username</button>
+</div>
 
-<!-- 👤 Username (editable every 14 days) -->
-<label for="username">👤 Username</label>
-<input type="text" id="username" class="form-control" />
-<button id="save-username">Save Username</button>
+<div class="form-group">
+  <label for="realname">🪪 Real Name (editable every 14 days)</label>
+  <input id="realname" type="text" class="form-control" />
+  <button class="btn btn-primary" onclick="saveRealName()">Save Real Name</button>
+</div>
 
-<!-- 📞 Phone (trigger email instead) -->
-<label for="phone">📞 Phone Number</label>
-<input type="text" id="phone" class="form-control" readonly />
-<button id="request-phone-change">Request Phone Change</button>
+<div class="form-group">
+  <label for="phone">📞 Phone Number</label>
+  <input id="phone" type="tel" class="form-control" />
+  <button class="btn btn-primary" onclick="verifyPhone()">Request Phone Change</button>
+</div>
 
-<!-- 🚪 Logout -->
-<button id="logout-btn">🚪 Logout</button>
+<div class="form-group">
+  <label>🧑 Choose Avatar</label>
+  <div class="avatar-container" id="avatar-container"></div>
+  <button class="btn btn-primary" onclick="saveAvatar()">Save Avatar</button>
+</div>
 
-  </div>  <script type="module" src="firebase.js"></script>  <script type="module" src="ui.js"></script>  <script type="module" src="lang.js"></script>  <script type="module">
-    import { auth, db, storage } from './auth.js';
-    import {
-      doc, getDoc, updateDoc
-    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
-    import {
-      sendEmailVerification
-    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
-    import {
-      ref, uploadBytes, getDownloadURL
-    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js';
+<div class="form-group">
+  <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
+</div>
+
+  </div>  <script type="module" src="firebase.js"></script>  <script type="module">
+    import { auth, db } from './auth.js';
+    import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+
+    const avatars = [
+      'avatar1.png', 'avatar2.png', 'avatar3.png', 'avatar4.png', 'avatar5.png'
+    ];
+
+    const avatarContainer = document.getElementById('avatar-container');
+    let selectedAvatar = '';
+
+    avatars.forEach((imgSrc) => {
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.onclick = () => {
+        document.querySelectorAll('.avatar-container img').forEach(i => i.classList.remove('avatar-selected'));
+        img.classList.add('avatar-selected');
+        selectedAvatar = imgSrc;
+      };
+      avatarContainer.appendChild(img);
+    });
 
     auth.onAuthStateChanged(async (user) => {
-      if (!user) return window.location.href = 'index.html';
-
-      document.getElementById('user-email').value = user.email;
-      document.getElementById('verify-email').style.display = user.emailVerified ? 'none' : 'block';
-
-      const userRef = doc(db, 'users', user.uid);
-      const snap = await getDoc(userRef);
+      if (!user) window.location.href = 'index.html';
+      const ref = doc(db, 'users', user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
       const data = snap.data();
+      document.getElementById('email').value = user.email;
       document.getElementById('username').value = data.username || '';
+      document.getElementById('realname').value = data.realname || '';
       document.getElementById('phone').value = data.phone || '';
       document.getElementById('balance').textContent = (data.balance || 0).toFixed(3);
-      if (data.avatarURL) document.getElementById('avatar-preview').src = data.avatarURL;
     });
 
-    // ✉️ Verify email
-    document.getElementById('verify-email').addEventListener('click', () => {
-      if (auth.currentUser)
-        sendEmailVerification(auth.currentUser).then(() => alert('📩 Verification email sent!'));
-    });
-
-    // 📸 Avatar Upload
-    document.getElementById('upload-avatar').addEventListener('click', async () => {
-      const file = document.getElementById('avatar-upload').files[0];
-      if (!file) return alert('Select an image.');
-      const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      await updateDoc(doc(db, 'users', auth.currentUser.uid), { avatarURL: url });
-      document.getElementById('avatar-preview').src = url;
-      alert('✅ Avatar updated.');
-    });
-
-    // 👤 Username (every 14 days)
-    document.getElementById('save-username').addEventListener('click', async () => {
+    async function saveUsername() {
+      const user = auth.currentUser;
       const username = document.getElementById('username').value.trim();
-      if (username.length < 3) return alert('Too short.');
-      const userRef = doc(db, 'users', auth.currentUser.uid);
-      const snap = await getDoc(userRef);
-      const lastChanged = snap.data().usernameChangedAt || 0;
-      const now = Date.now();
-      if (now - lastChanged < 14 * 86400000)
-        return alert('❌ Username can only be changed every 14 days.');
-      await updateDoc(userRef, { username, usernameChangedAt: now });
-      alert('✅ Username updated.');
-    });
+      if (username.length < 3) return alert('Must be 3+ characters.');
+      const ref = doc(db, 'users', user.uid);
+      const snap = await getDoc(ref);
+      const lastChange = snap.data().usernameChanged || 0;
+      if (Date.now() - lastChange < 14 * 86400000) return alert('You can only change it every 14 days.');
+      await updateDoc(ref, { username, usernameChanged: Date.now() });
+      alert('✅ Username updated!');
+    }
 
-    // 📞 Phone (request only)
-    document.getElementById('request-phone-change').addEventListener('click', () => {
-      const userEmail = auth.currentUser.email;
-      const msg = `A user has requested to change phone number.\nEmail: ${userEmail}`;
-      window.open(`mailto:Santorumsantus@gmail.com?subject=Phone%20Change%20Request&body=${encodeURIComponent(msg)}`);
-    });
+    async function saveRealName() {
+      const user = auth.currentUser;
+      const realname = document.getElementById('realname').value.trim();
+      if (!realname) return alert('Real name required.');
+      const ref = doc(db, 'users', user.uid);
+      const snap = await getDoc(ref);
+      const lastChange = snap.data().realnameChanged || 0;
+      if (Date.now() - lastChange < 14 * 86400000) return alert('You can only change it every 14 days.');
+      await updateDoc(ref, { realname, realnameChanged: Date.now() });
+      alert('✅ Real name updated!');
+    }
 
-    // 🚪 Logout
-    document.getElementById('logout-btn').addEventListener('click', () => {
+    async function verifyPhone() {
+      const phone = document.getElementById('phone').value.trim();
+      if (!phone.startsWith('+')) return alert('Start with + and country code.');
+      alert(`Your request to change phone number has been sent to Santorumsantus@gmail.com. Await approval.`);
+    }
+
+    async function saveAvatar() {
+      if (!selectedAvatar) return alert('Select an avatar first.');
+      const user = auth.currentUser;
+      const ref = doc(db, 'users', user.uid);
+      await updateDoc(ref, { avatar: selectedAvatar });
+      alert('✅ Avatar saved!');
+    }
+
+    function logout() {
       auth.signOut().then(() => window.location.href = 'index.html');
-    });
-
-    // 🌗 Theme
-    document.getElementById('dark-toggle').addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-    });
+    }
   </script></body>
 </html>
