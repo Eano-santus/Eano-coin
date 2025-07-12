@@ -197,9 +197,6 @@
     });
 
     // Auto-redirect if already logged in
-    window.addEventListener('load', () => {
-  const isGoogleBot = /Googlebot/.test(navigator.userAgent);
-  if (!isGoogleBot) {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         window.location.href = "dashboard.html";
@@ -209,8 +206,6 @@
         }
       }
     });
-  }
-});
   </script>
 
   <!-- Toggle Auth -->
