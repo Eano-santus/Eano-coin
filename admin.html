@@ -124,7 +124,7 @@
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
       if (!userSnap.exists() || userSnap.data().isAdmin !== true) {
-        alert("Access denied. Not an admin.");
+        alert("Access denied. Admins only.");
         window.location.href = "index.html";
         return;
       }
