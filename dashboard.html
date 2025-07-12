@@ -4,7 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO • Dashboard</title>
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />  <!-- CSS -->  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>  <style>
     body {
@@ -12,25 +13,8 @@
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(to bottom, #000000, #111111);
       color: #fff;
+      overflow-y: auto;
       scroll-behavior: smooth;
-    }
-
-    .nav-top {
-      position: sticky;
-      top: 0;
-      background: #000;
-      z-index: 1000;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .nav-top h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: gold;
     }
 
     .section {
@@ -38,179 +22,182 @@
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
+    h1, h2 {
+      color: gold;
+      text-shadow: 0 0 10px #ffd700;
+    }
+
     .feature-card {
       background: rgba(255, 255, 255, 0.05);
       padding: 1.5rem;
       border-radius: 16px;
       box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
-    .badge-label {
+    .mine-tab {
+      position: fixed;
+      right: 1rem;
+      top: 40%;
+      z-index: 1000;
+      background: #ffd700;
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      padding: 0.8rem 1.4rem;
       font-weight: bold;
-      color: gold;
+      box-shadow: 0 0 10px gold;
     }
-  </style></head><body>
-  <!-- Top Navigation -->
-  <div class="nav-top">
-    <h1>EANO Dashboard</h1>
-    <select id="lang-select" class="form-select form-select-sm" style="width: auto;">
-      <option value="en">🌍 English</option>
-      <option value="fr">🇫🇷 French</option>
-      <option value="sw">🇰🇪 Swahili</option>
-      <option value="ig">🇳🇬 Igbo</option>
-      <option value="ha">🇳🇬 Hausa</option>
-      <option value="efik">🇳🇬 Efik</option>
-      <option value="pid">🇳🇬 Pidgin</option>
-      <option value="zh">🇨🇳 中文</option>
-    </select>
-  </div>  <!-- Content -->  <div class="container-fluid">
-    <div class="section text-center">
-      <h2>Balance: <span id="balance">0.000</span> EANO</h2>
-      <p class="badge-label">Mining Level: <span id="level"></span></p>
-      <p class="badge-label">TrustScore: <span id="trust"></span></p>
-    </div><div class="section">
-  <div class="feature-card text-center">
-    <h4>Mine</h4>
-    <p id="mine-status">Click to start mining. 0.600 EANO/hr</p>
-    <button id="mine-btn" class="btn btn-warning">Start Mining</button>
-    <p id="countdown"></p>
-  </div>
-</div>
 
+    .language-select {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 10px;
+      padding: 0.4rem;
+      color: #fff;
+    }
+
+    .menu-list li {
+      margin-bottom: 0.75rem;
+    }
+
+    .announcement-box {
+      background: rgba(255,255,255,0.08);
+      padding: 1rem;
+      border-radius: 12px;
+      margin: 1rem 0;
+      text-align: center;
+    }
+  </style></head>
+<body>  <!-- Language Selector -->  <select id="langSelect" class="language-select">
+    <option value="en">🌍 English</option>
+    <option value="fr">🇫🇷 French</option>
+    <option value="sw">🇰🇪 Swahili</option>
+    <option value="ig">🇳🇬 Igbo</option>
+    <option value="ha">🇳🇬 Hausa</option>
+    <option value="efik">🇳🇬 Efik</option>
+    <option value="pid">🇳🇬 Pidgin</option>
+    <option value="zh">🇨🇳 中文</option>
+  </select>  <!-- Fixed Mine Button --><button id="mine-btn" class="mine-tab">⛏️ Mine</button>
+
+  <!-- Main Container -->  <div class="container py-4">
+    <div class="section">
+      <h1>🌟 EANO Dashboard</h1>
+      <p>Welcome back, Pioneer!</p>
+    </div><!-- Menu Section -->
 <div class="section">
   <div class="feature-card">
-    <h4>📢 Announcement</h4>
-    <p>Welcome to EANO! This is your hub for mining, ranking and connecting.</p>
+    <h3>📋 Menu</h3>
+    <ul class="menu-list">
+      <li>🏡 Home</li>
+      <li>🛂 Mainnet-KYC <small>(Coming Soon)</small></li>
+      <li>🏆 Leaderboard</li>
+      <li>👥 Team</li>
+      <li>💬 Community</li>
+      <li>🙍‍♂️ Profile</li>
+      <li>👨‍💼 Author</li>
+      <li>📜 WhitePaper <small>(Coming Soon)</small></li>
+      <li>🛟 Support Portal</li>
+      <li>🚪 Logout</li>
+    </ul>
   </div>
 </div>
 
+<!-- Balance Display -->
 <div class="section">
-  <div class="feature-card text-center">
-    <h4>🌟 Coming Soon</h4>
-    <p>Games, Marketplace and Daily Quests arriving soon!</p>
+  <div class="feature-card">
+    <h3>💰 Balance</h3>
+    <p>Your current EANO: <strong id="balance">0.000</strong></p>
   </div>
 </div>
 
-  </div>  <!-- JS Firebase + Mining Logic -->  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+<!-- Trust Score -->
+<div class="section">
+  <div class="feature-card">
+    <h3>🔒 TrustScore & Mining Level</h3>
+    <p>TrustScore: <strong id="trustScore">0</strong></p>
+    <p>Level: <strong id="level">🐥 Chicken</strong></p>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
+<!-- Announcement Section -->
+<div class="section">
+  <div class="announcement-box">
+    📣 <strong>Announcement:</strong> Welcome to the new EANO dashboard!
+  </div>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+<!-- Coming Soon Features -->
+<div class="section">
+  <div class="feature-card">
+    <h3>🔧 Coming Soon</h3>
+    <p>🎮 Games, 🛍️ Marketplace, 💸 Earn Challenges</p>
+  </div>
+</div>
 
-    const balanceEl = document.getElementById("balance");
-    const trustEl = document.getElementById("trust");
-    const levelEl = document.getElementById("level");
-    const mineBtn = document.getElementById("mine-btn");
-    const mineStatus = document.getElementById("mine-status");
-    const countdownEl = document.getElementById("countdown");
-
+  </div>  <script>
+    // Mining state logic
     let mining = false;
-    let intervalId;
-    const MINE_RATE = 0.6; // per hour
+    let balance = 0;
+    let trustScore = 0;
+    let miningStart = null;
+    const miningRate = 0.6 / 60 / 60; // per second (0.6/hour)
 
-    function getLevel(balance) {
-      if (balance >= 10000) return "🐉 Dragon";
-      if (balance >= 5000) return "🐘 Elephant";
-      if (balance >= 2500) return "💍 Gorilla";
-      if (balance >= 1200) return "🐻 Bear";
-      if (balance >= 600) return "🐯 Lion";
-      if (balance >= 300) return "🐼 Panda";
-      if (balance >= 150) return "🐺 Wolf";
-      if (balance >= 50) return "🐹 Hamster";
+    const mineBtn = document.getElementById("mine-btn");
+    const balanceEl = document.getElementById("balance");
+    const trustScoreEl = document.getElementById("trustScore");
+    const levelEl = document.getElementById("level");
+
+    function getLevelFromBalance(bal) {
+      if (bal >= 10000) return "🐉 Dragon";
+      if (bal >= 5000) return "🐘 Elephant";
+      if (bal >= 2500) return "🦍 Gorilla";
+      if (bal >= 1200) return "🐻 Bear";
+      if (bal >= 600) return "🐯 Lion";
+      if (bal >= 300) return "🐼 Panda";
+      if (bal >= 150) return "🐺 Wolf";
+      if (bal >= 50) return "🐹 Hamster";
       return "🐥 Chicken";
     }
 
     function getTrustBadge(score) {
-      if (score >= 5000) return "O.G";
+      if (score >= 5000) return "🌟 O.G";
       if (score >= 1000) return "🟢 Trusted Miner";
       if (score >= 500) return "🟡 Reliable Miner";
       if (score >= 300) return "🔵 New Miner";
       return "🔴 Low Trust";
     }
 
-    function formatTime(ms) {
-      const total = Math.floor(ms / 1000);
-      const h = Math.floor(total / 3600);
-      const m = Math.floor((total % 3600) / 60);
-      const s = total % 60;
-      return `${h}h ${m}m ${s}s`;
-    }
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) return (window.location.href = "index.html");
-      const uid = user.uid;
-      const userRef = doc(db, "users", uid);
-      let userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) {
-        await setDoc(userRef, {
-          balance: 0,
-          trustScore: 0,
-          miningUntil: null
-        });
-        userSnap = await getDoc(userRef);
-      }
-
-      const data = userSnap.data();
-      let balance = data.balance || 0;
-      let trustScore = data.trustScore || 0;
-      let miningUntil = data.miningUntil?.toDate?.() || null;
-
-      balanceEl.textContent = balance.toFixed(3);
-      trustEl.textContent = getTrustBadge(trustScore);
-      levelEl.textContent = getLevel(balance);
-
-      const now = new Date();
-      if (miningUntil && miningUntil > now) {
-        startMiningTimer(new Date(miningUntil));
-      }
-
-      mineBtn.addEventListener("click", async () => {
-        if (miningUntil && miningUntil > new Date()) return;
-
-        const end = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        await updateDoc(userRef, { miningUntil: end });
-        startMiningTimer(end);
-      });
-
-      function startMiningTimer(endTime) {
+    function startMining() {
+      if (!mining) {
         mining = true;
-        mineStatus.textContent = "Mining in progress...";
-        mineBtn.disabled = true;
-        clearInterval(intervalId);
-
-        intervalId = setInterval(async () => {
-          const now = new Date();
-          const timeLeft = endTime - now;
-
-          if (timeLeft <= 0) {
-            clearInterval(intervalId);
-            mineStatus.textContent = "Mining session ended. Click to restart.";
-            mineBtn.disabled = false;
-            return;
+        miningStart = Date.now();
+        setInterval(() => {
+          if (mining) {
+            const now = Date.now();
+            const seconds = (now - miningStart) / 1000;
+            if (seconds <= 86400) { // 24 hours
+              balance += miningRate;
+              balanceEl.textContent = balance.toFixed(3);
+              levelEl.textContent = getLevelFromBalance(balance);
+            } else {
+              mining = false;
+              mineBtn.disabled = true;
+              mineBtn.textContent = "⛏️ Mining Ended";
+            }
           }
-
-          countdownEl.textContent = `⏳ Time Left: ${formatTime(timeLeft)}`;
-          const hourly = MINE_RATE / 3600;
-          balance += hourly;
-          balanceEl.textContent = balance.toFixed(3);
-          levelEl.textContent = getLevel(balance);
-          await updateDoc(userRef, { balance });
         }, 1000);
       }
+    }
+
+    mineBtn.addEventListener("click", () => {
+      if (!mining) {
+        startMining();
+        mineBtn.textContent = "⛏️ Mining...";
+      }
     });
-  </script>  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body>
+  </script></body>
 </html>
