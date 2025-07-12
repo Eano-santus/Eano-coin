@@ -1,217 +1,174 @@
-
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO • Dashboard</title>
-  <script>
-  if (!localStorage.getItem("seenWelcome")) {
-    window.location.href = "welcome.html";
-  }
-  </script>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="style.css?v=6" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=7" />
+  <script type="module" src="firebase.js"></script>
 </head>
 <body class="dashboard">
 
-<!-- 🔝 Topbar -->
-<div class="topbar d-flex justify-content-between align-items-center px-3 py-2">
-  <strong class="brand">☰ EANO</strong>
-  <div><span id="balance">0.000</span> EANO</div>
-  <div class="d-flex align-items-center gap-2">
-    <select id="lang-select">
-      <option value="en">🌍 English</option>
-      <option value="fr">🇫🇷 French</option>
-      <option value="sw">🇰🇪 Swahili</option>
-      <option value="ig">🇳🇬 Igbo</option>
-      <option value="ha">🇳🇬 Hausa</option>
-      <option value="efik">🇳🇬 Efik</option>
-      <option value="pid">🇳🇬 Pidgin</option>
-      <option value="zh">🇨🇳 中文</option>
-    </select>
+  <!-- 🌍 Topbar -->
+  <div class="topbar">
+    <button id="menu-toggle">☰</button>
+    <strong class="brand">EANO</strong>
+    <div><span id="balance">0.000</span> EANO</div>
+    <div class="right-controls">
+      <select id="lang-select">
+        <option value="en">🌍 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="sw">🇰🇪 Swahili</option>
+        <option value="ig">🇳🇬 Igbo</option>
+        <option value="ha">🇳🇬 Hausa</option>
+        <option value="efik">🇳🇬 Efik</option>
+        <option value="pid">🇳🇬 Pidgin</option>
+        <option value="zh">🇨🇳 中文</option>
+      </select>
+      <button id="dark-toggle">🌗</button>
+      <button id="logout-btn">🚪</button>
+    </div>
   </div>
-</div>
 
-<!-- ☰ Sidebar -->
-<button id="menu-toggle">☰ Menu</button>
-<div id="sidebar-menu">
-  <ul>
-    <li><a href="dashboard.html">🏡 Home</a></li>
-    <li><button onclick="alert('Mainnet Coming Soon')">⚡ Mainnet</button></li>
-    <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
-    <li><a href="invite.html">👥 Team</a></li>
-    <li><button onclick="alert('Community feature coming soon')">🌐 Community</button></li>
-    <li><a href="profile.html">👤 Profile</a></li>
-    <li><button onclick="alert('Author: Santus Santorum')">🧠 Author</button></li>
-    <li><a href="whitepaper.pdf" target="_blank">📄 WhitePaper</a></li>
-    <li><a href="https://t.me/YourSupportGroup" target="_blank">📞 Support Portal</a></li>
-    <li><button id="logout-btn">🚪 Logout</button></li>
-  </ul>
-</div>
+  <!-- 📱 Sidebar Menu -->
+  <div id="sidebar-menu">
+    <ul>
+      <li><a href="dashboard.html">🏡 Home</a></li>
+      <li><button onclick="comingSoon()">🌐 Mainnet</button></li>
+      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
+      <li><a href="invite.html">👥 Team</a></li>
+      <li><button onclick="comingSoon()">🌐 Community</button></li>
+      <li><a href="profile.html">👤 Profile</a></li>
+      <li><button onclick="comingSoon()">🧠 Author</button></li>
+      <li><a href="whitepaper.pdf" target="_blank">📄 Whitepaper</a></li>
+      <li><a href="https://t.me/eanochat" target="_blank">🎧 Support</a></li>
+      <li><button id="logout-btn-sidebar">🚪 Logout</button></li>
+    </ul>
+  </div>
 
-<!-- ⛏ Mine Button + Theme Toggle -->
-<div class="sidebar">
-  <button id="mine-btn">⛏ Start Mining</button>
-  <button id="dark-toggle">🌗 Theme</button>
-</div>
+  <!-- 🛠️ Mine button -->
+  <div class="mine-section">
+    <button id="mine-btn">⚡ Start Mining</button>
+    <div id="timer">⏳</div>
+    <button id="dark-toggle-float">🌗</button>
+  </div>
 
-<!-- 📣 Announcement -->
-<div id="announcement-box" class="announcement-banner">
-  <h4 id="latest-announcement">📢 EANO App & Features coming soon!</h4>
-</div>
+  <!-- 📢 Announcement Center -->
+  <div id="announcement-box" class="announcement-banner">
+    <p id="latest-announcement">📢 Big things coming soon to EANO Network. Stay tuned and level your scores and trustScore by mining daily, referrals and participatein community comingSoon!</p>
+  </div>
 
-<!-- 🧮 User Info -->
-<div class="main-content fade-in">
-  <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
-  <p><strong>Mining Level:</strong> <span id="level">⛏ Beginner</span></p>
-  <p><strong>Trust Score:</strong> <span id="trust-score">0 - ⚠ Low Trust</span></p>
-  <p><strong>Timer:</strong> <span id="timer">⏳</span></p>
-</div>
+  <!-- 🧱 Feature Boxes (Coming Soon) -->
+  <div class="main-content">
+    <div class="coming-soon-block">🕹 Game Center (Coming Soon)</div>
+    <div class="coming-soon-block">🎙 Studio (Coming Soon)</div>
+    <div class="coming-soon-block">🛍 Marketplace (Coming Soon)</div>
+  </div>
 
-<!-- 🧪 Coming Soon Blocks -->
-<div class="coming-soon-block">🎮 Games Coming Soon</div>
-<div class="coming-soon-block">💼 Market Coming Soon</div>
-<div class="coming-soon-block">📲 Social Network Coming Soon</div>
+  <!-- ✅ Inline JS -->
+  <script type="module">
+    import { auth, db } from './firebase.js';
+    import {
+      doc, getDoc, updateDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-<!-- ✅ Scripts -->
-<script type="module" src="firebase.js"></script>
-<script type="module" src="ui.js"></script>
-<script type="module" src="lang.js"></script>
+    const MINE_RATE = 0.6;
+    const mineBtn = document.getElementById("mine-btn");
+    const timerEl = document.getElementById("timer");
+    const balanceEl = document.getElementById("balance");
 
-<!-- 🔥 Main Dashboard JS (inline) -->
-<script type="module">
-  import { auth, db } from "./firebase.js";
-  import {
-    doc, getDoc, updateDoc, serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import {
-    onAuthStateChanged, signOut
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    updateBalanceUI, updateTimerUI, updateReferralCountUI,
-    getLevelFromBalance, getTrustBadge, showAnnouncement
-  } from "./ui.js";
+    // 🔁 Auth Check
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return location.href = "index.html";
 
-  const MINE_RATE = 0.6;
-  const mineBtn = document.getElementById("mine-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) return (window.location.href = "index.html");
-
-    const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
-    if (!snap.exists()) {
-      alert("User not found");
-      return signOut(auth);
-    }
-
-    const data = snap.data();
-    const balance = data.balance || 0;
-    const referrals = data.referralCount || 0;
-    const trust = data.trustScore || 0;
-    const lastMine = data.lastMine?.toMillis?.() || 0;
-
-    updateBalanceUI(balance);
-    updateReferralCountUI(referrals);
-    document.getElementById("level").textContent = getLevelFromBalance(balance);
-    document.getElementById("trust-score").textContent = `${trust} - ${getTrustBadge(trust)}`;
-
-    const now = Date.now();
-    const secondsSinceMine = Math.floor((now - lastMine) / 1000);
-    const remaining = Math.max(86400 - secondsSinceMine, 0);
-    updateTimerUI(remaining);
-
-    if (remaining > 0) {
-      mineBtn.disabled = true;
-      mineBtn.textContent = "⏳ Wait...";
-      const interval = setInterval(() => {
-        const s = Math.max(0, Math.floor((86400 - (Date.now() - lastMine) / 1000)));
-        updateTimerUI(s);
-        if (s <= 0) {
-          clearInterval(interval);
-          mineBtn.disabled = false;
-          mineBtn.textContent = "⚡ Start Mining";
-        }
-      }, 1000);
-    } else {
-      mineBtn.disabled = false;
-      mineBtn.textContent = "⚡ Start Mining";
-    }
-
-    // Announcement
-    const annRef = doc(db, "config", "announcement");
-    const annSnap = await getDoc(annRef);
-    if (annSnap.exists()) {
-      showAnnouncement(annSnap.data().message || "📢 Stay tuned for updates!");
-    }
-  });
-
-  if (mineBtn) {
-    mineBtn.addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
       if (!snap.exists()) return;
 
-      const lastMine = snap.data().lastMine?.toMillis?.() || 0;
+      const data = snap.data();
+      const balance = data.balance || 0;
+      const lastMine = data.lastMine?.toMillis?.() || 0;
+
+      balanceEl.textContent = balance.toFixed(3);
       const now = Date.now();
-      if (now - lastMine < 86400000) {
-        return alert("⛏ Already mined. Come back after 24 hours.");
+      const diff = Math.floor((now - lastMine) / 1000);
+      const remaining = Math.max(86400 - diff, 0);
+      updateTimer(remaining);
+
+      if (remaining > 0) {
+        mineBtn.disabled = true;
+        mineBtn.textContent = "⏳ Come Back Later";
+      } else {
+        mineBtn.disabled = false;
+        mineBtn.textContent = "⚡ Start Mining";
+      }
+    });
+
+    // 🕒 Timer
+    function updateTimer(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      timerEl.textContent = `⏳ ${h}h ${m}m ${s}s`;
+      if (seconds > 0) {
+        setTimeout(() => updateTimer(seconds - 1), 1000);
+      }
+    }
+
+    // ⛏ Mining Action
+    mineBtn.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+      const lastMine = snap.data().lastMine?.toMillis?.() || 0;
+
+      if (Date.now() - lastMine < 86400000) {
+        alert("⛏ You already mined in the last 24 hours.");
+        return;
       }
 
       const newBal = (snap.data().balance || 0) + MINE_RATE * 24;
-      await updateDoc(userRef, {
+      await updateDoc(ref, {
         balance: newBal,
         lastMine: serverTimestamp()
       });
 
-      updateBalanceUI(newBal);
-      document.getElementById("level").textContent = getLevelFromBalance(newBal);
+      balanceEl.textContent = newBal.toFixed(3);
       mineBtn.disabled = true;
       mineBtn.textContent = "⛏ Mined!";
+      updateTimer(86400);
     });
-  }
 
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
+    // 🔓 Logout
+    const logoutButtons = [document.getElementById("logout-btn"), document.getElementById("logout-btn-sidebar")];
+    logoutButtons.forEach(btn => btn?.addEventListener("click", async () => {
       await signOut(auth);
-      window.location.href = "index.html";
+      location.href = "index.html";
+    }));
+
+    // 🌗 Theme Toggle
+    document.getElementById("dark-toggle").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
     });
-  }
-</script>
+    document.getElementById("dark-toggle-float").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
 
-<!-- ☰ Menu Toggle -->
-<script>
-  const toggleBtn = document.getElementById("menu-toggle");
-  const sidebar = document.getElementById("sidebar-menu");
-  toggleBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-  });
-</script>
+    // ☰ Menu Toggle
+    document.getElementById("menu-toggle").addEventListener("click", () => {
+      document.getElementById("sidebar-menu").classList.toggle("open");
+    });
 
-<!-- 🌗 Theme Toggle -->
-<script>
-  const themeBtn = document.getElementById("dark-toggle");
-  themeBtn.addEventListener("click", () => {
-    document.body.classList.toggle("light-mode");
-    document.body.classList.toggle("dark-mode");
-  });
-</script>
-
-<!-- ✅ Service Worker -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("✅ Service Worker registered"))
-      .catch(err => console.error("❌ SW Error", err));
-  }
-</script>
+    // 🌍 Coming Soon
+    window.comingSoon = () => alert("🚧 This feature is coming soon!");
+  </script>
+</body>
+</html>
 </div>
 </main>
   <!-- Background -->
