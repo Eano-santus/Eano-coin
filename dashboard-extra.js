@@ -1,4 +1,4 @@
-// Animation on scroll
+// === Fade-in Animation on Scroll ===
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -11,38 +11,35 @@ document.querySelectorAll('.feature-card').forEach(card => {
   observer.observe(card);
 });
 
-// Notification on mining
-function notifyMiningStarted() {
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("⛏️ Mining Started", {
-      body: "Your 24-hour EANO mining session is now active!",
-      icon: "favicon.ico"
-    });
-  } else if (Notification.permission !== "denied") {
-    Notification.requestPermission();
-  }
-}
-
-// Call this when mining starts (you can place it inside startMining or runMining)
-window.addEventListener("load", () => {
-  notifyMiningStarted();
-});
-
+// === Notification + Sound for Mining Start ===
 function playSound(url) {
   const audio = new Audio(url);
   audio.play();
 }
 
-// Example usage:
 function notifyMiningStarted() {
-  if ("Notification" in window && Notification.permission === "granted") {
-    new Notification("⛏️ Mining Started", {
-      body: "Your 24-hour EANO mining session is now active!",
-      icon: "favicon.ico"
-    });
-  } else if (Notification.permission !== "denied") {
-    Notification.requestPermission();
+  if ("Notification" in window) {
+    if (Notification.permission === "granted") {
+      new Notification("⛏️ Mining Started", {
+        body: "Your 24-hour EANO mining session is now active!",
+        icon: "favicon.ico"
+      });
+      playSound('sounds/mining-start.mp3'); // Make sure the file exists
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          new Notification("⛏️ Mining Started", {
+            body: "Your 24-hour EANO mining session is now active!",
+            icon: "favicon.ico"
+          });
+          playSound('sounds/mining-start.mp3');
+        }
+      });
+    }
   }
-
-  playSound('sounds/mining-start.mp3'); // You must add this file
 }
+
+// OPTIONAL: Automatically trigger on page load (you can remove this if calling from runMining)
+window.addEventListener("load", () => {
+  notifyMiningStarted();
+});
