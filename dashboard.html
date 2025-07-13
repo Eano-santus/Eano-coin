@@ -151,8 +151,12 @@
         const now = Date.now();
 
         if (!data || now >= data.miningEnd) {
-          document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
-          return;
+  clearInterval(interval);
+  document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
+  if (typeof notifyMiningEnded === "function") {
+    notifyMiningEnded(); // ✅ This shows system notification
+  }
+  return;
         }
 
         const earned = ((now - (data.lastUpdate || now)) / 3600000) * MINE_RATE;
