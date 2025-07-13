@@ -59,7 +59,6 @@
   <div class="feature-card">
     <h2>🖼 Choose Avatar</h2>
     <div class="avatar-grid" id="avatarGrid">
-      <!-- Avatars -->
       <img src="avatars/1.png" data-id="1" />
       <img src="avatars/2.png" data-id="2" />
       <img src="avatars/3.png" data-id="3" />
@@ -97,24 +96,10 @@
 
   <div class="footer">© 2025 EANO • Your Network, Your Power</div>
 
-  <!-- Firebase Auth + Firestore -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    import { auth, db } from './auth.js';
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
     let currentUser = null;
     let selectedAvatar = null;
@@ -150,14 +135,15 @@
 
     async function saveSettings() {
       if (!currentUser) return;
-      const displayName = document.getElementById("displayName").value;
-      const realName = document.getElementById("realName").value;
-      const phone = document.getElementById("phoneNumber").value;
+
+      const displayName = document.getElementById("displayName").value.trim();
+      const realName = document.getElementById("realName").value.trim();
+      const phone = document.getElementById("phoneNumber").value.trim();
       const smsVerified = document.getElementById("smsVerified").checked;
 
       const now = Date.now();
       if (lastUpdated && now - lastUpdated < 14 * 24 * 60 * 60 * 1000) {
-        alert("You can only update your name every 14 days.");
+        alert("⏳ You can only update your name every 14 days.");
         return;
       }
 
@@ -171,7 +157,7 @@
         lastUpdated: now
       });
 
-      alert("✅ Settings saved!");
+      alert("✅ Settings saved successfully!");
     }
 
     onAuthStateChanged(auth, async (user) => {
@@ -182,6 +168,7 @@
 
       currentUser = user;
       document.getElementById("email").value = user.email;
+
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
       const data = snap.data();
@@ -192,6 +179,7 @@
       document.getElementById("smsVerified").checked = !!data?.smsVerified;
       selectedAvatar = data?.avatar || "1";
       lastUpdated = data?.lastUpdated || 0;
+
       highlightAvatar(selectedAvatar);
     });
   </script>
