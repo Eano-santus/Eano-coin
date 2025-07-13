@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>👤 Profile • EANO Project</title>
   <meta name="description" content="View your mining stats, Trust badge, avatar, and referral links in the EANO Project.">
+  <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://eano-coin.netlify.app/profile.html" />
-  <meta name="robots" content="index, follow">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -47,39 +47,25 @@
   <div class="feature-card" id="avatar-gallery" style="display: none;">
     <h3>Select Your Avatar</h3>
     <div class="avatar-grid">
-      <!-- Avatars from avatars/avatar1.png to avatar12.png -->
-      <img src="avatars/avatar1.png" alt="avatar1" onclick="selectAvatar('avatar1.png')" />
-      <img src="avatars/avatar2.png" alt="avatar2" onclick="selectAvatar('avatar2.png')" />
-      <img src="avatars/avatar3.png" alt="avatar3" onclick="selectAvatar('avatar3.png')" />
-      <img src="avatars/avatar4.png" alt="avatar4" onclick="selectAvatar('avatar4.png')" />
-      <img src="avatars/avatar5.png" alt="avatar5" onclick="selectAvatar('avatar5.png')" />
-      <img src="avatars/avatar6.png" alt="avatar6" onclick="selectAvatar('avatar6.png')" />
-      <img src="avatars/avatar7.png" alt="avatar7" onclick="selectAvatar('avatar7.png')" />
-      <img src="avatars/avatar8.png" alt="avatar8" onclick="selectAvatar('avatar8.png')" />
-      <img src="avatars/avatar9.png" alt="avatar9" onclick="selectAvatar('avatar9.png')" />
-      <img src="avatars/avatar10.png" alt="avatar10" onclick="selectAvatar('avatar10.png')" />
+      <!-- Avatar list -->
+      <img src="avatars/avatar1.png" onclick="selectAvatar('avatar1.png')" />
+      <img src="avatars/avatar2.png" onclick="selectAvatar('avatar2.png')" />
+      <img src="avatars/avatar3.png" onclick="selectAvatar('avatar3.png')" />
+      <img src="avatars/avatar4.png" onclick="selectAvatar('avatar4.png')" />
+      <img src="avatars/avatar5.png" onclick="selectAvatar('avatar5.png')" />
+      <img src="avatars/avatar6.png" onclick="selectAvatar('avatar6.png')" />
+      <img src="avatars/avatar7.png" onclick="selectAvatar('avatar7.png')" />
+      <img src="avatars/avatar8.png" onclick="selectAvatar('avatar8.png')" />
+      <img src="avatars/avatar9.png" onclick="selectAvatar('avatar9.png')" />
+      <img src="avatars/avatar10.png" onclick="selectAvatar('avatar10.png')" />
     </div>
   </div>
 
   <div class="footer">© 2025 EANO • Built on Trust</div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    import { auth, db } from './auth.js';
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     let currentUserId = "";
 
@@ -110,9 +96,9 @@
       alert("Referral link copied!");
     }
 
-    function updateSocialLinks(referralUrl) {
-      document.getElementById("whatsappShare").href = `https://wa.me/?text=Join%20me%20on%20EANO!%20Mine%20crypto%20daily:%20${encodeURIComponent(referralUrl)}`;
-      document.getElementById("facebookShare").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralUrl)}`;
+    function updateSocialLinks(url) {
+      document.getElementById("whatsappShare").href = `https://wa.me/?text=Join%20me%20on%20EANO!%20Mine%20crypto%20daily:%20${encodeURIComponent(url)}`;
+      document.getElementById("facebookShare").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
     }
 
     function generateQR(referralUrl) {
@@ -125,18 +111,16 @@
       });
     }
 
-    async function selectAvatar(fileName) {
+    window.selectAvatar = async function(fileName) {
       const avatarURL = `avatars/${fileName}`;
       document.getElementById("current-avatar").src = avatarURL;
       const userRef = doc(db, "users", currentUserId);
       await updateDoc(userRef, { avatar: fileName });
       alert("Avatar updated!");
-      
-  // ⛔️ Auto-hide the avatar gallery
-  document.getElementById("avatar-gallery").style.display = "none";
-    }
+      document.getElementById("avatar-gallery").style.display = "none";
+    };
 
-    onAuthStateChanged(auth, async (user) => {
+    auth.onAuthStateChanged(async (user) => {
       if (!user) {
         window.location.href = "index.html";
         return;
@@ -152,11 +136,11 @@
       const score = data?.score || 0;
       const trustScore = data?.trustScore || 0;
       const balance = data?.balance || 0;
-      const refLink = `https://eano-santus.github.io/eano-coin/?ref=${username}`;
       const avatar = data?.avatar || "avatar1.png";
+      const refLink = `https://eano-santus.github.io/eano-coin/?ref=${username}`;
 
-      document.getElementById("emailDisplay").textContent = email;
       document.getElementById("username").textContent = username;
+      document.getElementById("emailDisplay").textContent = email;
       document.getElementById("score").textContent = score;
       document.getElementById("trustScore").textContent = trustScore;
       document.getElementById("badge").textContent = getTrustBadge(trustScore);
@@ -167,7 +151,6 @@
       updateSocialLinks(refLink);
       generateQR(refLink);
 
-      // Show avatar selection
       document.getElementById("current-avatar").addEventListener("click", () => {
         document.getElementById("avatar-gallery").style.display = "block";
       });
