@@ -2,75 +2,72 @@
 
 // Toggle Dark/Light Theme
 function toggleTheme() {
-  document.body.classList.toggle("light-mode");
-  localStorage.setItem("theme", document.body.classList.contains("light-mode") ? "light" : "dark");
+  const body = document.body;
+  body.classList.toggle("light-mode");
+  localStorage.setItem("theme", body.classList.contains("light-mode") ? "light" : "dark");
 }
 
-// Load saved theme
+// Load saved theme on page load
 function loadTheme() {
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "light") {
+  if (localStorage.getItem("theme") === "light") {
     document.body.classList.add("light-mode");
   }
 }
 
-// Setup language selector
+// Setup Language Selector
 function setupLanguageSelector() {
   const langSelect = document.getElementById("langSelect");
   const savedLang = localStorage.getItem("language");
 
-  if (savedLang) langSelect.value = savedLang;
+  if (savedLang && langSelect) {
+    langSelect.value = savedLang;
+  }
 
-  langSelect.addEventListener("change", () => {
+  langSelect?.addEventListener("change", () => {
     const selected = langSelect.value;
     localStorage.setItem("language", selected);
-    alert("🌐 Language switched to: " + selected);
-    // Optionally: load translations via lang.js
+    alert(`🌐 Language switched to: ${selected}`);
+    // Optionally: call loadLanguage(selected); if using lang.js
   });
 }
 
-// Logout handler
+// Logout function (used globally)
 function logout() {
   localStorage.clear();
   window.location.href = "index.html";
 }
 
-// Animate elements on scroll (optional)
+// Animate cards and announcement on scroll
 function animateOnScroll() {
-  const elements = document.querySelectorAll(".feature-card, .announcement");
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = 1;
-        entry.target.style.transform = "translateY(0)";
+        entry.target.classList.add('fade-in');
       }
     });
   }, { threshold: 0.1 });
 
-  elements.forEach(el => {
-    el.style.opacity = 0;
-    el.style.transform = "translateY(20px)";
+  document.querySelectorAll(".feature-card, .announcement").forEach(el => {
     observer.observe(el);
   });
 }
 
-// Copy text to clipboard
+// Generic clipboard copy (used in profile)
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text)
     .then(() => alert("✅ Copied to clipboard!"))
     .catch(() => alert("❌ Failed to copy!"));
 }
 
-// Initialize all when DOM is ready
+// Auto-init all utilities when DOM is ready
 window.addEventListener("DOMContentLoaded", () => {
   loadTheme();
   setupLanguageSelector();
-
-  const toggleBtn = document.getElementById("toggle-theme");
-  if (toggleBtn) toggleBtn.addEventListener("click", toggleTheme);
-
   animateOnScroll();
 
+  const toggleBtn = document.getElementById("toggle-theme");
+  toggleBtn?.addEventListener("click", toggleTheme);
+
   const logoutBtn = document.querySelector(".btn-danger");
-  if (logoutBtn) logoutBtn.addEventListener("click", logout);
+  logoutBtn?.addEventListener("click", logout);
 });
