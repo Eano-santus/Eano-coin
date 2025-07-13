@@ -15,6 +15,11 @@
   </div>
 
   <div class="feature-card" id="profile-card">
+    <div class="avatar-display">
+      <img id="current-avatar" src="avatars/avatar1.png" alt="Avatar" />
+      <p class="text-center">Click avatar to change</p>
+    </div>
+
     <h2>Welcome, <span id="username">User</span></h2>
     <p>📧 Email: <span id="emailDisplay">-</span></p>
     <p>📈 Score: <span id="score">0</span></p>
@@ -36,12 +41,29 @@
     </div>
   </div>
 
+  <div class="feature-card" id="avatar-gallery" style="display: none;">
+    <h3>Select Your Avatar</h3>
+    <div class="avatar-grid">
+      <!-- Avatars from avatars/avatar1.png to avatar12.png -->
+      <img src="avatars/avatar1.png" alt="avatar1" onclick="selectAvatar('avatar1.png')" />
+      <img src="avatars/avatar2.png" alt="avatar2" onclick="selectAvatar('avatar2.png')" />
+      <img src="avatars/avatar3.png" alt="avatar3" onclick="selectAvatar('avatar3.png')" />
+      <img src="avatars/avatar4.png" alt="avatar4" onclick="selectAvatar('avatar4.png')" />
+      <img src="avatars/avatar5.png" alt="avatar5" onclick="selectAvatar('avatar5.png')" />
+      <img src="avatars/avatar6.png" alt="avatar6" onclick="selectAvatar('avatar6.png')" />
+      <img src="avatars/avatar7.png" alt="avatar7" onclick="selectAvatar('avatar7.png')" />
+      <img src="avatars/avatar8.png" alt="avatar8" onclick="selectAvatar('avatar8.png')" />
+      <img src="avatars/avatar9.png" alt="avatar9" onclick="selectAvatar('avatar9.png')" />
+      <img src="avatars/avatar10.png" alt="avatar10" onclick="selectAvatar('avatar10.png')" />
+    </div>
+  </div>
+
   <div class="footer">© 2025 EANO • Built on Trust</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -55,6 +77,8 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    let currentUserId = "";
 
     function getTrustBadge(score) {
       if (score >= 5000) return "🌟 O.G";
@@ -98,12 +122,21 @@
       });
     }
 
+    async function selectAvatar(fileName) {
+      const avatarURL = `avatars/${fileName}`;
+      document.getElementById("current-avatar").src = avatarURL;
+      const userRef = doc(db, "users", currentUserId);
+      await updateDoc(userRef, { avatar: fileName });
+      alert("Avatar updated!");
+    }
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "index.html";
         return;
       }
 
+      currentUserId = user.uid;
       const userRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(userRef);
       const data = docSnap.data();
@@ -114,6 +147,7 @@
       const trustScore = data?.trustScore || 0;
       const balance = data?.balance || 0;
       const refLink = `https://eano-santus.github.io/eano-coin/?ref=${username}`;
+      const avatar = data?.avatar || "avatar1.png";
 
       document.getElementById("emailDisplay").textContent = email;
       document.getElementById("username").textContent = username;
@@ -122,9 +156,15 @@
       document.getElementById("badge").textContent = getTrustBadge(trustScore);
       document.getElementById("level").textContent = getMiningLevel(balance);
       document.getElementById("refLink").value = refLink;
+      document.getElementById("current-avatar").src = `avatars/${avatar}`;
 
       updateSocialLinks(refLink);
       generateQR(refLink);
+
+      // Show avatar selection
+      document.getElementById("current-avatar").addEventListener("click", () => {
+        document.getElementById("avatar-gallery").style.display = "block";
+      });
     });
   </script>
 </body>
