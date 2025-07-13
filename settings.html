@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>⚙️ Settings • EANO Project</title>
-  <meta name="description" content="Update your EANO Project profile. Change avatar, phone, and more.">
+  <meta name="description" content="Update your EANO Project account – change avatar, phone, and verify contact details.">
   <link rel="canonical" href="https://eano-coin.netlify.app/settings.html" />
   <meta name="robots" content="index, follow">
   <link rel="stylesheet" href="style.css" />
@@ -59,6 +59,7 @@
   <div class="feature-card">
     <h2>🖼 Choose Avatar</h2>
     <div class="avatar-grid" id="avatarGrid">
+      <!-- Avatars -->
       <img src="avatars/1.png" data-id="1" />
       <img src="avatars/2.png" data-id="2" />
       <img src="avatars/3.png" data-id="3" />
@@ -96,6 +97,7 @@
 
   <div class="footer">© 2025 EANO • Your Network, Your Power</div>
 
+  <!-- Firebase Auth + Firestore -->
   <script type="module">
     import { auth, db } from './auth.js';
     import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
