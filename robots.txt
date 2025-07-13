@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://eano-santus.github.io/eano-coin/sitemap.xml
