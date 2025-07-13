@@ -1,55 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🏆 EANO Leaderboard</title>
+  <title>🏆 Leaderboard • EANO</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <a href="dashboard.html" class="btn">⬅️ Back to Dashboard</a>
+
   <div class="nav-fixed">
     <h1 class="logo">🏆 Leaderboard</h1>
-    <button id="toggle-theme">🌑/☀️</button>
+    <button onclick="window.history.back()" class="btn btn-outline-light">← Back</button>
   </div>
 
   <div class="feature-card">
-    <h2>Top 10 Miners</h2>
-    <ul id="leaderboard-list" class="leaderboard-list"></ul>
+    <h2>🔝 Top 10 Miners by TrustScore</h2>
+    <div id="leaderboard" class="avatar-grid"></div>
   </div>
 
-  <div class="feature-card">
-    <h3>🎖 TrustScore Badge Levels</h3>
-    <ul>
-      <li><strong>O.G</strong>: TrustScore ≥ 5000 🟡</li>
-      <li>Trusted Miner: ≥ 1000 🟢</li>
-      <li>Reliable Miner: ≥ 500 🟡</li>
-      <li>New Miner: ≥ 300 🔵</li>
-      <li>Low Trust: &lt; 300 🔴</li>
-    </ul>
-  </div>
-
-  <div class="feature-card">
-    <h3>🐾 Mining Score Levels</h3>
-    <ul>
-      <li>🐉 Dragon: ≥ 10000</li>
-      <li>🐘 Elephant: ≥ 5000</li>
-      <li>🦍 Gorilla: ≥ 2500</li>
-      <li>🐻 Bear: ≥ 1200</li>
-      <li>🐯 Lion: ≥ 600</li>
-      <li>🐼 Panda: ≥ 300</li>
-      <li>🐺 Wolf: ≥ 150</li>
-      <li>🐹 Hamster: ≥ 50</li>
-      <li>🐥 Chicken: &lt; 50</li>
-    </ul>
-  </div>
-
-  <div class="footer">© 2025 EANO • Built on Trust & Reputation</div>
+  <div class="footer">© 2025 EANO • Built on Trust</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
@@ -63,55 +37,59 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const badgeByTrust = (score) => {
-      if (score >= 5000) return "🟡 O.G";
+    function getTrustBadge(score) {
+      if (score >= 5000) return "🌟 O.G";
       if (score >= 1000) return "🟢 Trusted Miner";
       if (score >= 500) return "🟡 Reliable Miner";
       if (score >= 300) return "🔵 New Miner";
       return "🔴 Low Trust";
-    };
-
-    const badgeByScore = (score) => {
-      if (score >= 10000) return "🐉 Dragon";
-      if (score >= 5000) return "🐘 Elephant";
-      if (score >= 2500) return "🦍 Gorilla";
-      if (score >= 1200) return "🐻 Bear";
-      if (score >= 600) return "🐯 Lion";
-      if (score >= 300) return "🐼 Panda";
-      if (score >= 150) return "🐺 Wolf";
-      if (score >= 50) return "🐹 Hamster";
-      return "🐥 Chicken";
-    };
-
-    async function loadLeaderboard() {
-      const q = query(collection(db, "users"), orderBy("score", "desc"), limit(10));
-      const querySnapshot = await getDocs(q);
-
-      const list = document.getElementById("leaderboard-list");
-      list.innerHTML = "";
-
-      querySnapshot.forEach((doc, index) => {
-        const data = doc.data();
-        const score = data.score || 0;
-        const trust = data.trustScore || 0;
-        const name = data.name || "Anonymous";
-        const badge = badgeByScore(score);
-        const trustBadge = badgeByTrust(trust);
-
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <strong>#${index + 1}</strong> ${name}<br/>
-          🪙 Score: ${score} | 🤝 Trust: ${trust}<br/>
-          ${badge} &nbsp; ${trustBadge}
-        `;
-        li.className = "leaderboard-item";
-        list.appendChild(li);
-      });
     }
 
-    document.getElementById("toggle-theme").addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-    });
+    function getMiningLevel(balance) {
+      if (balance >= 10000) return "🐉 Dragon";
+      if (balance >= 5000) return "🐘 Elephant";
+      if (balance >= 2500) return "🦍 Gorilla";
+      if (balance >= 1200) return "🐻 Bear";
+      if (balance >= 600) return "🐯 Lion";
+      if (balance >= 300) return "🐼 Panda";
+      if (balance >= 150) return "🐺 Wolf";
+      if (balance >= 50) return "🐹 Hamster";
+      return "🐥 Chicken";
+    }
+
+    async function loadLeaderboard() {
+      const usersRef = collection(db, "users");
+      const snapshot = await getDocs(usersRef);
+      const users = [];
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        users.push({
+          username: data.email?.split("@")[0] || "User",
+          avatar: data.avatar || "avatar1.png",
+          trustScore: data.trustScore || 0,
+          score: data.score || 0,
+          balance: data.balance || 0
+        });
+      });
+
+      users.sort((a, b) => b.trustScore - a.trustScore);
+      const top10 = users.slice(0, 10);
+
+      const container = document.getElementById("leaderboard");
+      top10.forEach((user, i) => {
+        const div = document.createElement("div");
+        div.className = "avatar-card";
+        div.innerHTML = `
+          <img src="avatars/${user.avatar}" alt="Avatar" />
+          <p><strong>#${i + 1} ${user.username}</strong></p>
+          <p>${getTrustBadge(user.trustScore)}</p>
+          <p>📈 Score: ${user.score}</p>
+          <p>🐾 ${getMiningLevel(user.balance)}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
 
     loadLeaderboard();
   </script>
