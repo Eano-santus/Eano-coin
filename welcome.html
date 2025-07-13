@@ -1,35 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🎉 Welcome • EANO Project</title>
-  <meta name="title" content="Welcome • EANO Project" />
-  <meta name="description" content="Welcome to the future of decentralized mining. EANO Project empowers you with daily crypto rewards." />
-  <meta name="keywords" content="EANO Project, crypto mining, decentralized, Pi Network alternative, trust-based system, earn crypto, EANO token" />
-  <meta name="author" content="Santus Santorum" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://eano-coin.netlify.app/welcome.html" />
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://eano-coin.netlify.app/welcome.html" />
-  <meta property="og:title" content="🎉 Welcome • EANO Project" />
-  <meta property="og:description" content="Explore the EANO Project and start mining like Pi Network. Built on trust, fairness, and innovation." />
-  <meta property="og:image" content="https://eano-coin.netlify.app/logo512.png" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://eano-coin.netlify.app/welcome.html" />
-  <meta name="twitter:title" content="🎉 Welcome • EANO Project" />
-  <meta name="twitter:description" content="Explore the EANO Project and start mining like Pi Network. Built on trust, fairness, and innovation." />
-  <meta name="twitter:image" content="https://eano-coin.netlify.app/logo512.png" />
-
-  <!-- App Manifest -->
-  <link rel="manifest" href="manifest.json" />
+  
+  <!-- ✅ SEO Meta Tags -->
+  <meta name="description" content="Welcome to EANO Project – a decentralized crypto mining platform built on trust, effort, and rewards.">
+  <meta name="keywords" content="EANO, crypto mining, earn crypto, trust score, referrals, Pi Network alternative, web3, Nigeria, blockchain">
+  <meta name="author" content="EANO Team">
+  <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#000000" />
+  <link rel="canonical" href="https://eano-coin.netlify.app/welcome.html" />
+  <link rel="icon" href="favicon.png" type="image/png" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
-  <!-- Styles -->
+  <!-- 💅 Styles -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      background-color: #000;
+    }
+
+    .video-bg {
+      position: fixed;
+      top: 0; left: 0;
+      min-width: 100%; min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.4);
+    }
+
+    .welcome-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      color: gold;
+      text-shadow: 0 0 10px #fff, 0 0 20px #e4d800;
+    }
+
+    .carousel-item {
+      font-size: 1.1rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+    }
+
+    .btn-get-started {
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(to right, #ffd700, #ff8c00);
+      color: #000;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+      transition: transform 0.2s;
+    }
+
+    .btn-get-started:hover {
+      transform: scale(1.05);
+    }
+
+    .skip-btn, .language-select {
+      position: absolute;
+      top: 1rem;
+      font-size: 0.9rem;
+      z-index: 100;
+    }
+
+    .skip-btn {
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .language-select {
+      left: 1rem;
+      padding: 0.3rem 0.8rem;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 🌍 Language Selector -->
+  <select id="languageSelect" class="language-select" onchange="changeLanguage(this.value)">
+    <option value="en">English</option>
+    <option value="ig">Igbo</option>
+    <option value="fr">French</option>
+    <option value="es">Spanish</option>
+    <option value="sw">Swahili</option>
+    <option value="pidgin">Pidgin</option>
+  </select>
+
+  <!-- 🎥 Background Video -->
+  <video autoplay muted loop class="video-bg">
+    <source src="https://cdn.coverr.co/videos/coverr-abstract-light-wave-2761/1080p.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- 🔊 Welcome Audio -->
+  <audio id="eanoAudio" autoplay>
+    <source src="audio/eano-intro.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- ⏩ Skip Button -->
+  <button class="skip-btn" onclick="startApp(true)">Skip Intro</button>
+
+  <!-- ✨ Welcome Content -->
+  <div class="welcome-content">
+    <h1 id="welcomeTitle">👋 Welcome to EANO Project</h1>
+    <p id="welcomeSubtitle">Empowering you through mining, referrals, and trust.</p>
+
+    <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
+      <div class="carousel-inner" id="carouselItems"></div>
+    </div>
+
+    <button class="btn-get-started" onclick="startApp(true)">🚀 <span id="getStartedText">Get Started</span></button>
+  </div>
+
+  <!-- 📜 Script -->
+  <script>
+    const translations = {
+      en: {
+        welcome: "👋 Welcome to EANO Project",
+        subtitle: "Empowering you through mining, referrals, and trust.",
+        getStarted: "Get Started",
+        features: [
+          "🌐 A decentralized system of freedom and fairness.",
+          "🧠 Built on trust, innovation, and your reputation.",
+          "🎮 Mine, play, connect and grow.",
+          "📈 Earn value through time, effort and skill.",
+          "🚀 Rise through the ranks in the world of EANO."
+        ]
+      },
+      // Add ig, fr, es, sw, pidgin here just like before
+    };
+
+    const audio = document.getElementById("eanoAudio");
+
+    function changeLanguage(lang) {
+      const t = translations[lang] || translations["en"];
+      document.getElementById("welcomeTitle").textContent = t.welcome;
+      document.getElementById("welcomeSubtitle").textContent = t.subtitle;
+      document.getElementById("getStartedText").textContent = t.getStarted;
+
+      const carousel = document.getElementById("carouselItems");
+      carousel.innerHTML = "";
+      t.features.forEach((text, index) => {
+        const div = document.createElement("div");
+        div.className = "carousel-item" + (index === 0 ? " active" : "");
+        div.textContent = text;
+        carousel.appendChild(div);
+      });
+    }
+
+    function startApp(playAudio = false) {
+      if (playAudio && audio.paused) {
+        audio.play().catch(() => {});
+      }
+      localStorage.setItem("seenWelcome", "yes");
+      window.location.href = "index.html";
+    }
+
+    // Redirect returning user
+    if (localStorage.getItem("seenWelcome") === "yes") {
+      window.location.href = "index.html";
+    }
+
+    // Init
+    const userLang = navigator.language.slice(0, 2);
+    const selectedLang = translations[userLang] ? userLang : "en";
+    document.getElementById("languageSelect").value = selectedLang;
+    changeLanguage(selectedLang);
+
+    // Ensure autoplay works
+    window.addEventListener('click', () => {
+      audio.play().catch(() => {});
+    }, { once: true });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
