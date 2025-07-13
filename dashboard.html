@@ -2,9 +2,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO • Dashboard</title>  <!-- External CSS -->  <link rel="stylesheet" href="style.css" />  <!-- Favicon & Manifest -->  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="manifest" href="manifest.json" />  <!-- Theme + Fonts -->  <meta name="theme-color" content="#000000" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />  <!-- JS Files -->  <script src="ui.js"></script>  <script src="dashboard-extras.js"></script>  <script type="module" src="firebase.js"></script></head><body>
+  <title>EANO • Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="ui.js" defer></script>
+  <script src="dashboard-extras.js" defer></script>
+  <script type="module" src="firebase.js"></script>
+</head>
+<body>
   <div class="nav-fixed">
     <h1 class="logo">🌟 EANO</h1>
     <span id="balance-display">Balance: 0.000 EANO</span>
@@ -29,25 +37,112 @@
     <p>Other features will begin very soon.</p>
     <p>⛏️ <strong>Mine daily to increase your score and TrustScore.</strong></p>
     <p>👥 <strong>Refer people to level up and unlock more features.</strong></p>
-  </div>  <!-- Navigation Features -->  <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div><a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners and TrustScores</p></a> <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals and bonuses</p></a> <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>View and update details</p></a>
+  </div>  <!-- Scrollable Feature Cards --><a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners and TrustScores</p></a> <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals and bonuses</p></a> <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>View and update details</p></a>
 
-  <div class="feature-card" id="support">
-    <a href="https://t.me/eanocoin" target="_blank" style="text-decoration: none; color: inherit;">
-      <h3>🆘 Support Portal</h3>
-      <p>Join our Telegram Community</p>
-    </a>
-  </div>  <div class="feature-card" id="author">
-    <h3>🧑‍💼 Author</h3>
-    <p>
-      Founded by <span class="shiny-name">Santus Santorum</span>, a visionary mind building a network rooted in trust, privacy, and empowerment.
-    </p>
-  </div>  <div class="feature-card" id="chat"><h3>💬 Community Chat</h3><p>Talk with the community</p></div>
-  <div class="feature-card" id="whitepaper"><h3>📜 WhitePaper</h3><p>Coming Soon</p></div>
+  <div class="feature-card"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
+  <div class="feature-card"><h3>💬 Community Chat</h3><p>Talk with the community</p></div>
+  <div class="feature-card"><h3>📜 WhitePaper</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎮 Games</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎤 Studio</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <div class="feature-card text-center">
+  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <!-- External Links & Footer -->  <div class="feature-card">
+    <a href="https://t.me/eanocoin" target="_blank">
+      <h3>🆘 Support Portal</h3>
+      <p>Join our Telegram Community</p>
+    </a>
+  </div>
+  <div class="feature-card">
+    <h3>🧑‍💼 Author</h3>
+    <p>Founded by <span class="shiny-name">Santus Santorum</span>, a visionary mind building a network rooted in trust, privacy, and empowerment.</p>
+  </div>  <div class="feature-card text-center">
     <button onclick="logout()" class="btn btn-danger">Logout</button>
-  </div>  <div class="footer">&copy; 2025 EANO Network • Built on Trust/Level-Up & Reputation</div>
-</body>
-    </html>
+  </div>  <div class="footer">&copy; 2025 EANO Network • Built on Trust / Level-Up & Reputation</div>  <script type="module">
+    import { auth, db } from "./firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const MINE_RATE = 0.600;
+    const MINE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+    function updateCountdown(msLeft) {
+      const h = Math.floor(msLeft / 3600000);
+      const m = Math.floor((msLeft % 3600000) / 60000);
+      const s = Math.floor((msLeft % 60000) / 1000);
+      document.getElementById("countdown").textContent = `⏳ ${h}h ${m}m ${s}s left`;
+    }
+
+    async function startMiningSession(userId) {
+      const userRef = doc(db, "users", userId);
+      const snap = await getDoc(userRef);
+      const now = Date.now();
+      const data = snap.exists() ? snap.data() : {};
+
+      if (!data.miningEnd || now >= data.miningEnd) {
+        const newEnd = now + MINE_DURATION;
+        await setDoc(userRef, {
+          balance: data.balance || 0,
+          miningStart: now,
+          miningEnd: newEnd,
+          lastUpdate: now,
+          score: data.score || 0,
+          trustScore: data.trustScore || 0
+        }, { merge: true });
+      }
+
+      runMining(userId);
+    }
+
+    async function runMining(userId) {
+      const userRef = doc(db, "users", userId);
+      const interval = setInterval(async () => {
+        const snap = await getDoc(userRef);
+        const data = snap.data();
+        const now = Date.now();
+
+        if (!data || now >= data.miningEnd) {
+  clearInterval(interval);
+  document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
+  document.getElementById("countdown").textContent = "";
+  if (typeof notifyMiningEnded === "function") {
+    notifyMiningEnded();
+  }
+  return;
+        }
+
+        const earned = ((now - (data.lastUpdate || now)) / 3600000) * MINE_RATE;
+        const newBalance = (data.balance || 0) + earned;
+
+        await updateDoc(userRef, {
+          balance: newBalance,
+          lastUpdate: now
+        });
+
+        document.getElementById("mining-status").textContent = `⛏️ Mining... +${earned.toFixed(3)} EANO`;
+        document.getElementById("balance").textContent = newBalance.toFixed(3);
+        document.getElementById("balance-display").textContent = `Balance: ${newBalance.toFixed(3)} EANO`;
+        updateCountdown(data.miningEnd - now);
+      }, 60000);
+    }
+
+    function startMining() {
+      alert("⛏️ Mining starts automatically and updates every minute.");
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    document.getElementById("toggle-theme").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await startMiningSession(user.uid);
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  </script></body>
+</html>
