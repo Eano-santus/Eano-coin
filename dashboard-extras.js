@@ -13,7 +13,12 @@ if (window.location.pathname.includes("dashboard.html")) {
     observer.observe(card);
   });
 
-  // === System Notification on MINING END ===
+  // === Ask for Notification Permission Early
+  if ("Notification" in window && Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+
+  // === Show Notification on MINING END
   function notifyMiningEnded() {
     if ("Notification" in window) {
       if (Notification.permission === "granted") {
@@ -21,19 +26,10 @@ if (window.location.pathname.includes("dashboard.html")) {
           body: "Your 24-hour EANO mining session has ended. Tap to restart.",
           icon: "favicon.ico"
         });
-      } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            new Notification("⛏️ Mining Session Ended", {
-              body: "Your 24-hour EANO mining session has ended. Tap to restart.",
-              icon: "favicon.ico"
-            });
-          }
-        });
       }
     }
   }
 
-  // 👇 This must be called from your mining logic in dashboard.html
+  // 👇 Called from dashboard.html when mining ends
   window.notifyMiningEnded = notifyMiningEnded;
 }
