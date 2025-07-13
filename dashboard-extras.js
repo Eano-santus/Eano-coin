@@ -13,36 +13,32 @@ if (window.location.pathname.includes("dashboard.html")) {
     observer.observe(card);
   });
 
-  // === Notification + Sound for Mining Start ===
+  // === Sound Function ===
   function playSound(url) {
     const audio = new Audio(url);
     audio.play().catch(err => console.warn("🔇 Sound blocked or not found:", err));
   }
 
-  function notifyMiningStarted() {
+  // === Mining End Notification + Sound ===
+  window.notifyMiningEnded = function () {
     if ("Notification" in window) {
       if (Notification.permission === "granted") {
-        new Notification("⛏️ Mining Started", {
-          body: "Your 24-hour EANO mining session is now active!",
+        new Notification("⛏️ Mining Ended", {
+          body: "Your 24-hour EANO mining session has ended. Tap to restart!",
           icon: "favicon.ico"
         });
-        playSound('sounds/mining-start.mp3'); // ✅ Ensure this file exists
+        playSound('sounds/mining-ended.mp3');
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then(permission => {
           if (permission === "granted") {
-            new Notification("⛏️ Mining Started", {
-              body: "Your 24-hour EANO mining session is now active!",
+            new Notification("⛏️ Mining Ended", {
+              body: "Your 24-hour EANO mining session has ended. Tap to restart!",
               icon: "favicon.ico"
             });
-            playSound('sounds/mining-start.mp3');
+            playSound('sounds/mining-ended.mp3');
           }
         });
       }
     }
-  }
-
-  // === Auto trigger when page loads ===
-  window.addEventListener("load", () => {
-    notifyMiningStarted();
-  });
+  };
 }
