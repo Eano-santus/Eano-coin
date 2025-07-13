@@ -3,152 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Team</title>
+  <title>👥 Team • EANO</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    body 
-    <a href="dashboard.html" class="btn">⬅️ Back to Dashboard</a>
-    {
-      font-family: 'Roboto', sans-serif;
-      background: #000;
-      color: #fff;
-      padding: 2rem;
-    }
-    .team-card {
-      background: rgba(255,255,255,0.05);
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 0 12px rgba(255,215,0,0.2);
-      max-width: 600px;
-      margin: auto;
-      text-align: center;
-    }
-    h2 {
-      color: gold;
-    }
-    .referral-list {
-      text-align: left;
-      margin-top: 1.5rem;
-    }
-    .referral-list li {
-      margin-bottom: 0.5rem;
-    }
-    .btn-copy {
-      background: #444;
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-copy:hover {
-      background: #666;
-    }
-    .footer {
-      text-align: center;
-      padding-top: 2rem;
-      font-size: 0.9rem;
-      color: #888;
-    }
-  </style>
 </head>
 <body>
+  <a href="dashboard.html" class="btn">⬅️ Back to Dashboard</a>
 
-<div class="team-card">
-  <h2>👥 Your Team</h2>
-  <p>Invite friends to earn bonuses and grow your TrustScore!</p>
-  <p><strong>Your Referral Code:</strong> <span id="refCode">Loading...</span></p>
-  <button class="btn-copy" onclick="copyCode()">📋 Copy Code</button>
-
-  <div class="referral-list" id="referrals">
-    <h3>👤 Referrals:</h3>
-    <ul id="refList">
-      <li>Loading referrals...</li>
-    </ul>
+  <div class="nav-fixed">
+    <h1 class="logo">👥 Your Team</h1>
+    <button onclick="window.history.back()" class="btn btn-outline-light">← Back</button>
   </div>
-</div>
 
-<div class="footer">© 2025 EANO Network • Built on Trust & Reputation</div>
+  <div class="feature-card" id="ref-info">
+    <h2>📣 Your Referral Link</h2>
+    <input id="refLink" type="text" class="form-control" readonly />
+    <button onclick="copyLink()" class="btn btn-warning">Copy Link</button>
+    <p>👥 Total Referrals: <span id="refCount">0</span></p>
+    <p>🎁 Bonus Earned: <span id="refBonus">0</span> score</p>
+  </div>
 
-<!-- Firebase & Referral JS -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  <div class="feature-card">
+    <h3>👥 Referred Users</h3>
+    <div id="referralsList" class="avatar-grid"></div>
+  </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-    authDomain: "eano-miner.firebaseapp.com",
-    projectId: "eano-miner",
-    storageBucket: "eano-miner.appspot.com",
-    messagingSenderId: "50186911438",
-    appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-  };
+  <div class="footer">© 2025 EANO • Built on Trust</div>
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-  function copyCode() {
-    const code = document.getElementById("refCode").textContent;
-    navigator.clipboard.writeText(code).then(() => {
-      alert("✅ Referral code copied!");
-    });
-  }
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+    };
 
-  async function loadTeam(user) {
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-    const userData = userSnap.data() || {};
-    const userCode = userData.referralCode || user.uid.slice(0, 6);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Set code in UI
-    document.getElementById("refCode").textContent = userCode;
+    function getTrustBadge(score) {
+      if (score >= 5000) return "🌟 O.G";
+      if (score >= 1000) return "🟢 Trusted Miner";
+      if (score >= 500) return "🟡 Reliable Miner";
+      if (score >= 300) return "🔵 New Miner";
+      return "🔴 Low Trust";
+    }
 
-    // Get all users to find referrals
-    const usersSnap = await getDocs(collection(db, "users"));
-    const refList = document.getElementById("refList");
-    refList.innerHTML = "";
+    function getMiningLevel(balance) {
+      if (balance >= 10000) return "🐉 Dragon";
+      if (balance >= 5000) return "🐘 Elephant";
+      if (balance >= 2500) return "🦍 Gorilla";
+      if (balance >= 1200) return "🐻 Bear";
+      if (balance >= 600) return "🐯 Lion";
+      if (balance >= 300) return "🐼 Panda";
+      if (balance >= 150) return "🐺 Wolf";
+      if (balance >= 50) return "🐹 Hamster";
+      return "🐥 Chicken";
+    }
 
-    let referralCount = 0;
+    function copyLink() {
+      const link = document.getElementById("refLink");
+      link.select();
+      document.execCommand("copy");
+      alert("Referral link copied!");
+    }
 
-    usersSnap.forEach(docSnap => {
-      const d = docSnap.data();
-      if (d.referredBy === userCode) {
-        const li = document.createElement("li");
-        li.textContent = `${d.displayName || "Anonymous"} • Score: ${d.score || 0}`;
-        refList.appendChild(li);
-        referralCount++;
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
       }
-    });
 
-    if (referralCount === 0) {
-      refList.innerHTML = "<li>No referrals yet.</li>";
-    }
+      const email = user.email;
+      const username = email.split("@")[0];
+      const referralLink = `https://eano-santus.github.io/eano-coin/?ref=${username}`;
+      document.getElementById("refLink").value = referralLink;
 
-    // Apply bonus if needed
-    const expectedBonus = referralCount * 5;
-    const currentScore = userData.score || 0;
-    const currentTrust = userData.trustScore || 0;
+      const usersRef = collection(db, "users");
+      const querySnapshot = await getDocs(usersRef);
 
-    if (expectedBonus > currentScore || expectedBonus > currentTrust) {
-      await updateDoc(userRef, {
-        score: expectedBonus,
-        trustScore: expectedBonus
+      let referrals = [];
+      querySnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.referrer === username) {
+          referrals.push({ ...data });
+        }
       });
-    }
-  }
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loadTeam(user);
-    } else {
-      window.location.href = "index.html";
-    }
-  });
-</script>
+      document.getElementById("refCount").textContent = referrals.length;
+      document.getElementById("refBonus").textContent = referrals.length * 5;
 
+      const container = document.getElementById("referralsList");
+      referrals.forEach(ref => {
+        const div = document.createElement("div");
+        div.className = "avatar-card";
+        div.innerHTML = `
+          <img src="avatars/${ref.avatar || 'avatar1.png'}" alt="Avatar" />
+          <p><strong>${ref.email.split("@")[0]}</strong></p>
+          <p>${getTrustBadge(ref.trustScore || 0)}</p>
+          <p>🐾 ${getMiningLevel(ref.balance || 0)}</p>
+        `;
+        container.appendChild(div);
+      });
+    });
+  </script>
 </body>
 </html>
