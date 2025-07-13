@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -19,7 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
   <script src="ui.js" defer></script>
   <script src="dashboard-extras.js" defer></script>
-  <script type="module" src="firebase.js"></script>
+  <script type="module" src="firebase.js"></script> <!-- contains firebase config -->
 </head>
 <body>
   <div class="nav-fixed">
@@ -35,26 +36,37 @@
         <option value="pidgin">Pidgin</option>
       </select>
     </div>
-  </div>  <div class="balance-status">
+  </div>
+
+  <div class="balance-status">
     <h2>💰 Balance: <span id="balance">0.000</span> EANO</h2>
     <p id="mining-status">⛏️ Checking mining session...</p>
     <p id="countdown"></p>
-  </div>  <div class="circle-mine" onclick="startMining()">🔵</div>  <div class="announcement" id="home">
+  </div>
+
+  <div class="circle-mine" onclick="startMining()">🔵</div>
+
+  <div class="announcement" id="home">
     <img id="announcement-img" src="announcement-eano.png" alt="EANO Live Announcement" onerror="this.src='default-announcement-july.png';" />
     <h2>📢 EANO Announcement</h2>
     <p><strong>Mining updates are live!</strong></p>
     <p>Other features will begin very soon.</p>
     <p>⛏️ <strong>Mine daily to increase your score and TrustScore.</strong></p>
     <p>👥 <strong>Refer people to level up and unlock more features.</strong></p>
-  </div>  <!-- Scrollable Feature Cards --><a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners and TrustScores</p></a> <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals and bonuses</p></a> <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>View and update details</p></a>
+  </div>
 
+  <!-- Scrollable Menu Items -->
+  <a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners and TrustScores</p></a>
+  <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals and bonuses</p></a>
+  <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>View and update details</p></a>
   <div class="feature-card"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>💬 Community Chat</h3><p>Talk with the community</p></div>
   <div class="feature-card"><h3>📜 WhitePaper</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎮 Games</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎤 Studio</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <!-- External Links & Footer -->  <div class="feature-card">
+  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>
+  <div class="feature-card">
     <a href="https://t.me/eanocoin" target="_blank">
       <h3>🆘 Support Portal</h3>
       <p>Join our Telegram Community</p>
@@ -63,15 +75,21 @@
   <div class="feature-card">
     <h3>🧑‍💼 Author</h3>
     <p>Founded by <span class="shiny-name">Santus Santorum</span>, a visionary mind building a network rooted in trust, privacy, and empowerment.</p>
-  </div>  <div class="feature-card text-center">
+  </div>
+  <div class="feature-card text-center">
     <button onclick="logout()" class="btn btn-danger">Logout</button>
-  </div>  <div class="footer">&copy; 2025 EANO Network • Built on Trust / Level-Up & Reputation</div>  <script type="module">
-    import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  </div>
+
+  <div class="footer">&copy; 2025 EANO Network • Built on Trust / Level-Up & Reputation</div>
+
+  <!-- Main Mining Script -->
+  <script type="module">
+    import { auth, db } from './auth.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const MINE_RATE = 0.600;
-    const MINE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+    const MINE_DURATION = 24 * 60 * 60 * 1000;
 
     function updateCountdown(msLeft) {
       const h = Math.floor(msLeft / 3600000);
@@ -109,13 +127,10 @@
         const now = Date.now();
 
         if (!data || now >= data.miningEnd) {
-  clearInterval(interval);
-  document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
-  document.getElementById("countdown").textContent = "";
-  if (typeof notifyMiningEnded === "function") {
-    notifyMiningEnded();
-  }
-  return;
+          clearInterval(interval);
+          document.getElementById("mining-status").textContent = "⛏️ Mining ended.";
+          document.getElementById("countdown").textContent = "";
+          return;
         }
 
         const earned = ((now - (data.lastUpdate || now)) / 3600000) * MINE_RATE;
@@ -153,5 +168,6 @@
         window.location.href = "index.html";
       }
     });
-  </script></body>
+  </script>
+</body>
 </html>
