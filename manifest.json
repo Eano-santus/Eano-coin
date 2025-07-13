@@ -1,28 +1,60 @@
 {
   "name": "EANO Project",
   "short_name": "EANO",
-  "start_url": "index.html",
-  "display": "fullscreen",
+  "start_url": "/dashboard.html",
+  "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "portrait",
-  "scope": "./",
+  "scope": "/",
   "description": "Mine EANO daily and build trust. Empowering the community through decentralized mining.",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "eano-icon-192.png",
+      "src": "/eano-icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "eano-icon-512.png",
+      "src": "/eano-icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard.html",
+      "icons": [{ "src": "/eano-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Profile",
+      "short_name": "Profile",
+      "url": "/profile.html",
+      "icons": [{ "src": "/eano-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Your Team",
+      "short_name": "Team",
+      "url": "/team.html",
+      "icons": [{ "src": "/eano-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Leaderboard",
+      "short_name": "Leaderboard",
+      "url": "/leaderboard.html",
+      "icons": [{ "src": "/eano-icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Support Portal",
+      "short_name": "Support",
+      "url": "https://t.me/eanocoin",
+      "icons": [{ "src": "/eano-icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
