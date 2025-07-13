@@ -1,6 +1,7 @@
-// === DASHBOARD EXTRA ===
+// === DASHBOARD EXTRAS ===
+
 if (window.location.pathname.includes("dashboard.html")) {
-  // === Fade-in Animation on Scroll ===
+  // === 1. Fade-in Animation on Scroll ===
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -13,12 +14,13 @@ if (window.location.pathname.includes("dashboard.html")) {
     observer.observe(card);
   });
 
-  // === Notification + Sound on MINING END ===
+  // === 2. Sound Player Helper ===
   function playSound(url) {
     const audio = new Audio(url);
     audio.play().catch(err => console.warn("🔇 Sound blocked or not found:", err));
   }
 
+  // === 3. Notify When Mining Ends ===
   function notifyMiningEnded() {
     if ("Notification" in window) {
       if (Notification.permission === "granted") {
@@ -26,7 +28,7 @@ if (window.location.pathname.includes("dashboard.html")) {
           body: "Your 24-hour EANO mining session has ended. Tap to restart.",
           icon: "favicon.ico"
         });
-        playSound('sounds/mining-end.mp3'); // Make sure this file exists in /sounds/
+        playSound('sounds/mining-end.mp3');
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then(permission => {
           if (permission === "granted") {
@@ -41,6 +43,12 @@ if (window.location.pathname.includes("dashboard.html")) {
     }
   }
 
-  // 👇 This must be called from your mining logic (dashboard.html)
+  // === 4. Expose to Global Mining Logic (dashboard.html) ===
   window.notifyMiningEnded = notifyMiningEnded;
+
+  // === 5. Optional: Mine Tab Animation Feedback (if desired) ===
+  const mineBtn = document.querySelector(".circle-mine");
+  if (mineBtn) {
+    mineBtn.classList.add("active");
+  }
 }
