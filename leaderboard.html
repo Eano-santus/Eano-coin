@@ -7,7 +7,6 @@
   <meta name="description" content="Top miners in the EANO Project ranked by TrustScore, score, and badge level.">
   <link rel="canonical" href="https://eano-coin.netlify.app/leaderboard.html" />
   <meta name="robots" content="index, follow">
-    
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -26,20 +25,8 @@
   <div class="footer">© 2025 EANO • Built on Trust</div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
-      authDomain: "eano-miner.firebaseapp.com",
-      projectId: "eano-miner",
-      storageBucket: "eano-miner.appspot.com",
-      messagingSenderId: "50186911438",
-      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    import { db } from './auth.js';
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     function getTrustBadge(score) {
       if (score >= 5000) return "🌟 O.G";
@@ -81,6 +68,8 @@
       const top10 = users.slice(0, 10);
 
       const container = document.getElementById("leaderboard");
+      container.innerHTML = "";
+
       top10.forEach((user, i) => {
         const div = document.createElement("div");
         div.className = "avatar-card";
