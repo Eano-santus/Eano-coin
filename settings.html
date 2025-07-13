@@ -1,187 +1,196 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Settings</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=3" />
+  <title>⚙️ Settings • EANO</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: url('eano-bg.png') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      margin: 0;
-    }
-    .topbar, .main-content, .form-group {
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      gap: 10px;
       padding: 1rem;
     }
-    .topbar {
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .main-content {
-      max-width: 500px;
-      margin: 3rem auto;
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    .form-control {
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 8px;
-      border: none;
-      margin-bottom: 1rem;
-    }
-    .btn {
-      padding: 0.6rem;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      width: 100%;
-    }
-    .btn-primary { background: gold; color: #000; }
-    .btn-danger { background: crimson; color: #fff; }
-    .avatar-container img {
+    .avatar-grid img {
       width: 60px;
       height: 60px;
-      border-radius: 50%;
-      margin: 0.3rem;
+      border-radius: 12px;
       cursor: pointer;
       border: 2px solid transparent;
+      transition: transform 0.2s;
     }
-    .avatar-selected {
+    .avatar-grid img.selected {
       border-color: gold;
+      transform: scale(1.1);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    input[type="text"], input[type="tel"], input[type="email"] {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: none;
+    }
+    .btn-save {
+      background-color: #007bff;
+      color: white;
+      padding: 0.6rem 1.5rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .light-mode .btn-save {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <div><strong>EANO</strong></div>
-    <div><span id="balance">0.000</span> EANO</div>
-    <div>
-      <button onclick="window.location='dashboard.html'">🏠 Back</button>
+  <div class="nav-fixed">
+    <h1 class="logo">⚙️ Settings</h1>
+    <button onclick="window.history.back()" class="btn btn-outline-light">← Back</button>
+  </div>
+
+  <div class="feature-card">
+    <h2>🖼 Choose Avatar</h2>
+    <div class="avatar-grid" id="avatarGrid">
+      <!-- Avatars -->
+      <img src="avatars/1.png" data-id="1" />
+      <img src="avatars/2.png" data-id="2" />
+      <img src="avatars/3.png" data-id="3" />
+      <img src="avatars/4.png" data-id="4" />
+      <img src="avatars/5.png" data-id="5" />
+      <img src="avatars/6.png" data-id="6" />
     </div>
-  </div>  <div class="main-content">
-    <h2>⚙️ Settings</h2><div class="form-group">
-  <label for="email">📧 Email</label>
-  <input id="email" type="email" class="form-control" readonly />
-</div>
+  </div>
 
-<div class="form-group">
-  <label for="username">👤 Username (editable every 14 days)</label>
-  <input id="username" type="text" class="form-control" />
-  <button class="btn btn-primary" onclick="saveUsername()">Save Username</button>
-</div>
+  <div class="feature-card">
+    <h2>📝 Account Settings</h2>
+    <div class="form-group">
+      <label>Display Name</label>
+      <input type="text" id="displayName" />
+    </div>
+    <div class="form-group">
+      <label>Real Name</label>
+      <input type="text" id="realName" />
+    </div>
+    <div class="form-group">
+      <label>📧 Email</label>
+      <input type="email" id="email" readonly />
+      <button class="btn btn-outline-light" onclick="simulateEmailVerification()">Verify Email</button>
+    </div>
+    <div class="form-group">
+      <label>📱 Phone Number</label>
+      <input type="tel" id="phoneNumber" />
+      <button class="btn btn-outline-light" onclick="requestPhoneChange()">Request Change</button>
+    </div>
+    <div class="form-group">
+      <label><input type="checkbox" id="smsVerified" /> Simulate SMS Verification</label>
+    </div>
+    <button class="btn-save" onclick="saveSettings()">💾 Save Settings</button>
+  </div>
 
-<div class="form-group">
-  <label for="realname">🪪 Real Name (editable every 14 days)</label>
-  <input id="realname" type="text" class="form-control" />
-  <button class="btn btn-primary" onclick="saveRealName()">Save Real Name</button>
-</div>
+  <div class="footer">© 2025 EANO • Your Network, Your Power</div>
 
-<div class="form-group">
-  <label for="phone">📞 Phone Number</label>
-  <input id="phone" type="tel" class="form-control" />
-  <button class="btn btn-primary" onclick="verifyPhone()">Request Phone Change</button>
-</div>
+  <!-- Firebase Auth + Firestore -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-<div class="form-group">
-  <label>🧑 Choose Avatar</label>
-  <div class="avatar-container" id="avatar-container"></div>
-  <button class="btn btn-primary" onclick="saveAvatar()">Save Avatar</button>
-</div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
+      authDomain: "eano-miner.firebaseapp.com",
+      projectId: "eano-miner",
+      storageBucket: "eano-miner.appspot.com",
+      messagingSenderId: "50186911438",
+      appId: "1:50186911438:web:85410fccc7c5933d761a9f"
+    };
 
-<div class="form-group">
-  <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
-</div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  </div>  <script type="module" src="firebase.js"></script>  <script type="module">
-    import { auth, db } from './auth.js';
-    import { doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+    let currentUser = null;
+    let selectedAvatar = null;
+    let lastUpdated = 0;
 
-    const avatars = [
-      'avatar1.png', 'avatar2.png', 'avatar3.png', 'avatar4.png', 'avatar5.png'
-    ];
+    const avatarGrid = document.getElementById("avatarGrid");
 
-    const avatarContainer = document.getElementById('avatar-container');
-    let selectedAvatar = '';
+    function highlightAvatar(id) {
+      document.querySelectorAll(".avatar-grid img").forEach(img => {
+        img.classList.remove("selected");
+        if (img.dataset.id === id) img.classList.add("selected");
+      });
+    }
 
-    avatars.forEach((imgSrc) => {
-      const img = document.createElement('img');
-      img.src = imgSrc;
-      img.onclick = () => {
-        document.querySelectorAll('.avatar-container img').forEach(i => i.classList.remove('avatar-selected'));
-        img.classList.add('avatar-selected');
-        selectedAvatar = imgSrc;
-      };
-      avatarContainer.appendChild(img);
+    avatarGrid.addEventListener("click", (e) => {
+      if (e.target.tagName === "IMG") {
+        selectedAvatar = e.target.dataset.id;
+        highlightAvatar(selectedAvatar);
+      }
     });
 
-    auth.onAuthStateChanged(async (user) => {
-      if (!user) window.location.href = 'index.html';
-      const ref = doc(db, 'users', user.uid);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) return;
+    function simulateEmailVerification() {
+      alert("📨 Verification email sent (simulated).");
+    }
+
+    function requestPhoneChange() {
+      const phone = document.getElementById("phoneNumber").value;
+      if (!phone) return alert("Please enter your new phone number.");
+      const subject = encodeURIComponent("Phone Number Change Request");
+      const body = encodeURIComponent("Request to change phone number to: " + phone);
+      window.open(`mailto:Santorumsantus@gmail.com?subject=${subject}&body=${body}`);
+    }
+
+    async function saveSettings() {
+      if (!currentUser) return;
+      const displayName = document.getElementById("displayName").value;
+      const realName = document.getElementById("realName").value;
+      const phone = document.getElementById("phoneNumber").value;
+      const smsVerified = document.getElementById("smsVerified").checked;
+
+      const now = Date.now();
+      if (lastUpdated && now - lastUpdated < 14 * 24 * 60 * 60 * 1000) {
+        alert("You can only update your name every 14 days.");
+        return;
+      }
+
+      const userRef = doc(db, "users", currentUser.uid);
+      await updateDoc(userRef, {
+        displayName,
+        realName,
+        avatar: selectedAvatar,
+        phone,
+        smsVerified,
+        lastUpdated: now
+      });
+
+      alert("✅ Settings saved!");
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      currentUser = user;
+      document.getElementById("email").value = user.email;
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
       const data = snap.data();
-      document.getElementById('email').value = user.email;
-      document.getElementById('username').value = data.username || '';
-      document.getElementById('realname').value = data.realname || '';
-      document.getElementById('phone').value = data.phone || '';
-      document.getElementById('balance').textContent = (data.balance || 0).toFixed(3);
+
+      document.getElementById("displayName").value = data?.displayName || "";
+      document.getElementById("realName").value = data?.realName || "";
+      document.getElementById("phoneNumber").value = data?.phone || "";
+      document.getElementById("smsVerified").checked = !!data?.smsVerified;
+      selectedAvatar = data?.avatar || "1";
+      lastUpdated = data?.lastUpdated || 0;
+      highlightAvatar(selectedAvatar);
     });
-
-    async function saveUsername() {
-      const user = auth.currentUser;
-      const username = document.getElementById('username').value.trim();
-      if (username.length < 3) return alert('Must be 3+ characters.');
-      const ref = doc(db, 'users', user.uid);
-      const snap = await getDoc(ref);
-      const lastChange = snap.data().usernameChanged || 0;
-      if (Date.now() - lastChange < 14 * 86400000) return alert('You can only change it every 14 days.');
-      await updateDoc(ref, { username, usernameChanged: Date.now() });
-      alert('✅ Username updated!');
-    }
-
-    async function saveRealName() {
-      const user = auth.currentUser;
-      const realname = document.getElementById('realname').value.trim();
-      if (!realname) return alert('Real name required.');
-      const ref = doc(db, 'users', user.uid);
-      const snap = await getDoc(ref);
-      const lastChange = snap.data().realnameChanged || 0;
-      if (Date.now() - lastChange < 14 * 86400000) return alert('You can only change it every 14 days.');
-      await updateDoc(ref, { realname, realnameChanged: Date.now() });
-      alert('✅ Real name updated!');
-    }
-
-    async function verifyPhone() {
-      const phone = document.getElementById('phone').value.trim();
-      if (!phone.startsWith('+')) return alert('Start with + and country code.');
-      alert(`Your request to change phone number has been sent to Santorumsantus@gmail.com. Await approval.`);
-    }
-
-    async function saveAvatar() {
-      if (!selectedAvatar) return alert('Select an avatar first.');
-      const user = auth.currentUser;
-      const ref = doc(db, 'users', user.uid);
-      await updateDoc(ref, { avatar: selectedAvatar });
-      alert('✅ Avatar saved!');
-    }
-
-    function logout() {
-      auth.signOut().then(() => window.location.href = 'index.html');
-    }
-  </script></body>
+  </script>
+</body>
 </html>
