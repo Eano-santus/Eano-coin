@@ -1,24 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EANO • Dashboard</title>
-
-  <!-- ✅ Fixed script tags -->
-  <script src="ui.js"></script>
-  <script type="module" src="firebase.js"></script>
-  <script src="dashboard-extra.js"></script>
-
-  <!-- ✅ Styles -->
-  <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <meta name="theme-color" content="#000000" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-</head>
-
-<body>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO • Dashboard</title>  <!-- External CSS -->  <link rel="stylesheet" href="style.css" />  <!-- Favicon & Manifest -->  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />  <!-- Theme + Fonts -->  <meta name="theme-color" content="#000000" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />  <!-- JS Files -->  <script src="ui.js"></script>  <script src="dashboard-extra.js"></script>  <script type="module" src="firebase.js"></script></head><body>
   <div class="nav-fixed">
     <h1 class="logo">🌟 EANO</h1>
     <span id="balance-display">Balance: 0.000 EANO</span>
@@ -32,70 +18,36 @@
         <option value="pidgin">Pidgin</option>
       </select>
     </div>
-  </div>
-
-  <div class="balance-status">
+  </div>  <div class="balance-status">
     <h2>💰 Balance: <span id="balance">0.000</span> EANO</h2>
     <p id="mining-status">⛏️ Checking mining session...</p>
     <p id="countdown"></p>
-  </div>
-
-  <!-- ✅ Fixed: mine button on its own line -->
-  <div class="circle-mine" onclick="startMining()">🔵</div>
-
-  <!-- ✅ Announcement -->
-  <div class="announcement" id="home">
+  </div>  <div class="circle-mine" onclick="startMining()">🔵</div>  <div class="announcement" id="home">
     <img id="announcement-img" src="announcement-eano.png" alt="EANO Live Announcement" onerror="this.src='default-announcement-july.png';" />
     <h2>📢 EANO Announcement</h2>
     <p><strong>Mining updates are live!</strong></p>
     <p>Other features will begin very soon.</p>
     <p>⛏️ <strong>Mine daily to increase your score and TrustScore.</strong></p>
     <p>👥 <strong>Refer people to level up and unlock more features.</strong></p>
-  </div>
+  </div>  <!-- Navigation Features -->  <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div><a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners and TrustScores</p></a> <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals and bonuses</p></a> <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>View and update details</p></a>
 
-  <!-- ✅ Feature Sections -->
-  <div class="feature-card" id="kyc"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
-  <a class="feature-card" href="leaderboard.html" id="leaderboard">
-    <h3>🏆 Leaderboard</h3>
-    <p>Top miners and TrustScores</p>
-  </a>
-  <a class="feature-card" href="team.html" id="team">
-    <h3>👥 Your Team</h3>
-    <p>Referrals and bonuses</p>
-  </a>
-  <a class="feature-card" href="profile.html" id="profile">
-    <h3>👤 Profile</h3>
-    <p>View and update details</p>
-  </a>
   <div class="feature-card" id="support">
     <a href="https://t.me/eanocoin" target="_blank" style="text-decoration: none; color: inherit;">
       <h3>🆘 Support Portal</h3>
       <p>Join our Telegram Community</p>
     </a>
-  </div>
-  <div class="feature-card" id="author">
+  </div>  <div class="feature-card" id="author">
     <h3>🧑‍💼 Author</h3>
     <p>
       Founded by <span class="shiny-name">Santus Santorum</span>, a visionary mind building a network rooted in trust, privacy, and empowerment.
     </p>
-  </div>
-  <div class="feature-card" id="chat"><h3>💬 Community Chat</h3><p>Talk with the community</p></div>
+  </div>  <div class="feature-card" id="chat"><h3>💬 Community Chat</h3><p>Talk with the community</p></div>
   <div class="feature-card" id="whitepaper"><h3>📜 WhitePaper</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎮 Games</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎤 Studio</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>
-
-  <!-- ✅ Logout -->
-  <div class="feature-card text-center">
+  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <div class="feature-card text-center">
     <button onclick="logout()" class="btn btn-danger">Logout</button>
-  </div>
-
-  <!-- ✅ Footer -->
-  <div class="footer">&copy; 2025 EANO Network • Built on Trust/Level-Up & Reputation</div>
-
-  <!-- ✅ Firebase + Mining Logic (already included correctly) -->
-  <!-- ✅ DO NOT include dashboard-firebase.js since it doesn't exist -->
-
+  </div>  <div class="footer">&copy; 2025 EANO Network • Built on Trust/Level-Up & Reputation</div>
 </body>
-</html>
+    </html>
