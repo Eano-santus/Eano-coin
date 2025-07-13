@@ -70,3 +70,110 @@
 
 .nav-controls { justify-content: center; } }
 
+/* ------------------------- AVATAR GALLERY -------------------------- */
+.avatar-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  justify-items: center;
+}
+
+.avatar-item {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s, border 0.3s;
+  cursor: pointer;
+}
+
+.avatar-item img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.avatar-item:hover {
+  transform: scale(1.05);
+  border-color: gold;
+}
+
+.avatar-item.selected {
+  border-color: lime;
+  box-shadow: 0 0 15px limegreen;
+}
+
+/* ------------------------- PROFILE & TEAM CARDS -------------------------- */
+.profile-section, .team-section {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: rgba(255,255,255,0.05);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.08);
+}
+
+.profile-section h2, .team-section h2 {
+  text-align: center;
+  color: gold;
+}
+
+.profile-avatar, .team-avatar {
+  display: block;
+  margin: 1rem auto;
+  border-radius: 12px;
+  max-width: 120px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* ------------------------- TRUSTSCORE BADGES -------------------------- */
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.badge.og {
+  background: linear-gradient(to right, gold, orange);
+  color: black;
+  box-shadow: 0 0 10px gold;
+}
+
+.badge.trusted {
+  background: #28a745;
+  color: white;
+}
+
+.badge.reliable {
+  background: #ffc107;
+  color: black;
+}
+
+.badge.new {
+  background: #007bff;
+  color: white;
+}
+
+.badge.low {
+  background: #dc3545;
+  color: white;
+}
+
+/* ------------------------- DARK MODE ADJUSTMENTS -------------------------- */
+.light-mode .profile-section,
+.light-mode .team-section {
+  background: rgba(0, 0, 0, 0.05);
+  color: #000;
+}
+
+.light-mode .badge.og {
+  box-shadow: 0 0 10px orange;
+}
+
+.light-mode .avatar-item.selected {
+  box-shadow: 0 0 12px limegreen;
+}
