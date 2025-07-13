@@ -2,7 +2,7 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
-// Firebase config
+// 🔐 Firebase config (same as in auth.js)
 const firebaseConfig = {
   apiKey: "AIzaSyCzNpblYEjxZvOtuwao3JakP-FaZAT-Upw",
   authDomain: "eano-miner.firebaseapp.com",
@@ -13,50 +13,54 @@ const firebaseConfig = {
   measurementId: "G-NS0W6QSS69"
 };
 
-// Init Firebase
+// 🔧 Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let deferredPrompt;
-
-// Only show if not already installed
+// 💾 Check if installed already
 const isAlreadyInstalled = () =>
   localStorage.getItem("eano_installed") === "true" ||
   window.matchMedia("(display-mode: standalone)").matches;
 
+// 📦 Handle install prompt
+let deferredPrompt;
 window.addEventListener("beforeinstallprompt", (e) => {
   if (isAlreadyInstalled()) return;
 
   e.preventDefault();
   deferredPrompt = e;
 
+  // ✨ Create floating install button
   const installBtn = document.createElement("button");
   installBtn.textContent = "⬇️ Install EANO App";
-  installBtn.style.position = "fixed";
-  installBtn.style.bottom = "20px";
-  installBtn.style.right = "20px";
-  installBtn.style.zIndex = "9999";
-  installBtn.style.padding = "12px 16px";
-  installBtn.style.background = "gold";
-  installBtn.style.color = "#000";
-  installBtn.style.border = "none";
-  installBtn.style.borderRadius = "8px";
-  installBtn.style.fontWeight = "bold";
-  installBtn.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+  Object.assign(installBtn.style, {
+    position: "fixed",
+    bottom: "20px",
+    right: "20px",
+    zIndex: "9999",
+    padding: "12px 16px",
+    background: "gold",
+    color: "#000",
+    border: "none",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+    fontSize: "16px",
+    cursor: "pointer"
+  });
 
   installBtn.onclick = () => {
     installBtn.remove();
     deferredPrompt.prompt();
 
-    deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === "accepted") {
-        console.log("✅ App installed by user");
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === "accepted") {
+        console.log("✅ App installed");
 
-        // Store locally
         localStorage.setItem("eano_installed", "true");
 
-        // Save to Firestore
+        // ✅ Save to Firestore if user is logged in
         onAuthStateChanged(auth, (user) => {
           if (user) {
             const ref = doc(db, "installations", user.uid);
@@ -66,9 +70,9 @@ window.addEventListener("beforeinstallprompt", (e) => {
               platform: navigator.platform || "unknown",
               userAgent: navigator.userAgent || "unknown"
             }, { merge: true }).then(() => {
-              console.log("📦 Installation saved to Firestore.");
+              console.log("📦 Install info saved to Firestore.");
             }).catch((err) => {
-              console.error("❌ Firestore error:", err);
+              console.error("❌ Failed to save install info:", err);
             });
           }
         });
@@ -79,5 +83,6 @@ window.addEventListener("beforeinstallprompt", (e) => {
     });
   };
 
+  // ➕ Add to page
   document.body.appendChild(installBtn);
 });
