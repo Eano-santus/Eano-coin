@@ -1,18 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio • EANO Project</title>
-
-  <!-- ✅ SEO & PWA -->
-  <meta name="description" content="Turn your lyrics into songs, record music, and explore the creative EANO Studio." />
+  <title>Studio • EANO Project</title>  <!-- ✅ SEO & PWA -->  <meta name="description" content="Turn your lyrics into songs, record music, and explore the creative EANO Studio." />
   <meta name="author" content="EANO Team" />
   <meta name="theme-color" content="#000" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="eano-icon-192.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="studio.js" defer></script>
+  <script type="module" src="studio-next.js" defer></script>
 </head>
 <body class="studio-page">
   <div class="nav-fixed">
@@ -23,22 +20,14 @@
       <a href="profile.html">👤</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
-  </div>
-
-  <!-- Avatar Performer Preview -->
-  <div id="avatar-performer" style="text-align:center; margin-top: 10px;">
+  </div>  <!-- Avatar Performer Preview -->  <div id="avatar-performer" style="text-align:center; margin-top: 10px;">
     <img src="avatars/performer.gif" alt="Performer" style="max-width: 150px;" />
-  </div>
-
-  <!-- AI Music Generator -->
-  <section class="section">
+  </div>  <!-- AI Music Generator -->  <section class="section">
     <h2>🎼 AI Music Generator</h2>
-    <p>Write your lyrics and let the EANO Studio generate a melody and beat!</p>
+    <p>Write your lyrics and let the EANO Studio generate a melody and beat!</p><textarea id="lyrics" placeholder="Write your song lyrics here..."></textarea>
 
-    <textarea id="lyrics" placeholder="Write your song lyrics here..."></textarea>
-
-    <label for="genre">🎶 Choose Genre:</label>
-  <select id="genre">
+<label for="genre">🎶 Choose Genre:</label>
+<select id="genre">
   <option value="amapiano">Amapiano 🇿🇦</option>
   <option value="naijastreet">Naija Street 🇳🇬</option>
   <option value="afrobeat">Afrobeat</option>
@@ -46,54 +35,59 @@
   <option value="gospel">Gospel</option>
   <option value="pop">Pop</option>
   <option value="reggae">Reggae</option>
-  </select>
+</select>
 
-    <label id="uploadLabel" class="upload-label">🎧 Optional: Upload a Beat</label>
-    <input type="file" accept="audio/*" id="uploadInput" style="display:none;" />
+<label id="uploadLabel" class="upload-label">🎧 Optional: Upload a Beat</label>
+<input type="file" accept="audio/*" id="uploadInput" style="display:none;" />
 
-    <button id="generateBtn">🎶 Generate Song</button>
+<button id="generateBtn">🎶 Generate Song</button>
 
-    <div id="loader" style="display:none;">⏳ Generating...</div>
-    <div id="result"></div>
-  </section>
+<div id="loader" style="display:none;">⏳ Generating...</div>
+<div id="result"></div>
 
-  <!-- Record/Upload -->
-  <section class="section">
+  </section>  <!-- Record/Upload -->  <section class="section">
     <h2>🎤 Record or Upload Your Voice</h2>
     <button id="start-record">🔴 Record</button>
     <input type="file" accept="audio/*" id="upload-audio" />
     <audio controls id="audio-player" style="display:none;"></audio>
-  </section>
-
-  <!-- Trending -->
-  <section class="section">
-  <h2>🔥 Trending Studio Creations</h2>
-  <div class="feature-card">🇳🇬 "Lagos Vibe" — Naija Street</div>
-  <div class="feature-card">🇿🇦 "Piano Groove" — Amapiano</div>
-  <div class="feature-card">🎤 "Shine Your Light" — Gospel</div>
-  </section>
-
-  <!-- User Creations -->
-  <section class="section">
+  </section>  <!-- Trending -->  <section class="section">
+    <h2>🔥 Trending Studio Creations</h2>
+    <div id="trending-creations">
+      <div class="feature-card">🇳🇬 "Lagos Vibe" — Naija Street</div>
+      <div class="feature-card">🇿🇦 "Piano Groove" — Amapiano</div>
+      <div class="feature-card">🎤 "Shine Your Light" — Gospel</div>
+    </div>
+  </section>  <!-- Explore Public Feed -->  <section class="section">
+    <h2>🌍 Explore Public Songs</h2>
+    <div id="explore-feed">Loading songs...</div>
+  </section>  <!-- Category Filter -->  <section class="section">
+    <h2>🗂️ Filter by Genre</h2>
+    <select id="filter-genre">
+      <option value="all">All</option>
+      <option value="amapiano">Amapiano</option>
+      <option value="naijastreet">Naija Street</option>
+      <option value="afrobeat">Afrobeat</option>
+      <option value="rap">Rap</option>
+      <option value="gospel">Gospel</option>
+      <option value="pop">Pop</option>
+      <option value="reggae">Reggae</option>
+    </select>
+  </section>  <!-- User Creations -->  <section class="section">
     <h2>📂 Your Studio Creations</h2>
     <div id="your-creations">
       <p>Loading your tracks...</p>
     </div>
-  </section>
-
-  <!-- TrustScore Info -->
-  <section class="section">
+  </section>  <!-- Collaboration Suggestions -->  <section class="section">
+    <h2>🧑‍🤝‍🧑 Suggested Collaborators</h2>
+    <div id="collab-suggestions"></div>
+  </section>  <!-- TrustScore Info -->  <section class="section">
     <h2>🧠 TrustScore Bonus</h2>
     <p>Create songs or participate in studio trends to gain bonus TrustScore and rep!</p>
+    <p><strong>Earn:</strong> +5 TrustScore and +0.5 EANO per verified upload.</p>
     <p><strong>Note:</strong> AI music is experimental. Results improve after mainnet upgrade.</p>
-  </section>
-
-  <footer class="footer">
+  </section>  <footer class="footer">
     &copy; 2025 EANO Network • Studio Powered by Creativity & Trust
-  </footer>
-
-  <!-- Theme Toggle -->
-  <script>
+  </footer>  <!-- Theme Toggle & Recording Placeholder -->  <script>
     document.getElementById("toggle-theme").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
     });
@@ -112,6 +106,5 @@
         audioPlayer.play();
       }
     });
-  </script>
-</body>
+  </script></body>
 </html>
