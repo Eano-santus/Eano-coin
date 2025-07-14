@@ -125,22 +125,21 @@
     });
 
     // 🎙️ Record or Upload
+    import { uploadSongToStorage } from './studio.js'; // If it's modular
+
+document.getElementById("upload-audio").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const userId = localStorage.getItem("uid") || "guest"; // Replace with real UID
+  uploadSongToStorage(file, userId, (url) => {
     const audioPlayer = document.getElementById("audio-player");
-    const recordBtn = document.getElementById("start-record");
-
-    recordBtn.addEventListener("click", () => {
-      alert("🔒 Recording will be available in the next update.");
-    });
-
-    document.getElementById("upload-audio").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        audioPlayer.src = url;
-        audioPlayer.style.display = "block";
-        audioPlayer.play();
-      }
-    });
+    audioPlayer.src = url;
+    audioPlayer.style.display = "block";
+    audioPlayer.play();
+    alert("✅ Uploaded and playing your song!");
+  });
+});
   </script>
 </body>
 </html>
