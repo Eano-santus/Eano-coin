@@ -2,7 +2,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio • EANO Project</title>  <!-- ✅ SEO & PWA -->  <meta name="description" content="Turn your lyrics into songs, record music, and explore the creative EANO Studio." />
+  <title>Studio • EANO Project</title>
+  <meta name="description" content="Turn your lyrics into songs, record music, and explore the creative EANO Studio." />
   <meta name="author" content="EANO Team" />
   <meta name="theme-color" content="#000" />
   <link rel="manifest" href="manifest.json" />
@@ -13,38 +14,38 @@
 </head>
 <body class="studio-page">
   <div class="nav-fixed">
-    <h1 class="logo">🎙️ EANO Studio</h1>
+    <h1 class="logo">🎧 EANO Studio</h1>
     <div class="nav-controls">
       <a href="dashboard.html">🏠</a>
-      <a href="wallet.html">👛</a>
+      <a href="wallet.html">💳</a>
       <a href="profile.html">👤</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
-  </div>  <!-- Avatar Performer Preview -->  <div id="avatar-performer" style="text-align:center; margin-top: 10px;">
+  </div>  <!-- Performer Avatar -->  <div id="avatar-performer" style="text-align:center; margin-top: 10px;">
     <img src="avatars/performer.gif" alt="Performer" style="max-width: 150px;" />
   </div>  <!-- AI Music Generator -->  <section class="section">
     <h2>🎼 AI Music Generator</h2>
-    <p>Write your lyrics and let the EANO Studio generate a melody and beat!</p><textarea id="lyrics" placeholder="Write your song lyrics here..."></textarea>
-
-<label for="genre">🎶 Choose Genre:</label>
-<select id="genre">
-  <option value="amapiano">Amapiano 🇿🇦</option>
-  <option value="naijastreet">Naija Street 🇳🇬</option>
-  <option value="afrobeat">Afrobeat</option>
-  <option value="rap">Rap</option>
-  <option value="gospel">Gospel</option>
-  <option value="pop">Pop</option>
-  <option value="reggae">Reggae</option>
-</select>
-
-<label id="uploadLabel" class="upload-label">🎧 Optional: Upload a Beat</label>
-<input type="file" accept="audio/*" id="uploadInput" style="display:none;" />
-
-<button id="generateBtn">🎶 Generate Song</button>
-
-<div id="loader" style="display:none;">⏳ Generating...</div>
-<div id="result"></div>
-
+    <p>Write your lyrics and let the EANO Studio generate a melody and beat!</p>
+    <textarea id="lyrics" placeholder="Write your song lyrics here..."></textarea>
+    <label for="genre">🎶 Choose Genre:</label>
+    <select id="genre">
+      <option value="amapiano">Amapiano 🇿🇦</option>
+      <option value="naijastreet">Naija Street 🇳🇬</option>
+      <option value="afrobeat">Afrobeat</option>
+      <option value="rap">Rap</option>
+      <option value="gospel">Gospel</option>
+      <option value="pop">Pop</option>
+      <option value="reggae">Reggae</option>
+    </select>
+    <label id="uploadLabel" class="upload-label">🎧 Optional: Upload a Beat</label>
+    <input type="file" accept="audio/*" id="uploadInput" style="display:none;" />
+    <button id="generateBtn">🎶 Generate Song</button>
+    <div id="loader" style="display:none;">⏳ Generating...</div>
+    <div id="result"></div>
+    <div>
+      <button id="suggest-beat">🌎 Suggest AI Beat</button>
+      <audio id="suggested-beat" controls style="display:none; margin-top: 8px;"></audio>
+    </div>
   </section>  <!-- Record/Upload -->  <section class="section">
     <h2>🎤 Record or Upload Your Voice</h2>
     <button id="start-record">🔴 Record</button>
@@ -52,11 +53,7 @@
     <audio controls id="audio-player" style="display:none;"></audio>
   </section>  <!-- Trending -->  <section class="section">
     <h2>🔥 Trending Studio Creations</h2>
-    <div id="trending-creations">
-      <div class="feature-card">🇳🇬 "Lagos Vibe" — Naija Street</div>
-      <div class="feature-card">🇿🇦 "Piano Groove" — Amapiano</div>
-      <div class="feature-card">🎤 "Shine Your Light" — Gospel</div>
-    </div>
+    <div id="trending-creations"></div>
   </section>  <!-- Explore Public Feed -->  <section class="section">
     <h2>🌍 Explore Public Songs</h2>
     <div id="explore-feed">Loading songs...</div>
@@ -87,41 +84,36 @@
     <p><strong>Note:</strong> AI music is experimental. Results improve after mainnet upgrade.</p>
   </section>  <footer class="footer">
     &copy; 2025 EANO Network • Studio Powered by Creativity & Trust
-  </footer>  <!-- Theme Toggle & Recording Placeholder -->  <script>
+  </footer>  <!-- Script Block for Feature Activation -->  <script type="module">
+    import {
+      loadTrendingCreations,
+      loadPublicFeed,
+      setupVoiceRecorder,
+      suggestCollabUsers,
+      suggestAIBeat
+    } from './studio-next.js';
+
     document.getElementById("toggle-theme").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
     });
 
-    document.getElementById("start-record").addEventListener("click", () => {
-      alert("🔒 Recording will be available in the next version.");
+    setupVoiceRecorder("start-record", "audio-player");
+    loadTrendingCreations();
+    loadPublicFeed();
+    suggestCollabUsers();
+
+    document.getElementById("filter-genre").addEventListener("change", (e) => {
+      const genre = e.target.value;
+      loadPublicFeed(genre === "all" ? null : genre);
     });
 
-    document.getElementById("upload-audio").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      const audioPlayer = document.getElementById("audio-player");
-      if (file) {
-        const url = URL.createObjectURL(file);
-        audioPlayer.src = url;
-        audioPlayer.style.display = "block";
-        audioPlayer.play();
-      }
+    document.getElementById("suggest-beat").addEventListener("click", () => {
+      const genre = document.getElementById("genre").value;
+      const beatURL = suggestAIBeat(genre);
+      const audio = document.getElementById("suggested-beat");
+      audio.src = beatURL;
+      audio.style.display = "block";
+      audio.play();
     });
-    <script type="module">
-  import {
-    loadTrendingCreations,
-    loadPublicFeed,
-    setupVoiceRecorder,
-    suggestCollabUsers
-  } from './studio-next.js';
-
-  loadTrendingCreations();              // Load trending 🔥
-  loadPublicFeed();                     // Load default explore 🌍
-  setupVoiceRecorder("start-record", "audio-player"); // 🎤 Voice
-  suggestCollabUsers();                 // 🤝 Collaborations
-
-  // Filter explore feed by genre dropdown
-  document.getElementById("filter-genre").addEventListener("change", (e) => {
-    loadPublicFeed(e.target.value);
-  });
   </script></body>
 </html>
