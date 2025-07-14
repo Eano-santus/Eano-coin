@@ -1,59 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ✅ Basic Meta -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Team • EANO</title>
-
-  <meta name="description" content="View your referrals, invite team members, and grow your EANO mining network." />
-  <meta name="keywords" content="EANO Team, Referrals, Mining Network, Invite Friends, Bonus" />
+  <title>My Team • EANO</title>
+  <meta name="description" content="View your referrals, copy your EANO referral link, and grow your trust score." />
   <meta name="author" content="EANO Network" />
+  <meta name="keywords" content="EANO, Referral, Web3, Team, Trust Score, Mining Network" />
+  <meta name="theme-color" content="#000000" />
 
-  <!-- ✅ Meta & App Icon Setup -->
-<link rel="apple-touch-icon" sizes="57x57" href="assets/icons/apple-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="60x60" href="assets/icons/apple-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="72x72" href="assets/icons/apple-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="76x76" href="assets/icons/apple-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="assets/icons/apple-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="120x120" href="assets/icons/apple-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="assets/icons/apple-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="152x152" href="assets/icons/apple-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-icon-180x180.png">
+  <!-- ✅ SEO & Social -->
+  <meta property="og:title" content="EANO • My Team">
+  <meta property="og:description" content="Track your referrals and trust bonuses on EANO.">
+  <meta property="og:image" content="https://eano-coin.netlify.app/eano-icon-192.png">
+  <meta property="og:url" content="https://eano-coin.netlify.app/team.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-icon-192x192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <!-- ✅ Icons + Manifest -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="assets/icons/ms-icon-144x144.png">
 
-<link rel="manifest" href="manifest.json">
-<meta name="msapplication-TileColor" content="#000000">
-<meta name="msapplication-TileImage" content="assets/icons/ms-icon-144x144.png">
-<meta name="theme-color" content="#000000">
+  <!-- ✅ Styles & Script -->
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="team.js" defer></script>
 </head>
-<body class="team-page">
-  <div class="nav-fixed">
-    <h1 class="logo">👥 EANO Team</h1>
+<body class="team-page dark-mode">
+  <!-- 🔝 Header -->
+  <header class="nav-fixed">
+    <h1 class="logo">👥 My Team</h1>
     <div class="nav-controls">
       <a href="dashboard.html">🏠</a>
-      <button id="toggle-theme">🌑/☀️</button>
+      <a href="profile.html">👤</a>
+      <a href="settings.html">⚙️</a>
     </div>
-  </div>
+  </header>
 
-  <section class="section">
-    <h2>🔗 Your Referral Link</h2>
-    <p><input type="text" id="ref-link" readonly /></p>
-    <button onclick="copyRef()">📋 Copy</button>
-  </section>
+  <main class="section">
+    <!-- 🔗 Referral Info -->
+    <section class="referral-box">
+      <h2>📢 Invite Friends</h2>
+      <p>Your Referral Code: <strong id="ref-code">loading...</strong></p>
+      <p>Your Link: <span id="ref-link">https://eano-santus.github.io/eano-coin/?ref=username</span></p>
+      <button id="copy-btn">📋 Copy Link</button>
+      <button id="share-btn">📤 Share</button>
+    </section>
 
-  <section class="section">
-    <h2>🧑‍🤝‍🧑 Your Referrals</h2>
-    <div id="referrals-list">
-      <p>Loading your referrals...</p>
-    </div>
-  </section>
+    <!-- 👥 Team List -->
+    <section class="team-list">
+      <h2>👥 Referred Members</h2>
+      <ul id="referrals" class="glow-list">
+        <li>⏳ Loading...</li>
+      </ul>
+      <p id="bonus-summary">...</p>
+    </section>
+  </main>
 
-  <footer class="footer">© 2025 EANO Network • Grow Together</footer>
+  <!-- 👣 Footer -->
+  <footer class="footer">
+    &copy; 2025 EANO Network • Powered by Referrals 💎
+  </footer>
+
+  <!-- 🔧 Theme Toggle (optional) -->
+  <script>
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.remove("dark-mode");
+      document.body.classList.add("light-mode");
+    }
+  </script>
 </body>
-</html>
+    </html>
