@@ -210,15 +210,55 @@
     const auth = getAuth(app);
 
     // Sign Up
-    document.getElementById("signup-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        window.location.href = "dashboard.html";
-      } catch (e) {
-        alert(e.message);
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+const db = getFirestore(app);
+
+// 🔁 Capture Referral from URL
+const urlParams = new URLSearchParams(window.location.search);
+const refCode = urlParams.get("ref");
+if (refCode) {
+  document.getElementById("signup-referral").value = refCode;
+}
+
+// ✅ Sign-Up with Referrals and Firestore User Save
+document.getElementById("signup-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const firstname = document.getElementById("signup-firstname").value.trim();
+  const lastname = document.getElementById("signup-lastname").value.trim();
+  const username = document.getElementById("signup-username").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value;
+  const referredBy = document.getElementById("signup-referral").value || null;
+
+  try {
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      name: firstname + " " + lastname,
+      firstName: firstname,
+      lastName: lastname,
+      username,
+      email,
+      photoURL: "",
+      balance: 0,
+      score: 0,
+      trustScore: 0,
+      referredBy,
+      miningStart: null,
+      miningEnd: null,
+      lastUpdate: null,
+      joinedAt: new Date().toISOString()
+    });
+
+    // ✅ Save locally
+    localStorage.setItem("username", username);
+
+    window.location.href = "dashboard.html";
+
+  } catch (e) {
+    alert("❌ Error: " + e.message);
       }
     });
 
