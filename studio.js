@@ -148,6 +148,9 @@ document.addEventListener("DOMContentLoaded", () => {
   pop: "#e91e63",
   reggae: "#4caf50"
 };
+      const sampleTrack = uploadedBeat
+  ? URL.createObjectURL(uploadedBeat)
+  : 'amapiano-demo.mp3'; // ← Default sample
 
 const genreStyle = genreColor[track.genre] || "#ccc";
 
