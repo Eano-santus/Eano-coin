@@ -39,12 +39,44 @@ function loadMessages() {
   onSnapshot(q, (snapshot) => {
     messagesContainer.innerHTML = "";
 
+    // 🔔 Play notification on new message
+const notificationSound = new Audio("sounds/notify.mp3");
+let lastMessageTimestamp = null;
+
+function notifyIfNewMessage(msg, currentUser) {
+  // Only notify if new and from someone else
+  if (!msg.createdAt?.seconds || msg.uid === currentUser.uid) return;
+
+  if (!lastMessageTimestamp || msg.createdAt.seconds > lastMessageTimestamp) {
+    lastMessageTimestamp = msg.createdAt.seconds;
+    notificationSound.play().catch(() => {
+      console.log("🔇 User blocked autoplay");
+    });
+  }
+
     snapshot.forEach((doc) => {
       const msg = doc.data();
       const div = document.createElement("div");
       div.className = "message-bubble";
       div.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
       messagesContainer.appendChild(div);
+      onSnapshot(q, (snapshot) => {
+  messagesContainer.innerHTML = "";
+
+  snapshot.forEach((doc) => {
+    const msg = doc.data();
+    const div = document.createElement("div");
+    div.className = "message-bubble";
+    div.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
+    messagesContainer.appendChild(div);
+
+    // ✅ 🔔 Notify if someone else sent it
+    if (auth.currentUser) {
+      notifyIfNewMessage(msg, auth.currentUser);
+    }
+  });
+
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
     // 👇 Auto-scroll to bottom
