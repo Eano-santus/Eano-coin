@@ -1,77 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Meta Basics -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings • EANO</title>
+  <title>Settings • EANO Project</title>
 
-  <!-- ✅ SEO -->
-  <meta name="description" content="Manage your EANO account: avatar, email, username, verification and more." />
-  <meta name="keywords" content="EANO, crypto, settings, profile, avatar, username, verification" />
+  <!-- ✅ SEO & Meta -->
+  <meta name="description" content="Update your profile settings, avatar, and identity info in EANO." />
   <meta name="author" content="EANO Team" />
-
-  <!-- ✅ PWA -->
   <meta name="theme-color" content="#000000" />
-  <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="eano-icon-192.png" type="image/png" />
 
-  <!-- ✅ Open Graph for Social Sharing -->
-  <meta property="og:title" content="EANO Settings" />
-  <meta property="og:description" content="Customize your profile, avatar and verification options on EANO." />
-  <meta property="og:image" content="https://eano-santus.github.io/eano-coin/preview.png" />
-  <meta property="og:url" content="https://eano-santus.github.io/eano-coin/settings.html" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <!-- ✅ PWA -->
+  <link rel="manifest" href="manifest.json" />
 
-  <!-- Styles & Scripts -->
+  <!-- ✅ Styles & Scripts -->
   <link rel="stylesheet" href="style.css" />
-  <script defer src="settings.js" type="module"></script>
+  <script type="module" src="settings.js" defer></script>
 </head>
-<body class="settings-page dark-mode">
+<body class="settings-page">
   <div class="nav-fixed">
     <h1 class="logo">⚙️ Settings</h1>
     <div class="nav-controls">
       <a href="dashboard.html">🏠</a>
       <a href="profile.html">👤</a>
-      <a href="team.html">🤝</a>
-      <button id="toggle-theme">🌙/☀️</button>
+      <a href="logout.html">🚪</a>
+      <button id="toggle-theme">🌑/☀️</button>
     </div>
   </div>
 
   <section class="section">
-    <h2>🧑‍🎨 Profile Avatar</h2>
-    <div id="avatar-gallery" class="avatar-grid">
-      <!-- Populated by JS -->
-    </div>
-    <p class="hint">Click to select your new avatar.</p>
+    <h2>🧑 Choose Avatar</h2>
+    <div id="avatar-gallery" class="avatar-grid"></div>
+    <p id="selected-avatar-label" class="subtext">Selected: <span id="selected-avatar">none</span></p>
   </section>
 
   <section class="section">
-    <h2>📛 Name Settings</h2>
-    <label>Username:</label>
-    <input type="text" id="username" placeholder="Enter username" />
-    <label>Real Name:</label>
-    <input type="text" id="realname" placeholder="Enter your real name" />
-    <button id="save-name">💾 Save</button>
-    <p class="hint">You can only change your name once every 14 days.</p>
+    <h2>📝 Profile Info</h2>
+    <form id="settings-form">
+      <label>👤 Username</label>
+      <input type="text" id="username" placeholder="e.g. NaijaKing" />
+
+      <label>🪪 Real Name</label>
+      <input type="text" id="realname" placeholder="e.g. Chinedu Okoro" />
+
+      <button type="submit">💾 Save Settings</button>
+    </form>
+    <p class="note">Note: You can only change your name and username every 14 days.</p>
   </section>
 
   <section class="section">
     <h2>📧 Email Verification</h2>
-    <p id="email-status">Checking...</p>
-    <button id="verify-email">📨 Send Verification Email</button>
+    <p>Your email: <span id="user-email">Loading...</span></p>
+    <button id="verify-email">✉️ Send Verification Email</button>
+    <p class="note">Check your inbox or spam folder to verify.</p>
   </section>
 
   <section class="section">
-    <h2>📱 Change Phone Number</h2>
-    <p class="hint">To change your number, email a request to: <strong>Santorumsantus@gmail.com</strong></p>
+    <h2>📱 Phone Number</h2>
+    <p><strong>Need to change phone?</strong> Send request to:</p>
+    <p class="highlight">📩 Santorumsantus@gmail.com</p>
+    <p>SMS Verification will be available in future updates.</p>
   </section>
 
   <footer class="footer">
-    &copy; 2025 EANO Project • Privacy • Terms
+    &copy; 2025 EANO Network • Settings secured by Firebase
   </footer>
 
-  <!-- Optional: Theme Toggle -->
+  <!-- ✅ Theme Toggle -->
   <script>
     document.getElementById("toggle-theme").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
