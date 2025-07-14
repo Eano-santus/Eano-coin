@@ -1,93 +1,87 @@
-// studio-next.js import { getFirestore, collection, query, orderBy, limit, getDocs, updateDoc, doc, where, increment, addDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js"; import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js"; import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+// studio-next.js import { getFirestore, collection, query, orderBy, limit, getDocs, updateDoc, doc, where, increment, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js"; import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js"; import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
 
 const db = getFirestore(); const auth = getAuth(); const storage = getStorage();
 
-// 🎯 Reward on Upload export async function rewardTrustScoreOnUpload(uid) { if (!uid) return; try { const userRef = doc(db, "users", uid); await updateDoc(userRef, { trustScore: increment(5), balance: increment(0.5) }); console.log("✅ TrustScore and 0.5 EANO rewarded"); } catch (err) { console.error("❌ Reward failed:", err); } }
+// 🎯 TrustScore + EANO reward export async function rewardTrustScoreOnUpload(uid) { if (!uid) return; try { const userRef = doc(db, "users", uid); await updateDoc(userRef, { trustScore: increment(5), balance: increment(0.5) }); console.log("✅ TrustScore and 0.5 EANO rewarded"); } catch (err) { console.error("❌ Reward failed:", err); } }
 
-// 📤 Upload Track export async function uploadTrackToFirebase(file, lyrics, genre) { return new Promise((resolve, reject) => { onAuthStateChanged(auth, async (user) => { if (!user) return reject("User not logged in"); const uid = user.uid;
+// 🚀 Upload Song to Firebase export async function uploadSong({ file, genre, lyrics, displayName }) { if (!auth.currentUser) throw new Error("User not logged in"); const uid = auth.currentUser.uid;
 
-const fileName = `${uid}_${Date.now()}`;
-  const storageRef = ref(storage, `studioTracks/${fileName}`);
-  const uploadTask = uploadBytesResumable(storageRef, file);
+try { const storageRef = ref(storage, studio/${uid}/${Date.now()}_${file.name}); const snapshot = await uploadBytes(storageRef, file); const downloadURL = await getDownloadURL(snapshot.ref);
 
-  uploadTask.on('state_changed',
-    null,
-    (error) => reject(error),
-    async () => {
-      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
-      await addDoc(collection(db, "studioTracks"), {
-        uid,
-        displayName: user.displayName || "Anon",
-        genre,
-        lyrics,
-        downloadURL,
-        uploadedAt: Date.now(),
-        likes: 0
-      });
-
-      await rewardTrustScoreOnUpload(uid);
-      resolve(downloadURL);
-    }
-  );
+const docRef = await addDoc(collection(db, "studioTracks"), {
+  uid,
+  genre,
+  lyrics,
+  displayName,
+  downloadURL,
+  likes: 0,
+  uploadedAt: Date.now()
 });
 
-}); }
+await rewardTrustScoreOnUpload(uid);
+console.log("✅ Song uploaded with ID:", docRef.id);
+return docRef.id;
 
-// 📈 Trending Songs export async function loadTrendingCreations() { const container = document.getElementById("trending-creations"); if (!container) return; container.innerHTML = "<p>Loading trending songs...</p>";
+} catch (err) { console.error("❌ Upload failed:", err); throw err; } }
+
+// 📈 Trending Songs by Likes export async function loadTrendingCreations() { const container = document.getElementById("trending-creations"); if (!container) return; container.innerHTML = "<p>Loading trending songs...</p>";
 
 try { const q = query(collection(db, "studioTracks"), orderBy("likes", "desc"), limit(5)); const snapshot = await getDocs(q); container.innerHTML = "";
 
-snapshot.forEach(docSnap => {
-  const data = docSnap.data();
-  const id = docSnap.id;
-  container.innerHTML += generateTrackCard(data, id);
+snapshot.forEach(doc => {
+  const data = doc.data();
+  container.innerHTML += `
+    <div class="feature-card">
+      <p><strong>${data.genre}</strong> • ${data.displayName}</p>
+      <audio controls src="${data.downloadURL}"></audio>
+      <p><button onclick="likeSong('${doc.id}')">❤️ ${data.likes}</button> • ${new Date(data.uploadedAt).toLocaleDateString()}</p>
+    </div>
+  `;
 });
 
-attachLikeHandlers();
+} catch (err) { container.innerHTML = "<p>❌ Failed to load trending songs.</p>"; console.error(err); } }
 
-} catch (err) { container.innerHTML = "<p>❌ Failed to load trending songs.</p>"; } }
+// ❤️ Like a song export async function likeSong(songId) { try { const songRef = doc(db, "studioTracks", songId); await updateDoc(songRef, { likes: increment(1) }); console.log("👍 Liked song:", songId); loadTrendingCreations(); loadPublicFeed(); } catch (err) { console.error("❌ Like failed:", err); } }
 
-// 🌍 Public Feed export async function loadPublicFeed(genre = "all") { const container = document.getElementById("explore-feed"); if (!container) return; container.innerHTML = "<p>Loading songs...</p>";
+// 🌍 Public Feed with Genre Filter export async function loadPublicFeed(genre = "all") { const container = document.getElementById("explore-feed"); if (!container) return;
 
-try { let q = collection(db, "studioTracks"); q = genre !== "all" ? query(q, where("genre", "==", genre)) : query(q, orderBy("uploadedAt", "desc"), limit(20));
+container.innerHTML = "<p>Loading songs...</p>"; try { let q = collection(db, "studioTracks"); q = genre !== "all" ? query(q, where("genre", "==", genre)) : query(q, orderBy("uploadedAt", "desc"), limit(20));
 
 const snapshot = await getDocs(q);
 container.innerHTML = "";
 
-snapshot.forEach(docSnap => {
-  const data = docSnap.data();
-  const id = docSnap.id;
-  container.innerHTML += generateTrackCard(data, id);
+snapshot.forEach(doc => {
+  const d = doc.data();
+  container.innerHTML += `
+    <div class="feature-card">
+      <p><strong>${d.genre}</strong> • ${d.displayName}</p>
+      <audio controls src="${d.downloadURL}"></audio>
+      <p><em>${d.lyrics.slice(0, 80)}...</em></p>
+      <button onclick="likeSong('${doc.id}')">❤️ ${d.likes}</button>
+    </div>
+  `;
 });
 
-attachLikeHandlers();
+} catch (e) { container.innerHTML = "<p>❌ Could not load feed.</p>"; console.error(e); } }
 
-} catch (err) { container.innerHTML = "<p>❌ Could not load feed.</p>"; } }
+// 📂 Load User's Songs export async function loadUserCreations() { const container = document.getElementById("your-creations"); if (!container || !auth.currentUser) return; const uid = auth.currentUser.uid; container.innerHTML = "<p>Loading your songs...</p>";
 
-// 📂 Load User Tracks export async function loadUserCreations() { const container = document.getElementById("your-creations"); if (!container) return;
+try { const q = query(collection(db, "studioTracks"), where("uid", "==", uid), orderBy("uploadedAt", "desc")); const snapshot = await getDocs(q); container.innerHTML = "";
 
-onAuthStateChanged(auth, async (user) => { if (!user) return;
-
-const q = query(collection(db, "studioTracks"), where("uid", "==", user.uid), orderBy("uploadedAt", "desc"));
-const snapshot = await getDocs(q);
-container.innerHTML = "";
-
-snapshot.forEach(docSnap => {
-  const data = docSnap.data();
-  const id = docSnap.id;
-  container.innerHTML += generateTrackCard(data, id);
+snapshot.forEach(doc => {
+  const d = doc.data();
+  container.innerHTML += `
+    <div class="feature-card">
+      <p><strong>${d.genre}</strong> • ${d.displayName}</p>
+      <audio controls src="${d.downloadURL}"></audio>
+      <p><em>${d.lyrics.slice(0, 80)}...</em></p>
+    </div>
+  `;
 });
 
-attachLikeHandlers();
+} catch (e) { container.innerHTML = "<p>❌ Could not load your songs.</p>"; console.error(e); } }
 
-}); }
-
-// ❤️ Like Button Logic function attachLikeHandlers() { document.querySelectorAll(".like-btn").forEach(button => { button.addEventListener("click", async () => { const docId = button.dataset.id; const trackRef = doc(db, "studioTracks", docId); await updateDoc(trackRef, { likes: increment(1) }); button.disabled = true; button.textContent = "❤️ Liked!"; }); }); }
-
-// 🔖 Track Card Template function generateTrackCard(data, id) { return <div class="feature-card"> <p><strong>${data.genre}</strong> • ${data.displayName}</p> <audio controls src="${data.downloadURL}"></audio> <p><em>${data.lyrics?.slice(0, 80) || ''}...</em></p> <p>❤️ ${data.likes || 0}</p> <button class="like-btn" data-id="${id}">❤️ Like</button> </div>; }
-
-// 🎙️ Voice Recorder export function setupVoiceRecorder(buttonId, audioPlayerId) { const recordBtn = document.getElementById(buttonId); const audioPlayer = document.getElementById(audioPlayerId); if (!recordBtn || !audioPlayer) return;
+// 🎙️ Voice Recorder (Browser Audio API) export function setupVoiceRecorder(buttonId, audioPlayerId) { const recordBtn = document.getElementById(buttonId); const audioPlayer = document.getElementById(audioPlayerId); if (!recordBtn || !audioPlayer) return;
 
 let mediaRecorder; let chunks = [];
 
@@ -113,7 +107,13 @@ mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
 
 }); }
 
-// 🧠 AI Beat Suggestion export function suggestAIBeat(genre) { const beats = { amapiano: ["ama1.mp3", "ama2.mp3"], afrobeat: ["afro1.mp3", "afro2.mp3"], naijastreet: ["naija1.mp3", "naija2.mp3"], gospel: ["gos1.mp3", "gos2.mp3"], pop: ["pop1.mp3", "pop2.mp3"] }; const pool = beats[genre] || ["default.mp3"]; const selected = pool[Math.floor(Math.random() * pool.length)]; return beats/${selected}; }
+// 🧠 AI Beat Suggestion export function suggestAIBeat(genre) { const afro = ["afro1.mp3", "afro2.mp3"]; const ama = ["ama1.mp3", "ama2.mp3"]; const naija = ["naija1.mp3", "naija2.mp3"]; const gospel = ["gos1.mp3", "gos2.mp3"]; const pop = ["pop1.mp3", "pop2.mp3"];
 
-// 🧑‍🤝‍🧑 Suggested Collaborators export function suggestCollabUsers() { const container = document.getElementById("collab-suggestions"); if (!container) return; const users = ["@EanoStar", "@NaijaWaves", "@PianoKing", "@RapQueen"]; container.innerHTML = <h3>🤝 Suggested Collabs</h3><ul>${users.map(u => <li>${u}</li>).join('')}</ul>; }
+const pool = { amapiano: ama, afrobeat: afro, naijastreet: naija, gospel, pop }[genre] || ["sample.mp3"];
+
+const selected = pool[Math.floor(Math.random() * pool.length)]; return beats/${selected}; }
+
+// 🧑‍🤝‍🧑 Collaborator Suggestions export function suggestCollabUsers() { const container = document.getElementById("collab-suggestions"); if (!container) return;
+
+const suggestions = ["@EanoStar", "@NaijaWaves", "@PianoKing", "@RapQueen"]; container.innerHTML = <h3>🤝 Suggested Collabs</h3> <ul>${suggestions.map(user =><li>${user}</li>).join("")}</ul> ; }
 
