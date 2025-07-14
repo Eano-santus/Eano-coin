@@ -41,23 +41,42 @@ function updateUserStats(data) {
 }
 
 async function startMiningSession(userId) {
-  const userRef = doc(db, "users", userId);
-  const snap = await getDoc(userRef);
-  const now = Date.now();
-  const data = snap.exists() ? snap.data() : {};
+function checkMiningStatus(uid) {
+  const userRef = doc(db, "users", uid);
+  getDoc(userRef).then((snap) => {
+    const data = snap.data();
+    updateUserStats(data);
 
-  // If expired or new, start fresh mining session
-  if (!data.miningEnd || now >= data.miningEnd) {
-    const newEnd = now + MINE_DURATION;
-    await setDoc(userRef, {
-      balance: data.balance || 0,
-      miningStart: now,
-      miningEnd: newEnd,
-      lastUpdate: now,
-      score: data.score || 0,
-      trustScore: data.trustScore || 0
-    }, { merge: true });
+    if (data.miningEnd && Date.now() < data.miningEnd) {
+      runMining(uid); // Resume if still within session
+    }
+  });
+}
+
+document.getElementById("mine-btn").addEventListener("click", async () => {
+  if (!currentUser) return;
+
+  const uid = currentUser.uid;
+  const userRef = doc(db, "users", uid);
+  const snap = await getDoc(userRef);
+  const data = snap.data();
+  const now = Date.now();
+
+  if (data.miningEnd && now < data.miningEnd) {
+    alert("⛏️ You're already mining!");
+    return;
   }
+
+  const newEnd = now + MINE_DURATION;
+  await setDoc(userRef, {
+    balance: data.balance || 0,
+    miningStart: now,
+    miningEnd: newEnd,
+    lastUpdate: now
+  }, { merge: true });
+
+  runMining(uid);
+});
 
   updateUserStats(data);
   runMining(userId);
