@@ -9,13 +9,14 @@ const MINE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in ms
 const balanceDisplay = document.getElementById("balance");
 const miningStatus = document.getElementById("mining-status");
 const userStats = document.getElementById("user-stats");
+let currentUser = null;
 
 function updateUserStats(data) {
   const score = data.score || 0;
   const trustScore = data.trustScore || 0;
   const active = data.miningEnd && Date.now() < data.miningEnd;
 
-  // Score Level (Mining Level)
+  // Score Level
   let level = '🐥 Chicken';
   if (score >= 10000) level = '🐉 Dragon';
   else if (score >= 5000) level = '🐘 Elephant';
@@ -26,7 +27,7 @@ function updateUserStats(data) {
   else if (score >= 150) level = '🐺 Wolf';
   else if (score >= 50) level = '🐹 Hamster';
 
-  // TrustScore Badge
+  // Trust Score Badge
   let trustBadge = '<span class="trust-badge red">🔴 Low Trust</span>';
   if (trustScore >= 5000) trustBadge = '<span class="trust-badge OG">O.G</span>';
   else if (trustScore >= 1000) trustBadge = '<span class="trust-badge green">🟢 Trusted Miner</span>';
@@ -38,48 +39,6 @@ function updateUserStats(data) {
     <p>Score Level: <strong>${level}</strong></p>
     <p>Trust Score: ${trustScore} ${trustBadge}</p>
   `;
-}
-
-async function startMiningSession(userId) {
-function checkMiningStatus(uid) {
-  const userRef = doc(db, "users", uid);
-  getDoc(userRef).then((snap) => {
-    const data = snap.data();
-    updateUserStats(data);
-
-    if (data.miningEnd && Date.now() < data.miningEnd) {
-      runMining(uid); // Resume if still within session
-    }
-  });
-}
-
-document.getElementById("mine-btn").addEventListener("click", async () => {
-  if (!currentUser) return;
-
-  const uid = currentUser.uid;
-  const userRef = doc(db, "users", uid);
-  const snap = await getDoc(userRef);
-  const data = snap.data();
-  const now = Date.now();
-
-  if (data.miningEnd && now < data.miningEnd) {
-    alert("⛏️ You're already mining!");
-    return;
-  }
-
-  const newEnd = now + MINE_DURATION;
-  await setDoc(userRef, {
-    balance: data.balance || 0,
-    miningStart: now,
-    miningEnd: newEnd,
-    lastUpdate: now
-  }, { merge: true });
-
-  runMining(uid);
-});
-
-  updateUserStats(data);
-  runMining(userId);
 }
 
 function runMining(userId) {
@@ -108,9 +67,50 @@ function runMining(userId) {
     balanceDisplay.textContent = newBalance.toFixed(3);
     document.getElementById("balance-display").textContent = `Balance: ${newBalance.toFixed(3)} EANO`;
 
-    // Also update user stats in case mining end changes
     updateUserStats(data);
-  }, 60000); // update every 1 minute
+  }, 60000); // every 1 minute
+}
+
+function checkMiningStatus(uid) {
+  const userRef = doc(db, "users", uid);
+  getDoc(userRef).then((snap) => {
+    const data = snap.data();
+    updateUserStats(data);
+
+    if (data.miningEnd && Date.now() < data.miningEnd) {
+      runMining(uid); // Resume if still within session
+    }
+  });
+}
+
+function initMineButton() {
+  const mineBtn = document.getElementById("mine-btn");
+  if (!mineBtn) return;
+
+  mineBtn.addEventListener("click", async () => {
+    if (!currentUser) return;
+
+    const uid = currentUser.uid;
+    const userRef = doc(db, "users", uid);
+    const snap = await getDoc(userRef);
+    const data = snap.data();
+    const now = Date.now();
+
+    if (data.miningEnd && now < data.miningEnd) {
+      alert("⛏️ You're already mining!");
+      return;
+    }
+
+    const newEnd = now + MINE_DURATION;
+    await setDoc(userRef, {
+      balance: data.balance || 0,
+      miningStart: now,
+      miningEnd: newEnd,
+      lastUpdate: now
+    }, { merge: true });
+
+    runMining(uid);
+  });
 }
 
 function initThemeToggle() {
@@ -133,9 +133,7 @@ function initLogout() {
   }
 }
 
-// ✅ Init on Auth Load
-let currentUser = null;
-
+// ✅ Auth Ready
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
@@ -149,4 +147,5 @@ onAuthStateChanged(auth, (user) => {
 document.addEventListener("DOMContentLoaded", () => {
   initThemeToggle();
   initLogout();
+  initMineButton(); // ✅ Hook up mine button
 });
