@@ -32,6 +32,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let uploadedBeat = null;
 
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+const db = getFirestore();
+const auth = getAuth();
+
+export async function saveStudioTrackToFirestore({ url, lyrics, genre, beatName, aiGenerated }) {
+  const user = auth.currentUser;
+  if (!user) {
+    alert("Login required to save your track.");
+    return;
+  }
+
+  const track = {
+    uid: user.uid,
+    displayName: user.displayName || user.email || "Anonymous",
+    lyrics,
+    genre,
+    downloadURL: url,
+    uploadedAt: new Date().toISOString(),
+    trustScoreRewarded: false,
+    likes: 0,
+    aiGenerated,
+    beatName
+  };
+
+  try {
+    await addDoc(collection(db, "studioTracks"), track);
+    console.log("✅ Studio track saved.");
+  } catch (e) {
+    console.error("❌ Failed to save track:", e);
+  }
+
   // 🌓 Theme toggle
   const themeBtn = document.getElementById("toggle-theme");
   themeBtn?.addEventListener("click", () => {
