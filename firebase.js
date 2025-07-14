@@ -21,3 +21,6 @@ const app = initializeApp(firebaseConfig);
 // ✅ Export Auth and Firestore
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+import { getStorage } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+export const storage = getStorage(app);
