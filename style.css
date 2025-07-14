@@ -1,390 +1,41 @@
 /* === GENERAL RESET === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #000;
-  color: #fff;
-  min-height: 100vh;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-}
-body.light-mode {
-  background-color: #f4f4f4;
-  color: #000;
-}
 
-/* === NAVBAR === */
-.nav-fixed {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: #111;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  border-bottom: 1px solid #444;
-}
-.nav-fixed .logo {
-  font-size: 1.6rem;
-  font-weight: bold;
-}
-.nav-controls {
-  display: flex;
-  gap: 12px;
-}
-#langSelect {
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #222;
-  color: #fff;
-  border: 1px solid #555;
-}
-body.light-mode #langSelect {
-  background: #eee;
-  color: #000;
-}
+{ margin: 0; padding: 0; box-sizing: border-box; } body { font-family: 'Roboto', sans-serif; background-color: #000; color: #fff; min-height: 100vh; overflow-x: hidden; scroll-behavior: smooth; transition: background-color 0.4s ease, color 0.4s ease; } body.light-mode { background-color: #f4f4f4; color: #000; }
 
-/* === BALANCE / STATUS === */
-.balance-status {
-  padding: 20px;
-  text-align: center;
-}
-#mining-status {
-  font-size: 1rem;
-  margin-top: 10px;
-}
 
-/* === FIXED MINE BUTTON === */
-.circle-mine {
-  position: fixed;
-  right: 15px;
-  top: 55%;
-  transform: translateY(-50%);
-  z-index: 1000;
-  background: #0af;
-  color: #fff;
-  font-size: 2rem;
-  padding: 14px;
-  border-radius: 50%;
-  box-shadow: 0 0 12px rgba(0, 170, 255, 0.6);
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-.circle-mine:hover {
-  transform: scale(1.1) translateY(-50%);
-}
+:root { --card-bg: #1a1a1a; --text-color: #fff; --input-bg: #333; --text-muted: #aaa; --shadow: 0 4px 12px rgba(0, 0, 0, 0.3); } body.light-mode { --card-bg: #fff; --text-color: #000; --input-bg: #eee; --text-muted: #444; --shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
 
-/* === ANNOUNCEMENT BLOCK === */
-.announcement {
-  background: #222;
-  color: #fff;
-  padding: 20px;
-  margin: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.05);
-  position: relative;
-  z-index: 1;
-}
-body.light-mode .announcement {
-  background: #fff;
-  color: #000;
-}
+/* === NAVBAR === */ .nav-fixed { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #111; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #444; } .nav-fixed .logo { font-size: 1.6rem; font-weight: bold; } .nav-controls { display: flex; gap: 12px; } #lang-select { padding: 4px 8px; border-radius: 6px; background: #222; color: #fff; border: 1px solid #555; } body.light-mode #lang-select { background: #eee; color: #000; }
 
-/* === FEATURE CARDS === */
-.feature-card {
-  background: #1a1a1a;
-  color: #eee;
-  padding: 16px;
-  margin: 12px 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.5);
-  text-decoration: none;
-  display: block;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.feature-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-}
-body.light-mode .feature-card {
-  background: #fff;
-  color: #000;
-}
+/* === BALANCE / STATUS === */ .balance-status { padding: 20px; text-align: center; } #mining-status { font-size: 1rem; margin-top: 10px; }
 
-/* === SHINY NAME / LEVEL BADGES === */
-.shiny-name {
-  color: gold;
-  font-weight: bold;
-}
-.trust-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-weight: bold;
-  margin-left: 8px;
-}
-.trust-badge.OG { background: gold; color: #000; }
-.trust-badge.green { background: #0f0; color: #000; }
-.trust-badge.yellow { background: #ff0; color: #000; }
-.trust-badge.blue { background: #00f; color: #fff; }
-.trust-badge.red { background: #f00; color: #fff; }
+/* === FIXED MINE BUTTON === */ .circle-mine { position: fixed; right: 15px; bottom: 80px; z-index: 1000; background: #0af; color: #fff; font-size: 1.4rem; padding: 10px 12px; border-radius: 50%; box-shadow: 0 0 12px rgba(0, 170, 255, 0.6); cursor: pointer; transition: transform 0.3s, background 0.3s; } .circle-mine:hover { background: #09c; transform: scale(1.1); }
 
-/* === LEVEL ANIMAL BADGES === */
-.level-badge {
-  display: inline-block;
-  font-size: 1.2rem;
-  margin-left: 6px;
-}
+/* === ANNOUNCEMENT BLOCK === */ .announcement { background: #222; color: #fff; padding: 20px; margin: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,255,0.05); position: relative; z-index: 1; } body.light-mode .announcement { background: #fff; color: #000; }
 
-/* === AVATAR SELECTOR === */
-.avatar-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 12px;
-  padding: 16px;
-}
-.avatar-grid img {
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  border: 2px solid transparent;
-  transition: border 0.2s, transform 0.2s;
-  cursor: pointer;
-}
-.avatar-grid img:hover {
-  border-color: gold;
-  transform: scale(1.05);
-}
-.avatar-grid img.selected {
-  border-color: lime;
-}
+/* === FEATURE CARDS === */ .feature-card { background: var(--card-bg); color: var(--text-color); padding: 16px; margin: 12px 20px; border-radius: 12px; box-shadow: 0 0 8px rgba(0,0,0,0.5); text-decoration: none; display: block; transition: transform 0.2s, box-shadow 0.2s; } .feature-card:hover { transform: scale(1.02); box-shadow: 0 0 12px rgba(255, 215, 0, 0.4); } .feature-card.coming-soon { opacity: 0.7; cursor: not-allowed; } .feature-card.coming-soon:hover { transform: none; box-shadow: none; }
 
-/* === FOOTER === */
-.footer {
-  text-align: center;
-  padding: 20px 0;
-  color: #888;
-  font-size: 0.9rem;
-}
+/* === SHINY NAME / LEVEL BADGES === */ .shiny-name { color: gold; font-weight: bold; } .trust-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-weight: bold; margin-left: 8px; } .trust-badge.OG { background: gold; color: #000; } .trust-badge.green { background: #0f0; color: #000; } .trust-badge.yellow { background: #ff0; color: #000; } .trust-badge.blue { background: #00f; color: #fff; } .trust-badge.red { background: #f00; color: #fff; }
 
-/* === BUTTONS === */
-button {
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-.btn-danger {
-  background: #f44336;
-  color: white;
-}
-.btn-danger:hover {
-  background: #d32f2f;
-}
+/* === LEVEL ANIMAL BADGES === */ .level-badge { display: inline-block; font-size: 1.2rem; margin-left: 6px; }
 
-/* === INSTALL BUTTON FOR PWA === */
-.install-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 9999;
-  padding: 12px 16px;
-  background: gold;
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
+/* === AVATAR SELECTOR === */ .avatar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; padding: 16px; } .avatar-grid img { width: 80px; height: 80px; border-radius: 12px; border: 2px solid transparent; transition: border 0.2s, transform 0.2s; cursor: pointer; } .avatar-grid img:hover { border-color: gold; transform: scale(1.05); } .avatar-grid img.selected { border-color: lime; box-shadow: 0 0 8px lime; }
 
-/* === ANIMATIONS === */
-.fade-in {
-  animation: fadeIn 0.6s ease-in-out forwards;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* === FOOTER === */ .footer { text-align: center; padding: 20px 0; color: #888; font-size: 0.9rem; }
 
-/* === RESPONSIVE === */
-@media (max-width: 768px) {
-  .nav-fixed {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-  .circle-mine {
-    right: 10px;
-    top: auto;
-    bottom: 80px;
-    transform: none;
-  }
-}
-.trade-container {
-  padding: 2rem;
-  max-width: 500px;
-  margin: auto;
-}
-.swap-box {
-  background: var(--card-bg);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow);
-  margin-bottom: 2rem;
-}
-.input-group {
-  margin: 1rem 0;
-}
-input[type="number"] {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  background: var(--input-bg);
-  color: var(--text-color);
-}
-.btn-swap {
-  width: 100%;
-  padding: 12px;
-  background: gold;
-  color: #000;
-  font-weight: bold;
-  border-radius: 8px;
-  margin-top: 1rem;
-}
-.conversion-result {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-top: 0.5rem;
-}
-.conversion-note {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-top: 0.5rem;
-}
-.tasks-container {
-  max-width: 600px;
-  margin: auto;
-  padding: 2rem;
-}
+/* === BUTTONS === */ button { padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; } .btn-danger { background: #f44336; color: white; } .btn-danger:hover { background: #d32f2f; }
 
-.task-card {
-  background: var(--card-bg);
-  border-radius: 16px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: var(--shadow);
-}
+/* === INSTALL BUTTON FOR PWA === */ .install-btn { position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 16px; background: gold; color: #000; border: none; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
-.btn-task {
-  padding: 10px 16px;
-  background: gold;
-  border: none;
-  color: #000;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
-}
+/* === ANIMATIONS === */ .fade-in { animation: fadeIn 0.6s ease-in-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.task-status {
-  display: block;
-  margin-top: 8px;
-  font-weight: bold;
-  color: lime;
-}
-.studio-container {
-  max-width: 800px;
-  margin: 80px auto 60px;
-  padding: 20px;
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-  color: var(--text-color);
-}
+/* === RESPONSIVE === */ @media (max-width: 768px) { .nav-fixed { flex-direction: column; gap: 10px; align-items: flex-start; } .circle-mine { right: 10px; bottom: 80px; transform: none; } .feature-card h3 { font-size: 1rem; } .feature-card p { font-size: 0.9rem; } .feature-card { margin: 10px 12px; padding: 12px; } }
 
-textarea#lyrics {
-  width: 100%;
-  height: 150px;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
+/* === TRADE CONVERTER === */ .trade-container { padding: 2rem; max-width: 500px; margin: auto; } .swap-box { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 2rem; } .input-group { margin: 1rem 0; } input[type="number"] { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--input-bg); color: var(--text-color); } .btn-swap { width: 100%; padding: 12px; background: gold; color: #000; font-weight: bold; border-radius: 8px; margin-top: 1rem; } .conversion-result { font-size: 1.4rem; font-weight: bold; margin-top: 0.5rem; } .conversion-note { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem; }
 
-select#genre, .upload-label, .generate-button {
-  display: block;
-  margin: 10px 0;
-  font-size: 1rem;
-}
+/* === TASKS === */ .tasks-container { max-width: 600px; margin: auto; padding: 2rem; } .task-card { background: var(--card-bg); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); } .btn-task { padding: 10px 16px; background: gold; border: none; color: #000; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; } .task-status { display: block; margin-top: 8px; font-weight: bold; color: lime; }
 
-.upload-label {
-  background: #444;
-  color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: inline-block;
-}
+/* === STUDIO === */ .studio-container { max-width: 800px; margin: 80px auto 60px; padding: 20px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); color: var(--text-color); } textarea#lyrics { width: 100%; height: 150px; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ccc; font-size: 1rem; } select#genre, .upload-label, .generate-button { display: block; margin: 10px 0; font-size: 1rem; } .upload-label { background: #444; color: #fff; padding: 10px; border-radius: 8px; cursor: pointer; display: inline-block; } .generate-button { background: gold; color: black; padding: 12px 16px; border: none; font-weight: bold; border-radius: 10px; cursor: pointer; } .result-box { margin-top: 20px; background: #222; padding: 15px; border-radius: 10px; } body.light-mode .result-box { background: #f1f1f1; color: #000; } audio { width: 100%; margin-top: 10px; } .download-btn { background: greenyellow; color: black; font-weight: bold; padding: 10px 14px; display: inline-block; margin-top: 10px; border-radius: 8px; text-decoration: none; } body.light-mode .download-btn { background: #4caf50; color: #fff; }
 
-.generate-button {
-  background: gold;
-  color: black;
-  padding: 12px 16px;
-  border: none;
-  font-weight: bold;
-  border-radius: 10px;
-  cursor: pointer;
-}
+/* === SPLASH SCREEN === */ .splash-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #000; flex-direction: column; } .splash-logo { width: 120px; height: 120px; border-radius: 50%; animation: pulse 1.2s infinite; box-shadow: 0 0 20px gold; } @keyframes pulse { 0% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } }
 
-.result-box {
-  margin-top: 20px;
-  background: #222;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-audio {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.download-btn {
-  background: greenyellow;
-  color: black;
-  font-weight: bold;
-  padding: 10px 14px;
-  display: inline-block;
-  margin-top: 10px;
-  border-radius: 8px;
-  text-decoration: none;
-}
-.splash-screen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #000;
-  flex-direction: column;
-}
-
-.splash-logo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  animation: pulse 1.2s infinite;
-  box-shadow: 0 0 20px gold;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.9; }
-}
