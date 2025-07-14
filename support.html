@@ -1,72 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Support • EANO Network</title>
-
-  <!-- ✅ SEO & PWA Meta -->
-  <meta name="description" content="Need help? Reach out to EANO support via Telegram or explore common FAQs." />
-  <meta name="author" content="EANO Team" />
-  <meta name="theme-color" content="#000000" />
+  <title>Help Assistant • EANO</title>
+  <meta name="description" content="Get instant help with EANO's assistant and searchable FAQs." />
+  <meta name="theme-color" content="#000" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="eano-icon-192.png" type="image/png" />
-
-  <!-- ✅ Styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="support-page">
   <div class="nav-fixed">
-    <h1 class="logo">🛠️ EANO Support</h1>
+    <h1 class="logo">🤖 EANO Assistant</h1>
     <div class="nav-controls">
       <a href="dashboard.html">🏠</a>
-      <a href="profile.html">👤</a>
-      <a href="settings.html">⚙️</a>
+      <a href="support.html">🛠️</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
-  </div>
-
-  <section class="section">
-    <h2>📲 Contact Support</h2>
-    <p>If you're facing issues or have questions, feel free to reach out.</p>
-    <a href="https://t.me/santorumcoin" target="_blank" class="support-btn">💬 Open Telegram Support</a>
-  </section>
-
-  <section class="section">
-    <h2>❓ Frequently Asked Questions</h2>
-    <div class="faq">
-      <h4>How do I start mining?</h4>
-      <p>Go to the dashboard and tap the Mine button. Mining starts automatically for 24 hours.</p>
-
-      <h4>How do I earn TrustScore?</h4>
-      <p>You gain TrustScore by mining daily, inviting friends, and uploading studio content.</p>
-
-      <h4>Is KYC required?</h4>
-      <p>Not yet. Mainnet-KYC will launch soon. Stay tuned via announcements.</p>
-
-      <h4>What if I forget my login?</h4>
-      <p>Use the "Forgot Password" on login screen or contact support via Telegram.</p>
-
-      <h4>How can I change my phone number?</h4>
-      <p>Email a request to <strong>Santorumsantus@gmail.com</strong> to begin phone update process.</p>
+  </div>  <section class="section">
+    <h2>💬 Ask the Assistant</h2>
+    <div id="chat-box" class="chat-box">
+      <div class="chat-message bot">Hi! I'm the EANO Assistant. Ask me anything about mining, TrustScore, studio, etc.</div>
     </div>
-  </section>
+    <input type="text" id="user-input" placeholder="Type your question..." />
+    <button id="send-btn">📤 Send</button>
+  </section>  <section class="section">
+    <h2>📚 Popular Help Articles</h2>
+    <div id="articles">
+      <details>
+        <summary>How do I earn EANO?</summary>
+        <p>You earn EANO by mining, referrals, and uploading music content to the studio.</p>
+      </details>
+      <details>
+        <summary>Why is my mining paused?</summary>
+        <p>Mining sessions last 24h. Reopen the app daily to continue earning.</p>
+      </details>
+      <details>
+        <summary>How do referrals work?</summary>
+        <p>Share your invite link. Each verified user gives you +5 score and boosts team power.</p>
+      </details>
+    </div>
+  </section>  <footer class="footer">
+    &copy; 2025 EANO Project • Instant Help & Knowledge Base
+  </footer>  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
 
-  <section class="section">
-    <h2>🗨️ Community Chat</h2>
-    <p>Join the EANO global community to share ideas and get help from other miners.</p>
-    <a href="https://t.me/santorumcoin" target="_blank" class="support-btn">🌍 Join Global Chat</a>
-  </section>
+    const faqResponses = {
+      "mining": "You mine EANO by tapping the Mine button. Each session lasts 24 hours.",
+      "trustscore": "TrustScore increases when you mine, refer users, and upload studio content.",
+      "studio": "Use the EANO Studio to upload music and get rewarded.",
+      "kyc": "KYC will be launched before mainnet. You'll be notified.",
+      "referral": "Invite others using your link. Earn +5 score per referral."
+    };
 
-  <footer class="footer">
-    &copy; 2025 EANO Project • Powered by Trust, Support & Community
-  </footer>
+    sendBtn.addEventListener("click", () => {
+      const question = userInput.value.trim();
+      if (!question) return;
 
-  <!-- ✅ Theme Toggle -->
-  <script>
+      const userMsg = document.createElement("div");
+      userMsg.className = "chat-message user";
+      userMsg.textContent = question;
+      chatBox.appendChild(userMsg);
+
+      let answer = "Sorry, I didn't understand. Please rephrase.";
+      for (const key in faqResponses) {
+        if (question.toLowerCase().includes(key)) {
+          answer = faqResponses[key];
+          break;
+        }
+      }
+
+      const botMsg = document.createElement("div");
+      botMsg.className = "chat-message bot";
+      botMsg.textContent = answer;
+      chatBox.appendChild(botMsg);
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+      userInput.value = "";
+    });
+
     document.getElementById("toggle-theme").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
     });
-  </script>
-</body>
+  </script>  <style>
+    .chat-box {
+      border: 1px solid #444;
+      background: #111;
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    .chat-message {
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 10px;
+      max-width: 90%;
+    }
+    .chat-message.user {
+      background-color: #3498db;
+      color: white;
+      align-self: flex-end;
+    }
+    .chat-message.bot {
+      background-color: #2c3e50;
+      color: #eee;
+    }
+  </style></body>
 </html>
