@@ -26,6 +26,7 @@
   <!-- ✅ Styles & Scripts -->
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="chat.js" defer></script>
+  <script type="module" src="ui.js" defer></script>
 </head>
 
 <body class="chat-page dark-mode">
@@ -36,6 +37,7 @@
       <a href="dashboard.html">🏠</a>
       <a href="profile.html">👤</a>
       <a href="settings.html">⚙️</a>
+      <a href="chat.html">💬 <span id="chat-badge" class="badge-circle" style="display:none;">1</span></a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
   </header>
@@ -57,11 +59,11 @@
     &copy; 2025 EANO Network • Community Powered by Trust
   </footer>
 
-  <!-- 🌗 Theme Toggle -->
-  <script>
-    document.getElementById("toggle-theme").addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-    });
+  <!-- 🌗 Theme Toggle + 🔔 Badge Script -->
+  <script type="module">
+    import { setupThemeToggle, setupBadgeUpdates } from "./ui.js";
+    setupThemeToggle("toggle-theme");
+    setupBadgeUpdates({ chat: "chat-badge" });
   </script>
 </body>
 </html>
