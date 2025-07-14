@@ -1,16 +1,26 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 import { firebaseConfig } from "./firebase.js";
+import { setupBadgeUpdates } from "./ui.js";
 
 // ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// 🧠 References
+// 🌍 DOM References
 const messagesContainer = document.getElementById("messages");
 const input = document.getElementById("chatMessage");
 const sendBtn = document.getElementById("sendMessage");
@@ -19,9 +29,9 @@ const sendBtn = document.getElementById("sendMessage");
 const notificationSound = new Audio("sounds/notify.mp3");
 let lastMessageTimestamp = null;
 
+// 🔔 Notify on new message (if from others)
 function notifyIfNewMessage(msg, currentUser) {
   if (!msg.createdAt?.seconds || msg.uid === currentUser.uid) return;
-
   if (!lastMessageTimestamp || msg.createdAt.seconds > lastMessageTimestamp) {
     lastMessageTimestamp = msg.createdAt.seconds;
     notificationSound.play().catch(() => console.log("🔇 Autoplay blocked"));
@@ -32,7 +42,6 @@ function notifyIfNewMessage(msg, currentUser) {
 async function sendMessage(user) {
   const text = input.value.trim();
   if (!text) return;
-
   try {
     await addDoc(collection(db, "chatMessages"), {
       uid: user.uid,
@@ -46,7 +55,7 @@ async function sendMessage(user) {
   }
 }
 
-// 🔁 Real-time chat loader
+// 🔁 Real-time message listener
 function loadMessages(user) {
   const q = query(collection(db, "chatMessages"), orderBy("createdAt", "asc"));
   onSnapshot(q, (snapshot) => {
@@ -59,15 +68,16 @@ function loadMessages(user) {
       div.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
       messagesContainer.appendChild(div);
 
-      // ✅ Trigger notification
+      // 🔔 Play notification sound
       notifyIfNewMessage(msg, user);
     });
 
+    // 🔽 Auto scroll to bottom
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   });
 }
 
-// 🔐 Wait for user auth before loading chat
+// 🔐 Auth check before loading chat
 onAuthStateChanged(auth, (user) => {
   if (user) {
     loadMessages(user);
@@ -81,5 +91,6 @@ onAuthStateChanged(auth, (user) => {
     input.disabled = true;
   }
 });
-import { setupBadgeUpdates } from "./ui.js";
+
+// 🟡 Setup badge for unread messages
 setupBadgeUpdates({ chat: "chat-badge" });
