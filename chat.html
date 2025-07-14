@@ -13,10 +13,11 @@
 
   <!-- ✅ PWA Essentials -->
   <meta name="theme-color" content="#000000" />
+  <meta name="color-scheme" content="dark light" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="eano-icon-192.png" type="image/png" />
 
-  <!-- ✅ Open Graph (for Social Sharing) -->
+  <!-- ✅ Open Graph (Social Sharing) -->
   <meta property="og:title" content="EANO Community Chat" />
   <meta property="og:description" content="Chat in real-time with other EANO miners and creators. Web3 powered community." />
   <meta property="og:image" content="eano-icon-192.png" />
@@ -59,11 +60,27 @@
     &copy; 2025 EANO Network • Community Powered by Trust
   </footer>
 
-  <!-- 🌗 Theme Toggle + 🔔 Badge Script -->
+  <!-- 🔔 JavaScript Disabled Fallback -->
+  <noscript>
+    <p class="noscript-warning">⚠️ JavaScript is required to use the chat features.</p>
+  </noscript>
+
+  <!-- 🌗 Theme & Badge Setup -->
   <script type="module">
     import { setupThemeToggle, setupBadgeUpdates } from "./ui.js";
     setupThemeToggle("toggle-theme");
     setupBadgeUpdates({ chat: "chat-badge" });
+  </script>
+
+  <!-- 📲 Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(() => {
+        console.log('✅ Service Worker registered');
+      }).catch(err => {
+        console.warn('❌ Service Worker failed:', err);
+      });
+    }
   </script>
 </body>
 </html>
