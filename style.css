@@ -299,3 +299,27 @@ input[type="number"] {
   font-weight: bold;
   color: lime;
 }
+.loader {
+  border: 6px solid #444;
+  border-top: 6px solid gold;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: gold;
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+}
