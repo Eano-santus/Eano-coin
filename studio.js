@@ -56,7 +56,7 @@ export async function saveStudioTrackToFirestore({ url, lyrics, genre, beatName,
   }
 }
 
-// 🎧 Load User's Songs
+// 🎧 Load User's Songs with genre color
 export async function loadUserCreations() {
   const user = auth.currentUser;
   if (!user) return;
@@ -73,11 +73,23 @@ export async function loadUserCreations() {
     return;
   }
 
+  const genreColor = {
+    afrobeat: "#25D366",
+    amapiano: "#fbbc05",
+    naijastreet: "#ff4500",
+    gospel: "#8e44ad",
+    rap: "#2c3e50",
+    pop: "#e91e63",
+    reggae: "#4caf50"
+  };
+
   snapshot.forEach(doc => {
     const data = doc.data();
+    const genreStyle = genreColor[data.genre] || "#ccc";
+
     container.innerHTML += `
-      <div class="feature-card">
-        <p><strong>${data.genre}</strong> • <em>${data.lyrics.slice(0, 60)}...</em></p>
+      <div class="feature-card" style="border-left: 5px solid ${genreStyle};">
+        <p><strong>${data.genre.toUpperCase()}</strong> • <em>${data.lyrics.slice(0, 60)}...</em></p>
         <audio controls src="${data.downloadURL}"></audio>
         <p>Uploaded: ${new Date(data.uploadedAt).toLocaleString()}</p>
         <p>❤️ <span id="likes-${doc.id}">${data.likes}</span> 
@@ -138,29 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
         loader.style.display = "none";
         return alert("Please log in first.");
       }
-      
-      const genreColor = {
-  afrobeat: "#25D366",
-  amapiano: "#fbbc05",
-  naijastreet: "#ff4500",
-  gospel: "#8e44ad",
-  rap: "#2c3e50",
-  pop: "#e91e63",
-  reggae: "#4caf50"
-};
-      const sampleTrack = uploadedBeat
-  ? URL.createObjectURL(uploadedBeat)
-  : 'amapiano-demo.mp3'; // ← Default sample
-
-const genreStyle = genreColor[track.genre] || "#ccc";
-
-container.innerHTML += `
-  <div class="feature-card" style="border-left: 5px solid ${genreStyle};">
-    <p><strong>${track.genre.toUpperCase()}</strong> • <em>${track.lyrics.slice(0, 60)}...</em></p>
-    <audio controls src="${track.downloadURL}"></audio>
-    <p>Uploaded: ${new Date(track.uploadedAt).toLocaleString()}</p>
-  </div>
-`;
 
       uploadSongToStorage(uploadedBeat, user.uid, (downloadURL) => {
         loader.style.display = "none";
@@ -174,7 +163,6 @@ container.innerHTML += `
           <a href="${downloadURL}" download="EANO-Track.mp3" class="download-btn">⬇️ Download Song</a>
         `;
 
-        // Save to Firestore
         saveStudioTrackToFirestore({
           url: downloadURL,
           lyrics,
@@ -185,7 +173,7 @@ container.innerHTML += `
       });
     } else {
       loader.style.display = "none";
-      const sampleTrack = 'sample.mp3';
+      const sampleTrack = genre === "amapiano" ? "amapiano-demo.mp3" : "sample.mp3";
       resultDiv.innerHTML = `
         <h3>🎧 Your Sample ${genre} Track is Ready!</h3>
         <p><em>"${lyrics.slice(0, 120)}..."</em></p>
@@ -199,6 +187,5 @@ container.innerHTML += `
     }
   });
 
-  // ✅ Load previous songs
   loadUserCreations();
 });
