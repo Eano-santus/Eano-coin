@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Chat • EANO</title>
+  <meta name="description" content="Join the EANO community chat and connect with other miners and creators in real-time." />
+  <meta name="author" content="EANO Network" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="keywords" content="EANO, Chat, Community, Crypto, Pi, Miners, Social, Web3" />
+  <meta property="og:title" content="EANO Community Chat" />
+  <meta property="og:description" content="Join the real-time EANO chat and meet fellow miners." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="eano-icon-192.png" />
+  <meta property="og:url" content="https://eano-santus.github.io/eano-coin/chat.html" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="eano-icon-192.png" type="image/png" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="chat.js" defer></script>
+</head>
+<body class="chat-page dark-mode">
+  <header class="nav-fixed">
+    <h1 class="logo">💬 EANO Chat</h1>
+    <div class="nav-controls">
+      <a href="dashboard.html">🏠</a>
+      <a href="profile.html">👤</a>
+      <a href="settings.html">⚙️</a>
+      <button id="toggle-theme">🌑/☀️</button>
+    </div>
+  </header>
+
+  <main class="section chat-container">
+    <div id="messages" class="chat-messages">
+      <p>⏳ Loading messages...</p>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="chatMessage" placeholder="Type your message..." />
+      <button id="sendMessage">📤 Send</button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2025 EANO Network • Built for Miners & Creators
+  </footer>
+
+  <script>
+    document.getElementById("toggle-theme").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+  </script>
+</body>
+</html>
