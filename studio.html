@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Studio • EANO Project</title>
 
-  <!-- ✅ SEO & PWA Meta -->
+  <!-- ✅ SEO & PWA -->
   <meta name="description" content="Turn your lyrics into songs, record music, and explore the creative EANO Studio." />
   <meta name="author" content="EANO Team" />
   <meta name="theme-color" content="#000" />
@@ -24,10 +24,15 @@
     </div>
   </div>
 
-  <!-- SECTION: AI Song Generator -->
+  <!-- Avatar Performer Preview -->
+  <div id="avatar-performer" style="text-align:center; margin-top: 10px;">
+    <img src="avatars/performer.gif" alt="Performer" style="max-width: 150px;" />
+  </div>
+
+  <!-- AI Music Generator -->
   <section class="section">
     <h2>🎼 AI Music Generator</h2>
-    <p>Write your lyrics and let the EANO Studio generate a melody and beat for you!</p>
+    <p>Write your lyrics and let the EANO Studio generate a melody and beat!</p>
 
     <textarea id="lyrics-input" placeholder="Write your song lyrics here..."></textarea>
 
@@ -42,21 +47,20 @@
 
     <label for="beat-upload" class="upload-label">🎧 Optional: Upload a Beat</label>
     <input type="file" accept="audio/*" id="beat-upload" style="display:none;" />
-
     <button id="generate-song">🎶 Generate Song</button>
+
     <div id="studio-preview"></div>
   </section>
 
-  <!-- SECTION: Record/Upload Audio -->
+  <!-- Record/Upload -->
   <section class="section">
     <h2>🎤 Record or Upload Your Voice</h2>
-    <p>Record directly or upload a demo audio file to share with the community.</p>
     <button id="start-record">🔴 Record</button>
     <input type="file" accept="audio/*" id="upload-audio" />
     <audio controls id="audio-player" style="display:none;"></audio>
   </section>
 
-  <!-- SECTION: Community -->
+  <!-- Trending Creations -->
   <section class="section">
     <h2>🔥 Trending Studio Creations</h2>
     <div class="feature-card">🎵 "Rise Up" by @AlphaLion</div>
@@ -64,7 +68,7 @@
     <div class="feature-card">🎵 "Crypto Anthem" by @EanoWarrior</div>
   </section>
 
-  <!-- SECTION: User Creations -->
+  <!-- User Creations -->
   <section class="section">
     <h2>📂 Your Studio Creations</h2>
     <div id="your-creations">
@@ -72,18 +76,18 @@
     </div>
   </section>
 
-  <!-- SECTION: TrustScore Info -->
+  <!-- TrustScore Info -->
   <section class="section">
     <h2>🧠 TrustScore Bonus</h2>
-    <p>Create songs or participate in studio trends to gain bonus TrustScore and community rep!</p>
-    <p><strong>Note:</strong> AI music is experimental. Some outputs may not reflect real vocals until upgrade phase.</p>
+    <p>Create songs or participate in studio trends to gain bonus TrustScore and rep!</p>
+    <p><strong>Note:</strong> AI music is experimental. Results improve after mainnet upgrade.</p>
   </section>
 
   <footer class="footer">
     &copy; 2025 EANO Network • Studio Powered by Creativity & Trust
   </footer>
 
-  <!-- ✅ Final Studio.js Script (Inline for now) -->
+  <!-- ✅ Script Section -->
   <script>
     const themeBtn = document.getElementById("toggle-theme");
     const beatUpload = document.getElementById("beat-upload");
@@ -113,7 +117,6 @@
         const sampleSrc = beatUpload.files[0]
           ? URL.createObjectURL(beatUpload.files[0])
           : "sample.mp3";
-
         preview.innerHTML = `
           <h3>✅ Your ${genre} Track is Ready!</h3>
           <p><em>"${lyrics.slice(0, 100)}..."</em></p>
@@ -123,26 +126,21 @@
         `;
       }, 3000);
     });
-    <div id="avatar-performer" style="display: none; text-align: center;">
-  <img src="avatars/performer.gif" alt="Performer" style="max-width: 150px;" />
-</div>
 
-    // 🎙️ Record or Upload
-    import { uploadSongToStorage } from './studio.js'; // If it's modular
+    document.getElementById("upload-audio").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        const audioPlayer = document.getElementById("audio-player");
+        audioPlayer.src = url;
+        audioPlayer.style.display = "block";
+        audioPlayer.play();
+      }
+    });
 
-document.getElementById("upload-audio").addEventListener("change", (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const userId = localStorage.getItem("uid") || "guest"; // Replace with real UID
-  uploadSongToStorage(file, userId, (url) => {
-    const audioPlayer = document.getElementById("audio-player");
-    audioPlayer.src = url;
-    audioPlayer.style.display = "block";
-    audioPlayer.play();
-    alert("✅ Uploaded and playing your song!");
-  });
-});
+    document.getElementById("start-record").addEventListener("click", () => {
+      alert("🔒 Recording will be added in the next version.");
+    });
   </script>
 </body>
 </html>
