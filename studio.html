@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,18 +15,21 @@
 </head>
 <body class="studio-page">
   <div class="nav-fixed">
-    <h1 class="logo">🎧 EANO Studio</h1>
+    <h1 class="logo">🎙️ EANO Studio</h1>
     <div class="nav-controls">
       <a href="dashboard.html">🏠</a>
-      <a href="wallet.html">💳</a>
+      <a href="wallet.html">👛</a>
       <a href="profile.html">👤</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
-  </div>  <!-- Performer Avatar -->  <div id="avatar-performer" style="text-align:center; margin-top: 10px;">
+  </div>
+
+  <div id="avatar-performer" style="text-align:center; margin-top: 10px;">
     <img src="avatars/performer.gif" alt="Performer" style="max-width: 150px;" />
-  </div>  <!-- AI Music Generator -->  <section class="section">
+  </div>
+
+  <section class="section">
     <h2>🎼 AI Music Generator</h2>
-    <p>Write your lyrics and let the EANO Studio generate a melody and beat!</p>
     <textarea id="lyrics" placeholder="Write your song lyrics here..."></textarea>
     <label for="genre">🎶 Choose Genre:</label>
     <select id="genre">
@@ -38,26 +42,30 @@
       <option value="reggae">Reggae</option>
     </select>
     <label id="uploadLabel" class="upload-label">🎧 Optional: Upload a Beat</label>
-    <input type="file" accept="audio/*" id="uploadInput" style="display:none;" />
+    <input type="file" accept="audio/*" id="uploadInput" />
     <button id="generateBtn">🎶 Generate Song</button>
     <div id="loader" style="display:none;">⏳ Generating...</div>
     <div id="result"></div>
-    <div>
-      <button id="suggest-beat">🌎 Suggest AI Beat</button>
-      <audio id="suggested-beat" controls style="display:none; margin-top: 8px;"></audio>
-    </div>
-  </section>  <!-- Record/Upload -->  <section class="section">
+  </section>
+
+  <section class="section">
     <h2>🎤 Record or Upload Your Voice</h2>
     <button id="start-record">🔴 Record</button>
     <input type="file" accept="audio/*" id="upload-audio" />
     <audio controls id="audio-player" style="display:none;"></audio>
-  </section>  <!-- Trending -->  <section class="section">
+  </section>
+
+  <section class="section">
     <h2>🔥 Trending Studio Creations</h2>
-    <div id="trending-creations"></div>
-  </section>  <!-- Explore Public Feed -->  <section class="section">
+    <div id="trending-creations">Loading...</div>
+  </section>
+
+  <section class="section">
     <h2>🌍 Explore Public Songs</h2>
     <div id="explore-feed">Loading songs...</div>
-  </section>  <!-- Category Filter -->  <section class="section">
+  </section>
+
+  <section class="section">
     <h2>🗂️ Filter by Genre</h2>
     <select id="filter-genre">
       <option value="all">All</option>
@@ -69,51 +77,60 @@
       <option value="pop">Pop</option>
       <option value="reggae">Reggae</option>
     </select>
-  </section>  <!-- User Creations -->  <section class="section">
+  </section>
+
+  <section class="section">
     <h2>📂 Your Studio Creations</h2>
     <div id="your-creations">
       <p>Loading your tracks...</p>
     </div>
-  </section>  <!-- Collaboration Suggestions -->  <section class="section">
+  </section>
+
+  <section class="section">
     <h2>🧑‍🤝‍🧑 Suggested Collaborators</h2>
-    <div id="collab-suggestions"></div>
-  </section>  <!-- TrustScore Info -->  <section class="section">
+    <div id="collab-suggestions">Loading...</div>
+  </section>
+
+  <section class="section">
     <h2>🧠 TrustScore Bonus</h2>
     <p>Create songs or participate in studio trends to gain bonus TrustScore and rep!</p>
     <p><strong>Earn:</strong> +5 TrustScore and +0.5 EANO per verified upload.</p>
     <p><strong>Note:</strong> AI music is experimental. Results improve after mainnet upgrade.</p>
-  </section>  <footer class="footer">
-    &copy; 2025 EANO Network • Studio Powered by Creativity & Trust
-  </footer>  <!-- Script Block for Feature Activation -->  <script type="module">
-    import {
-      loadTrendingCreations,
-      loadPublicFeed,
-      setupVoiceRecorder,
-      suggestCollabUsers,
-      suggestAIBeat
-    } from './studio-next.js';
+  </section>
 
+  <footer class="footer">
+    &copy; 2025 EANO Network • Studio Powered by Creativity & Trust
+  </footer>
+
+  <script>
     document.getElementById("toggle-theme").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
     });
 
-    setupVoiceRecorder("start-record", "audio-player");
-    loadTrendingCreations();
-    loadPublicFeed();
-    suggestCollabUsers();
-
-    document.getElementById("filter-genre").addEventListener("change", (e) => {
-      const genre = e.target.value;
-      loadPublicFeed(genre === "all" ? null : genre);
+    document.getElementById("upload-audio").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      const audioPlayer = document.getElementById("audio-player");
+      if (file) {
+        const url = URL.createObjectURL(file);
+        audioPlayer.src = url;
+        audioPlayer.style.display = "block";
+        audioPlayer.play();
+      }
     });
 
-    document.getElementById("suggest-beat").addEventListener("click", () => {
-      const genre = document.getElementById("genre").value;
-      const beatURL = suggestAIBeat(genre);
-      const audio = document.getElementById("suggested-beat");
-      audio.src = beatURL;
-      audio.style.display = "block";
-      audio.play();
+    import("./studio-next.js").then(mod => {
+      mod.loadTrendingCreations();
+      mod.loadPublicFeed();
+      mod.loadUserCreations(); // you should implement this in studio-next.js
+      mod.suggestCollabUsers();
+      mod.setupVoiceRecorder("start-record", "audio-player");
+
+      document.getElementById("filter-genre").addEventListener("change", e => {
+        const genre = e.target.value;
+        if (genre === "all") mod.loadPublicFeed();
+        else mod.loadPublicFeed(genre);
+      });
     });
-  </script></body>
+  </script>
+</body>
 </html>
