@@ -1,19 +1,38 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Dashboard</title>  <!-- Favicon -->  <link rel="icon" type="image/x-icon" href="favicon.ico" />  <!-- SEO Meta -->  <meta name="description" content="EANO: Mine, Earn and Grow Trust." />
+  <title>EANO Dashboard</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+  <!-- SEO Meta -->
+  <meta name="description" content="EANO: Mine, Earn and Grow Trust." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://eano-coin.netlify.app/dashboard.html" />
-  <meta name="author" content="Santus Santorum" />  <!-- Open Graph -->  <meta property="og:title" content="EANO Dashboard" />
+  <meta name="author" content="Santus Santorum" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="EANO Dashboard" />
   <meta property="og:description" content="Mine daily and build TrustScore on EANO." />
   <meta property="og:image" content="/assets/eano-dashboard-banner.png" />
   <meta property="og:url" content="https://eano-coin.netlify.app/dashboard.html" />
-  <meta property="og:type" content="website" />  <!-- Twitter Card -->  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="EANO Dashboard" />
   <meta name="twitter:description" content="Earn EANO through mining and referrals." />
-  <meta name="twitter:image" content="/assets/eano-dashboard-banner.png" />  <!-- PWA Meta -->  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />  <!-- CSS -->  <link rel="stylesheet" href="style.css" />
+  <meta name="twitter:image" content="/assets/eano-dashboard-banner.png" />
+
+  <!-- PWA Meta -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Navigation -->
@@ -33,22 +52,46 @@
         <option value="zh">中文</option>
       </select>
     </div>
-  </div>  <!-- User Info Block -->  <div class="balance-status">
+  </div>
+
+  <!-- Mining Status -->
+  <div class="balance-status">
     <h2 id="mining-status">⛏️ Checking mining session...</h2>
-    <p>🧍 Active: <span id="user-status">...</span></p>
-    <p>📈 Score Level: <span id="score-level">...</span></p>
-    <p>🛡️ Trust Score: <span id="trust-score">...</span></p>
-  </div>  <!-- Mine Button -->  <div class="circle-mine">🔵</div>  <!-- Announcement Block -->  <div class="announcement">
+  </div>
+
+  <!-- User Stats (to be dynamically filled) -->
+  <div id="user-stats" class="fade-in"></div>
+
+  <!-- Mine Button (visual only) -->
+  <div class="circle-mine">🔵</div>
+
+  <!-- Announcement -->
+  <div class="announcement">
     <h2>📢 Announcement</h2>
     <p>⛏️ Mining starts automatically every 24h.</p>
     <p>🎮 Chat, Studio, Marketplace & Tasks coming soon!</p>
-  </div>  <!-- Features --><a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners & scores</p></a> <a class="feature-card" href="team.html"><h3>👥 Team</h3><p>Your referrals</p></a> <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>Manage account</p></a>
+  </div>
 
+  <!-- Feature Cards -->
+  <a class="feature-card" href="leaderboard.html">
+    <h3>🏆 Leaderboard</h3>
+    <p>Top miners & scores</p>
+  </a>
+  <a class="feature-card" href="team.html">
+    <h3>👥 Team</h3>
+    <p>Your referrals</p>
+  </a>
+  <a class="feature-card" href="profile.html">
+    <h3>👤 Profile</h3>
+    <p>Manage account</p>
+  </a>
   <div class="feature-card"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>💬 Chat</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎤 Studio</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>
+
+  <!-- Support + Author -->
   <div class="feature-card">
     <a href="https://t.me/eanocoin" target="_blank">
       <h3>🆘 Support Portal</h3><p>Join our Telegram</p>
@@ -58,13 +101,28 @@
     <h3>🧑‍💼 Author</h3>
     <p><strong>Santus Santorum</strong> • Founder of EANO</p>
   </div>
+
+  <!-- Logout -->
   <div class="feature-card text-center">
     <button class="btn btn-danger" id="logout-btn">Logout</button>
-  </div>  <div class="footer">&copy; 2025 EANO • Powered by People</div>  <!-- ✅ Scripts -->  <script type="module" src="firebase.js"></script>  <script type="module" src="lang.js"></script>  <script type="module" src="ui.js"></script>  <script type="module" src="dashboard.js"></script>  <script>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">&copy; 2025 EANO • Powered by People</div>
+
+  <!-- ✅ JS Modules -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="lang.js"></script>
+  <script type="module" src="ui.js"></script>
+  <script type="module" src="dashboard.js"></script>
+
+  <!-- ✅ Service Worker -->
+  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log('✅ SW registered'))
         .catch(err => console.error('❌ SW failed:', err));
     }
-  </script></body>
+  </script>
+</body>
 </html>
