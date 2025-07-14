@@ -115,9 +115,12 @@ function initLogout() {
 }
 
 // ✅ Init on Auth Load
+let currentUser = null;
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    startMiningSession(user.uid);
+    currentUser = user;
+    checkMiningStatus(user.uid);
   } else {
     window.location.href = "index.html";
   }
