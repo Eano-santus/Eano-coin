@@ -12,6 +12,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="eano-icon-192.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
+  <script type="module" src="studio.js" defer></script>
 </head>
 <body class="studio-page">
   <div class="nav-fixed">
@@ -34,10 +35,10 @@
     <h2>🎼 AI Music Generator</h2>
     <p>Write your lyrics and let the EANO Studio generate a melody and beat!</p>
 
-    <textarea id="lyrics-input" placeholder="Write your song lyrics here..."></textarea>
+    <textarea id="lyrics" placeholder="Write your song lyrics here..."></textarea>
 
-    <label for="music-style">🎶 Choose Genre:</label>
-    <select id="music-style">
+    <label for="genre">🎶 Choose Genre:</label>
+    <select id="genre">
       <option value="pop">Pop</option>
       <option value="rap">Rap</option>
       <option value="gospel">Gospel</option>
@@ -45,11 +46,13 @@
       <option value="reggae">Reggae</option>
     </select>
 
-    <label for="beat-upload" class="upload-label">🎧 Optional: Upload a Beat</label>
-    <input type="file" accept="audio/*" id="beat-upload" style="display:none;" />
-    <button id="generate-song">🎶 Generate Song</button>
+    <label id="uploadLabel" class="upload-label">🎧 Optional: Upload a Beat</label>
+    <input type="file" accept="audio/*" id="uploadInput" style="display:none;" />
 
-    <div id="studio-preview"></div>
+    <button id="generateBtn">🎶 Generate Song</button>
+
+    <div id="loader" style="display:none;">⏳ Generating...</div>
+    <div id="result"></div>
   </section>
 
   <!-- Record/Upload -->
@@ -60,7 +63,7 @@
     <audio controls id="audio-player" style="display:none;"></audio>
   </section>
 
-  <!-- Trending Creations -->
+  <!-- Trending -->
   <section class="section">
     <h2>🔥 Trending Studio Creations</h2>
     <div class="feature-card">🎵 "Rise Up" by @AlphaLion</div>
@@ -72,7 +75,7 @@
   <section class="section">
     <h2>📂 Your Studio Creations</h2>
     <div id="your-creations">
-      <p>No creations yet. Start building now!</p>
+      <p>Loading your tracks...</p>
     </div>
   </section>
 
@@ -87,59 +90,25 @@
     &copy; 2025 EANO Network • Studio Powered by Creativity & Trust
   </footer>
 
-  <!-- ✅ Script Section -->
+  <!-- Theme Toggle -->
   <script>
-    const themeBtn = document.getElementById("toggle-theme");
-    const beatUpload = document.getElementById("beat-upload");
-    const uploadLabel = document.querySelector(".upload-label");
-    const preview = document.getElementById("studio-preview");
-
-    themeBtn.addEventListener("click", () => {
+    document.getElementById("toggle-theme").addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
     });
 
-    uploadLabel.addEventListener("click", () => beatUpload.click());
-
-    beatUpload.addEventListener("change", () => {
-      const file = beatUpload.files[0];
-      if (file) {
-        uploadLabel.textContent = `🎵 ${file.name}`;
-      }
-    });
-
-    document.getElementById("generate-song").addEventListener("click", () => {
-      const lyrics = document.getElementById("lyrics-input").value.trim();
-      const genre = document.getElementById("music-style").value;
-      if (!lyrics) return alert("Please write some lyrics first!");
-
-      preview.innerHTML = `<p>🎧 Generating <strong>${genre}</strong> track...</p>`;
-      setTimeout(() => {
-        const sampleSrc = beatUpload.files[0]
-          ? URL.createObjectURL(beatUpload.files[0])
-          : "sample.mp3";
-        preview.innerHTML = `
-          <h3>✅ Your ${genre} Track is Ready!</h3>
-          <p><em>"${lyrics.slice(0, 100)}..."</em></p>
-          <audio controls><source src="${sampleSrc}" type="audio/mpeg" /></audio>
-          <br/>
-          <a href="${sampleSrc}" download="EANO-${genre}.mp3" class="download-btn">⬇️ Download Song</a>
-        `;
-      }, 3000);
+    document.getElementById("start-record").addEventListener("click", () => {
+      alert("🔒 Recording will be available in the next version.");
     });
 
     document.getElementById("upload-audio").addEventListener("change", (e) => {
       const file = e.target.files[0];
+      const audioPlayer = document.getElementById("audio-player");
       if (file) {
         const url = URL.createObjectURL(file);
-        const audioPlayer = document.getElementById("audio-player");
         audioPlayer.src = url;
         audioPlayer.style.display = "block";
         audioPlayer.play();
       }
-    });
-
-    document.getElementById("start-record").addEventListener("click", () => {
-      alert("🔒 Recording will be added in the next version.");
     });
   </script>
 </body>
