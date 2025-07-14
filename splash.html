@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Loading...</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .glow-logo {
+      width: 200px;
+      height: 200px;
+      background: url('eano-icon-512.png') no-repeat center;
+      background-size: contain;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0% { filter: drop-shadow(0 0 2px #ffcc00); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 12px #ffcc00); transform: scale(1.05); }
+      100% { filter: drop-shadow(0 0 2px #ffcc00); transform: scale(1); }
+    }
+
+    .loading-text {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #ffcc00;
+    }
+  </style>
+
+  <script>
+    // 🌐 Redirect to welcome or index after 3 seconds
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        // Optional: check for network speed or auth state
+        window.location.href = "welcome.html"; // or "index.html"
+      }, 3000);
+    });
+  </script>
+</head>
+<body>
+  <div class="glow-logo"></div>
+  <div class="loading-text">Loading EANO Network...</div>
+</body>
+</html>
