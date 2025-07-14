@@ -15,20 +15,33 @@ export function uploadSongToStorage(file, userId, callback) {
     }
   );
 }
+
 document.addEventListener("DOMContentLoaded", () => {
-  const generateBtn = document.getElementById("generateBtn");
-  const lyricsInput = document.getElementById("lyrics");
-  const genreSelect = document.getElementById("genre");
-  const resultDiv = document.getElementById("result");
-  const uploadInput = document.getElementById("uploadInput");
-  const loader = document.getElementById("loader");
-  const uploadLabel = document.getElementById("uploadLabel");
+  const generateBtn = document.getElementById("generateBtn") || document.getElementById("generate-song");
+  const lyricsInput = document.getElementById("lyrics") || document.getElementById("lyrics-input");
+  const genreSelect = document.getElementById("genre") || document.getElementById("music-style");
+  const resultDiv = document.getElementById("result") || document.getElementById("studio-preview");
+  const uploadInput = document.getElementById("uploadInput") || document.getElementById("beat-upload");
+  const uploadLabel = document.getElementById("uploadLabel") || document.querySelector(".upload-label");
+  const audioPlayer = document.getElementById("audio-player");
+  const recordBtn = document.getElementById("start-record");
+
+  const loader = document.getElementById("loader") || {
+    style: { display: "none" }
+  };
 
   let uploadedBeat = null;
 
-  uploadLabel.addEventListener("click", () => uploadInput.click());
+  // 🌓 Theme toggle
+  const themeBtn = document.getElementById("toggle-theme");
+  themeBtn?.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+  });
 
-  uploadInput.addEventListener("change", () => {
+  // 🎧 Handle beat upload label
+  uploadLabel?.addEventListener("click", () => uploadInput.click());
+
+  uploadInput?.addEventListener("change", () => {
     const file = uploadInput.files[0];
     if (file) {
       uploadedBeat = file;
@@ -36,7 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  generateBtn.addEventListener("click", () => {
+  // 🎶 Generate AI-style demo (mocked)
+  generateBtn?.addEventListener("click", () => {
     const lyrics = lyricsInput.value.trim();
     const genre = genreSelect.value;
 
@@ -54,16 +68,35 @@ document.addEventListener("DOMContentLoaded", () => {
       const sampleTrack = uploadedBeat ? URL.createObjectURL(uploadedBeat) : 'sample.mp3';
 
       resultDiv.innerHTML = `
-        <h3>🎧 Your Song is Ready!</h3>
+        <h3>✅ Your ${genre} Song is Ready!</h3>
         <p><em>"${lyrics.slice(0, 120)}..."</em></p>
         <audio controls>
           <source src="${sampleTrack}" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
         <br/>
-        <a href="${sampleTrack}" download="EANO-Track.mp3" class="download-btn">⬇️ Download Song</a>
-        <p class="hint">More features coming: AI voice, autotune, harmony layering and full music generation.</p>
+        <a href="${sampleTrack}" download="EANO-${genre}.mp3" class="download-btn">⬇️ Download Song</a>
+        <p class="hint">🔬 Experimental: Voice AI, harmony layering & mixing coming soon.</p>
       `;
     }, 3000);
+  });
+
+  // 🎤 Handle recording (future feature)
+  recordBtn?.addEventListener("click", () => {
+    alert("🔒 Recording feature will be available in the next update.");
+  });
+
+  // 📤 Upload audio for listening
+  document.getElementById("upload-audio")?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const userId = localStorage.getItem("uid") || "guest"; // 🔐 Replace with actual auth if available
+    uploadSongToStorage(file, userId, (url) => {
+      audioPlayer.src = url;
+      audioPlayer.style.display = "block";
+      audioPlayer.play();
+      alert("✅ Uploaded and playing your song!");
+    });
   });
 });
