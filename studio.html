@@ -106,5 +106,22 @@
         audioPlayer.play();
       }
     });
+    <script type="module">
+  import {
+    loadTrendingCreations,
+    loadPublicFeed,
+    setupVoiceRecorder,
+    suggestCollabUsers
+  } from './studio-next.js';
+
+  loadTrendingCreations();              // Load trending 🔥
+  loadPublicFeed();                     // Load default explore 🌍
+  setupVoiceRecorder("start-record", "audio-player"); // 🎤 Voice
+  suggestCollabUsers();                 // 🤝 Collaborations
+
+  // Filter explore feed by genre dropdown
+  document.getElementById("filter-genre").addEventListener("change", (e) => {
+    loadPublicFeed(e.target.value);
+  });
   </script></body>
 </html>
