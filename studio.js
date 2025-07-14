@@ -1,3 +1,20 @@
+import { storage } from "./firebase.js";
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+
+// 🔼 Upload song to Firebase Storage
+export function uploadSongToStorage(file, userId, callback) {
+  const songRef = ref(storage, `songs/${userId}/${Date.now()}_${file.name}`);
+  const uploadTask = uploadBytesResumable(songRef, file);
+
+  uploadTask.on('state_changed', null, 
+    (error) => alert("❌ Upload failed: " + error),
+    () => {
+      getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        callback(url);
+      });
+    }
+  );
+}
 document.addEventListener("DOMContentLoaded", () => {
   const generateBtn = document.getElementById("generateBtn");
   const lyricsInput = document.getElementById("lyrics");
