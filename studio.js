@@ -1,12 +1,19 @@
 import { storage } from "./firebase.js";
 import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+const db = getFirestore();
+const auth = getAuth();
 
 // 🔼 Upload song to Firebase Storage
 export function uploadSongToStorage(file, userId, callback) {
   const songRef = ref(storage, `songs/${userId}/${Date.now()}_${file.name}`);
   const uploadTask = uploadBytesResumable(songRef, file);
 
-  uploadTask.on('state_changed', null, 
+  uploadTask.on(
+    'state_changed',
+    null,
     (error) => alert("❌ Upload failed: " + error),
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then((url) => {
@@ -16,28 +23,7 @@ export function uploadSongToStorage(file, userId, callback) {
   );
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const generateBtn = document.getElementById("generateBtn") || document.getElementById("generate-song");
-  const lyricsInput = document.getElementById("lyrics") || document.getElementById("lyrics-input");
-  const genreSelect = document.getElementById("genre") || document.getElementById("music-style");
-  const resultDiv = document.getElementById("result") || document.getElementById("studio-preview");
-  const uploadInput = document.getElementById("uploadInput") || document.getElementById("beat-upload");
-  const uploadLabel = document.getElementById("uploadLabel") || document.querySelector(".upload-label");
-  const audioPlayer = document.getElementById("audio-player");
-  const recordBtn = document.getElementById("start-record");
-
-  const loader = document.getElementById("loader") || {
-    style: { display: "none" }
-  };
-
-  let uploadedBeat = null;
-
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-const db = getFirestore();
-const auth = getAuth();
-
+// 💾 Save to Firestore
 export async function saveStudioTrackToFirestore({ url, lyrics, genre, beatName, aiGenerated }) {
   const user = auth.currentUser;
   if (!user) {
@@ -60,21 +46,26 @@ export async function saveStudioTrackToFirestore({ url, lyrics, genre, beatName,
 
   try {
     await addDoc(collection(db, "studioTracks"), track);
-    console.log("✅ Studio track saved.");
+    console.log("✅ Track saved to Firestore.");
   } catch (e) {
-    console.error("❌ Failed to save track:", e);
+    console.error("❌ Firestore save failed:", e);
   }
+}
 
-  // 🌓 Theme toggle
-  const themeBtn = document.getElementById("toggle-theme");
-  themeBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("light-mode");
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  const generateBtn = document.getElementById("generateBtn");
+  const lyricsInput = document.getElementById("lyrics");
+  const genreSelect = document.getElementById("genre");
+  const resultDiv = document.getElementById("result");
+  const uploadInput = document.getElementById("uploadInput");
+  const loader = document.getElementById("loader");
+  const uploadLabel = document.getElementById("uploadLabel");
 
-  // 🎧 Handle beat upload label
-  uploadLabel?.addEventListener("click", () => uploadInput.click());
+  let uploadedBeat = null;
 
-  uploadInput?.addEventListener("change", () => {
+  uploadLabel.addEventListener("click", () => uploadInput.click());
+
+  uploadInput.addEventListener("change", () => {
     const file = uploadInput.files[0];
     if (file) {
       uploadedBeat = file;
@@ -82,8 +73,7 @@ export async function saveStudioTrackToFirestore({ url, lyrics, genre, beatName,
     }
   });
 
-  // 🎶 Generate AI-style demo (mocked)
-  generateBtn?.addEventListener("click", () => {
+  generateBtn.addEventListener("click", () => {
     const lyrics = lyricsInput.value.trim();
     const genre = genreSelect.value;
 
@@ -95,41 +85,49 @@ export async function saveStudioTrackToFirestore({ url, lyrics, genre, beatName,
     loader.style.display = "block";
     resultDiv.innerHTML = `<p>🎶 Generating your <strong>${genre}</strong> song...</p>`;
 
-    setTimeout(() => {
+    if (uploadedBeat) {
+      const user = auth.currentUser;
+      if (!user) return alert("Please log in first.");
+
+      uploadSongToStorage(uploadedBeat, user.uid, (downloadURL) => {
+        loader.style.display = "none";
+        resultDiv.innerHTML = `
+          <h3>🎧 Your Song is Ready!</h3>
+          <p><em>"${lyrics.slice(0, 120)}..."</em></p>
+          <audio controls>
+            <source src="${downloadURL}" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+          <br/>
+          <a href="${downloadURL}" download="EANO-Track.mp3" class="download-btn">⬇️ Download Song</a>
+          <p class="hint">More features coming: AI voice, autotune, harmony layering and full music generation.</p>
+        `;
+
+        // Save to Firestore
+        saveStudioTrackToFirestore({
+          url: downloadURL,
+          lyrics,
+          genre,
+          beatName: uploadedBeat.name,
+          aiGenerated: true
+        });
+      });
+
+    } else {
+      // No beat uploaded, use default sample
       loader.style.display = "none";
-
-      const sampleTrack = uploadedBeat ? URL.createObjectURL(uploadedBeat) : 'sample.mp3';
-
+      const sampleTrack = 'sample.mp3';
       resultDiv.innerHTML = `
-        <h3>✅ Your ${genre} Song is Ready!</h3>
+        <h3>🎧 Your Sample ${genre} Track is Ready!</h3>
         <p><em>"${lyrics.slice(0, 120)}..."</em></p>
         <audio controls>
           <source src="${sampleTrack}" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
         <br/>
-        <a href="${sampleTrack}" download="EANO-${genre}.mp3" class="download-btn">⬇️ Download Song</a>
-        <p class="hint">🔬 Experimental: Voice AI, harmony layering & mixing coming soon.</p>
+        <a href="${sampleTrack}" download="EANO-Track.mp3" class="download-btn">⬇️ Download Sample</a>
+        <p class="hint">To save your track and upload a real beat, please upload your own audio file.</p>
       `;
-    }, 3000);
-  });
-
-  // 🎤 Handle recording (future feature)
-  recordBtn?.addEventListener("click", () => {
-    alert("🔒 Recording feature will be available in the next update.");
-  });
-
-  // 📤 Upload audio for listening
-  document.getElementById("upload-audio")?.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const userId = localStorage.getItem("uid") || "guest"; // 🔐 Replace with actual auth if available
-    uploadSongToStorage(file, userId, (url) => {
-      audioPlayer.src = url;
-      audioPlayer.style.display = "block";
-      audioPlayer.play();
-      alert("✅ Uploaded and playing your song!");
-    });
+    }
   });
 });
