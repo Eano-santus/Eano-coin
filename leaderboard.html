@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard • EANO Network</title>
+  <meta name="description" content="Track the top EANO miners and explore TrustScore rankings." />
+  <meta name="author" content="EANO Team" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- 🌐 SEO + Social Meta -->
+  <meta property="og:title" content="Leaderboard • EANO Network" />
+  <meta property="og:description" content="Top 10 miners, TrustScores, levels and EANO rewards." />
+  <meta property="og:image" content="eano-preview.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://eano-santus.github.io/eano-coin/leaderboard.html" />
+
+  <!-- 📱 PWA Support -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="eano-icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="eano-icon-192.png" />
+
+  <!-- 🔗 Style -->
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="leaderboard.js" defer></script>
+</head>
+<body class="studio-page">
+  <div class="nav-fixed">
+    <h1 class="logo">🏆 EANO Leaderboard</h1>
+    <div class="nav-controls">
+      <a href="dashboard.html">🏠</a>
+      <a href="wallet.html">👛</a>
+      <a href="profile.html">👤</a>
+      <button id="toggle-theme">🌑/☀️</button>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2>🌍 Top 10 Miners</h2>
+    <div id="leaderboard-list">Loading leaderboard...</div>
+  </section>
+
+  <section class="section">
+    <h2>🧠 TrustScore Badge Guide</h2>
+    <ul>
+      <li>⭐ <strong>O.G</strong> – 5000+</li>
+      <li>🟢 <strong>Trusted Miner</strong> – 1000+</li>
+      <li>🟡 <strong>Reliable Miner</strong> – 500+</li>
+      <li>🔵 <strong>New Miner</strong> – 300+</li>
+      <li>🔴 <strong>Low Trust</strong> – &lt;300</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>⚡ Mining Levels</h2>
+    <ul>
+      <li>🐉 Dragon – 10,000+</li>
+      <li>🐘 Elephant – 5,000+</li>
+      <li>🦍 Gorilla – 2,500+</li>
+      <li>🐻 Bear – 1,200+</li>
+      <li>🐯 Lion – 600+</li>
+      <li>🐼 Panda – 300+</li>
+      <li>🐺 Wolf – 150+</li>
+      <li>🐹 Hamster – 50+</li>
+      <li>🐥 Chicken – &lt;50</li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    &copy; 2025 EANO Network • Leaderboard Powered by Trust & Mining
+  </footer>
+
+  <!-- 🌗 Theme toggle -->
+  <script>
+    document.getElementById("toggle-theme").addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+    });
+  </script>
+</body>
+</html>
