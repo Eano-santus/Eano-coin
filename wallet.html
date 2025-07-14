@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet • EANO Project</title>
+
+  <!-- ✅ SEO & Open Graph -->
+  <meta name="description" content="View your EANO wallet balance, recent transactions and manage funds.">
+  <link rel="canonical" href="https://eano-coin.netlify.app/wallet.html" />
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Santus Santorum">
+  <meta property="og:title" content="EANO Wallet">
+  <meta property="og:description" content="Securely view and manage your EANO balance.">
+  <meta property="og:image" content="https://eano-coin.netlify.app/assets/eano-dashboard-banner.png">
+
+  <!-- ✅ Assets -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+  <script type="module" src="firebase.js"></script>
+  <script src="wallet.js" defer></script>
+</head>
+<body>
+  <div class="nav-fixed">
+    <h1 class="logo">💼 EANO Wallet</h1>
+    <div class="nav-controls">
+      <button id="toggle-theme">🌑/☀️</button>
+      <select id="langSelect">
+        <option value="en">English</option>
+        <option value="ig">Igbo</option>
+        <option value="fr">French</option>
+        <option value="sw">Swahili</option>
+        <option value="pidgin">Pidgin</option>
+      </select>
+    </div>
+  </div>
+
+  <main class="wallet-container">
+    <section class="wallet-balance">
+      <h2>💰 Your Balance</h2>
+      <p><strong><span id="wallet-balance">Loading...</span> EANO</strong></p>
+      <a href="trade.html" class="btn-trade">🔄 Go to Swap</a>
+    </section>
+
+    <section class="transaction-history">
+      <h3>📑 Recent Transactions</h3>
+      <ul id="transactions-list">
+        <li>Loading transactions...</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="footer-link">
+    <a href="dashboard.html" class="btn-back">← Back to Dashboard</a>
+  </div>
+</body>
+</html>
