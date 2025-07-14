@@ -38,13 +38,15 @@
     <textarea id="lyrics" placeholder="Write your song lyrics here..."></textarea>
 
     <label for="genre">🎶 Choose Genre:</label>
-    <select id="genre">
-      <option value="pop">Pop</option>
-      <option value="rap">Rap</option>
-      <option value="gospel">Gospel</option>
-      <option value="afrobeat">Afrobeat</option>
-      <option value="reggae">Reggae</option>
-    </select>
+      <select id="music-style">
+  <option value="afrobeat" selected>🇳🇬 Afrobeat</option>
+  <option value="amapiano">🇿🇦 Amapiano</option>
+  <option value="gospel">🎶 Gospel</option>
+  <option value="naijastreet">🇳🇬 Naija Street</option>
+  <option value="pop">Pop</option>
+  <option value="rap">Rap</option>
+  <option value="reggae">Reggae</option>
+      </select>
 
     <label id="uploadLabel" class="upload-label">🎧 Optional: Upload a Beat</label>
     <input type="file" accept="audio/*" id="uploadInput" style="display:none;" />
