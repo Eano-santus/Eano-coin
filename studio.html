@@ -1,15 +1,20 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio • EANO Project</title>  <!-- ✅ SEO & PWA Meta -->  <meta name="description" content="Turn your lyrics into songs, record music, and explore the creative EANO Studio." />
-  <script src="studio.js" defer></script>
-  <link rel="manifest" href="manifest.json" />
+  <title>Studio • EANO Project</title>
+
+  <!-- ✅ SEO & PWA Meta -->
+  <meta name="description" content="Turn your lyrics into songs, record music, and explore the creative EANO Studio." />
+  <meta name="author" content="EANO Team" />
   <meta name="theme-color" content="#000" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="eano-icon-192.png" type="image/png" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="studio-page">  <div class="nav-fixed">
+<body class="studio-page">
+  <div class="nav-fixed">
     <h1 class="logo">🎙️ EANO Studio</h1>
     <div class="nav-controls">
       <a href="dashboard.html">🏠</a>
@@ -17,10 +22,16 @@
       <a href="profile.html">👤</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
-  </div>  <section class="section">
+  </div>
+
+  <!-- SECTION: AI Song Generator -->
+  <section class="section">
     <h2>🎼 AI Music Generator</h2>
     <p>Write your lyrics and let the EANO Studio generate a melody and beat for you!</p>
+
     <textarea id="lyrics-input" placeholder="Write your song lyrics here..."></textarea>
+
+    <label for="music-style">🎶 Choose Genre:</label>
     <select id="music-style">
       <option value="pop">Pop</option>
       <option value="rap">Rap</option>
@@ -28,56 +39,97 @@
       <option value="afrobeat">Afrobeat</option>
       <option value="reggae">Reggae</option>
     </select>
+
+    <label for="beat-upload" class="upload-label">🎧 Optional: Upload a Beat</label>
+    <input type="file" accept="audio/*" id="beat-upload" style="display:none;" />
+
     <button id="generate-song">🎶 Generate Song</button>
     <div id="studio-preview"></div>
-  </section>  <section class="section">
+  </section>
+
+  <!-- SECTION: Record/Upload Audio -->
+  <section class="section">
     <h2>🎤 Record or Upload Your Voice</h2>
     <p>Record directly or upload a demo audio file to share with the community.</p>
     <button id="start-record">🔴 Record</button>
     <input type="file" accept="audio/*" id="upload-audio" />
     <audio controls id="audio-player" style="display:none;"></audio>
-  </section>  <section class="section">
+  </section>
+
+  <!-- SECTION: Community -->
+  <section class="section">
     <h2>🔥 Trending Studio Creations</h2>
-    <p>Explore songs created by other users in the community.</p>
     <div class="feature-card">🎵 "Rise Up" by @AlphaLion</div>
     <div class="feature-card">🎵 "Hope Lane" by @Trinity</div>
     <div class="feature-card">🎵 "Crypto Anthem" by @EanoWarrior</div>
-  </section>  <section class="section">
+  </section>
+
+  <!-- SECTION: User Creations -->
+  <section class="section">
     <h2>📂 Your Studio Creations</h2>
-    <p>Manage and listen to your previous songs or uploads.</p>
     <div id="your-creations">
       <p>No creations yet. Start building now!</p>
     </div>
-  </section>  <section class="section">
+  </section>
+
+  <!-- SECTION: TrustScore Info -->
+  <section class="section">
     <h2>🧠 TrustScore Bonus</h2>
     <p>Create songs or participate in studio trends to gain bonus TrustScore and community rep!</p>
     <p><strong>Note:</strong> AI music is experimental. Some outputs may not reflect real vocals until upgrade phase.</p>
-  </section>  <div class="footer">
+  </section>
+
+  <footer class="footer">
     &copy; 2025 EANO Network • Studio Powered by Creativity & Trust
-  </div>  <script>
-    document.getElementById("toggle-theme").addEventListener("click", () => {
+  </footer>
+
+  <!-- ✅ Final Studio.js Script (Inline for now) -->
+  <script>
+    const themeBtn = document.getElementById("toggle-theme");
+    const beatUpload = document.getElementById("beat-upload");
+    const uploadLabel = document.querySelector(".upload-label");
+    const preview = document.getElementById("studio-preview");
+
+    themeBtn.addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
+    });
+
+    uploadLabel.addEventListener("click", () => beatUpload.click());
+
+    beatUpload.addEventListener("change", () => {
+      const file = beatUpload.files[0];
+      if (file) {
+        uploadLabel.textContent = `🎵 ${file.name}`;
+      }
     });
 
     document.getElementById("generate-song").addEventListener("click", () => {
       const lyrics = document.getElementById("lyrics-input").value.trim();
-      const style = document.getElementById("music-style").value;
-      const preview = document.getElementById("studio-preview");
+      const genre = document.getElementById("music-style").value;
       if (!lyrics) return alert("Please write some lyrics first!");
 
-      preview.innerHTML = `🎧 Generating <strong>${style}</strong> track...<br/><em>(Demo only)</em>`;
-
+      preview.innerHTML = `<p>🎧 Generating <strong>${genre}</strong> track...</p>`;
       setTimeout(() => {
-        preview.innerHTML += `<br/>✅ Your AI beat is ready! 🎵 <button>Play Demo</button>`;
+        const sampleSrc = beatUpload.files[0]
+          ? URL.createObjectURL(beatUpload.files[0])
+          : "sample.mp3";
+
+        preview.innerHTML = `
+          <h3>✅ Your ${genre} Track is Ready!</h3>
+          <p><em>"${lyrics.slice(0, 100)}..."</em></p>
+          <audio controls><source src="${sampleSrc}" type="audio/mpeg" /></audio>
+          <br/>
+          <a href="${sampleSrc}" download="EANO-${genre}.mp3" class="download-btn">⬇️ Download Song</a>
+        `;
       }, 3000);
     });
 
-    // 🎙️ Recording & Uploading
+    // 🎙️ Record or Upload
     const audioPlayer = document.getElementById("audio-player");
     const recordBtn = document.getElementById("start-record");
 
     recordBtn.addEventListener("click", () => {
-      alert("🔒 Recording feature will be available in next update.");
+      alert("🔒 Recording will be available in the next update.");
     });
 
     document.getElementById("upload-audio").addEventListener("change", (e) => {
@@ -89,5 +141,6 @@
         audioPlayer.play();
       }
     });
-  </script></body>
+  </script>
+</body>
 </html>
