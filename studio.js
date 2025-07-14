@@ -131,3 +131,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+import { query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+// 🎧 Fetch and show user's own songs
+export async function loadUserCreations() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const tracksRef = collection(db, "studioTracks");
+  const q = query(tracksRef, where("uid", "==", user.uid));
+  const snapshot = await getDocs(q);
+
+  const container = document.getElementById("your-creations");
+  container.innerHTML = "";
+
+  if (snapshot.empty) {
+    container.innerHTML = `<p>No creations yet. Start building now!</p>`;
+    return;
+  }
+
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    container.innerHTML += `
+      <div class="feature-card">
+        <p><strong>${data.genre}</strong> • <em>${data.lyrics.slice(0, 60)}...</em></p>
+        <audio controls src="${data.downloadURL}"></audio>
+        <p>Uploaded: ${new Date(data.uploadedAt).toLocaleString()}</p>
+      </div>
+    `;
+  });
+}
