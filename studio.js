@@ -138,6 +138,26 @@ document.addEventListener("DOMContentLoaded", () => {
         loader.style.display = "none";
         return alert("Please log in first.");
       }
+      
+      const genreColor = {
+  afrobeat: "#25D366",
+  amapiano: "#fbbc05",
+  naijastreet: "#ff4500",
+  gospel: "#8e44ad",
+  rap: "#2c3e50",
+  pop: "#e91e63",
+  reggae: "#4caf50"
+};
+
+const genreStyle = genreColor[track.genre] || "#ccc";
+
+container.innerHTML += `
+  <div class="feature-card" style="border-left: 5px solid ${genreStyle};">
+    <p><strong>${track.genre.toUpperCase()}</strong> • <em>${track.lyrics.slice(0, 60)}...</em></p>
+    <audio controls src="${track.downloadURL}"></audio>
+    <p>Uploaded: ${new Date(track.uploadedAt).toLocaleString()}</p>
+  </div>
+`;
 
       uploadSongToStorage(uploadedBeat, user.uid, (downloadURL) => {
         loader.style.display = "none";
