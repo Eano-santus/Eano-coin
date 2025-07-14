@@ -15,6 +15,19 @@ const messagesContainer = document.getElementById("messages");
 const input = document.getElementById("chatMessage");
 const sendBtn = document.getElementById("sendMessage");
 
+// 🔔 Notification Sound Setup
+const notificationSound = new Audio("sounds/notify.mp3");
+let lastMessageTimestamp = null;
+
+function notifyIfNewMessage(msg, currentUser) {
+  if (!msg.createdAt?.seconds || msg.uid === currentUser.uid) return;
+
+  if (!lastMessageTimestamp || msg.createdAt.seconds > lastMessageTimestamp) {
+    lastMessageTimestamp = msg.createdAt.seconds;
+    notificationSound.play().catch(() => console.log("🔇 Autoplay blocked"));
+  }
+}
+
 // ✉️ Send new chat message
 async function sendMessage(user) {
   const text = input.value.trim();
@@ -34,25 +47,10 @@ async function sendMessage(user) {
 }
 
 // 🔁 Real-time chat loader
-function loadMessages() {
+function loadMessages(user) {
   const q = query(collection(db, "chatMessages"), orderBy("createdAt", "asc"));
   onSnapshot(q, (snapshot) => {
     messagesContainer.innerHTML = "";
-
-    // 🔔 Play notification on new message
-const notificationSound = new Audio("sounds/notify.mp3");
-let lastMessageTimestamp = null;
-
-function notifyIfNewMessage(msg, currentUser) {
-  // Only notify if new and from someone else
-  if (!msg.createdAt?.seconds || msg.uid === currentUser.uid) return;
-
-  if (!lastMessageTimestamp || msg.createdAt.seconds > lastMessageTimestamp) {
-    lastMessageTimestamp = msg.createdAt.seconds;
-    notificationSound.play().catch(() => {
-      console.log("🔇 User blocked autoplay");
-    });
-  }
 
     snapshot.forEach((doc) => {
       const msg = doc.data();
@@ -60,26 +58,11 @@ function notifyIfNewMessage(msg, currentUser) {
       div.className = "message-bubble";
       div.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
       messagesContainer.appendChild(div);
-      onSnapshot(q, (snapshot) => {
-  messagesContainer.innerHTML = "";
 
-  snapshot.forEach((doc) => {
-    const msg = doc.data();
-    const div = document.createElement("div");
-    div.className = "message-bubble";
-    div.innerHTML = `<strong>${msg.name}:</strong> ${msg.text}`;
-    messagesContainer.appendChild(div);
-
-    // ✅ 🔔 Notify if someone else sent it
-    if (auth.currentUser) {
-      notifyIfNewMessage(msg, auth.currentUser);
-    }
-  });
-
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      // ✅ Trigger notification
+      notifyIfNewMessage(msg, user);
     });
 
-    // 👇 Auto-scroll to bottom
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   });
 }
@@ -87,7 +70,7 @@ function notifyIfNewMessage(msg, currentUser) {
 // 🔐 Wait for user auth before loading chat
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    loadMessages();
+    loadMessages(user);
     sendBtn.addEventListener("click", () => sendMessage(user));
     input.addEventListener("keypress", (e) => {
       if (e.key === "Enter") sendMessage(user);
