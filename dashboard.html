@@ -1,39 +1,24 @@
-<!-- New dashboard.html will now link to external dashboard.js for all JavaScript --><!-- I will create dashboard.js next to handle all mining, theme, auth, and lang --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard • EANO Project</title>  <!-- SEO, Open Graph, Twitter, Structured Data etc. remain same -->  <meta name="description" content="Track your mining, TrustScore, and referrals on the EANO Dashboard." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EANO Dashboard</title>  <!-- ✅ SEO -->  <meta name="description" content="Track your mining, TrustScore, referrals and more on the EANO Dashboard." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://eano-coin.netlify.app/dashboard.html" />
-  <meta name="author" content="Santus Santorum" />  <meta property="og:title" content="EANO Dashboard" />
-  <meta property="og:description" content="Mine EANO daily and grow your reputation. Trusted. Decentralized. Yours." />
-  <meta property="og:image" content="https://eano-coin.netlify.app/assets/eano-dashboard-banner.png" />
+  <meta name="author" content="Santus Santorum" />  <!-- ✅ Open Graph -->  <meta property="og:title" content="EANO Dashboard" />
+  <meta property="og:description" content="Mine EANO daily and grow your TrustScore. Trusted. Decentralized. Yours." />
+  <meta property="og:image" content="/assets/eano-dashboard-banner.png" />
   <meta property="og:url" content="https://eano-coin.netlify.app/dashboard.html" />
-  <meta property="og:type" content="website" />  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:type" content="website" />  <!-- ✅ Twitter Card -->  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="EANO Dashboard" />
-  <meta name="twitter:description" content="Earn EANO through mining, referrals and trust. Join now!" />
-  <meta name="twitter:image" content="https://eano-coin.netlify.app/assets/eano-dashboard-banner.png" />  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "EANO Dashboard",
-      "url": "https://eano-coin.netlify.app/dashboard.html",
-      "applicationCategory": "FinanceApplication",
-      "creator": {
-        "@type": "Person",
-        "name": "Santus Santorum"
-      },
-      "description": "Mine EANO, build TrustScore, and earn with referrals.",
-      "image": "https://eano-coin.netlify.app/assets/eano-dashboard-banner.png"
-    }
-  </script>  <!-- Manifest and Styles -->  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />
-  <link rel="stylesheet" href="style.css" />
+  <meta name="twitter:description" content="Earn EANO through mining, referrals, and trust. Join now!" />
+  <meta name="twitter:image" content="/assets/eano-dashboard-banner.png" />  <!-- ✅ PWA -->  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />  <!-- ✅ Favicon -->  <link rel="icon" type="image/x-icon" href="favicon.ico" />  <!-- ✅ Styles -->  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- 🌐 Navigation -->
   <div class="nav-fixed">
     <h1 class="logo">🌟 EANO</h1>
-    <span id="balance-display">Balance: 0.000 EANO</span>
     <div class="nav-controls">
       <button id="toggle-theme">🌑/☀️</button>
       <select id="lang-select">
@@ -41,41 +26,39 @@
         <option value="ig">Igbo</option>
         <option value="fr">French</option>
         <option value="sw">Swahili</option>
+        <option value="ha">Hausa</option>
+        <option value="efik">Efik</option>
         <option value="pid">Pidgin</option>
+        <option value="zh">中文</option>
       </select>
     </div>
-  </div>  <div class="balance-status">
+  </div>  <!-- 📊 Balance & Status -->  <div class="balance-status">
+    <h2>👤 <span id="username-display"></span></h2>
+    <p>Active: <span id="active-status">Loading...</span></p>
+    <p>Score Level: <span id="score-level">0</span></p>
+    <p>Trust Score: <span id="trust-score">0</span></p>
     <h2>💰 Balance: <span id="balance">0.000</span> EANO</h2>
-    <div id="user-status">
-      <p>✅ Active: <span id="user-active">Checking...</span></p>
-      <p>🏆 Level: <span id="score-level">...</span></p>
-      <p>🔹 TrustScore: <span id="trust-score">...</span></p>
-    </div>
     <p id="mining-status">⛏️ Checking mining session...</p>
-  </div>  <div class="circle-mine" id="mine-btn">🔵</div>  <div class="announcement">
+  </div>  <!-- 🔵 Mining Circle -->  <div class="circle-mine" onclick="startMining()">🔵</div>  <!-- 📢 Announcement -->  <div class="announcement">
     <h2>📢 EANO Announcement</h2>
     <p><strong>⛏️ Mining has begun!</strong></p>
     <p>Mine daily to build your TrustScore and earn more EANO.</p>
     <p>Refer users to earn bonuses and unlock higher levels.</p>
-    <p>🎮 Games, Studio, KYC and Marketplace are coming soon.</p>
-  </div><a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top Miners and Scores</p></a> <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals & Bonuses</p></a> <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>Manage account & level</p></a>
+    <p>🎮 Games, Studio, KYC, Marketplace & more are coming soon.</p>
+  </div>  <!-- 🔗 Feature Links --><a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top Miners and Scores</p></a> <a class="feature-card" href="team.html"><h3>👥 Your Team</h3><p>Referrals & Bonuses</p></a> <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>Manage account & level</p></a> <a class="feature-card" href="settings.html"><h3>⚙️ Settings</h3><p>Account Preferences</p></a> <a class="feature-card" href="studio.html"><h3>🎤 Studio</h3><p>Record & Remix</p></a> <a class="feature-card" href="chat.html"><h3>💬 Chat</h3><p>Community & Support</p></a>
 
   <div class="feature-card"><h3>📄 Mainnet-KYC</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>💬 Chat</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>📜 WhitePaper</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🎮 Games</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>🎤 Studio</h3><p>Coming Soon</p></div>
   <div class="feature-card"><h3>🛒 Marketplace</h3><p>Coming Soon</p></div>
-  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <div class="feature-card">
-    <a href="https://t.me/eanocoin" target="_blank">
-      <h3>🆘 Support Portal</h3><p>Join our Telegram Community</p>
-    </a>
-  </div>  <div class="feature-card">
+  <div class="feature-card"><h3>📋 Tasks</h3><p>Coming Soon</p></div>  <!-- 🆘 Support -->  <a class="feature-card" href="https://t.me/eanocoin" target="_blank">
+    <h3>🆘 Support Portal</h3><p>Join our Telegram Community</p>
+  </a>  <!-- 👨‍💼 Author -->  <div class="feature-card">
     <h3>🧑‍💼 Author</h3>
     <p>By <strong>Santus Santorum</strong>, building EANO for decentralized trust and reputation.</p>
-  </div>  <div class="feature-card text-center">
-    <button onclick="logout()" class="btn btn-danger">Logout</button>
-  </div>  <div class="footer">&copy; 2025 EANO • Built on Trust, Powered by People</div>  <!-- External JS Scripts -->  <script type="module" src="dashboard.js"></script>  <script src="lang.js"></script>  <script>
+  </div>  <!-- 🚪 Logout -->  <div class="feature-card text-center">
+    <button id="logout-btn" class="btn btn-danger">Logout</button>
+  </div>  <!-- 🔻 Footer -->  <div class="footer">&copy; 2025 EANO • Built on Trust, Powered by People</div>  <!-- ✅ Scripts -->  <script type="module" src="firebase.js"></script>  <script type="module" src="dashboard.js"></script>  <script src="lang.js"></script>  <script src="ui.js"></script>  <!-- ✅ Service Worker Register -->  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log("✅ SW registered"))
