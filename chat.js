@@ -81,3 +81,5 @@ onAuthStateChanged(auth, (user) => {
     input.disabled = true;
   }
 });
+import { setupBadgeUpdates } from "./ui.js";
+setupBadgeUpdates({ chat: "chat-badge" });
