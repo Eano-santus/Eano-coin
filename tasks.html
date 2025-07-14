@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tasks • EANO Project</title>
+
+  <!-- ✅ SEO + Meta -->
+  <meta name="description" content="Complete tasks, earn rewards, and grow your TrustScore on EANO.">
+  <link rel="canonical" href="https://eano-coin.netlify.app/tasks.html" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Santus Santorum" />
+  <meta property="og:title" content="EANO Tasks">
+  <meta property="og:description" content="Earn EANO by completing daily and community tasks.">
+  <meta property="og:image" content="https://eano-coin.netlify.app/assets/eano-dashboard-banner.png">
+  <meta property="og:url" content="https://eano-coin.netlify.app/tasks.html" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- ✅ PWA + Assets -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
+  <script type="module" src="firebase.js"></script>
+  <script src="tasks.js" defer></script>
+</head>
+<body>
+  <div class="nav-fixed">
+    <h1 class="logo">📝 EANO Tasks</h1>
+    <div class="nav-controls">
+      <button id="toggle-theme">🌑/☀️</button>
+      <select id="langSelect">
+        <option value="en">English</option>
+        <option value="ig">Igbo</option>
+        <option value="fr">French</option>
+        <option value="sw">Swahili</option>
+        <option value="pidgin">Pidgin</option>
+      </select>
+    </div>
+  </div>
+
+  <main class="tasks-container">
+    <section class="task-card">
+      <h3>✅ Daily Check-In</h3>
+      <p>Tap to check in and earn +0.200 EANO every 24 hours.</p>
+      <button id="checkInBtn" class="btn-task">🎁 Check In</button>
+      <span id="checkInStatus" class="task-status"></span>
+    </section>
+
+    <section class="task-card">
+      <h3>📢 Invite Friends</h3>
+      <p>Earn +5 Score per referral. Share your invite link:</p>
+      <input type="text" id="referralLink" readonly />
+      <button onclick="copyReferral()">📋 Copy Link</button>
+    </section>
+
+    <section class="task-card">
+      <h3>📌 Complete Profile</h3>
+      <p>Earn +0.500 EANO for uploading avatar and verifying name.</p>
+      <a href="profile.html" class="btn-task">👤 Go to Profile</a>
+    </section>
+
+    <section class="task-card">
+      <h3>🧪 Beta Testers Bonus</h3>
+      <p>Join Telegram and send feedback to get extra +1.000 EANO.</p>
+      <a href="https://t.me/eanocoin" target="_blank" class="btn-task">📬 Join Telegram</a>
+    </section>
+
+    <div class="footer-link">
+      <a href="dashboard.html" class="btn-back">🏠 Back to Dashboard</a>
+    </div>
+  </main>
+</body>
+</html>
