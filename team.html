@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Team • EANO</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="team.js" defer></script>
+</head>
+<body class="team-page">
+  <div class="nav-fixed">
+    <h1 class="logo">👥 EANO Team</h1>
+    <div class="nav-controls">
+      <a href="dashboard.html">🏠</a>
+      <button id="toggle-theme">🌑/☀️</button>
+    </div>
+  </div>
+
+  <section class="section">
+    <h2>🔗 Your Referral Link</h2>
+    <p><input type="text" id="ref-link" readonly /></p>
+    <button onclick="copyRef()">📋 Copy</button>
+  </section>
+
+  <section class="section">
+    <h2>🧑‍🤝‍🧑 Your Referrals</h2>
+    <div id="referrals-list">
+      <p>Loading your referrals...</p>
+    </div>
+  </section>
+
+  <footer class="footer">© 2025 EANO Network • Grow Together</footer>
+</body>
+</html>
