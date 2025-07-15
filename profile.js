@@ -59,6 +59,7 @@ onAuthStateChanged(auth, async user => {
   const userRef = doc(db, "users", user.uid);
   const docSnap = await getDoc(userRef);
   if (!docSnap.exists()) return;
+  console.log("User Data:", data);
 
   const data = docSnap.data();
   const username = data.username || user.email;
