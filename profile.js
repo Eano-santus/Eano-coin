@@ -11,14 +11,16 @@ const avatarGallery = [
   "avatar5.png", "avatar6.png", "avatar7.png", "avatar8.png"
 ];
 
-// 🧑 Update main avatar image
 function updateAvatarUI(selectedUrl) {
-  document.getElementById("current-avatar").src = selectedUrl;
+  const avatarImg = document.getElementById("current-avatar");
+  if (avatarImg) {
+    avatarImg.src = selectedUrl;
+  }
 }
 
-// 📸 Render avatar grid
 function displayAvatarGallery(uid) {
   const container = document.getElementById("avatar-gallery");
+  container.innerHTML = ""; // clear previous
   avatarGallery.forEach(name => {
     const url = `avatars/${name}`;
     const img = document.createElement("img");
@@ -34,7 +36,6 @@ function displayAvatarGallery(uid) {
   });
 }
 
-// 🐲 Determine level based on balance
 function determineMiningLevel(balance) {
   if (balance >= 10000) return "🐉 Dragon";
   if (balance >= 5000) return "🐘 Elephant";
@@ -47,7 +48,6 @@ function determineMiningLevel(balance) {
   return "🐥 Chicken";
 }
 
-// 👤 Load user profile
 onAuthStateChanged(auth, async user => {
   if (!user) return (window.location.href = "index.html");
 
@@ -56,17 +56,30 @@ onAuthStateChanged(auth, async user => {
   if (!docSnap.exists()) return;
 
   const data = docSnap.data();
+  const username = data.username || user.email;
+  const trustScore = data.trustScore ?? 0;
+  const balance = data.balance?.toFixed(2) ?? "0.00";
+  const miningLevel = determineMiningLevel(data.balance || 0);
 
-  document.getElementById("username").textContent = data.username || user.email;
-  document.getElementById("trustScore").textContent = data.trustScore ?? 0;
-  document.getElementById("balance").textContent = data.balance?.toFixed(2) ?? "0.00";
-  document.getElementById("miningLevel").textContent = determineMiningLevel(data.balance || 0);
-  updateAvatarUI(data.avatar || "avatars/default.png");
+  document.getElementById("username").textContent = username;
+  document.getElementById("trustScore").textContent = trustScore;
+  document.getElementById("balance").textContent = balance;
+  document.getElementById("miningLevel").textContent = miningLevel;
 
+  let avatarPath = data.avatar || "avatars/default.png";
+
+  // ✅ Validate that avatar is from the approved list
+  const validAvatars = avatarGallery.map(name => `avatars/${name}`);
+  if (!validAvatars.includes(avatarPath)) {
+    avatarPath = "avatars/default.png";
+    await updateDoc(userRef, { avatar: avatarPath });
+  }
+
+  updateAvatarUI(avatarPath);
   displayAvatarGallery(user.uid);
 });
 
-// 🌗 Theme Toggle
+// 🌓 Theme toggle
 document.getElementById("toggle-theme").addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 });
