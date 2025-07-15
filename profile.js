@@ -47,9 +47,9 @@ function determineMiningLevel(balance) {
 
 function getTrustBadge(score) {
   if (score >= 5000) return '<span class="trust-badge OG">O.G</span>';
-  if (score >= 1000) return '<span class="trust-badge green">🟢 Trusted</span>';
-  if (score >= 500) return '<span class="trust-badge yellow">🟡 Reliable</span>';
-  if (score >= 300) return '<span class="trust-badge blue">🔵 New</span>';
+  if (score >= 1000) return '<span class="trust-badge green">🟢 Trusted Miner</span>';
+  if (score >= 500)  return '<span class="trust-badge yellow">🟡 Reliable Miner</span>';
+  if (score >= 300)  return '<span class="trust-badge blue">🔵 New Miner</span>';
   return '<span class="trust-badge red">🔴 Low Trust</span>';
 }
 
@@ -62,16 +62,18 @@ onAuthStateChanged(auth, async user => {
   console.log("User Data:", data);
 
   const data = docSnap.data();
-  const username = data.username || user.email;
-  const trustScore = data.trustScore ?? data.trustscore ?? 0;
-  const balance = data.balance?.toFixed(2) ?? "0.00";
-  const avatar = data.avatar || "avatars/default.png";
+console.log("Loaded Firebase User Data:", data); // Debug
 
-  document.getElementById("username").textContent = username;
-  document.getElementById("trustScore").innerHTML = `${trustScore} ${getTrustBadge(trustScore)}`;
-  document.getElementById("balance").textContent = balance;
-  document.getElementById("miningLevel").textContent = determineMiningLevel(data.balance || 0);
-  updateAvatarUI(avatar);
+const username = data.username || user.email;
+const trustScore = data.trustScore ?? data.trustscore ?? 0;
+const balance = typeof data.balance === "number" ? data.balance.toFixed(2) : "0.00";
+const avatar = data.avatar || "avatars/default.png";
+
+document.getElementById("username").textContent = username;
+document.getElementById("trustScore").innerHTML = `${trustScore} ${getTrustBadge(trustScore)}`;
+document.getElementById("balance").textContent = balance;
+document.getElementById("miningLevel").textContent = determineMiningLevel(data.balance || 0);
+updateAvatarUI(avatar);
 
   displayAvatarGallery(user.uid);
 });
