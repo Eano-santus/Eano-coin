@@ -34,5 +34,35 @@
 
 <body class="profile-page">
 
-  <!-- 🔝
-  l>
+  <!-- 🔝 Navbar -->
+  <div class="nav-fixed">
+    <h1 class="logo">👤 Profile</h1>
+    <div class="nav-controls">
+      <a href="dashboard.html" title="Back to Dashboard">🏠</a>
+      <button id="toggle-theme">🌑/☀️</button>
+    </div>
+  </div>
+
+  <!-- ✅ Main Content -->
+  <main style="padding: 20px; max-width: 600px; margin: auto;">
+    <!-- 🧑 Avatar Section -->
+    <section class="announcement" style="text-align: center;">
+      <h2>🧑 Your Avatar</h2>
+      <img id="current-avatar" class="profile-avatar" src="avatars/default.png" alt="Avatar" />
+      <div id="avatar-gallery" class="avatar-grid"></div>
+    </section>
+
+    <!-- 📊 Profile Info Section -->
+    <section class="announcement">
+      <h2>📊 Profile Info</h2>
+      <p><strong>Username:</strong> <span id="username">Loading...</span></p>
+      <p><strong>Trust Score:</strong> <span id="trustScore">0</span></p>
+      <p><strong>Balance:</strong> <span id="balance">0.00</span> EANO</p>
+      <p><strong>Mining Level:</strong> <span id="miningLevel">🐥 Chicken</span></p>
+    </section>
+  </main>
+
+  <!-- 👣 Footer -->
+  <div class="footer">© 2025 EANO • Powered by People</div>
+</body>
+</html>
