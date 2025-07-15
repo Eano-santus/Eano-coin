@@ -21,6 +21,19 @@
 
 /* === AVATAR SELECTOR === */ .avatar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; padding: 16px; } .avatar-grid img { width: 80px; height: 80px; border-radius: 12px; border: 2px solid transparent; transition: border 0.2s, transform 0.2s; cursor: pointer; } .avatar-grid img:hover { border-color: gold; transform: scale(1.05); } .avatar-grid img.selected { border-color: lime; box-shadow: 0 0 8px lime; }
 
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  margin: 12px 0;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
 /* === FOOTER === */ .footer { text-align: center; padding: 20px 0; color: #888; font-size: 0.9rem; }
 
 /* === BUTTONS === */ button { padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; } .btn-danger { background: #f44336; color: white; } .btn-danger:hover { background: #d32f2f; }
