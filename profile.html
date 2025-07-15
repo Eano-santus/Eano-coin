@@ -5,17 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My Profile • EANO</title>
 
+  <!-- ✅ SEO -->
   <meta name="description" content="View your EANO mining profile, TrustScore, and referral stats." />
+  <meta name="keywords" content="EANO, crypto mining, trust score, referral" />
+  <meta name="author" content="Santus Santorum" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://eano-santus.github.io/eano-coin/profile.html" />
+
+  <!-- ✅ Social -->
   <meta property="og:title" content="My Profile • EANO Account" />
   <meta property="og:description" content="Track your balance, level, and profile info on the EANO Network." />
+  <meta property="og:image" content="/assets/eano-dashboard-banner.png" />
   <meta property="og:url" content="https://eano-santus.github.io/eano-coin/profile.html" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Icons -->
-  <link rel="icon" href="assets/icons/favicon-32x32.png" />
+  <!-- ✅ Favicons -->
+  <link rel="icon" href="favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96x96.png">
+
+  <!-- ✅ PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
 
-  <!-- Styles -->
+  <!-- ✅ Styles & Script -->
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="profile.js" defer></script>
 </head>
@@ -35,7 +51,7 @@
     <!-- Avatar Section -->
     <section class="announcement" style="text-align: center;">
       <h2>🧑 Your Avatar</h2>
-      <img id="current-avatar" src="avatars/default.png" alt="Avatar" style="width: 100px; border-radius: 50%; margin: 10px 0;" />
+      <img id="current-avatar" class="profile-avatar" src="avatars/default.png" alt="Avatar" />
       <div id="avatar-gallery" class="avatar-grid" style="margin-top: 20px;"></div>
     </section>
 
@@ -49,6 +65,7 @@
     </section>
   </main>
 
+  <!-- Footer -->
   <div class="footer">© 2025 EANO • Powered by People</div>
 </body>
 </html>
