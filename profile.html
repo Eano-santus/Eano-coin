@@ -3,66 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile • EANO</title>
-  <title>My Profile • EANO Account</title>
-<meta name="description" content="View your EANO mining profile, TrustScore, and referral stats." />
-<meta property="og:title" content="My Profile • EANO Account" />
-<meta property="og:description" content="Track your balance, level, and profile info on the EANO Network." />
-<meta property="og:url" content="https://eano-santus.github.io/eano-coin/profile.html" />
-  <!-- ✅ Apple Touch Icons -->
-<link rel="apple-touch-icon" sizes="57x57" href="assets/icons/apple-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="60x60" href="assets/icons/apple-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="72x72" href="assets/icons/apple-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="76x76" href="assets/icons/apple-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="assets/icons/apple-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="120x120" href="assets/icons/apple-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="assets/icons/apple-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="152x152" href="assets/icons/apple-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-icon-180x180.png">
+  <title>My Profile • EANO</title>
 
-<!-- ✅ Android + Browser Favicons -->
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-icon-192x192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <meta name="description" content="View your EANO mining profile, TrustScore, and referral stats." />
+  <meta property="og:title" content="My Profile • EANO Account" />
+  <meta property="og:description" content="Track your balance, level, and profile info on the EANO Network." />
+  <meta property="og:url" content="https://eano-santus.github.io/eano-coin/profile.html" />
 
-<!-- ✅ Windows Tiles -->
-<meta name="msapplication-TileColor" content="#000000">
-<meta name="msapplication-TileImage" content="assets/icons/ms-icon-144x144.png">
+  <!-- Icons -->
+  <link rel="icon" href="assets/icons/favicon-32x32.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
 
-<!-- ✅ Web App Manifest -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="profile.js" defer></script>
 </head>
 <body class="profile-page">
+
+  <!-- Navbar -->
   <div class="nav-fixed">
-    <h1 class="logo">👤 EANO Profile</h1>
+    <h1 class="logo">👤 Profile</h1>
     <div class="nav-controls">
-      <a href="dashboard.html">🏠</a>
+      <a href="dashboard.html" title="Back to Dashboard">🏠</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
   </div>
 
-  <!-- Avatar Section -->
-  <section class="section" id="avatar-section">
-    <h2>🧑 Choose Your Avatar</h2>
-    <img id="current-avatar" src="avatars/default.png" alt="Avatar" style="max-width: 100px; border-radius: 50%;" />
-    <div id="avatar-gallery" class="avatar-grid">
-      <!-- Filled by JS -->
-    </div>
-  </section>
+  <!-- Main Container -->
+  <main style="padding: 20px; max-width: 600px; margin: auto;">
+    <!-- Avatar Section -->
+    <section class="announcement" style="text-align: center;">
+      <h2>🧑 Your Avatar</h2>
+      <img id="current-avatar" src="avatars/default.png" alt="Avatar" style="width: 100px; border-radius: 50%; margin: 10px 0;" />
+      <div id="avatar-gallery" class="avatar-grid" style="margin-top: 20px;"></div>
+    </section>
 
-  <!-- Info Section -->
-  <section class="section">
-    <h2>📊 Profile Info</h2>
-    <p><strong>Username:</strong> <span id="username">Loading...</span></p>
-    <p><strong>TrustScore:</strong> <span id="trustScore">...</span></p>
-    <p><strong>Balance:</strong> <span id="balance">0</span> EANO</p>
-    <p><strong>Mining Level:</strong> <span id="miningLevel">...</span></p>
-  </section>
+    <!-- Profile Info Section -->
+    <section class="announcement">
+      <h2>📊 Profile Info</h2>
+      <p><strong>Username:</strong> <span id="username">Loading...</span></p>
+      <p><strong>Trust Score:</strong> <span id="trustScore">0</span></p>
+      <p><strong>Balance:</strong> <span id="balance">0.00</span> EANO</p>
+      <p><strong>Mining Level:</strong> <span id="miningLevel">🐥 Chicken</span></p>
+    </section>
+  </main>
 
-  <footer class="footer">© 2025 EANO Network</footer>
+  <div class="footer">© 2025 EANO • Powered by People</div>
 </body>
 </html>
