@@ -11,34 +11,30 @@ const avatarGallery = [
   "avatar5.png", "avatar6.png", "avatar7.png", "avatar8.png"
 ];
 
+// 🧑 Update main avatar image
 function updateAvatarUI(selectedUrl) {
   document.getElementById("current-avatar").src = selectedUrl;
 }
 
+// 📸 Render avatar grid
 function displayAvatarGallery(uid) {
   const container = document.getElementById("avatar-gallery");
-  container.innerHTML = ""; // Clear old avatars
   avatarGallery.forEach(name => {
     const url = `avatars/${name}`;
     const img = document.createElement("img");
     img.src = url;
     img.alt = name;
     img.className = "avatar-option";
-
     img.onclick = async () => {
       updateAvatarUI(url);
       const userRef = doc(db, "users", uid);
       await updateDoc(userRef, { avatar: url });
-
-      // Highlight selected avatar
-      document.querySelectorAll(".avatar-option").forEach(el => el.classList.remove("selected"));
-      img.classList.add("selected");
     };
-
     container.appendChild(img);
   });
 }
 
+// 🐲 Determine level based on balance
 function determineMiningLevel(balance) {
   if (balance >= 10000) return "🐉 Dragon";
   if (balance >= 5000) return "🐘 Elephant";
@@ -51,6 +47,7 @@ function determineMiningLevel(balance) {
   return "🐥 Chicken";
 }
 
+// 👤 Load user profile
 onAuthStateChanged(auth, async user => {
   if (!user) return (window.location.href = "index.html");
 
@@ -69,7 +66,7 @@ onAuthStateChanged(auth, async user => {
   displayAvatarGallery(user.uid);
 });
 
-// Theme Toggle
+// 🌗 Theme Toggle
 document.getElementById("toggle-theme").addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 });
