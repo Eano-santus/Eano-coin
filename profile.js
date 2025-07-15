@@ -12,15 +12,12 @@ const avatarGallery = [
 ];
 
 function updateAvatarUI(selectedUrl) {
-  const avatarImg = document.getElementById("current-avatar");
-  if (avatarImg) {
-    avatarImg.src = selectedUrl;
-  }
+  document.getElementById("current-avatar").src = selectedUrl;
 }
 
 function displayAvatarGallery(uid) {
   const container = document.getElementById("avatar-gallery");
-  container.innerHTML = ""; // clear previous
+  container.innerHTML = ""; // Clear previous avatars
   avatarGallery.forEach(name => {
     const url = `avatars/${name}`;
     const img = document.createElement("img");
@@ -48,6 +45,14 @@ function determineMiningLevel(balance) {
   return "🐥 Chicken";
 }
 
+function getTrustBadge(score) {
+  if (score >= 5000) return '<span class="trust-badge OG">O.G</span>';
+  if (score >= 1000) return '<span class="trust-badge green">🟢 Trusted</span>';
+  if (score >= 500) return '<span class="trust-badge yellow">🟡 Reliable</span>';
+  if (score >= 300) return '<span class="trust-badge blue">🔵 New</span>';
+  return '<span class="trust-badge red">🔴 Low Trust</span>';
+}
+
 onAuthStateChanged(auth, async user => {
   if (!user) return (window.location.href = "index.html");
 
@@ -57,29 +62,20 @@ onAuthStateChanged(auth, async user => {
 
   const data = docSnap.data();
   const username = data.username || user.email;
-  const trustScore = data.trustScore ?? 0;
+  const trustScore = data.trustScore ?? data.trustscore ?? 0;
   const balance = data.balance?.toFixed(2) ?? "0.00";
-  const miningLevel = determineMiningLevel(data.balance || 0);
+  const avatar = data.avatar || "avatars/default.png";
 
   document.getElementById("username").textContent = username;
-  document.getElementById("trustScore").textContent = trustScore;
+  document.getElementById("trustScore").innerHTML = `${trustScore} ${getTrustBadge(trustScore)}`;
   document.getElementById("balance").textContent = balance;
-  document.getElementById("miningLevel").textContent = miningLevel;
+  document.getElementById("miningLevel").textContent = determineMiningLevel(data.balance || 0);
+  updateAvatarUI(avatar);
 
-  let avatarPath = data.avatar || "avatars/default.png";
-
-  // ✅ Validate that avatar is from the approved list
-  const validAvatars = avatarGallery.map(name => `avatars/${name}`);
-  if (!validAvatars.includes(avatarPath)) {
-    avatarPath = "avatars/default.png";
-    await updateDoc(userRef, { avatar: avatarPath });
-  }
-
-  updateAvatarUI(avatarPath);
   displayAvatarGallery(user.uid);
 });
 
-// 🌓 Theme toggle
+// Theme Toggle
 document.getElementById("toggle-theme").addEventListener("click", () => {
   document.body.classList.toggle("light-mode");
 });
