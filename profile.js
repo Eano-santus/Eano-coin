@@ -17,17 +17,24 @@ function updateAvatarUI(selectedUrl) {
 
 function displayAvatarGallery(uid) {
   const container = document.getElementById("avatar-gallery");
+  container.innerHTML = ""; // Clear old avatars
   avatarGallery.forEach(name => {
     const url = `avatars/${name}`;
     const img = document.createElement("img");
     img.src = url;
     img.alt = name;
     img.className = "avatar-option";
+
     img.onclick = async () => {
       updateAvatarUI(url);
       const userRef = doc(db, "users", uid);
       await updateDoc(userRef, { avatar: url });
+
+      // Highlight selected avatar
+      document.querySelectorAll(".avatar-option").forEach(el => el.classList.remove("selected"));
+      img.classList.add("selected");
     };
+
     container.appendChild(img);
   });
 }
