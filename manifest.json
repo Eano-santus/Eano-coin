@@ -1,7 +1,7 @@
 {
   "name": "EANO Project",
   "short_name": "EANO",
-  "start_url": "/splash.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
