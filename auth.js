@@ -1,24 +1,40 @@
 // auth.js — Handles login session + Firestore user document creation
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, setDoc, getDocs, collection, query, where, updateDoc } from "firebase/firestore";
 
-import { auth, db } from './firebase.js';
-import {
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  increment
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+const auth = getAuth();
+const db = getFirestore();
 
-// 🔁 Extract referral code from URL
-function getReferralCode() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("ref");
+async function signupWithReferral(email, password, referralCodeInput) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
+
+    // Generate a unique referral code for this new user
+    const referralCode = uid.slice(0, 6); // or use random string/username
+
+    let referredBy = null;
+    if (referralCodeInput) {
+      // Check if referral code is valid
+      const q = query(collection(db, "users"), where("referralCode", "==", referralCodeInput));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const refDoc = querySnapshot.docs[0];
+        referredBy = referralCodeInput;
+
+        // Update referrer’s trust score and referral count
+        const refUID = refDoc.id;
+        await updateDoc(doc(db, "users", refUID), {
+          trustScore: refDoc.data().trustScore + 5,
+          referralCount: (refDoc.data().referralCount || 0) + 1
+        });
+      }
+    }
+
+    alert("Signup successful!");
+  } catch (err) {
+    console.error("Signup error:", err.message);
+  }
 }
 
 // ✅ Sign-In with Google and Initialize Firestore User
