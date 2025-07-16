@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -43,61 +43,39 @@
   <link rel="icon" href="eano-icon-192.png" type="image/png" />
   <link rel="apple-touch-icon" href="eano-icon-192.png" />
 
-  <!-- 🔗 Style -->
+  <title>🏆 Leaderboard • EANO</title>
+  <meta name="description" content="See top miners on the EANO network ranked by TrustScore, balance, and mining level.">
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
   <script type="module" src="leaderboard.js" defer></script>
 </head>
-<body class="studio-page">
+<body class="profile-page">
+
   <div class="nav-fixed">
-    <h1 class="logo">🏆 EANO Leaderboard</h1>
+    <h1 class="logo">🏆 Leaderboard</h1>
     <div class="nav-controls">
-      <a href="dashboard.html">🏠</a>
-      <a href="wallet.html">👛</a>
-      <a href="profile.html">👤</a>
+      <a href="dashboard.html" title="Dashboard">🏠</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
   </div>
 
-  <section class="section">
-    <h2>🌍 Top 10 Miners</h2>
-    <div id="leaderboard-list">Loading leaderboard...</div>
-  </section>
+  <main style="padding: 20px; max-width: 1000px; margin: auto;">
+    <section class="announcement">
+      <h2>🏅 Top 10 Miners</h2>
+      <div id="topMiners" class="leaderboard-section"></div>
+    </section>
 
-  <section class="section">
-    <h2>🧠 TrustScore Badge Guide</h2>
-    <ul>
-      <li>⭐ <strong>O.G</strong> – 5000+</li>
-      <li>🟢 <strong>Trusted Miner</strong> – 1000+</li>
-      <li>🟡 <strong>Reliable Miner</strong> – 500+</li>
-      <li>🔵 <strong>New Miner</strong> – 300+</li>
-      <li>🔴 <strong>Low Trust</strong> – &lt;300</li>
-    </ul>
-  </section>
+    <section class="announcement">
+      <h2>🛡️ TrustScore Champions</h2>
+      <div id="topTrust" class="leaderboard-section"></div>
+    </section>
 
-  <section class="section">
-    <h2>⚡ Mining Levels</h2>
-    <ul>
-      <li>🐉 Dragon – 10,000+</li>
-      <li>🐘 Elephant – 5,000+</li>
-      <li>🦍 Gorilla – 2,500+</li>
-      <li>🐻 Bear – 1,200+</li>
-      <li>🐯 Lion – 600+</li>
-      <li>🐼 Panda – 300+</li>
-      <li>🐺 Wolf – 150+</li>
-      <li>🐹 Hamster – 50+</li>
-      <li>🐥 Chicken – &lt;50</li>
-    </ul>
-  </section>
+    <section class="announcement">
+      <h2>📶 Mining Level Rankings</h2>
+      <div id="topLevels" class="leaderboard-section"></div>
+    </section>
+  </main>
 
-  <footer class="footer">
-    &copy; 2025 EANO Network • Leaderboard Powered by Trust & Mining
-  </footer>
-
-  <!-- 🌗 Theme toggle -->
-  <script>
-    document.getElementById("toggle-theme").addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-    });
-  </script>
+  <div class="footer">© 2025 EANO • Mining powered by People</div>
 </body>
 </html>
