@@ -41,6 +41,16 @@ function updateUserStats(data) {
   `;
 }
 
+const miningRef = doc(db, "miningSessions", user.uid);
+const miningSnap = await getDoc(miningRef);
+if (!miningSnap.exists()) {
+  await setDoc(miningRef, {
+    miningStart: Date.now(),
+    miningEnd: 0,
+    status: "inactive"
+  });
+}
+
 function runMining(userId) {
   const userRef = doc(db, "users", userId);
 
