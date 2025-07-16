@@ -1,59 +1,71 @@
-import {
-  getFirestore, collection, query, orderBy, limit, getDocs
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-const db = getFirestore();
 const auth = getAuth();
+const db = getFirestore();
 
-function getTrustBadge(score) {
-  if (score >= 5000) return "🌟 O.G";
-  if (score >= 1000) return "🟢 Trusted Miner";
-  if (score >= 500) return "🟡 Reliable Miner";
-  if (score >= 300) return "🔵 New Miner";
-  return "🔴 Low Trust";
-}
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return window.location.href = "index.html";
 
-function getLevel(balance) {
-  if (balance >= 10000) return "🐉 Dragon";
-  if (balance >= 5000) return "🐘 Elephant";
-  if (balance >= 2500) return "🦍 Gorilla";
-  if (balance >= 1200) return "🐻 Bear";
-  if (balance >= 600) return "🐯 Lion";
-  if (balance >= 300) return "🐼 Panda";
-  if (balance >= 150) return "🐺 Wolf";
-  if (balance >= 50) return "🐹 Hamster";
-  return "🐥 Chicken";
-}
+  const usersRef = collection(db, "users");
+  const snapshot = await getDocs(usersRef);
+  const users = [];
 
-onAuthStateChanged(auth, async user => {
-  if (!user) return (window.location.href = "index.html");
-
-  const topRef = query(collection(db, "users"), orderBy("trustScore", "desc"), limit(10));
-  const snapshot = await getDocs(topRef);
-  const container = document.getElementById("top-users");
-
-  container.innerHTML = "";
-
-  let rank = 1;
   snapshot.forEach(doc => {
-    const d = doc.data();
-    const trust = getTrustBadge(d.trustScore ?? 0);
-    const level = getLevel(d.balance ?? 0);
-    const name = d.username || d.email;
-
-    container.innerHTML += `
-      <div class="feature-card">
-        <h3>#${rank} — ${name}</h3>
-        <p>Level: ${level} | Score: ${d.trustScore ?? 0} ${trust}</p>
-        <p>Balance: ${d.balance?.toFixed(2) || 0} EANO</p>
-      </div>
-    `;
-    rank++;
+    const data = doc.data();
+    users.push({
+      username: data.username || "Anonymous",
+      avatar: data.avatar || "avatars/default.png",
+      trustScore: data.trustScore || 0,
+      balance: data.balance || 0,
+      level: data.level || "🐥 Chicken",
+    });
   });
-});
 
-// Theme toggle
-document.getElementById("toggle-theme").addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
+  const getTrustBadge = (score) => {
+    if (score >= 5000) return "🟡 O.G";
+    if (score >= 1000) return "🟢 Trusted";
+    if (score >= 500) return "🟡 Reliable";
+    if (score >= 300) return "🔵 New";
+    return "🔴 Low";
+  };
+
+  const renderLeaderboard = (list, containerId, type = "balance") => {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    list.forEach((user, index) => {
+      const div = document.createElement("div");
+      div.className = "feature-card";
+      div.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <img src="${user.avatar}" alt="avatar" style="width: 60px; height: 60px; border-radius: 12px;">
+          <div>
+            <strong>#${index + 1} ${user.username}</strong><br/>
+            ${type === "trust" ? `TrustScore: ${user.trustScore} ${getTrustBadge(user.trustScore)}` :
+              type === "level" ? `Level: ${user.level}` :
+              `Balance: ${user.balance.toFixed(2)} EANO`}
+          </div>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  };
+
+  renderLeaderboard(
+    [...users].sort((a, b) => b.balance - a.balance).slice(0, 10),
+    "topMiners"
+  );
+
+  renderLeaderboard(
+    [...users].sort((a, b) => b.trustScore - a.trustScore).slice(0, 10),
+    "topTrust",
+    "trust"
+  );
+
+  renderLeaderboard(
+    [...users].sort((a, b) => b.balance - a.balance).slice(0, 10),
+    "topLevels",
+    "level"
+  );
 });
