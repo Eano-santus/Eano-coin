@@ -1,89 +1,118 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EANO Dashboard</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />  <!-- Styles -->  <link rel="stylesheet" href="style.css?v=6" />
+
+  <!-- Fonts + Theme -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Google Tag Manager -->
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TSZQ7ZXF');
+  </script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css?v=4" />
 </head>
+
 <body class="dashboard">
-  <!-- Sidebar toggle and Topbar -->
+  <!-- GTM noscript -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSZQ7ZXF"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <!-- 🔝 Topbar -->
   <div class="topbar">
-    <button id="menu-toggle">☰</button>
-    <div class="balance-display"><span id="balance">0.000</span> EANO</div>
-    <div class="top-actions">
+    <strong class="brand">EANO</strong>
+    <div><span id="balance">0.000</span> EANO | <span id="timer">⏳</span></div>
+    <div class="d-flex align-items-center gap-2">
       <select id="lang-select">
-        <option value="en">🌍 EN</option>
-        <option value="fr">🇫🇷 FR</option>
-        <option value="sw">🇰🇪 SW</option>
-        <option value="ig">🇳🇬 IG</option>
-        <option value="ha">🇳🇬 HA</option>
-        <option value="efik">🇳🇬 EF</option>
-        <option value="pid">🇳🇬 PG</option>
-        <option value="zh">🇨🇳 CN</option>
+        <option value="en">🌍 English</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="sw">🇰🇪 Swahili</option>
+        <option value="ig">🇳🇬 Igbo</option>
+        <option value="ha">🇳🇬 Hausa</option>
+        <option value="efik">🇳🇬 Efik</option>
+        <option value="pid">🇳🇬 Pidgin</option>
+        <option value="zh">🇨🇳 中文</option>
       </select>
+      <button id="dark-toggle" title="Toggle Dark Mode">🌗</button>
     </div>
-  </div>  <!-- Sidebar menu -->  <div id="sidebar-menu" class="sidebar">
+  </div>
+
+  <!-- ☰ Hamburger -->
+  <div id="menu-toggle">☰ Menu</div>
+
+  <!-- 📍 Slide-Out Menu -->
+  <div id="menu" class="menu">
     <ul>
-      <li><a href="#">🏡 Home</a></li>
-      <li><a onclick="showComingSoon('Mainnet')">🌐 Mainnet</a></li>
-      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
-      <li><a href="invite.html">👥 Team</a></li>
-      <li><a onclick="showComingSoon('Community')">💬 Community</a></li>
-      <li><a href="profile.html">👤 Profile</a></li>
-      <li><a onclick="showComingSoon('About')">👑 Author</a></li>
-      <li><a href="whitepaper.pdf" target="_blank">📄 WhitePaper</a></li>
-      <li><a href="https://t.me/eanoportal" target="_blank">🛠 Support</a></li>
+      <li><a href="#" onclick="showSection('profile')">👤 Profile</a></li>
+      <li><a href="#" onclick="showSection('referrals')">👥 Referrals</a></li>
+      <li><a href="#" onclick="showSection('leaderboard')">🏆 Leaderboard</a></li>
+      <li><a href="#" onclick="showSection('settings')">⚙️ Settings</a></li>
+      <li><a href="#" onclick="showSection('whitepaper')">📄 WhitePaper</a></li>
+      <li><a href="https://t.me/eanocoin" target="_blank">🛠 Support Portal</a></li>
       <li><button id="logout-btn">🚪 Logout</button></li>
     </ul>
-  </div>  <!-- Main content -->  <main class="main-content">
-    <section class="announcement" id="announcement-box">
-      📢 EANO App launching soon. Stay tuned!
-    </section><!-- Mine Tab -->
-<section class="mine-tab">
-  <button id="mine-btn">⚡ Start Mining</button>
-  <div id="mining-info" class="mining-info">
-    <p>Rate: <strong>0.600 EANO/hr</strong></p>
-    <p>⏳ Time Remaining: <span id="timer">--:--:--</span></p>
-    <p>👥 Active Referrals: <span id="active-referrals">0</span></p>
   </div>
-  <button id="dark-toggle">🌗 Theme</button>
-</section>
 
-<!-- Referral and Trust Info -->
-<section class="status-info">
-  <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
-  <p><strong>Mining Level:</strong> <span id="level">🐣 Newbie</span></p>
-  <p><strong>Trust Score:</strong> <span id="trust-score">0 - ⚠ Low Trust</span></p>
-</section>
+  <!-- ⛏ Mining Button (outside menu, always visible) -->
+  <div class="sidebar">
+    <button id="mine-btn">⛏ Start Mining</button>
+  </div>
 
-<!-- Coming soon blocks -->
-<section class="coming-soon-section">
-  <div class="coming-box">🔐 GameFi - Coming Soon</div>
-  <div class="coming-box">📱 Social Mining - Coming Soon</div>
-  <div class="coming-box">💰 Marketplace - Coming Soon</div>
-</section>
+  <!-- 📦 Main -->
+  <div class="main-content fade-in">
+    <!-- 📢 Announcement -->
+    <div id="announcement-box" class="announcement-banner">
+      📢 EANO Network App and other cool features coming soon!
+    </div>
 
-  </main>  <!-- Scripts -->  <script src="firebase.js"></script>  <script src="ui.js?v=6"></script>  <script src="lang.js?v=6"></script>  <script type="module" src="dashboard.js?v=6"></script>  <script>
-    // Toggle sidebar
-    document.getElementById("menu-toggle").onclick = () => {
-      document.getElementById("sidebar-menu").classList.toggle("open");
-    };
+    <!-- 👥 Referral Shortcut -->
+    <div style="margin-top: 10px;">
+      <a href="invite.html" class="team-referral-btn">👥 Team</a>
+    </div>
 
-    // Theme toggle
-    document.getElementById("dark-toggle")?.addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-    });
+    <!-- ℹ️ Mining Info -->
+    <div id="referral-info" class="mt-4">
+      <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+      <p><strong>Mining Level:</strong> <span id="level">🐥 Chicken</span></p>
+      <p><strong>Trust Score:</strong> <span id="trust-score">0</span> - <span id="trust-badge">⚠ Low Trust</span></p>
+    </div>
+  </div>
 
-    function showComingSoon(name) {
-      alert(name + " is coming soon!");
+  <!-- Floating "Coming Soon" Box -->
+  <div class="coming-soon-box">Coming Soon Loading...</div>
+
+  <!-- 🔌 Scripts -->
+  <script src="firebase.js"></script>
+  <script src="auth.js"></script>
+  <script src="ui.js?v=4"></script>
+  <script src="lang.js"></script>
+  <script src="settings.js"></script>
+  <script type="module" src="install.js?v=4"></script>
+
+  <!-- 📦 Helper for placeholders -->
+  <script>
+    function showSection(section) {
+      alert(`${section} coming soon!`);
     }
-  </script>  <!-- Service Worker -->  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ Service Worker registered"))
-        .catch(err => console.error("❌ SW registration failed:", err));
+  </script>
+
+  <!-- ✅ Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker registered'))
+        .catch(err => console.error('❌ SW failed:', err));
     }
-  </script></body>
+  </script>
+</body>
 </html>
