@@ -1,7 +1,7 @@
 {
   "name": "EANO Project",
   "short_name": "EANO",
-  "start_url": "/index.html",
+  "start_url": "/splash.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
@@ -55,12 +55,6 @@
       "short_name": "Support",
       "url": "https://t.me/eanocoin",
       "icons": [{ "src": "/eano-icon-192.png", "sizes": "192x192" }]
-  }
-],
-"start_url": "/splash.html", // ← Show splash first
-"display": "standalone",
-"theme_color": "#000000",
-"background_color": "#000000"
     }
   ]
 }
