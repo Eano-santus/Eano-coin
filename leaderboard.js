@@ -22,6 +22,7 @@ onAuthStateChanged(auth, async (user) => {
     joinedAt: data.joinedAt || new Date().toISOString(), // ✅ for filtering
   });
 });
+  
   allUsers = users;
 filterLeaderboard("all"); // default filter
 
