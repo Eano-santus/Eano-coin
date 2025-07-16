@@ -30,11 +30,6 @@ onAuthStateChanged(auth, async (user) => {
     return "🔴 Low";
   };
 
-  await setDoc(doc(db, "referrals", user.uid), {
-  referredBy: "ref123",  // logic from URL
-  referred: [...],
-});
-
   const renderLeaderboard = (list, containerId, type = "balance") => {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
