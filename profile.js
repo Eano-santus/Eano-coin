@@ -64,6 +64,11 @@ onAuthStateChanged(auth, async user => {
   const data = docSnap.data();
 console.log("Loaded Firebase User Data:", data); // Debug
 
+  await setDoc(doc(db, "referrals", user.uid), {
+  referredBy: "ref123",  // logic from URL
+  referred: [...],
+});
+
 const username = data.username || user.email;
 const trustScore = data.trustScore ?? data.trustscore ?? 0;
 const balance = typeof data.balance === "number" ? data.balance.toFixed(2) : "0.00";
