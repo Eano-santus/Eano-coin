@@ -12,15 +12,18 @@ onAuthStateChanged(auth, async (user) => {
   const users = [];
 
   snapshot.forEach(doc => {
-    const data = doc.data();
-    users.push({
-      username: data.username || "Anonymous",
-      avatar: data.avatar || "avatars/default.png",
-      trustScore: data.trustScore || 0,
-      balance: data.balance || 0,
-      level: data.level || "🐥 Chicken",
-    });
+  const data = doc.data();
+  users.push({
+    username: data.username || "Anonymous",
+    avatar: data.photoURL || "avatars/default.png",
+    trustScore: data.trustScore || 0,
+    balance: data.balance || 0,
+    level: data.level || "🐥 Chicken",
+    joinedAt: data.joinedAt || new Date().toISOString(), // ✅ for filtering
   });
+});
+  allUsers = users;
+filterLeaderboard("all"); // default filter
 
   const getTrustBadge = (score) => {
     if (score >= 5000) return "🟡 O.G";
@@ -69,3 +72,35 @@ onAuthStateChanged(auth, async (user) => {
     "level"
   );
 });
+
+let allUsers = [];
+
+const filterLeaderboard = (range) => {
+  const now = new Date();
+  let filtered = [...allUsers];
+
+  if (range === "weekly") {
+    const oneWeekAgo = new Date(now.setDate(now.getDate() - 7));
+    filtered = filtered.filter(u => new Date(u.joinedAt) >= oneWeekAgo);
+  } else if (range === "monthly") {
+    const oneMonthAgo = new Date(now.setMonth(now.getMonth() - 1));
+    filtered = filtered.filter(u => new Date(u.joinedAt) >= oneMonthAgo);
+  }
+
+  renderLeaderboard(
+    [...filtered].sort((a, b) => b.balance - a.balance).slice(0, 10),
+    "topMiners"
+  );
+
+  renderLeaderboard(
+    [...filtered].sort((a, b) => b.trustScore - a.trustScore).slice(0, 10),
+    "topTrust",
+    "trust"
+  );
+
+  renderLeaderboard(
+    [...filtered].sort((a, b) => b.balance - a.balance).slice(0, 10),
+    "topLevels",
+    "level"
+  );
+};
