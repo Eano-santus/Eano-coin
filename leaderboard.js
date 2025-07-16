@@ -88,6 +88,22 @@ const filterLeaderboard = (range) => {
     filtered = filtered.filter(u => new Date(u.joinedAt) >= oneMonthAgo);
   }
 
+  let allUsers = [];
+
+const filterLeaderboard = (range) => {
+  const now = new Date();
+  let filtered = [...allUsers];
+
+  if (range === "weekly") {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(now.getDate() - 7);
+    filtered = filtered.filter(u => new Date(u.joinedAt) >= oneWeekAgo);
+  } else if (range === "monthly") {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(now.getMonth() - 1);
+    filtered = filtered.filter(u => new Date(u.joinedAt) >= oneMonthAgo);
+  }
+
   renderLeaderboard(
     [...filtered].sort((a, b) => b.balance - a.balance).slice(0, 10),
     "topMiners"
