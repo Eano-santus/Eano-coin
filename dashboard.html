@@ -124,6 +124,29 @@
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log('✅ SW registered'))
         .catch(err => console.error('❌ SW failed:', err));
+      <button id="installApp" class="install-btn" style="display:none;">Install EANO</button>
+<script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('installApp');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+
+    installBtn.onclick = () => {
+      installBtn.style.display = 'none';
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(choice => {
+        if (choice.outcome === 'accepted') {
+          console.log('✅ EANO App installed');
+        } else {
+          console.log('❌ Install dismissed');
+        }
+      });
+    };
+  });
+</script>
     }
   </script>
 </body>
