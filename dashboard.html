@@ -147,7 +147,35 @@
     };
   });
 </script>
-    }
+    <script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+
+    installBtn.addEventListener('click', async () => {
+      installBtn.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('✅ User accepted the PWA install prompt');
+        } else {
+          console.log('❌ User dismissed the PWA install prompt');
+        }
+        deferredPrompt = null;
+      }
+    });
+  });
+
+  // Optional: Hide button if already installed
+  window.addEventListener('appinstalled', () => {
+    console.log('✅ PWA was installed');
+    installBtn.style.display = 'none';
+  });
   </script>
 </body>
 </html>
