@@ -1,135 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EANO Dashboard • Mine & Grow Trust</title>
-
-  <!-- Favicon & Icons -->
-  <link rel="icon" href="favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-icon-180x180.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-icon-192x192.png" />
-
-  <!-- SEO Meta -->
-  <meta name="description" content="EANO Dashboard – mine EANO, build TrustScore, manage referrals." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://eano-coin.netlify.app/dashboard.html" />
-  <meta name="author" content="Santus Santorum" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="EANO Dashboard" />
-  <meta property="og:description" content="Mine daily and build TrustScore with EANO." />
-  <meta property="og:image" content="assets/eano-dashboard-banner.png" />
-  <meta property="og:url" content="https://eano-coin.netlify.app/dashboard.html" />
-  <meta property="og:type" content="website" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="EANO Dashboard" />
-  <meta name="twitter:description" content="Earn EANO through mining and referrals." />
-  <meta name="twitter:image" content="assets/eano-dashboard-banner.png" />
-
-  <!-- PWA Meta -->
+  <title>EANO Dashboard</title>
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#000000" />
-
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css" />
+  <meta name="theme-color" content="#000000" />  <!-- Styles -->  <link rel="stylesheet" href="style.css?v=6" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
-<body>
-  <!-- Navigation -->
-  <div class="nav-fixed">
-    <h1 class="logo">🌟 EANO</h1>
-    <span id="balance-display">Balance: 0.000 EANO</span>
-    <div class="nav-controls">
-      <button id="toggle-theme">🌑/☀️</button>
+<body class="dashboard">
+  <!-- Sidebar toggle and Topbar -->
+  <div class="topbar">
+    <button id="menu-toggle">☰</button>
+    <div class="balance-display"><span id="balance">0.000</span> EANO</div>
+    <div class="top-actions">
       <select id="lang-select">
-        <option value="en">English</option>
-        <option value="fr">Français</option>
-        <option value="pid">Pidgin</option>
-        <option value="ig">Igbo</option>
-        <option value="ha">Hausa</option>
-        <option value="sw">Swahili</option>
-        <option value="efik">Efik</option>
-        <option value="zh">中文</option>
+        <option value="en">🌍 EN</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="sw">🇰🇪 SW</option>
+        <option value="ig">🇳🇬 IG</option>
+        <option value="ha">🇳🇬 HA</option>
+        <option value="efik">🇳🇬 EF</option>
+        <option value="pid">🇳🇬 PG</option>
+        <option value="zh">🇨🇳 CN</option>
       </select>
     </div>
+  </div>  <!-- Sidebar menu -->  <div id="sidebar-menu" class="sidebar">
+    <ul>
+      <li><a href="#">🏡 Home</a></li>
+      <li><a onclick="showComingSoon('Mainnet')">🌐 Mainnet</a></li>
+      <li><a href="leaderboard.html">🏆 Leaderboard</a></li>
+      <li><a href="invite.html">👥 Team</a></li>
+      <li><a onclick="showComingSoon('Community')">💬 Community</a></li>
+      <li><a href="profile.html">👤 Profile</a></li>
+      <li><a onclick="showComingSoon('About')">👑 Author</a></li>
+      <li><a href="whitepaper.pdf" target="_blank">📄 WhitePaper</a></li>
+      <li><a href="https://t.me/eanoportal" target="_blank">🛠 Support</a></li>
+      <li><button id="logout-btn">🚪 Logout</button></li>
+    </ul>
+  </div>  <!-- Main content -->  <main class="main-content">
+    <section class="announcement" id="announcement-box">
+      📢 EANO App launching soon. Stay tuned!
+    </section><!-- Mine Tab -->
+<section class="mine-tab">
+  <button id="mine-btn">⚡ Start Mining</button>
+  <div id="mining-info" class="mining-info">
+    <p>Rate: <strong>0.600 EANO/hr</strong></p>
+    <p>⏳ Time Remaining: <span id="timer">--:--:--</span></p>
+    <p>👥 Active Referrals: <span id="active-referrals">0</span></p>
   </div>
+  <button id="dark-toggle">🌗 Theme</button>
+</section>
 
-  <!-- Mining Status -->
-  <div class="balance-status">
-    <h2 id="mining-status">⛏️ Checking mining session...</h2>
-  </div>
+<!-- Referral and Trust Info -->
+<section class="status-info">
+  <p><strong>Referrals:</strong> <span id="referral-count">0</span></p>
+  <p><strong>Mining Level:</strong> <span id="level">🐣 Newbie</span></p>
+  <p><strong>Trust Score:</strong> <span id="trust-score">0 - ⚠ Low Trust</span></p>
+</section>
 
-  <!-- User Stats (to be dynamically filled) -->
-  <div id="user-stats" class="fade-in"></div>
+<!-- Coming soon blocks -->
+<section class="coming-soon-section">
+  <div class="coming-box">🔐 GameFi - Coming Soon</div>
+  <div class="coming-box">📱 Social Mining - Coming Soon</div>
+  <div class="coming-box">💰 Marketplace - Coming Soon</div>
+</section>
 
-  <!-- Mine Button -->
-<button id="mine-btn" class="mine-btn">
-  <img src="assets/mine-icon.svg" alt="Mine" width="30" />
-</button>
+  </main>  <!-- Scripts -->  <script src="firebase.js"></script>  <script src="ui.js?v=6"></script>  <script src="lang.js?v=6"></script>  <script type="module" src="dashboard.js?v=6"></script>  <script>
+    // Toggle sidebar
+    document.getElementById("menu-toggle").onclick = () => {
+      document.getElementById("sidebar-menu").classList.toggle("open");
+    };
 
-  
-  <!-- Announcements -->
-  <div class="announcement">
-    <h2>📢 Announcement</h2>
-    <p>⛏️ Tap “Tap to Mine” to start your 24‑hour mining session.</p>
-    <p>🎮 Chat, Studio, Marketplace & Tasks coming soon!</p>
-  </div>
-  
-
-  <!-- Features -->
-  <a class="feature-card" href="leaderboard.html"><h3>🏆 Leaderboard</h3><p>Top miners & scores</p></a>
-  <a class="feature-card" href="team.html"><h3>👥 Team</h3><p>Your referrals</p></a>
-  <a class="feature-card" href="profile.html"><h3>👤 Profile</h3><p>Manage your account</p></a>
-  <div class="feature-card coming-soon"><h3>📄 Mainnet-KYC</h3><p>Coming soon</p></div>
-  <div class="feature-card coming-soon"><h3>💬 Chat</h3><p>Coming soon</p></div>
-  <div class="feature-card coming-soon"><h3>🎤 Studio</h3><p>Coming soon</p></div>
-  <div class="feature-card coming-soon"><h3>🛒 Marketplace</h3><p>Coming soon</p></div>
-  <div class="feature-card coming-soon"><h3>📋 Tasks</h3><p>Coming soon</p></div>
-  <div class="feature-card"><a href="https://t.me/eanocoin" target="_blank"><h3>🆘 Support</h3><p>Join Telegram</p></a></div>
-  <div class="feature-card"><h3>🧑‍💼 Author</h3><p>By Santus Santorum</p></div>
-  <div class="feature-card text-center"><button class="btn btn-danger" id="logout-btn">Logout</button></div>
-
-  <!-- Footer -->
-<div class="footer">© 2025 EANO • Built on Trust, Powered by You</div>
-
-<!-- Scripts -->
-<script type="module" src="firebase.js"></script>
-<script type="module" src="lang.js"></script>
-<script type="module" src="ui.js"></script>
-<script type="module" src="dashboard.js"></script>
-
-<!-- ✅ PWA Install Button -->
-<button id="installBtn" class="install-btn" style="display: none;">📲 Install App</button>
-
-<!-- ✅ PWA Service Worker & Install Logic -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('✅ SW registered'))
-      .catch(err => console.error('❌ SW registration failed', err));
-  }
-
-  let deferredPrompt;
-  const installBtn = document.getElementById('installBtn');
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = 'block';
-
-    installBtn.addEventListener('click', async () => {
-      installBtn.style.display = 'none';
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log('✅ User response to install prompt:', outcome);
-      deferredPrompt = null;
+    // Theme toggle
+    document.getElementById("dark-toggle")?.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
     });
-  });
 
-  window.addEventListener('appinstalled', () => {
-    console.log('📲 App installed!');
-    installBtn.style.display = 'none';
-  });
-</script>
+    function showComingSoon(name) {
+      alert(name + " is coming soon!");
+    }
+  </script>  <!-- Service Worker -->  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker registered"))
+        .catch(err => console.error("❌ SW registration failed:", err));
+    }
+  </script></body>
+</html>
