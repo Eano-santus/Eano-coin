@@ -219,10 +219,11 @@ const refCode = urlParams.get("ref");
 if (refCode) {
   document.getElementById("signup-referral").value = refCode;
 }
-
+    
 // ✅ Sign-Up with Referrals and Firestore User Save
 document.getElementById("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const firstname = document.getElementById("signup-firstname").value.trim();
   const lastname = document.getElementById("signup-lastname").value.trim();
   const username = document.getElementById("signup-username").value.trim();
@@ -234,6 +235,7 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
     const userCred = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
 
+    // ✅ Save new user data
     await setDoc(doc(db, "users", user.uid), {
       uid: user.uid,
       name: firstname + " " + lastname,
@@ -244,24 +246,37 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
       photoURL: "",
       balance: 0,
       score: 0,
-      trustScore: 0,
-      referredBy,
+      trustScore: 5, // ✅ New user gets 5 trustScore
+      referredBy,    // ✅ Save referral
       miningStart: null,
       miningEnd: null,
       lastUpdate: null,
       joinedAt: new Date().toISOString()
     });
 
-    // ✅ Save locally
-    localStorage.setItem("username", username);
+    // ✅ Reward the referrer with +5 trustScore
+    if (referredBy) {
+      const q = query(collection(db, "users"), where("username", "==", referredBy));
+      const snapshot = await getDocs(q);
 
-    window.location.href = "dashboard.html";
+      if (!snapshot.empty) {
+        const refDoc = snapshot.docs[0];
+        const refUser = refDoc.data();
+        const refId = refDoc.id;
 
-  } catch (e) {
-    alert("❌ Error: " + e.message);
+        await setDoc(doc(db, "users", refId), {
+          ...refUser,
+          trustScore: (refUser.trustScore || 0) + 5
+        });
       }
-    });
+    }
 
+    alert("✅ Sign up successful!");
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    alert("❌ " + error.message);
+  }
+});
     // Login
     document.getElementById("login-form").addEventListener("submit", async (e) => {
       e.preventDefault();
