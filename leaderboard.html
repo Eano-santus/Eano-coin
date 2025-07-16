@@ -44,6 +44,14 @@
   <!-- Main -->
   <main style="padding: 20px; max-width: 1000px; margin: auto;">
     <section class="announcement">
+      <div style="text-align: right; margin-bottom: 20px;">
+  <label for="filterSelect">Filter by:</label>
+  <select id="filterSelect" onchange="filterLeaderboard(this.value)">
+    <option value="all">🌍 All Time</option>
+    <option value="weekly">📅 This Week</option>
+    <option value="monthly">🗓️ This Month</option>
+  </select>
+      </div>
       <h2>🏅 Top 10 Miners</h2>
       <div id="topMiners" class="leaderboard-section"></div>
     </section>
