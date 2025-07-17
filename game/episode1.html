@@ -1,36 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Alpha‑Wolf Episode 1</title>
-  <link rel="stylesheet" href="game-style.css"/>
+  <meta charset="UTF-8">
+  <title>Alpha-Wolf: Episode 1</title>
+  <script src="https://cdn.jsdelivr.net/gh/tmedwards/sugarcube-2/dist/format.js"></script>
+  <link rel="stylesheet" href="game-style.css">
 </head>
 <body>
-<div class="episode-container">
-  <h2>🐺 Alpha‑Wolf • Episode 1 – The Awakening</h2>
+  <tw-storydata name="AlphaWolf" startnode="1" creator="Twine" creator-version="2.7.0" ifid="EANO-EPISODE-1" format="SugarCube" options="" hidden>
+    <style role="stylesheet" id="twine-user-stylesheet">
+      @import url("game-style.css");
+    </style>
 
-  <!-- Name Customization -->
-  <div id="nameSection">
-    <p>Before we begin, set your name and partner’s name:</p>
-    <input id="pName" placeholder="Your name" /><br/>
-    <input id="partnerName" placeholder="Partner (or leave blank)" /><br/>
-    <button onclick="startStory()">Begin</button>
-  </div>
+    <script role="script" id="twine-user-script">
+      // Give rewards only once
+      if (!State.variables.rewardsGiven) {
+        State.variables.eano = 70;
+        State.variables.gems = 150;
+        State.variables.rewardsGiven = true;
+      } else {
+        State.variables.eano = State.variables.eano || 0;
+        State.variables.gems = State.variables.gems || 0;
+      }
 
-  <div id="story" style="display:none;">
-    <img src="assets/moonlit-forest.jpg" class="scene-img"/>
-    <p id="line0" class="story-text">…</p>
-    <div id="choices"></div>
+      // Cooldown for next episode
+      if (!State.variables.lastPlayed) {
+        State.variables.lastPlayed = Date.now();
+      }
+    </script>
 
-    <div class="episode-controls">
-      <button class="like-btn">❤️ Like</button>
-      <button onclick="shareEpisode()">📤 Share</button>
-    </div>
-    <div class="comment-section">…</div>
-    <div class="next-ep"><p><strong>🔒 Next episode unlocks in <span id="cooldown">04:00:00</span></strong></p></div>
-  </div>
-</div>
-<script src="interactive1.js"></script>
+    <!-- Start Passage -->
+    <tw-passagedata pid="1" name="Start" tags="">
+      <h2>🐺 Alpha-Wolf: The Awakening</h2>
+      Welcome to the world of EANO.
+
+      What’s your name?<br/>
+      <<textbox "$playerName" placeholder="Enter your name">><br/><br/>
+
+      Choose your gender:<br/>
+      <<radiobutton "$gender" "Male">> Male<br/>
+      <<radiobutton "$gender" "Female">> Female<br/>
+      <<radiobutton "$gender" "Other">> Other<br/><br/>
+
+      <<link "Continue">>
+        <<if $playerName and $gender>>
+          <<goto "Intro">>
+        <<else>>
+          Please fill your name and choose a gender.
+        <</if>>
+      <</link>>
+    </tw-passagedata>
+
+    <!-- Intro Passage -->
+    <tw-passagedata pid="2" name="Intro">
+      Welcome, <<print $playerName>>. You are now part of a prophecy in a dark forest...
+
+      You have $eano EANO and $gems Gems.<br/><br/>
+
+      What will you do first?
+
+      * [[Explore the ruins]]
+      * [[Visit the Gem Merchant]]
+      * [[Return to Dashboard]]
+    </tw-passagedata>
+
+    <!-- Gem Merchant -->
+    <tw-passagedata pid="3" name="Visit the Gem Merchant">
+      Welcome to the merchant. You can:
+
+      * <<link "Spend 10 Gems for a magic item">>
+        <<if $gems >= 10>>
+          <<set $gems -= 10>>
+          You now hold a glowing amulet.
+          [[Continue|Intro]]
+        <<else>>
+          Not enough Gems!
+        <</if>>
+      <</link>>
+
+      * [[Back|Intro]]
+    </tw-passagedata>
+
+    <!-- Explore -->
+    <tw-passagedata pid="4" name="Explore the ruins">
+      You find something eerie. A figure whispers:
+
+      * <<link "Pay 10 EANO to learn the secret">>
+        <<if $eano >= 10>>
+          <<set $eano -= 10>>
+          The truth is revealed... [[Continue|Intro]]
+        <<else>>
+          You don’t have enough EANO.
+        <</if>>
+      <</link>>
+
+      * [[Back|Intro]]
+    </tw-passagedata>
+
+    <!-- Dashboard -->
+    <tw-passagedata pid="5" name="Return to Dashboard">
+      <<confirm "Are you sure you want to exit this episode and return to dashboard?">>
+        <<script>>
+          window.location.href = "../dashboard.html";
+        <</script>>
+      <</confirm>>
+    </tw-passagedata>
+
+  </tw-storydata>
 </body>
-</html>
+          </html>
