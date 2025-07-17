@@ -1,23 +1,54 @@
-body, html {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: #fff;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  font-family: 'Arial', sans-serif;
-}
-
-#game-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-canvas#gameCanvas {
-  width: 100vw;
-  height: 100vh;
+body {
   background: #111;
+  color: #fff;
+  font-family: 'Georgia', serif;
+  padding: 20px;
+}
+.story-home {
+  text-align: center;
+  margin-top: 10%;
+}
+.start-btn, .next-btn {
+  background: #6a0dad;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.episode-container {
+  max-width: 700px;
+  margin: auto;
+}
+.scene-img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.story-text {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+.episode-controls {
+  margin-bottom: 20px;
+}
+.like-btn {
+  background: crimson;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+}
+.comment-section textarea {
+  width: 100%;
+  height: 80px;
+  margin-bottom: 10px;
+}
+.comment-section ul {
+  list-style: none;
+  padding-left: 0;
+}
+.comment-section li {
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
