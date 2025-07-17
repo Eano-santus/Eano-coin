@@ -1,73 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🏆 Leaderboard • EANO</title>
   <meta name="description" content="See top miners on the EANO network ranked by TrustScore, balance, and mining level.">
-  <meta name="keywords" content="EANO Leaderboard, Top Miners, TrustScore, Referral Rank, Crypto Rankings" />
-  <meta name="author" content="EANO Network" />
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#000000" />
-  <link rel="canonical" href="https://eano-santus.github.io/eano-coin/leaderboard.html" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Leaderboard • EANO Network" />
-  <meta property="og:description" content="Top 10 miners, TrustScores, levels and EANO rewards." />
-  <meta property="og:image" content="assets/icons/android-icon-192x192.png" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://eano-santus.github.io/eano-coin/leaderboard.html" />
-
-  <!-- Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-icon-180x180.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-icon-192x192.png" />
-  <link rel="manifest" href="manifest.json" />
-
-  <!-- CSS & Script -->
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="assets/icons/favicon-32x32.png" type="image/png">
   <script type="module" src="leaderboard.js" defer></script>
+  <script defer>
+    // Theme Toggle
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggle = document.getElementById("toggle-theme");
+      toggle.addEventListener("click", () => {
+        document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", document.documentElement.classList.contains("dark") ? "dark" : "light");
+      });
+
+      if (localStorage.getItem("theme") === "light") {
+        document.documentElement.classList.remove("dark");
+      }
+    });
+  </script>
 </head>
 
-<body class="leaderboard-page">
-
+<body class="min-h-screen text-white bg-black dark:bg-black bg-[url('assets/bg-gold.jpg')] bg-cover bg-center bg-no-repeat">
   <!-- Navbar -->
-  <div class="nav-fixed">
-    <h1 class="logo">🏆 Leaderboard</h1>
-    <div class="nav-controls">
+  <div class="flex justify-between items-center px-4 py-3 bg-black/80 border-b border-yellow-500">
+    <h1 class="text-xl font-bold">🏆 Leaderboard</h1>
+    <div class="flex items-center gap-4">
       <a href="dashboard.html" title="Dashboard">🏠</a>
       <button id="toggle-theme">🌑/☀️</button>
     </div>
   </div>
 
   <!-- Main -->
-  <main style="padding: 20px; max-width: 1000px; margin: auto;">
-    <!-- Filter Dropdown -->
-    <div style="text-align: right; margin-bottom: 20px;">
-      <label for="filterSelect">Filter by:</label>
-      <select id="filterSelect" onchange="filterLeaderboard(this.value)">
+  <main class="max-w-4xl mx-auto py-8 px-4">
+    <!-- Filter -->
+    <div class="flex justify-end mb-4">
+      <label for="filterSelect" class="mr-2">Filter by:</label>
+      <select id="filterSelect" onchange="filterLeaderboard(this.value)" class="bg-black border border-yellow-500 rounded px-2 py-1 text-white">
         <option value="all">🌍 All Time</option>
         <option value="weekly">📅 This Week</option>
         <option value="monthly">🗓️ This Month</option>
       </select>
     </div>
 
-    <section class="announcement">
-      <h2>🏅 Top 10 Miners</h2>
-      <div id="topMiners" class="leaderboard-section"></div>
+    <!-- Top 10 Miners -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">🏅 Top 10 Miners</h2>
+      <div id="topMiners" class="space-y-3"></div>
     </section>
 
-    <section class="announcement">
-      <h2>🛡️ TrustScore Champions</h2>
-      <div id="topTrust" class="leaderboard-section"></div>
+    <!-- TrustScore -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">🛡️ TrustScore Champions</h2>
+      <div id="topTrust" class="space-y-3"></div>
     </section>
 
-    <section class="announcement">
-      <h2>📶 Mining Level Rankings</h2>
-      <div id="topLevels" class="leaderboard-section"></div>
+    <!-- Levels -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">📶 Mining Level Rankings</h2>
+      <div id="topLevels" class="space-y-3"></div>
     </section>
   </main>
 
-  <div class="footer">© 2025 EANO • Mining powered by People</div>
+  <!-- Footer -->
+  <footer class="text-center py-4 text-sm border-t border-yellow-500 bg-black/70">
+    © 2025 EANO • Mining powered by People
+  </footer>
 </body>
 </html>
