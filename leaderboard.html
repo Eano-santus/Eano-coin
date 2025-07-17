@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Meta -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🏆 Leaderboard • EANO</title>
@@ -12,7 +11,7 @@
   <meta name="theme-color" content="#000000" />
   <link rel="canonical" href="https://eano-santus.github.io/eano-coin/leaderboard.html" />
 
-  <!-- Open Graph / Social -->
+  <!-- Open Graph -->
   <meta property="og:title" content="Leaderboard • EANO Network" />
   <meta property="og:description" content="Top 10 miners, TrustScores, levels and EANO rewards." />
   <meta property="og:image" content="assets/icons/android-icon-192x192.png" />
@@ -25,7 +24,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/android-icon-192x192.png" />
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Styles & Script -->
+  <!-- CSS & Script -->
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="leaderboard.js" defer></script>
 </head>
@@ -43,15 +42,17 @@
 
   <!-- Main -->
   <main style="padding: 20px; max-width: 1000px; margin: auto;">
+    <!-- Filter Dropdown -->
+    <div style="text-align: right; margin-bottom: 20px;">
+      <label for="filterSelect">Filter by:</label>
+      <select id="filterSelect" onchange="filterLeaderboard(this.value)">
+        <option value="all">🌍 All Time</option>
+        <option value="weekly">📅 This Week</option>
+        <option value="monthly">🗓️ This Month</option>
+      </select>
+    </div>
+
     <section class="announcement">
-      <div style="text-align: right; margin-bottom: 20px;">
-  <label for="filterSelect">Filter by:</label>
-  <select id="filterSelect" onchange="filterLeaderboard(this.value)">
-    <option value="all">🌍 All Time</option>
-    <option value="weekly">📅 This Week</option>
-    <option value="monthly">🗓️ This Month</option>
-  </select>
-      </div>
       <h2>🏅 Top 10 Miners</h2>
       <div id="topMiners" class="leaderboard-section"></div>
     </section>
@@ -67,7 +68,6 @@
     </section>
   </main>
 
-  <!-- Footer -->
   <div class="footer">© 2025 EANO • Mining powered by People</div>
 </body>
 </html>
