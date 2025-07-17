@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Alpha-Wolf: Episode 1</title>
+  <link rel="stylesheet" href="game-style.css" />
+</head>
+<body>
+  <div class="episode-container">
+    <h2>Episode 1: The Awakening</h2>
+    <img src="assets/forest.jpg" alt="Scene" class="scene-img">
+    <p class="story-text">It was a dark, howling night. The Alpha stirred beneath the full moon...</p>
+
+    <div class="episode-controls">
+      <button class="like-btn">❤️ Like</button>
+      <button onclick="shareEpisode()">📤 Share</button>
+    </div>
+
+    <div class="comment-section">
+      <h3>💬 Comments</h3>
+      <textarea id="commentBox" placeholder="Leave a comment..."></textarea>
+      <button onclick="postComment()">Post</button>
+      <ul id="commentList"></ul>
+    </div>
+
+    <a href="episode2.html" class="next-btn">➡️ Next Episode</a>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
