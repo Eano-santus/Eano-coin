@@ -4,27 +4,29 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
 const auth = getAuth();
 const db = getFirestore();
 
-let allUsers = []; // Define once here
+let allUsers = [];
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) return window.location.href = "index.html";
 
   const usersRef = collection(db, "users");
   const snapshot = await getDocs(usersRef);
+  const users = [];
 
   snapshot.forEach(doc => {
     const data = doc.data();
-    allUsers.push({
+    users.push({
       username: data.username || "Anonymous",
       avatar: data.photoURL || "avatars/default.png",
       trustScore: data.trustScore || 0,
       balance: data.balance || 0,
       level: data.level || "🐥 Chicken",
-      joinedAt: data.joinedAt || new Date().toISOString(),
+      joinedAt: data.joinedAt || new Date().toISOString(), // required for filter
     });
   });
 
-  filterLeaderboard("all"); // default filter on load
+  allUsers = users;
+  filterLeaderboard("all"); // default
 });
 
 const getTrustBadge = (score) => {
@@ -61,7 +63,7 @@ const renderLeaderboard = (list, containerId, type = "balance") => {
   });
 };
 
-const filterLeaderboard = (range) => {
+window.filterLeaderboard = (range) => {
   const now = new Date();
   let filtered = [...allUsers];
 
