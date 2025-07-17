@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🏆 Leaderboard • EANO</title>
   <meta name="description" content="See top miners on the EANO network ranked by TrustScore, balance, and mining level.">
-  <link rel="stylesheet" href="style.css" />
+  <!-- ✅ Link the same CSS used in dashboard -->
+<link rel="stylesheet" href="style.css" />
+
+<!-- ✅ Dark/Light mode JS toggle (if handled by script) -->
+<script defer src="darkmode-toggle.js"></script> <!-- If this exists -->
   <link rel="icon" href="assets/icons/favicon-32x32.png" type="image/png">
   <script type="module" src="leaderboard.js" defer></script>
   <script defer>
@@ -69,5 +73,7 @@
   <footer class="text-center py-4 text-sm border-t border-yellow-500 bg-black/70">
     © 2025 EANO • Mining powered by People
   </footer>
+  <!-- ✅ Firebase + Leaderboard JS -->
+<script type="module" src="leaderboard.js"></script>
 </body>
 </html>
