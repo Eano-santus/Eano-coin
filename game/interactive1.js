@@ -4,6 +4,13 @@ let gems = parseInt(localStorage.getItem('gems')) || 200;
 let unlockTime = localStorage.getItem('ep2unlock') || 0;
 let pname, partner;
 
+function openGame(file) {
+  const frame = document.getElementById('gameFrame');
+  frame.src = file;
+  frame.style.display = 'block';
+  frame.scrollIntoView({ behavior: 'smooth' });
+}
+
 function startStory() {
   pname = document.getElementById('pName').value || 'Raine';
   partner = document.getElementById('partnerName').value || 'Echo';
